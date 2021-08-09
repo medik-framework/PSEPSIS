@@ -5,7 +5,6 @@ import { AppBar, Toolbar, Button } from "@material-ui/core";
 const Header = (props) => {
   const startTime = useSelector((state) => state?.Timer?.startTimeString);
   const duration = useSelector((state) => state?.Timer?.sessionDuration);
-  const cprDuration = useSelector((state) => state?.Timer?.cprDuration);
   const weight = useSelector((state) => state?.PatientInfo?.weight);
   const dispatch = useDispatch();
   return (
@@ -22,6 +21,17 @@ const Header = (props) => {
             style={{ textAlign: "center", width: "45%", height: "50%" }}
           />
         </label>
+        <label
+          className={weight === 0 ? "blink" : ""}
+          style={{ ...styles.headerLabel, ...styles.headerWeight }}
+        >
+          Age (mo):&nbsp;
+          <input
+            type="number"
+            name="weight"
+            style={{ textAlign: "center", width: "45%", height: "50%" }}
+          />
+        </label>
         <label style={{ ...styles.headerLabel, backgroundColor: "#B7F1A5" }}>
           Start time:
           <br />
@@ -31,11 +41,6 @@ const Header = (props) => {
           Duration:
           <br />
           {duration}
-        </label>
-        <label style={{ ...styles.headerLabel, backgroundColor: "#FF9873" }}>
-          CPR Duration:
-          <br />
-          {cprDuration === undefined ? "not started" : cprDuration}
         </label>
         <label style={{ ...styles.headerLabel, backgroundColor: "#FFF0B5" }}>
           Current time:
