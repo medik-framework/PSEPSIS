@@ -1,8 +1,15 @@
 import { useState } from "react";
 
-import { Button, Grid, makeStyles } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  Button,
+  Grid,
+  makeStyles,
+} from "@material-ui/core";
 
-import { sepsisCategory, sepsisMeasurements } from "./VitalTableSchema";
+
+const checkLists = { "high Risk List": [] };
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,14 +29,30 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CenteredGrid() {
   const classes = useStyles();
-  const [selectedCategory, setSelectedCategory] = useState(sepsisCategory[0]);
+  const [checkListName, setCheckListName] = React.useState(
+    Object.keys(checkLists)[0]
+  );
 
   return (
     <div className={classes.root}>
+      <TextField
+        id="standard-select-currency"
+        select
+        label="Select"
+        value={currency}
+        onChange={(event) => setCheckListName(event.target.value)}
+        helperText="Please select your currency"
+      >
+        {Object.keys(checkLists).map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </TextField>
       <Grid container spacing={3}>
-        {sepsisCategory.map((value) => {
+        {checkLists[checkListName].map((value) => {
           return (
-            <Grid item xs={4}>
+            <Grid item xs={12}>
               <Button
                 className={classes.button}
                 onClick={() => setSelectedCategory(value)}
@@ -41,15 +64,6 @@ export default function CenteredGrid() {
         })}
       </Grid>
 
-      <Grid container spacing={3}>
-        {sepsisMeasurements[selectedCategory].map((value) => {
-          return (
-            <Grid item xs={6} className={classes.tableCell}>
-              {value.name} {value.unit === "" ? null : `(${value.unit})`}
-            </Grid>
-          );
-        })}
-      </Grid>
     </div>
   );
 }
