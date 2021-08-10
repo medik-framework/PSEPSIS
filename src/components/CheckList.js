@@ -8,21 +8,21 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-const checkLists = { "high Risk List": [] };
+const checkLists = { "Culture Checklist": [], "History & General Condition Checklist": [] };
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    width: "400px",
+    width: "100%",
+  },
+  select: {
+    marginTop: "10px"
   },
   button: {
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
     height: "30px",
-  },
-  tableCell: {
-    height: "100px",
   },
 }));
 
@@ -35,12 +35,11 @@ export default function CenteredGrid() {
   return (
     <div className={classes.root}>
       <TextField
-        id="standard-select-currency"
         select
-        label="Select"
+        fullWidth
         value={checkListName}
+        className={classes.select}
         onChange={(event) => setCheckListName(event.target.value)}
-        helperText="Please select your currency"
       >
         {Object.keys(checkLists).map((option) => (
           <MenuItem key={option} value={option}>

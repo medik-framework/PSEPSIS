@@ -75,7 +75,6 @@ const styles = {
     margin: "auto",
     height: "90%",
     width: "10vw",
-    display: "inline-block",
     alignItems: "center",
     lineHeight: "120%",
     borderRadius: "2px",
