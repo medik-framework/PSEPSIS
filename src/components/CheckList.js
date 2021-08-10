@@ -8,7 +8,6 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-
 const checkLists = { "high Risk List": [] };
 
 const useStyles = makeStyles((theme) => ({
@@ -63,7 +62,6 @@ export default function CenteredGrid() {
           );
         })}
       </Grid>
-
     </div>
   );
 }

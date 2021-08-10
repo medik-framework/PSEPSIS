@@ -1,37 +1,41 @@
 import { useState } from "react";
-
+import clsx from "clsx";
 import { Button, Grid, makeStyles } from "@material-ui/core";
 
-import { sepsisCategory, sepsisMeasurements } from "./VitalTableSchema";
+import { sepsisCategories, sepsisTables } from "./VitalTableSchema";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "400px",
-  },
+const useStyles = makeStyles({
   button: {
-    padding: theme.spacing(2),
     textAlign: "center",
-    color: theme.palette.text.secondary,
-    height: "30px",
+    height: "40px",
+    width: "10vw",
+  },
+  buttonSelected: {
+    backgroundColor: "#0062cc",
+    "&:hover": {
+      backgroundColor: "#0062cc",
+    },
   },
   tableCell: {
     height: "100px",
   },
-}));
+});
 
 export default function CenteredGrid() {
   const classes = useStyles();
-  const [selectedCategory, setSelectedCategory] = useState(sepsisCategory[0]);
+  const [selectedCategory, setSelectedCategory] = useState(sepsisCategories[0]);
 
   return (
-    <div className={classes.root}>
-      <Grid container spacing={3}>
-        {sepsisCategory.map((value) => {
+    <>
+      <Grid container spacing={0}>
+        {sepsisCategories.map((value) => {
           return (
             <Grid item xs={4}>
               <Button
-                className={classes.button}
+                variant="contained"
+                className={clsx(classes.button, {
+                  [classes.buttonSelected]: selectedCategory === value,
+                })}
                 onClick={() => setSelectedCategory(value)}
               >
                 {value}
@@ -41,15 +45,19 @@ export default function CenteredGrid() {
         })}
       </Grid>
 
-      <Grid container spacing={3}>
-        {sepsisMeasurements[selectedCategory].map((value) => {
+      <Grid container spacing={0}>
+        {sepsisTables[selectedCategory].map((value) => {
           return (
             <Grid item xs={6} className={classes.tableCell}>
-              {value.name} {value.unit === "" ? null : `(${value.unit})`}
+              <div>
+                {value.name} {value.unit === "" ? null : `(${value.unit})`}
+              </div>
+
+              <div>Last updated time:</div>
             </Grid>
           );
         })}
       </Grid>
-    </div>
+    </>
   );
 }

@@ -12,6 +12,8 @@ const initialState = {
   paco2: 0,
 };
 
-export default function (state = initialState, action) {
+const patientInfoReducer = (state = initialState, action) => {
   return state;
-}
+};
+
+export default patientInfoReducer;
