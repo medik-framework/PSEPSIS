@@ -1,10 +1,14 @@
 import { useState } from "react";
 import clsx from "clsx";
-import { Button, Grid, makeStyles } from "@material-ui/core";
+import { Button, Grid, Box, makeStyles } from "@material-ui/core";
 
 import { sepsisCategories, sepsisTables } from "./VitalTableSchema";
 
 const useStyles = makeStyles({
+  buttonGroup: {
+    marginTop: "5px",
+    marginBottom: "5px",
+  },
   button: {
     textAlign: "center",
     height: "40px",
@@ -18,6 +22,9 @@ const useStyles = makeStyles({
   },
   tableCell: {
     height: "100px",
+    borderStyle: "solid",
+    borderWidth: "1px",
+    borderColor: "black",
   },
 });
 
@@ -27,10 +34,10 @@ export default function CenteredGrid() {
 
   return (
     <>
-      <Grid container spacing={0}>
+      <Grid container spacing={0} className={classes.buttonGroup}>
         {sepsisCategories.map((value) => {
           return (
-            <Grid item xs={4}>
+            <Grid item xs={4} border={1}>
               <Button
                 variant="contained"
                 className={clsx(classes.button, {
@@ -52,7 +59,6 @@ export default function CenteredGrid() {
               <div>
                 {value.name} {value.unit === "" ? null : `(${value.unit})`}
               </div>
-
               <div>Last updated time:</div>
             </Grid>
           );

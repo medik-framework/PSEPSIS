@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CenteredGrid() {
   const classes = useStyles();
-  const [checkListName, setCheckListName] = React.useState(
+  const [checkListName, setCheckListName] = useState(
     Object.keys(checkLists)[0]
   );
 
@@ -38,7 +38,7 @@ export default function CenteredGrid() {
         id="standard-select-currency"
         select
         label="Select"
-        value={currency}
+        value={checkListName}
         onChange={(event) => setCheckListName(event.target.value)}
         helperText="Please select your currency"
       >
@@ -52,12 +52,7 @@ export default function CenteredGrid() {
         {checkLists[checkListName].map((value) => {
           return (
             <Grid item xs={12}>
-              <Button
-                className={classes.button}
-                onClick={() => setSelectedCategory(value)}
-              >
-                {value}
-              </Button>
+              <Button className={classes.button}>{value}</Button>
             </Grid>
           );
         })}

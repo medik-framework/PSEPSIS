@@ -14,10 +14,10 @@ const Header = (props) => {
           className={weight === 0 ? "blink" : ""}
           style={{ ...styles.headerLabel, ...styles.headerWeight }}
         >
-          Weight (kg):&nbsp;
+          Age (mo):&nbsp;
           <input
             type="number"
-            name="weight"
+            name="age"
             style={{ textAlign: "center", width: "45%", height: "50%" }}
           />
         </label>
@@ -25,13 +25,14 @@ const Header = (props) => {
           className={weight === 0 ? "blink" : ""}
           style={{ ...styles.headerLabel, ...styles.headerWeight }}
         >
-          Age (mo):&nbsp;
+          Weight (kg):&nbsp;
           <input
             type="number"
             name="weight"
             style={{ textAlign: "center", width: "45%", height: "50%" }}
           />
         </label>
+
         <label style={{ ...styles.headerLabel, backgroundColor: "#B7F1A5" }}>
           Start time:
           <br />
