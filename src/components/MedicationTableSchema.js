@@ -1,12 +1,9 @@
-export const sepsisCategories = [
-  "Cardiovascular",
-  "PEWS",
-  "Renal",
-  "Respiratory",
-  "SIRS",
-  "Sepsis",
-  "SepticShock",
-  "Others",
+export const medicationCategories = [
+  "OSF One-Hour Bundle",
+  "Antibiotics-all",
+  "Fluid therapy",
+  "Inotropes",
+  "OSF Antibiotics Set",
 ];
 
 export const sepsisMeasurements = {

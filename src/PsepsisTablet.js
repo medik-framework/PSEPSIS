@@ -12,8 +12,8 @@ const useStyles = makeStyles({
     width: "30vw",
   },
   middlePanel: {
-    width: "50vw"
-  }
+    width: "50vw",
+  },
 });
 
 const PsepsisTablet = () => {
@@ -26,7 +26,7 @@ const PsepsisTablet = () => {
         <div className={classes.leftPanel}>
           <LeftPanel />
         </div>
-                <div className={classes.middlePanel}>
+        <div className={classes.middlePanel}>
           <MiddlePanel />
         </div>
       </div>

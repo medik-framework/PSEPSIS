@@ -1,38 +1,54 @@
 import { useSelector, useDispatch } from "react-redux";
 
-import { AppBar, Toolbar, Button } from "@material-ui/core";
+import { AppBar, Toolbar, Button, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles({
+  blinkBg: {
+    animation: "$blinkingBackground 2s infinite",
+  },
+  "@keyframes blinkingBackground": {
+    "0%": { backgroundColor: "#10c018" },
+    "25%": { backgroundColor: "#1056c0" },
+    "50%": { backgroundColor: "#ef0a1a" },
+    "75%": { backgroundColor: "#254878" },
+    "100%": { backgroundColor: "#04a1d5" },
+  },
+});
 
 const Header = (props) => {
   const startTime = useSelector((state) => state?.Timer?.startTimeString);
   const duration = useSelector((state) => state?.Timer?.sessionDuration);
   const weight = useSelector((state) => state?.PatientInfo?.weight);
   const dispatch = useDispatch();
+
+  const classes = useStyles();
   return (
     <AppBar position="static">
       <Toolbar>
-        <label
-          className={weight === 0 ? "blink" : ""}
-          style={{ ...styles.headerLabel, ...styles.headerWeight }}
-        >
-          Age (mo):&nbsp;
-          <input
-            type="number"
-            name="age"
-            style={{ textAlign: "center", width: "45%", height: "50%" }}
-          />
-        </label>
-        <label
-          className={weight === 0 ? "blink" : ""}
-          style={{ ...styles.headerLabel, ...styles.headerWeight }}
-        >
-          Weight (kg):&nbsp;
-          <input
-            type="number"
-            name="weight"
-            style={{ textAlign: "center", width: "45%", height: "50%" }}
-          />
-        </label>
-
+        <div style={{ width: "30vw" }}>
+          <label
+            className={weight === 0 ? classes.blinkBg : ""}
+            style={{ ...styles.headerLabel, ...styles.headerWeight }}
+          >
+            Age (mo):&nbsp;
+            <input
+              type="number"
+              name="age"
+              style={{ textAlign: "center", width: "45%", height: "50%" }}
+            />
+          </label>
+          <label
+            className={weight === 0 ? classes.blinkBg : ""}
+            style={{ ...styles.headerLabel, ...styles.headerWeight }}
+          >
+            Weight (kg):&nbsp;
+            <input
+              type="number"
+              name="weight"
+              style={{ textAlign: "center", width: "45%", height: "50%" }}
+            />
+          </label>
+        </div>
         <label style={{ ...styles.headerLabel, backgroundColor: "#B7F1A5" }}>
           Start time:
           <br />
@@ -80,7 +96,6 @@ const styles = {
     borderRadius: "2px",
   },
   headerWeight: {
-    backgroundColor: "#FFCD04",
     width: "15vw",
     display: "inline-flex",
     paddingLeft: "10px",

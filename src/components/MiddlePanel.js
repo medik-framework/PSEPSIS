@@ -1,9 +1,5 @@
 import { useState } from "react";
-import { Paper, Tabs, Tab } from "@material-ui/core";
-import { mdiAccountDetails, mdiClipboardListOutline } from '@mdi/js'; 
-import Icon from '@mdi/react';
-
-import VitalOrders from "./VitalOrders";
+import MedicationTable from "./MedicationTable";
 import CheckList from "./CheckList";
 
 export default function LeftPanel() {
@@ -17,7 +13,7 @@ export default function LeftPanel() {
     <>
       Medication and Lab/Vital Orders
       <div style={{ display: tab === 0 ? "block" : "none" }}>
-        <VitalOrders />
+        <MedicationTable />
       </div>
       <div style={{ display: tab === 1 ? "block" : "none" }}>
         <CheckList />

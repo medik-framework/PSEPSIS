@@ -5,10 +5,27 @@ import {
   MenuItem,
   Button,
   Grid,
+  Checkbox,
   makeStyles,
 } from "@material-ui/core";
 
-const checkLists = { "Culture Checklist": [], "History & General Condition Checklist": [] };
+const checkLists = {
+  "Culture Checklist": [
+    "Urine culture obtained",
+    "Blood culture obtained from venipuncture",
+    "Blood culture obtained from line",
+    "IV catheter culture obtained",
+  ],
+  "History & General Condition Checklist": [
+    "High risk for pulmonary edema?",
+    "History of renal insufficiency?",
+    "History of immunodeficiency?",
+    "Chronic steroid use/adrenal insufficiency?",
+    "Unrepaired congenital heart disease?",
+    "Indwelling vascular catheter or other invasive devices?",
+    "History of pneumonia?",
+  ],
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   select: {
-    marginTop: "10px"
+    marginTop: "10px",
   },
   button: {
     padding: theme.spacing(2),
@@ -51,6 +68,7 @@ export default function CenteredGrid() {
         {checkLists[checkListName].map((value) => {
           return (
             <Grid item xs={12}>
+              <Checkbox />
               <Button className={classes.button}>{value}</Button>
             </Grid>
           );

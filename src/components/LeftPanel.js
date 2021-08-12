@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Paper, Tabs, Tab } from "@material-ui/core";
-import { mdiAccountDetails, mdiClipboardListOutline } from '@mdi/js'; 
-import Icon from '@mdi/react';
+import { mdiAccountDetails, mdiClipboardListOutline } from "@mdi/js";
+import Icon from "@mdi/react";
 
 import VitalTable from "./VitalTable";
 import CheckList from "./CheckList";
@@ -23,8 +23,21 @@ export default function LeftPanel() {
           onChange={handleChange}
           aria-label="disabled tabs example"
         >
-          <Tab label={<span><Icon path={mdiAccountDetails}         size={1} /> Measurements Lab Results</span>} />
-          <Tab label={<span><Icon path={mdiClipboardListOutline}         size={1} /> Checklists</span>}/>
+          <Tab
+            label={
+              <span>
+                <Icon path={mdiAccountDetails} size={1} /> Measurements Lab
+                Results
+              </span>
+            }
+          />
+          <Tab
+            label={
+              <span>
+                <Icon path={mdiClipboardListOutline} size={1} /> Checklists
+              </span>
+            }
+          />
         </Tabs>
       </Paper>
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import { Button, Grid, makeStyles } from "@material-ui/core";
 
-import { sepsisCategories, sepsisTables } from "./VitalTableSchema";
+import { medicationCategories, sepsisTables } from "./MedicationTableSchema";
 
 const useStyles = makeStyles({
   buttonGroup: {
@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   button: {
     textAlign: "center",
     height: "40px",
-    width: "10vw",
+    width: "16vw",
   },
   buttonSelected: {
     backgroundColor: "#0062cc",
@@ -30,12 +30,14 @@ const useStyles = makeStyles({
 
 export default function CenteredGrid() {
   const classes = useStyles();
-  const [selectedCategory, setSelectedCategory] = useState(sepsisCategories[0]);
+  const [selectedCategory, setSelectedCategory] = useState(
+    medicationCategories[0]
+  );
 
   return (
     <>
       <Grid container spacing={0} className={classes.buttonGroup}>
-        {sepsisCategories.map((value) => {
+        {medicationCategories.map((value) => {
           return (
             <Grid item xs={4} border={1}>
               <Button
@@ -52,18 +54,7 @@ export default function CenteredGrid() {
         })}
       </Grid>
 
-      <Grid container spacing={0}>
-        {sepsisTables[selectedCategory].map((value) => {
-          return (
-            <Grid item xs={6} className={classes.tableCell}>
-              <div>
-                {value.name} {value.unit === "" ? null : `(${value.unit})`}
-              </div>
-              <div>Last updated time:</div>
-            </Grid>
-          );
-        })}
-      </Grid>
+      <Grid container spacing={0}></Grid>
     </>
   );
 }
