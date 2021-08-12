@@ -4,6 +4,8 @@ import { Button, Grid, makeStyles } from "@material-ui/core";
 
 import { medicationCategories, sepsisTables } from "./MedicationTableSchema";
 
+import OneHourBundle from "./OneHourBundle";
+
 const useStyles = makeStyles({
   buttonGroup: {
     marginTop: "5px",
@@ -54,7 +56,9 @@ export default function CenteredGrid() {
         })}
       </Grid>
 
-      <Grid container spacing={0}></Grid>
+      <Grid container spacing={0}>
+        <OneHourBundle />
+      </Grid>
     </>
   );
 }

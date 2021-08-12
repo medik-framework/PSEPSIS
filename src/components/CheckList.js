@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CenteredGrid() {
+export default function CheckList() {
   const classes = useStyles();
   const [checkListName, setCheckListName] = useState(
     Object.keys(checkLists)[0]

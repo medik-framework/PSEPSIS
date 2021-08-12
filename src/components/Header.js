@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { AppBar, Toolbar, Button, makeStyles } from "@material-ui/core";
@@ -20,6 +21,16 @@ const Header = (props) => {
   const duration = useSelector((state) => state?.Timer?.sessionDuration);
   const weight = useSelector((state) => state?.PatientInfo?.weight);
   const dispatch = useDispatch();
+
+  const [currTime, setCurrTime] = useState(
+    new Date().toTimeString().slice(0, 8)
+  );
+
+  useEffect(() => {
+    setInterval(() => {
+      setCurrTime(new Date().toTimeString().slice(0, 8));
+    }, 1000);
+  });
 
   const classes = useStyles();
   return (
@@ -62,7 +73,7 @@ const Header = (props) => {
         <label style={{ ...styles.headerLabel, backgroundColor: "#FFF0B5" }}>
           Current time:
           <br />
-          {new Date().toTimeString().slice(0, 8)}
+          {currTime}
         </label>
         <Button
           variant="light"
