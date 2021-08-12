@@ -5,6 +5,7 @@ import { Button, Grid, makeStyles } from "@material-ui/core";
 import { medicationCategories, sepsisTables } from "./MedicationTableSchema";
 
 import OneHourBundle from "./OneHourBundle";
+import FluidTherapy from "./FluidTherapy";
 
 const useStyles = makeStyles({
   buttonGroup: {
@@ -57,7 +58,22 @@ export default function CenteredGrid() {
       </Grid>
 
       <Grid container spacing={0}>
-        <OneHourBundle />
+        <div
+          style={{
+            display:
+              selectedCategory === medicationCategories[0] ? "block" : "none",
+          }}
+        >
+          <OneHourBundle />
+        </div>
+        <div
+          style={{
+            display:
+              selectedCategory === medicationCategories[2] ? "block" : "none",
+          }}
+        >
+          <FluidTherapy />
+        </div>
       </Grid>
     </>
   );
