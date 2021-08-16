@@ -6,7 +6,7 @@ import Icon from "@mdi/react";
 import VitalTable from "./VitalTable";
 import CheckList from "./CheckList";
 
-export default function LeftPanel() {
+const LeftPanel = () => {
   const [tab, setTab] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -50,3 +50,5 @@ export default function LeftPanel() {
     </>
   );
 }
+
+export default LeftPanel

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import MedicationTable from "./MedicationTable";
-import CheckList from "./CheckList";
 import PendingOrders from "./PendingOrders";
 import TreatmentLog from "./TreatmentLog";
 
-export default function MiddlePanel() {
+const MiddlePanel = () => {
   return (
     <>
       Medication and Lab/Vital Orders
@@ -22,3 +21,5 @@ export default function MiddlePanel() {
     </>
   );
 }
+
+export default MiddlePanel
