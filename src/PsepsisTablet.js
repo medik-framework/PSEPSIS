@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 
 import Header from "./components/Header";
 import LeftPanel from "./components/LeftPanel/";
@@ -10,7 +10,7 @@ const useStyles = makeStyles({
     display: "flex",
   },
   leftPanel: {
-    width: "30vw",
+    width: "36%",
   },
   middlePanel: {
     width: "50vw",
@@ -23,17 +23,17 @@ const PsepsisTablet = () => {
   return (
     <div>
       <Header />
-      <div className={classes.content}>
-        <div className={classes.leftPanel}>
+      <Grid container>
+        <Grid item className={classes.leftPanel}>
           <LeftPanel />
-        </div>
+        </Grid>
         <div className={classes.middlePanel}>
           <MiddlePanel />
         </div>
         <div className={classes.middlePanel}>
           <RightPanel />
         </div>
-      </div>
+      </Grid>
     </div>
   );
 };

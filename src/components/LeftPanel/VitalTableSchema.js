@@ -1,6 +1,8 @@
 export const sepsisCategories = [
   "Cardiovascular",
-  "PEWS",
+  "Hematologic",
+  "Hepatic",
+  "Neurologic",
   "Renal",
   "Respiratory",
   "SIRS",
@@ -49,6 +51,8 @@ export const sepsisMeasurements = {
   PaO2: { name: "PaO2", unit: "mmHg", type: "number" },
   FiO2: { name: "FiO2", unit: "", type: "number" },
   WBC: { name: "WBC", unit: "K/mcL", type: "number" },
+  INR: { name: "INR", unit: "", type: "number" },
+  Platelet: { name: "Platelet", unit: "k/mcL", type: "number" },
 };
 
 export const sepsisTables = {
@@ -62,6 +66,7 @@ export const sepsisTables = {
     sepsisMeasurements.MAP,
     sepsisMeasurements.Lactate,
   ],
+  Hematologic: [sepsisMeasurements.INR, sepsisMeasurements.Platelet],
   PEWS: [
     sepsisMeasurements.HR,
     sepsisMeasurements["Capillary Refill"],

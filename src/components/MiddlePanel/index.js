@@ -20,6 +20,6 @@ const MiddlePanel = () => {
       </div>
     </>
   );
-}
+};
 
-export default MiddlePanel
+export default MiddlePanel;

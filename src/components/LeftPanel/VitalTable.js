@@ -37,7 +37,7 @@ export default function CenteredGrid() {
       <Grid container spacing={0} className={classes.buttonGroup}>
         {sepsisCategories.map((value) => {
           return (
-            <Grid item xs={4} border={1}>
+            <Grid item xs={3}>
               <Button
                 variant="contained"
                 className={clsx(classes.button, {
