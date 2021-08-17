@@ -15,9 +15,9 @@ const useStyles = makeStyles({
     width: "8vw",
   },
   buttonSelected: {
-    backgroundColor: "#0062cc",
+    backgroundColor: "darkgray",
     "&:hover": {
-      backgroundColor: "#0062cc",
+      backgroundColor: "darkgray",
     },
   },
   tableCell: {
@@ -34,6 +34,19 @@ export default function CenteredGrid() {
 
   return (
     <>
+     <Grid container spacing={0}>
+        {sepsisTables[selectedCategory].map((value) => {
+          return (
+            <Grid item xs={6} className={classes.tableCell}>
+              <div>
+                {value.name} {value.unit === "" ? null : `(${value.unit})`}
+              </div>
+              <div>Last updated time:</div>
+            </Grid>
+          );
+        })}
+      </Grid>
+    
       <Grid container spacing={0} className={classes.buttonGroup}>
         {sepsisCategories.map((value) => {
           return (

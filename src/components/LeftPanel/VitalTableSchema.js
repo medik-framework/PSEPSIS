@@ -7,14 +7,14 @@ export const sepsisCategories = [
   "Respiratory",
   "SIRS",
   "Sepsis",
-  "SepticShock",
+  "Septic Shock",
   "Others",
 ];
 
 export const sepsisMeasurements = {
   HR: { name: "HR", unit: "bpm", type: "number" },
-  Pulse: {
-    name: "Pulse",
+  "Pulse Quality": {
+    name: "Pulse Quality",
     unit: "",
     type: ["Bounding", "normal", "Decreasing/Weak"],
   },
@@ -53,17 +53,25 @@ export const sepsisMeasurements = {
   WBC: { name: "WBC", unit: "K/mcL", type: "number" },
   INR: { name: "INR", unit: "", type: "number" },
   Platelet: { name: "Platelet", unit: "k/mcL", type: "number" },
+  Age: { name: "Age", unit: ["wo", "mo", "yo"], type: "number" },
+  Weight: { name: "Weight", unit: "Kg", type: "number" },
+  "Screening Status": { name: "Screening Status", unit: "", type: ["Evaluating for Sepsis", "Presume Sepsis", "Sepsis + Organ Dysfunction", "Septic Shock"] },
 };
 
 export const sepsisTables = {
+  Top: [
+    sepsisMeasurements.Age,
+    sepsisMeasurements.Weight,
+    sepsisMeasurements["Screening Status"],
+  ]
   Cardiovascular: [
     sepsisMeasurements.HR,
-    sepsisMeasurements.Pulse,
+    sepsisMeasurements["Pulse Quality"],
     sepsisMeasurements["Capillary Refill"],
+    sepsisMeasurements.MAP,
     sepsisMeasurements["BP Sys"],
     sepsisMeasurements["BP Dia"],
     sepsisMeasurements.pH,
-    sepsisMeasurements.MAP,
     sepsisMeasurements.Lactate,
   ],
   Hematologic: [sepsisMeasurements.INR, sepsisMeasurements.Platelet],
@@ -114,7 +122,7 @@ export const sepsisTables = {
     },
     { name: "Sepsis Score", unit: "", type: "number" },
   ],
-  SepticShock: [
+  "Septic Shock": [
     { name: "HR", unit: "bpm", type: "number" },
     {
       name: "Pulse",

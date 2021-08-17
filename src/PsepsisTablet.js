@@ -6,9 +6,6 @@ import MiddlePanel from "./components/MiddlePanel/";
 import RightPanel from "./components/RightPanel";
 
 const useStyles = makeStyles({
-  content: {
-    display: "flex",
-  },
   leftPanel: {
     width: "36%",
   },
