@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   button: {
     textAlign: "center",
     height: "40px",
-    width: "8vw",
+    width: "100%",
   },
   buttonSelected: {
     backgroundColor: "darkgray",
@@ -34,10 +34,10 @@ export default function CenteredGrid() {
 
   return (
     <>
-     <Grid container spacing={0}>
-        {sepsisTables[selectedCategory].map((value) => {
+      <Grid container spacing={0}>
+        {sepsisTables.Top.map((value) => {
           return (
-            <Grid item xs={6} className={classes.tableCell}>
+            <Grid item xs={4} className={classes.tableCell}>
               <div>
                 {value.name} {value.unit === "" ? null : `(${value.unit})`}
               </div>
@@ -46,7 +46,7 @@ export default function CenteredGrid() {
           );
         })}
       </Grid>
-    
+
       <Grid container spacing={0} className={classes.buttonGroup}>
         {sepsisCategories.map((value) => {
           return (
