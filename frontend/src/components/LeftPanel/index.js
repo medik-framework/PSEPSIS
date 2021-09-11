@@ -22,7 +22,7 @@ const LeftPanel = () => {
 
   return (
     <>
-      <Tabs fullWidth value={tab} onChange={handleChange}>
+      {/* <Tabs fullWidth value={tab} onChange={handleChange}>
         <Tab
           icon={<Icon path={mdiAccountDetails} size={1} />}
           label={
@@ -38,7 +38,7 @@ const LeftPanel = () => {
           label={"Checklists"}
         />
         <Tab icon={<Icon path={mdiInformation} size={1} />} label={"Info"} />
-      </Tabs>
+      </Tabs> */}
 
       <div style={{ display: tab === 0 ? "block" : "none" }}>
         <Measurement />

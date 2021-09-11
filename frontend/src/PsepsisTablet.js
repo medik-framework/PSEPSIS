@@ -7,7 +7,8 @@ import RightPanel from "./components/RightPanel";
 
 const useStyles = makeStyles({
   leftPanel: {
-    width: "36%",
+    width: "36vw",
+    height: "100vh"
   },
   middlePanel: {
     width: "50vw",
@@ -19,15 +20,15 @@ const PsepsisTablet = () => {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <Grid container>
         <Grid item className={classes.leftPanel}>
           <LeftPanel />
         </Grid>
-        <div className={classes.middlePanel}>
+        <div className={classes.middlePanel} style={{display: 'none'}}>
           <MiddlePanel />
         </div>
-        <div className={classes.middlePanel}>
+        <div className={classes.middlePanel} style={{display: 'none'}}>
           <RightPanel />
         </div>
       </Grid>

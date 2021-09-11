@@ -34,7 +34,7 @@ export default function CenteredGrid() {
 
   return (
     <>
-      <Grid container spacing={0}>
+      {/* <Grid container spacing={0}>
         {sepsisTables.Top.map((value) => {
           return (
             <Grid item xs={4} className={classes.tableCell}>
@@ -45,7 +45,7 @@ export default function CenteredGrid() {
             </Grid>
           );
         })}
-      </Grid>
+      </Grid> */}
 
       <Grid container spacing={0} className={classes.buttonGroup}>
         {sepsisCategories.map((value) => {
