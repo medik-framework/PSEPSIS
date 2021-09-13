@@ -1,6 +1,8 @@
 import { useState } from "react";
 import clsx from "clsx";
-import { Button, Grid, makeStyles } from "@material-ui/core";
+import { Button, Grid } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { sepsisCategories, sepsisTables } from "./VitalTableSchema";
 

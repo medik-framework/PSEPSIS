@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { AppBar, Toolbar, Button, makeStyles } from "@material-ui/core";
+import { AppBar, Toolbar, Button } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles({
   blinkBg: {
