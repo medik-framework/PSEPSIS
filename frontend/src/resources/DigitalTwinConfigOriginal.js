@@ -11,7 +11,7 @@ export const organDTs = [
 export const assessments = {
   SIRS: {
     name: "SIRS Score",
-    measurements : [
+    measurements: [
       CardiovascularDT.HR,
       ImmuneDT.WBC,
       CardiovascularDT["BP Sys"],
@@ -20,7 +20,7 @@ export const assessments = {
       CardiovascularDT.CoreTemp,
       RespiratoryDT.RR,
     ],
-    value: 0
+    value: 0,
   },
   Sepsis: {
     name: "Sepsis Score",
@@ -35,7 +35,7 @@ export const assessments = {
       Others2DT["Skin Color"],
       Others2DT.Behavior,
     ],
-    value: 0
+    value: 0,
   },
   "Septic Shock": {
     name: "Septic Shock Score",
@@ -50,9 +50,9 @@ export const assessments = {
       CardiovascularDT.Lactate,
       CardiovascularDT.Temp,
       CardiovascularDT.CoreTemp,
-      CardiovascularDT["Urine Output"]
+      CardiovascularDT["Urine Output"],
     ],
-    value: 0
+    value: 0,
   },
 };
 
@@ -69,7 +69,7 @@ export const PatientBasic = {
       "Septic Shock",
     ],
   },
-}
+};
 
 export const CardiovascularDT = {
   name: "Cardiovascular",
@@ -95,7 +95,7 @@ export const CardiovascularDT = {
     Lactate: { name: "Lactate", unit: "", type: "number" },
     Temp: { name: "Temp", unit: "C", type: "number" },
     CoreTemp: { name: "CoreTemp", unit: "C", type: "number" },
-    "Urine Output": { name: "Urine Output", unit: "mL/kg/hr", type: "number" }
+    "Urine Output": { name: "Urine Output", unit: "mL/kg/hr", type: "number" },
   },
 };
 
@@ -104,16 +104,16 @@ export const HematologicDT = {
   measurements: {
     INR: { name: "INR", unit: "", type: "number" },
     Platelet: { name: "Platelet", unit: "k/mcL", type: "number" },
-  }
-}
+  },
+};
 
 export const HepaticDT = {
   name: "Hepatic",
   measurements: {
     Bilirubin: { name: "Bilirubin", unit: "mg/dL", type: "number" },
     ALT: { name: "ALT", unit: "U/L", type: "number" },
-  }
-}
+  },
+};
 
 export const NeurologicDT = {
   name: "Neurologic",
@@ -156,18 +156,18 @@ export const NeurologicDT = {
         "None",
       ],
     },
-  }
-}
+  },
+};
 
 export const RenalDT = {
   name: "Renal",
-  measurements : {
+  measurements: {
     BUN: { name: "BUN", unit: "mg/dl", type: "number" },
     "Urine Output": { name: "Urine Output", unit: "mL/kg/hr", type: "number" },
     Creat: { name: "Creat", unit: "mg/dL", type: "number" },
     "Baseline Creat": { name: "Baseline Creat", unit: "mg/dL", type: "number" },
-  }
-}
+  },
+};
 
 export const RespiratoryDT = {
   name: "Respiratory",
@@ -177,8 +177,8 @@ export const RespiratoryDT = {
     PaCO2: { name: "PaCO2", unit: "mmHg", type: "number" },
     RR: { name: "RR", unit: "", type: "number" },
     FiO2: { name: "FiO2", unit: "", type: "number" },
-  }
-}
+  },
+};
 
 export const OthersDT = {
   name: "Others",
@@ -187,15 +187,15 @@ export const OthersDT = {
     Height: { name: "Height", unit: "m", type: "number" },
     Gender: { name: "Gender", unit: "", type: ["Female", "Male"] },
     "PEW Score": { name: "PEW Score", unit: "", type: "number" },
-  }
-}
+  },
+};
 
 export const ImmuneDT = {
   name: "Immune",
   measurements: {
     WBC: { name: "WBC", unit: "K/mcL", type: "number" },
-  }
-}
+  },
+};
 
 export const Others2DT = {
   name: "Not listed",
@@ -215,5 +215,5 @@ export const Others2DT = {
         "Confused/Reduced Response to Pain",
       ],
     },
-  }
-}
+  },
+};

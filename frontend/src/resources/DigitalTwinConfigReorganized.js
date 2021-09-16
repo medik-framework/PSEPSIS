@@ -1,6 +1,4 @@
-export const organTabs = [
-  
-]
+export const organTabs = [];
 
 export const organDTs = [
   CardiovascularDT,
@@ -15,7 +13,7 @@ export const organDTs = [
 export const assessments = {
   SIRS: {
     name: "SIRS Score",
-    measurements : [
+    measurements: [
       CardiovascularDT.HR,
       ImmuneDT.WBC,
       CardiovascularDT["BP Sys"],
@@ -24,7 +22,7 @@ export const assessments = {
       CardiovascularDT.CoreTemp,
       RespiratoryDT.RR,
     ],
-    value: 0
+    value: 0,
   },
   Sepsis: {
     name: "Sepsis Score",
@@ -39,7 +37,7 @@ export const assessments = {
       Others2DT["Skin Color"],
       Others2DT.Behavior,
     ],
-    value: 0
+    value: 0,
   },
   "Septic Shock": {
     name: "Septic Shock Score",
@@ -54,88 +52,108 @@ export const assessments = {
       CardiovascularDT.Lactate,
       CardiovascularDT.Temp,
       CardiovascularDT.CoreTemp,
-      CardiovascularDT["Urine Output"]
+      CardiovascularDT["Urine Output"],
     ],
-    value: 0
+    value: 0,
   },
 };
 
 export const getVitalsAgeGroup = (ageValue, ageUnit) => {
   let days;
-  if (ageUnit === "wo")
-    days = ageValue*7;
-  else if (ageUnit === "mo")
-    days = ageValue*30;
-  else if (ageUnit === "yo")
-    days = ageValue*365;
+  if (ageUnit === "wo") days = ageValue * 7;
+  else if (ageUnit === "mo") days = ageValue * 30;
+  else if (ageUnit === "yo") days = ageValue * 365;
 
-    if (days < 28) return 1;
-    else if (days < 60) return 2; 
-    else if (days < 356) return 3;
-    else if (days < 365*2) return 4;
-    else if (days < 365*4) return 5;
-    else if (days < 365*6) return 6;
-    else if (days < 365*10) return 7;
-    else if (days < 365*13) return 8;
-    else return 9;
-}
+  if (days < 28) return 1;
+  else if (days < 60) return 2;
+  else if (days < 356) return 3;
+  else if (days < 365 * 2) return 4;
+  else if (days < 365 * 4) return 5;
+  else if (days < 365 * 6) return 6;
+  else if (days < 365 * 10) return 7;
+  else if (days < 365 * 13) return 8;
+  else return 9;
+};
 
 export const getShockAgeGroup = (ageValue, ageUnit) => {
   let days;
-  if (ageUnit === "wo")
-    days = ageValue*7;
-  else if (ageUnit === "mo")
-    days = ageValue*30;
-  else if (ageUnit === "yo")
-    days = ageValue*365;
+  if (ageUnit === "wo") days = ageValue * 7;
+  else if (ageUnit === "mo") days = ageValue * 30;
+  else if (ageUnit === "yo") days = ageValue * 365;
 
-    if (days < 28) return 1;
-    else if (days < 356) return 2;
-    else if (days < 365*2) return 3;
-    else if (days < 365*5) return 4;
-    else if (days < 365*12) return 5;
-    else if (days < 365*18) return 6;
-    else return 7;
-}
+  if (days < 28) return 1;
+  else if (days < 356) return 2;
+  else if (days < 365 * 2) return 3;
+  else if (days < 365 * 5) return 4;
+  else if (days < 365 * 12) return 5;
+  else if (days < 365 * 18) return 6;
+  else return 7;
+};
 
 export const PatientBasic = {
   Age: { name: "Age", unit: ["wo", "mo", "yo"], type: "number" },
-  AgeGroupVitals: { name: "AgeGroupVitals", unit: "", type: [1,2,3,4,5,6,7,8,9] },
-  AgeGroupShock: { name: "AgeGroupShock", unit: "", type: [1,2,3,4,5,6,7] },
+  AgeGroupVitals: {
+    name: "AgeGroupVitals",
+    unit: "",
+    type: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  },
+  AgeGroupShock: {
+    name: "AgeGroupShock",
+    unit: "",
+    type: [1, 2, 3, 4, 5, 6, 7],
+  },
   Weight: { name: "Weight", unit: "Kg", type: "number" },
   Height: { name: "Height", unit: "m", type: "number" },
   Gender: { name: "Gender", unit: "", type: ["Female", "Male"] },
-}
+};
 
 export const CardiovascularDT = {
   name: "Cardiovascular",
   measurements: {
-    HR: { name: "HR", unit: "bpm", type: "number", 
-          getThres: (AgeGroupVitals) => {
-            if ([1,2].includes(AgeGroupVitals)) return {high: 100, low: 205};
-            if (AgeGroupVitals === 3)           return {high: 90,  low: 190};
-            if (AgeGroupVitals === 4)           return {high: 80,  low: 190};
-            if (AgeGroupVitals === 5)           return {high: 70,  low: 140};
-            if (AgeGroupVitals in [6,7])        return {high: 60,  low: 140};
-            if ([8,9].includes(AgeGroupVitals)) return {high: 60,  low: 100};
-            return {high: Number.POSITIVE_INFINITY,  low: Number.NEGATIVE_INFINITY}
-          }
+    HR: {
+      name: "HR",
+      unit: "bpm",
+      type: "number",
+      getThres: (AgeGroupVitals) => {
+        if ([1, 2].includes(AgeGroupVitals)) return { high: 100, low: 205 };
+        if (AgeGroupVitals === 3) return { high: 90, low: 190 };
+        if (AgeGroupVitals === 4) return { high: 80, low: 190 };
+        if (AgeGroupVitals === 5) return { high: 70, low: 140 };
+        if (AgeGroupVitals in [6, 7]) return { high: 60, low: 140 };
+        if ([8, 9].includes(AgeGroupVitals)) return { high: 60, low: 100 };
+        return {
+          high: Number.POSITIVE_INFINITY,
+          low: Number.NEGATIVE_INFINITY,
+        };
+      },
     },
     PulseQuality: {
       name: "Pulse Quality",
       unit: "",
       type: ["Bounding", "normal", "Decreasing/Weak"],
     },
-    BPSys: { name: "BP Sys", unit: "mmHg", type: "number",
-             getThres: (AgeGroupVitals) => {
-                if (AgeGroupVitals === 1)           return {high: Number.POSITIVE_INFINITY, low: 60};
-                if ([2,3].includes(AgeGroupVitals)) return {high: Number.POSITIVE_INFINITY,  low: 70};
-                if (AgeGroupVitals === 4)           return {high: Number.POSITIVE_INFINITY,  low: 190};
-                if (AgeGroupVitals === 5)           return {high: Number.POSITIVE_INFINITY,  low: 140};
-                if (AgeGroupVitals in [6,7])        return {high: Number.POSITIVE_INFINITY,  low: 140};
-                if ([8,9].includes(AgeGroupVitals)) return {high: Number.POSITIVE_INFINITY,  low: 100};
-                return {high: Number.POSITIVE_INFINITY,  low: Number.NEGATIVE_INFINITY}
-             }
+    BPSys: {
+      name: "BP Sys",
+      unit: "mmHg",
+      type: "number",
+      getThres: (AgeGroupVitals) => {
+        if (AgeGroupVitals === 1)
+          return { high: Number.POSITIVE_INFINITY, low: 60 };
+        if ([2, 3].includes(AgeGroupVitals))
+          return { high: Number.POSITIVE_INFINITY, low: 70 };
+        if (AgeGroupVitals === 4)
+          return { high: Number.POSITIVE_INFINITY, low: 190 };
+        if (AgeGroupVitals === 5)
+          return { high: Number.POSITIVE_INFINITY, low: 140 };
+        if (AgeGroupVitals in [6, 7])
+          return { high: Number.POSITIVE_INFINITY, low: 140 };
+        if ([8, 9].includes(AgeGroupVitals))
+          return { high: Number.POSITIVE_INFINITY, low: 100 };
+        return {
+          high: Number.POSITIVE_INFINITY,
+          low: Number.NEGATIVE_INFINITY,
+        };
+      },
     },
     BPDia: { name: "BP Dia", unit: "mmHg", type: "number" },
     MAP: { name: "MAP", unit: "mmHg", type: "number" },
@@ -151,8 +169,8 @@ export const CardiovascularDT = {
     Lactate: { name: "Lactate", unit: "", type: "number" },
     Temp: { name: "Temp", unit: "C", type: "number" },
     CoreTemp: { name: "CoreTemp", unit: "C", type: "number" },
-    UrineOutput: { name: "Urine Output", unit: "mL/kg/hr", type: "number" }
-  }
+    UrineOutput: { name: "Urine Output", unit: "mL/kg/hr", type: "number" },
+  },
 };
 
 export const HematologicDT = {
@@ -160,16 +178,16 @@ export const HematologicDT = {
   measurements: {
     INR: { name: "INR", unit: "", type: "number" },
     Platelet: { name: "Platelet", unit: "k/mcL", type: "number" },
-  }
-}
+  },
+};
 
 export const HepaticDT = {
   name: "Hepatic",
   measurements: {
     Bilirubin: { name: "Bilirubin", unit: "mg/dL", type: "number" },
     ALT: { name: "ALT", unit: "U/L", type: "number" },
-  }
-}
+  },
+};
 
 export const NeurologicDT = {
   name: "Neurologic",
@@ -212,18 +230,22 @@ export const NeurologicDT = {
         "None",
       ],
     },
-  }
-}
+  },
+};
 
 export const RenalDT = {
   name: "Renal",
-  measurements : {
+  measurements: {
     BUN: { name: "BUN", unit: "mg/dl", type: "number" },
     UrineOutput: { name: "Urine Output", unit: "mL/kg/hr", type: "number" },
     Creatinine: { name: "Creat", unit: "mg/dL", type: "number" },
-    BaselineCreatinine: { name: "Baseline Creat", unit: "mg/dL", type: "number" },
-  }
-}
+    BaselineCreatinine: {
+      name: "Baseline Creat",
+      unit: "mg/dL",
+      type: "number",
+    },
+  },
+};
 
 export const RespiratoryDT = {
   name: "Respiratory",
@@ -233,23 +255,23 @@ export const RespiratoryDT = {
     PaCO2: { name: "PaCO2", unit: "mmHg", type: "number" },
     RR: { name: "RR", unit: "", type: "number" },
     FiO2: { name: "FiO2", unit: "", type: "number" },
-  }
-}
+  },
+};
 
 export const OthersDT = {
   name: "Others",
   measurements: {
     Pain: { name: "Pain", unit: "", type: "number" },
     PEW: { name: "PEW Score", unit: "", type: "number" },
-  }
-}
+  },
+};
 
 export const ImmuneDT = {
   name: "Immune",
   measurements: {
     WBC: { name: "WBC", unit: "K/mcL", type: "number" },
-  }
-}
+  },
+};
 
 export const Others2DT = {
   name: "Not listed",
@@ -269,5 +291,5 @@ export const Others2DT = {
         "Confused/Reduced Response to Pain",
       ],
     },
-  }
-}
+  },
+};

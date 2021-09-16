@@ -46,7 +46,6 @@ const LeftPanel = () => {
       <div style={{ display: tab === 1 ? "block" : "none" }}>
         <CheckList />
       </div>
-
     </>
   );
 };

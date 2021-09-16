@@ -2,7 +2,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import { Button, Grid } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import { medicationCategories, sepsisTables } from "./MedicationTableSchema";
 

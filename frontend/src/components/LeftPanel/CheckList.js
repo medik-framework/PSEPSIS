@@ -26,17 +26,19 @@ export default function CheckList() {
   );
 
   return (
-    <div sx={{
-    flexGrow: 1,
-    width: "100%",
-  }}>
+    <div
+      sx={{
+        flexGrow: 1,
+        width: "100%",
+      }}
+    >
       <TextField
         select
         fullWidth
         value={checkListName}
         sx={{
-    marginTop: "10px",
-  }}
+          marginTop: "10px",
+        }}
         onChange={(event) => setCheckListName(event.target.value)}
       >
         {Object.keys(checkLists).map((option) => (
@@ -50,12 +52,16 @@ export default function CheckList() {
           return (
             <Grid item xs={12}>
               <Checkbox />
-              <Button sx={{
-    padding:2,
-    textAlign: "center",
-    color: "white",
-    height: "30px",
-  }}>{value}</Button>
+              <Button
+                sx={{
+                  padding: 2,
+                  textAlign: "center",
+                  color: "white",
+                  height: "30px",
+                }}
+              >
+                {value}
+              </Button>
             </Grid>
           );
         })}

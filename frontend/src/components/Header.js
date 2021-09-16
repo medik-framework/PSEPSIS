@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { AppBar, Toolbar, Button } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles({
   blinkBg: {
