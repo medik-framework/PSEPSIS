@@ -4,7 +4,7 @@ import "./App.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
-import { ThemeProvider, CssBaseline } from "@material-ui/core";
+import { ThemeProvider, StyledEngineProvider, CssBaseline } from "@mui/material";
 import theme from "./theme";
 
 import PsepsisTablet from "./PsepsisTablet";
@@ -12,10 +12,12 @@ import PsepsisTablet from "./PsepsisTablet";
 function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <PsepsisTablet />
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <PsepsisTablet />
+        </ThemeProvider>
+      </StyledEngineProvider>
     </Provider>
   );
 }

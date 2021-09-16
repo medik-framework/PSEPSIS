@@ -1,6 +1,6 @@
 import { useState } from "react";
 import clsx from "clsx";
-import { Tabs, Tab } from "@material-ui/core";
+import { Tabs, Tab } from "@mui/material";
 
 import Icon from "@mdi/react";
 import {

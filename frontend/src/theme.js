@@ -1,6 +1,6 @@
-import { createTheme } from "@material-ui/core";
+import { createTheme, adaptV4Theme } from "@mui/material";
 
-const theme = createTheme({
+const theme = createTheme(adaptV4Theme({
   typography: {
     button: {
       textTransform: "none",
@@ -35,6 +35,6 @@ const theme = createTheme({
       },
     },
   },
-});
+}));
 
 export default theme;
