@@ -2,8 +2,6 @@ import { useState } from "react";
 
 import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
-
 const checkLists = {
   "Culture Checklist": [
     "Urine culture obtained",
@@ -22,35 +20,23 @@ const checkLists = {
   ],
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "100%",
-  },
-  select: {
-    marginTop: "10px",
-  },
-  button: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-    height: "30px",
-  },
-}));
-
 export default function CheckList() {
-  const classes = useStyles();
   const [checkListName, setCheckListName] = useState(
     Object.keys(checkLists)[0]
   );
 
   return (
-    <div className={classes.root}>
+    <div sx={{
+    flexGrow: 1,
+    width: "100%",
+  }}>
       <TextField
         select
         fullWidth
         value={checkListName}
-        className={classes.select}
+        sx={{
+    marginTop: "10px",
+  }}
         onChange={(event) => setCheckListName(event.target.value)}
       >
         {Object.keys(checkLists).map((option) => (
@@ -64,7 +50,12 @@ export default function CheckList() {
           return (
             <Grid item xs={12}>
               <Checkbox />
-              <Button className={classes.button}>{value}</Button>
+              <Button sx={{
+    padding:2,
+    textAlign: "center",
+    color: "white",
+    height: "30px",
+  }}>{value}</Button>
             </Grid>
           );
         })}

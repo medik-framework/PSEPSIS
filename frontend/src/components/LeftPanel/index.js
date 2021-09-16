@@ -11,7 +11,6 @@ import {
 
 import Measurement from "./Measurement";
 import CheckList from "./CheckList";
-import Info from "./Info";
 
 const LeftPanel = () => {
   const [tab, setTab] = useState(0);
@@ -48,9 +47,6 @@ const LeftPanel = () => {
         <CheckList />
       </div>
 
-      <div style={{ display: tab === 2 ? "block" : "none" }}>
-        <Info />
-      </div>
     </>
   );
 };
