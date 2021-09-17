@@ -1,7 +1,3 @@
-export const organTabs = [
-
-]
-
 export const organDTs = [
   CardiovascularDT,
   HematologicDT,
