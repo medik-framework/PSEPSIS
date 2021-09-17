@@ -2,36 +2,9 @@ import { useState } from "react";
 import clsx from "clsx";
 import { Button, Grid } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
-
 import { sepsisCategories, sepsisTables } from "./VitalTableSchema";
 
-const useStyles = makeStyles({
-  buttonGroup: {
-    marginTop: "5px",
-    marginBottom: "5px",
-  },
-  button: {
-    textAlign: "center",
-    height: "40px",
-    width: "100%",
-  },
-  buttonSelected: {
-    backgroundColor: "darkgray",
-    "&:hover": {
-      backgroundColor: "darkgray",
-    },
-  },
-  tableCell: {
-    height: "100px",
-    borderStyle: "solid",
-    borderWidth: "1px",
-    borderColor: "black",
-  },
-});
-
 export default function CenteredGrid() {
-  const classes = useStyles();
   const [selectedCategory, setSelectedCategory] = useState(sepsisCategories[0]);
 
   return (
@@ -49,15 +22,24 @@ export default function CenteredGrid() {
         })}
       </Grid> */}
 
-      <Grid container spacing={0} className={classes.buttonGroup}>
+      <Grid
+        container
+        spacing={0}
+        sx={{
+          marginTop: "5px",
+          marginBottom: "5px",
+        }}
+      >
         {sepsisCategories.map((value) => {
           return (
             <Grid item xs={3}>
               <Button
                 variant="contained"
-                className={clsx(classes.button, {
-                  [classes.buttonSelected]: selectedCategory === value,
-                })}
+                sx={{
+                  textAlign: "center",
+                  height: "40px",
+                  width: "100%",
+                }}
                 onClick={() => setSelectedCategory(value)}
               >
                 {value}
@@ -70,7 +52,16 @@ export default function CenteredGrid() {
       <Grid container spacing={0}>
         {sepsisTables[selectedCategory].map((value) => {
           return (
-            <Grid item xs={6} className={classes.tableCell}>
+            <Grid
+              item
+              xs={6}
+              sx={{
+                height: "100px",
+                borderStyle: "solid",
+                borderWidth: "1px",
+                borderColor: "black",
+              }}
+            >
               <div>
                 {value.name} {value.unit === "" ? null : `(${value.unit})`}
               </div>

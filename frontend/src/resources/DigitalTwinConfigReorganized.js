@@ -11,7 +11,7 @@ export const organDTs = [
 export const assessments = {
   SIRS: {
     name: "SIRS Score",
-    measurements : [
+    measurements: [
       CardiovascularDT.HR,
       ImmuneDT.WBC,
       CardiovascularDT["BP Sys"],
@@ -38,7 +38,7 @@ export const assessments = {
       Others2DT["Skin Color"],
       Others2DT.Behavior,
     ],
-    value: 0
+    value: 0,
   },
   "Septic Shock": {
     name: "Septic Shock Score",
@@ -53,9 +53,9 @@ export const assessments = {
       CardiovascularDT.Lactate,
       CardiovascularDT.Temp,
       CardiovascularDT.CoreTemp,
-      CardiovascularDT["Urine Output"]
+      CardiovascularDT["Urine Output"],
     ],
-    value: 0
+    value: 0,
   },
 };
 
@@ -274,16 +274,16 @@ export const HematologicDT = {
   measurements: {
     INR: { name: "INR", unit: "", type: "number" },
     Platelet: { name: "Platelet", unit: "k/mcL", type: "number" },
-  }
-}
+  },
+};
 
 export const HepaticDT = {
   name: "Hepatic",
   measurements: {
     Bilirubin: { name: "Bilirubin", unit: "mg/dL", type: "number" },
     ALT: { name: "ALT", unit: "U/L", type: "number" },
-  }
-}
+  },
+};
 
 export const NeurologicDT = {
   name: "Neurologic",
@@ -326,16 +326,16 @@ export const NeurologicDT = {
         "None",
       ],
     },
-  }
-}
+  },
+};
 
 export const OthersDT = {
   name: "Others",
   measurements: {
     Pain: { name: "Pain", unit: "", type: "number" },
     PEW: { name: "PEW Score", unit: "", type: "number" },
-  }
-}
+  },
+};
 
 export const ImmuneDT = {
   name: "Immune",
@@ -393,5 +393,5 @@ export const Others2DT = {
         "Confused/Reduced Response to Pain",
       ],
     },
-  }
-}
+  },
+};
