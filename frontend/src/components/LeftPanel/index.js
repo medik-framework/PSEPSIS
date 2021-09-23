@@ -10,6 +10,7 @@ import {
 } from "@mdi/js";
 
 import Assessment from "./Assessment";
+import DigitalTwin from "./DigitalTwin";
 import Measurement from "./Measurement";
 import CheckList from "./CheckList";
 

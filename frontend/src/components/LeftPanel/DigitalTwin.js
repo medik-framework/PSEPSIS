@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button, Grid, Typography, Box } from "@mui/material";
 
-import { assessments, CardiovascularDT } from "../../resources/DigitalTwinConfigReorganized";
+import { organDTs } from "../../resources/DigitalTwinConfigReorganized";
 
-const AssessmentSelection = ({ selectedAssessment, setSelectedAssessment }) => {
+const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
   return (
     <Grid container>
-      {Object.keys(assessments).map((value) => {
+      {organDTs.map((value) => {
         return (
           <Grid item xs={4} key={value}>
             <Button
@@ -15,9 +15,9 @@ const AssessmentSelection = ({ selectedAssessment, setSelectedAssessment }) => {
                 height: "50px",
                 width: "100%",
               }}
-              onClick={() => setSelectedAssessment(value)}
+              onClick={() => setSelectedDT(value.name)}
             >
-              {value}
+              {value.name}
             </Button>
           </Grid>
         );
@@ -26,7 +26,7 @@ const AssessmentSelection = ({ selectedAssessment, setSelectedAssessment }) => {
   );
 };
 
-const AssessmentForm = ({ selectedAssessment }) => {
+const DigitalTwinForm = ({ selectedDT }) => {
   return (
     <>
       <Box sx={{ border: "1px solid black", width: "100%" }}>
@@ -35,7 +35,7 @@ const AssessmentForm = ({ selectedAssessment }) => {
         </Typography>
       </Box>
       <Grid container>
-        {assessments["Septic Shock"].measurements.map((value) => {
+        {organDTs[0].map((value) => {
           return (
             <Grid
               item
@@ -57,20 +57,19 @@ const AssessmentForm = ({ selectedAssessment }) => {
   );
 };
 
-const Assessment = () => {
-  const [selectedAssessment, setSelectedAssessment] = useState(
-    Object.keys(assessments)[0]
+const DigitalTwin = () => {
+  const [selectedDT, setSelectedDT] = useState(
+    organDTs[0].name
   );
-  console.log(assessments)
   return (
     <>
       <Typography variant="h5" gutterBottom component="div">
-        Assessments
+        Digital Twins
       </Typography>
-      <AssessmentSelection {...{ selectedAssessment, setSelectedAssessment }} />
-      <AssessmentForm {...{ selectedAssessment }} />
+      <DigitalTwinSelection {...{ selectedDT, setSelectedDT }} />
+      <DigitalTwinForm {...{ selectedDT }} />
     </>
   );
 };
 
-export default Assessment;
+export default DigitalTwin;
