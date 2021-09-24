@@ -253,6 +253,30 @@ export const RenalDT = {
       minValue="0", maxValue="100", decimal="0",
       getThres: () => { return {low:22, high:28} }
     },
+    Sodium: { 
+      name: "Sodium", fulltext: "Sodium",
+      unit: "mEq/L", type: "number",
+      minValue="0", maxValue="300", decimal="0",
+      getThres: () => { return {low:135, high:145} }
+    },
+    Chloride: { 
+      name: "Chloride", fulltext: "Chloride",
+      unit: "mEq/L", type: "number",
+      minValue="0", maxValue="300", decimal="0",
+      getThres: () => { return {low:95, high:105} }
+    },
+    Potassium: { 
+      name: "Potassium", fulltext: "Potassium",
+      unit: "mEq/L", type: "number",
+      minValue="0", maxValue="10", decimal="1",
+      getThres: () => { return {low:3.7, high:5.2} }
+    },
+    Magnesium: { 
+      name: "Magnesium", fulltext: "Magnesium",
+      unit: "mEq/L", type: "number",
+      minValue="0", maxValue="14", decimal="1",
+      getThres: () => { return {low:7.4, high:8.0} }
+    },
   },
   assessments: {
     RenalSOFA: {
@@ -410,6 +434,5 @@ export const OthersDT = {
   name: "Others",
   measurements: {
     Pain: { name: "Pain", unit: "", type: "number" },
-    
   },
 };
