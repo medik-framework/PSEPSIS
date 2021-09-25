@@ -18,9 +18,11 @@ export const Cardiovascular = {
           }
     },
     PulseQuality: {
-      name: "Pulse Quality", fulltext: "Pulse Quality", 
-      unit: "", type: "choices",
-      options: {"Bounding":0, "Normal":2, "Thready":0}
+      name: "Pulse Quality",
+      fulltext: "Pulse Quality",
+      unit: "",
+      type: "choices",
+      options: { Bounding: 0, Normal: 2, Thready: 0 },
     },
     BP: { name: "BP", fulltext: "Blood Pressure", type: "group",
           content: {
@@ -75,9 +77,11 @@ export const Cardiovascular = {
           }
     },
     CapillaryRefill: {
-      name: "Capillary Refill", fulltext: "Capillary Refill",
-      unit: "sec", type: "choices",
-      options: {"Flash" :0, "1":2, "2":2, "3":0, "4":0, "5+":0},
+      name: "Capillary Refill",
+      fulltext: "Capillary Refill",
+      unit: "sec",
+      type: "choices",
+      options: { Flash: 0, 1: 2, 2: 2, 3: 0, 4: 0, "5+": 0 },
     },
     Lactate: { 
       name: "Lactate", fulltext: "Blood Lactate",
@@ -186,14 +190,14 @@ export const Respiratory = {
       minValue: 0, maxValue: 100, decimal: 0,
       getThres: (AgeObject) => {
         const AgeGroupVitals = AgeObject.AgeGroupVitals;
-        if (typeof AgeGroupVitals == 'undefined' || AgeGroupVitals == null)
-          return {low: 12,  high: 20};
-        if ([1,2].includes(AgeGroupVitals))     return {low: 12,  high: 50};
-        if (AgeGroupVitals === 3)               return {low: 12,  high: 45};
-        if (AgeGroupVitals === 4)               return {low: 12,  high: 28};
-        if (AgeGroupVitals === 5)               return {low: 12,  high: 25};
-        else return {low: 12,  high: 20};
-     }
+        if (typeof AgeGroupVitals == "undefined" || AgeGroupVitals == null)
+          return { low: 12, high: 20 };
+        if ([1, 2].includes(AgeGroupVitals)) return { low: 12, high: 50 };
+        if (AgeGroupVitals === 3) return { low: 12, high: 45 };
+        if (AgeGroupVitals === 4) return { low: 12, high: 28 };
+        if (AgeGroupVitals === 5) return { low: 12, high: 25 };
+        else return { low: 12, high: 20 };
+      },
     },
     SpO2: { 
       name: "SpO2", fulltext: "Peripheral Capillary Oxygen Saturation", 
@@ -537,8 +541,8 @@ export const Immune = {
       minValue: 25, maxValue: 45, decimal: 0,
       getThres: () => { return {low:36, high:38} }
     },
-  }
-}
+  },
+};
 
 export const Others = {
   name: "Others",

@@ -9,6 +9,8 @@ import {
   mdiInformation,
 } from "@mdi/js";
 
+import Assessment from "./Assessment";
+import DigitalTwin from "./DigitalTwin";
 import Measurement from "./Measurement";
 import CheckList from "./CheckList";
 
@@ -40,7 +42,7 @@ const LeftPanel = () => {
       </Tabs> */}
 
       <div style={{ display: tab === 0 ? "block" : "none" }}>
-        <Measurement />
+        <Assessment />
       </div>
 
       <div style={{ display: tab === 1 ? "block" : "none" }}>
