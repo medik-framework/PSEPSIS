@@ -45,12 +45,33 @@ export const PatientBasic = {
             AgeGroupVitals: getVitalsAgeGroup(ageInDays),
             AgeGroupShock:  getShockAgeGroup(ageInDays),
             AgeInYears:     ageInYears,
+            AgeInDays:      ageInDays
           };
          }
   },
   Weight: { name: "Weight", unit: "Kg", type: "number" },
   Height: { name: "Height", unit: "m", type: "number" },
   Gender: { name: "Gender", unit: "", type: "choices", options: {"Female":0, "Male":1} },
-  Chronic: {},
-  Medication: {}
+  HighRisk: {
+    name: "High Risk Conditions", unit: "", type: "choices", 
+    options: {
+      "Splenectomy/Asplenia": 1, 
+      "Sickle Cell Disease":1,
+      "PICC/Central Venous Catheter":1,
+      "CSF Shunt":1,
+      "Tracheostomy":1,
+      "Indwelling Urinary Catheter":1,
+      "Cerebral Palsy":1,
+      "Developmental Delay/Mental Retardation":1,
+      "Cancer":1,
+      "Immunosuppression":1,
+      "Petechial or Purpuric Rash":1,
+      "Obvious Source of Infection":1,
+      "Congenital Heart Disease":1,
+      "Large Surgical Incisions/ Serious Injury":1,
+    }
+  },
+  Comorbidity: [],
+  Chronic: [],
+  Medication: []
 }
