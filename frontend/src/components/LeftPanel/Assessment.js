@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Grid, Typography, Box } from "@mui/material";
 
-import { assessments, CardiovascularDT } from "../../resources/DigitalTwinConfigReorganized";
+import { assessments } from "../../resources/MedicalAssessmentConfig";
 
 const AssessmentSelection = ({ selectedAssessment, setSelectedAssessment }) => {
   return (

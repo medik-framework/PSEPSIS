@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button, Grid, Typography, Box } from "@mui/material";
 
-import { organDTs } from "../../resources/DigitalTwinConfigReorganized";
+import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
 
 const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
   return (
     <Grid container>
-      {organDTs.map((value) => {
+      {organsDT.map((value) => {
         return (
           <Grid item xs={4} key={value}>
             <Button
@@ -35,7 +35,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
         </Typography>
       </Box>
       <Grid container>
-        {organDTs[0].map((value) => {
+        {organsDT[0].map((value) => {
           return (
             <Grid
               item
@@ -59,7 +59,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
 
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(
-    organDTs[0].name
+    organsDT[0].name
   );
   return (
     <>

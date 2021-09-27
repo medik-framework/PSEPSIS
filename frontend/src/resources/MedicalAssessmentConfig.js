@@ -1,3 +1,10 @@
+import { 
+  Cardiovascular as CardiovascularDT,
+  Immune as ImmuneDT,
+  Respiratory as RespiratoryDT,
+  Others as Others2DT
+} from "./DigitalTwinConfigReorganized"
+
 export const assessments = {
     SIRS: {
       name: "SIRS Score",

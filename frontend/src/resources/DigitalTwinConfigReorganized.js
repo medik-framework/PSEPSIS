@@ -220,7 +220,7 @@ export const Respiratory = {
     FiO2: { 
       name: "FiO2", fulltext: "Fraction of Inspired Oxygen",
       unit: "", type: "number",
-      minValue: 0, maxValue="1", decimal: 2
+      minValue: 0, maxValue: 1, decimal: 2
     },
     etCO2: {
       name: "etCO2", fulltext: "End-Tidal Carbon Dioxide",
@@ -234,7 +234,7 @@ export const Respiratory = {
       name: "Resp SOFA", fulltext: "Respiratory SOFA",
       type: "number", minValue: 0, maxValue: 4, decimal: 0,
       getThres: () => { return {low:0, high:2} },
-      formula: (_, organs, _) => {
+      formula: (_, organs, _2) => {
         let ratio = organs.Respiratory.measurements.PaO2.value/organs.Respiratory.measurements.FiO2.value;
         if (ratio >= 400) return 0;
         if (300 < ratio <  400) return 1;
@@ -353,7 +353,7 @@ export const Renal = {
       name: "Renal SOFA", fulltext: "Renal SOFA",
       type: "number", minValue: 0, maxValue: 4, decimal: 0,
       getThres: () => { return {low:0, high:2} },
-      formula: (_, organs, _) => {
+      formula: (_, organs, _2) => {
           if (organs.Renal.measurements.Creatinine.value <= 1.2) return 0;
           if (1.2 <  organs.Renal.measurements.Creatinine.value < 2.0) return 1;
           if (2.0 <= organs.Renal.measurements.Creatinine.value < 3.5) return 2;
@@ -401,7 +401,7 @@ export const Hematologic = {
     HematologicDysfunction: {
       name: "Hematologic Dysfunction Score", fulltext: "Hematologic Dysfunction Score",
       type: "number", minValue: 0, maxValue: 1, decimal: 0,
-      formula: (_, organs, _) => {
+      formula: (_, organs, _2) => {
         const plateletValue = organs.Hematologic.Platelet.value;
         if (plateletValue < 100) return 1;
         const plateletHistHigh = Math.max(...Object.values(organs.Hematologic.Platelet.history));
