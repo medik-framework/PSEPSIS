@@ -35,7 +35,7 @@ const AssessmentForm = ({ selectedAssessment }) => {
         </Typography>
       </Box>
       <Grid container>
-        {assessments["Septic Shock"].measurements.map((value) => {
+        {assessments[selectedAssessment].measurements.map((value) => {
           return (
             <Grid
               item
