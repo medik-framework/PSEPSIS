@@ -1,8 +1,8 @@
 const initialState = {
   Age: {},
   Weight: NaN,
-  Height: NaN,
-  Gender: NaN,
+  Height: Nan,
+  Gender: -1,
   HighRisk: 0,
   Comorbidity: 0,
   Chronic: 0,
