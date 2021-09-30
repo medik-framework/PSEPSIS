@@ -3,7 +3,7 @@ import simple_websocket
 import subprocess
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 data_copy = ""
 
