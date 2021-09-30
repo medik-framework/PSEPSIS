@@ -9,6 +9,7 @@ data_copy = ""
 
 @app.route("/k_comm", websocket=True)
 def k_comm():
+    global data_copy
     ws = simple_websocket.Server(request.environ)
     # p = subprocess.Popen(['krun'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     try:
@@ -24,6 +25,15 @@ def k_comm():
 
 @app.route("/")
 def index():
+    return data_copy
+
+@app.route("/2")
+def index2():
+    return "testdata"
+
+@app.route("/3")
+def index3():
+    global data_copy
     return data_copy
 
 if __name__ == "__main__":
