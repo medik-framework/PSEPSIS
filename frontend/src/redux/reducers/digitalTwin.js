@@ -11,6 +11,11 @@ const initialState = organsDT.map((DT) => {
 })
 
 const patientBasicReducer = (state = initialState, action) => {
+
+  if (action.type === "UPDATE_MEASUREMENT") {
+    state[0].HR.value = action.HR
+  }
+  
   return state;
 };
 

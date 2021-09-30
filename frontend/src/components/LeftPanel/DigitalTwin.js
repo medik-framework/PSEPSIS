@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Grid, Typography, Box } from "@mui/material";
-
+import { useSelector } from "react-redux";
 import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
 import InputDialog from "./InputDialog"
 
@@ -31,6 +31,9 @@ const DigitalTwinForm = ({ selectedDT }) => {
   const measurements = organsDT[selectedDT].measurements
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedMeasurement, setSelectedMeasurement] = useState(measurements[Object.keys(measurements)[0]])
+  const digitalTwinValue = useSelector((state) => state.DigitalTwin)
+  
+  console.log(digitalTwinValue)
   return (
     <>
       <InputDialog open={dialogOpen} {...{setDialogOpen, selectedMeasurement}}/>
@@ -50,8 +53,12 @@ const DigitalTwinForm = ({ selectedDT }) => {
               }}
             >
               <div>
+                
                 {measurements[key]?.name} {measurements[key]?.unit ? `(${measurements[key]?.unit})` : null}
               </div>
+              <div>
+                {digitalTwinValue[selectedDT][key]?.value}
+                </div>
               <div>Last updated time:</div>
             </Grid>
           );
