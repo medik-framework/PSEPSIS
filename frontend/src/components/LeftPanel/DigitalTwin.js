@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Grid, Typography, Box } from "@mui/material";
 
 import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
+import InputDialog from "./InputDialog"
 
 const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
   return (
@@ -28,8 +29,11 @@ const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
 
 const DigitalTwinForm = ({ selectedDT }) => {
   const measurements = organsDT[selectedDT].measurements
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedMeasurement, setSelectedMeasurement] = useState(measurements[Object.keys(measurements)[0]])
   return (
     <>
+      <InputDialog open={dialogOpen} setDialogOpen={setDialogOpen} />
       <Grid container>
         {Object.keys(measurements).map((key) => {
           return (
@@ -39,6 +43,10 @@ const DigitalTwinForm = ({ selectedDT }) => {
               sx={{
                 height: "100px",
                 boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset"
+              }}
+              onClick={() => {
+                setDialogOpen(true)
+
               }}
             >
               <div>
