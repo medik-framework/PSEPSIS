@@ -5,6 +5,8 @@ import os
 
 app = Flask(__name__)
 
+data_copy = ""
+
 @app.route("/k_comm", websocket=True)
 def k_comm():
     ws = simple_websocket.Server(request.environ)
@@ -13,6 +15,7 @@ def k_comm():
         while True:
             data=ws.receive()
             print(data)
+            data_copy = data
             # p.stdin.write(data)
             ws.send(data)
     except simple_websocket.ConnectionClosed:
@@ -21,7 +24,7 @@ def k_comm():
 
 @app.route("/")
 def index():
-    return ""
+    return data_copy
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
