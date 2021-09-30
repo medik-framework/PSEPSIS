@@ -7,7 +7,7 @@ const PsepsisTablet = () => {
   return (
     <div>
       <Grid container>
-        <PreScreen />
+        {/*<PreScreen />*/}
         <Grid
           item
           sx={{

@@ -1,13 +1,17 @@
-const initialState = {
-  Age: {},
-  Weight: NaN,
-  Height: Nan,
-  Gender: -1,
-  HighRisk: 0,
-  Comorbidity: 0,
-  Chronic: 0,
-  Medication: 0,
-};
+import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
+
+const initialState = organsDT.map((DT) => {
+   const measurements = DT.measurements
+   return Object.keys(measurements).reduce((prev, key) => {
+    if (measurements[key].type === "number") {
+      prev[key] = {value: NaN, history: []}
+    }
+    return prev
+   }, {})
+
+})
+
+console.log(initialState)
 
 const patientBasicReducer = (state = initialState, action) => {
   return state;

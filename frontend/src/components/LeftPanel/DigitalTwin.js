@@ -6,7 +6,7 @@ import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
 const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
   return (
     <Grid container>
-      {organsDT.map((value) => {
+      {organsDT.map((value, index) => {
         return (
           <Grid item xs={4} key={value}>
             <Button
@@ -15,7 +15,7 @@ const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
                 height: "50px",
                 width: "100%",
               }}
-              onClick={() => setSelectedDT(value.name)}
+              onClick={() => setSelectedDT(index)}
             >
               {value.name}
             </Button>
@@ -27,26 +27,56 @@ const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
 };
 
 const DigitalTwinForm = ({ selectedDT }) => {
+  const measurements = organsDT[selectedDT].measurements
   return (
     <>
-      <Box sx={{ border: "1px solid black", width: "100%" }}>
-        <Typography align="center" variant="h6" gutterBottom component="div">
-          Current Score: 0
-        </Typography>
-      </Box>
       <Grid container>
-        {organsDT[0].map((value) => {
+        {Object.keys(measurements).map((key) => {
           return (
             <Grid
               item
               xs={6}
               sx={{
                 height: "100px",
-                border: "1px solid black"
+                boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset"
               }}
             >
               <div>
-                {value?.name} {value?.unit === "" ? null : `(${value?.unit})`}
+                {measurements[key]?.name} {measurements[key]?.unit ? `(${measurements[key]?.unit})` : null}
+              </div>
+              <div>Last updated time:</div>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </>
+  );
+};
+
+
+const AssessmentForm = ({ selectedDT }) => {
+
+  const assessments = organsDT[selectedDT].assessments
+  return (
+    <>
+      <Box sx={{ boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset", width: "100%" }}>
+        <Typography align="center" variant="h6" component="div">
+          Current Score: 0
+        </Typography>
+      </Box>
+      <Grid container>
+        {Object.keys(assessments).map((key) => {
+          return (
+            <Grid
+              item
+              xs={6}
+              sx={{
+                height: "100px",
+                boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset"
+              }}
+            >
+              <div>
+                {assessments[key]?.name} {assessments[key]?.unit === "" ? null : `(${assessments[key]?.unit})`}
               </div>
               <div>Last updated time:</div>
             </Grid>
@@ -59,7 +89,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
 
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(
-    organsDT[0].name
+    0
   );
   return (
     <>
@@ -68,6 +98,10 @@ const DigitalTwin = () => {
       </Typography>
       <DigitalTwinSelection {...{ selectedDT, setSelectedDT }} />
       <DigitalTwinForm {...{ selectedDT }} />
+      <Typography variant="h5" gutterBottom component="div">
+        Assessments
+      </Typography>
+      <AssessmentForm {...{ selectedDT }} />
     </>
   );
 };

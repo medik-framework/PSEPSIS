@@ -42,7 +42,7 @@ const LeftPanel = () => {
       </Tabs> */}
 
       <div style={{ display: tab === 0 ? "block" : "none" }}>
-        <Assessment />
+        <DigitalTwin />
       </div>
 
       <div style={{ display: tab === 1 ? "block" : "none" }}>
