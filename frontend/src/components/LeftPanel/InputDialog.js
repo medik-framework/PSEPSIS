@@ -10,40 +10,45 @@ import {Grid} from "@mui/material"
 
 import { PatientBasic } from '../../resources/PatientConfig';
 
-export default function FormDialog({open, setDialogOpen}) {
+import { WebSocketContext } from '../../WebSocketContext';
+
+export default function FormDialog({open, setDialogOpen, selectedMeasurement}) {
+
+  const ws = React.useContext(WebSocketContext)
+
+  let formContent = null
+
+  const [value, setValue] = React.useState("");
+  
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    setDialogOpen(false)
+    ws.sendMessage({type: "UPDATE_MEASUREMENT", [selectedMeasurement.name]: value})
+  }
+
+  if (selectedMeasurement.type === "number") {
+    formContent = (
+      <TextField onChange={handleChange} />
+    )
+  }
 
   return (
     <div>
       <Dialog open={open}>
-        <DialogTitle>Prescreen patient conditions</DialogTitle>
+        <DialogTitle>Please enter measurement</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter patient basic information
+            {selectedMeasurement.name}
           </DialogContentText>
           <Grid container>
-            {Object.keys(PatientBasic).slice(0,4).map((key) => {
-              return (
-
-                <Grid
-                item
-                xs={6}
-                sx={{
-                  height: "100px",
-                  boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset"
-                }}
-              >
-                <div>
-                  {PatientBasic[key].name}
-                </div>
-              </Grid>
-              )
-
-            })}
-
-      </Grid>
+            {formContent}
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Submit</Button>
+          <Button onClick={handleSubmit}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>
