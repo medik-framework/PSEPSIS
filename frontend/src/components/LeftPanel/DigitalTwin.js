@@ -57,8 +57,14 @@ const DigitalTwinForm = ({ selectedDT }) => {
 const AssessmentForm = ({ selectedDT }) => {
 
   const assessments = organsDT[selectedDT].assessments
+  if (!assessments) {
+    return null
+  }
   return (
     <>
+      <Typography variant="h5" gutterBottom component="div">
+        Assessments
+      </Typography>
       <Box sx={{ boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset", width: "100%" }}>
         <Typography align="center" variant="h6" component="div">
           Current Score: 0
@@ -98,9 +104,6 @@ const DigitalTwin = () => {
       </Typography>
       <DigitalTwinSelection {...{ selectedDT, setSelectedDT }} />
       <DigitalTwinForm {...{ selectedDT }} />
-      <Typography variant="h5" gutterBottom component="div">
-        Assessments
-      </Typography>
       <AssessmentForm {...{ selectedDT }} />
     </>
   );

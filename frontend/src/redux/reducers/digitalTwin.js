@@ -8,10 +8,7 @@ const initialState = organsDT.map((DT) => {
     }
     return prev
    }, {})
-
 })
-
-console.log(initialState)
 
 const patientBasicReducer = (state = initialState, action) => {
   return state;
