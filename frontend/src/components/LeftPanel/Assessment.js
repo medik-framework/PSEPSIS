@@ -29,7 +29,13 @@ const AssessmentSelection = ({ selectedAssessment, setSelectedAssessment }) => {
 const AssessmentForm = ({ selectedAssessment }) => {
   return (
     <>
-      <Box sx={{ boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset", width: "100%" }}>
+      <Box
+        sx={{
+          boxShadow:
+            "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
+          width: "100%",
+        }}
+      >
         <Typography align="center" variant="h6" component="div">
           Current Score: 0
         </Typography>
@@ -42,7 +48,8 @@ const AssessmentForm = ({ selectedAssessment }) => {
               xs={6}
               sx={{
                 height: "100px",
-                boxShadow: "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset"
+                boxShadow:
+                  "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
               }}
             >
               <div>
@@ -61,7 +68,7 @@ const Assessment = () => {
   const [selectedAssessment, setSelectedAssessment] = useState(
     Object.keys(assessments)[0]
   );
-  console.log(assessments)
+  console.log(assessments);
   return (
     <>
       <Typography variant="h5" gutterBottom component="div">
