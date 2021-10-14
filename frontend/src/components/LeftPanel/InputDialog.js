@@ -10,7 +10,7 @@ import { Grid } from "@mui/material";
 
 import { PatientBasic } from "../../resources/PatientConfig";
 
-import { WebSocketContext } from "../../WebSocketContext";
+import WebSocketContext from "../../WebSocketContext";
 
 export default function FormDialog({
   open,
