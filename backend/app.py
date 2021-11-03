@@ -16,7 +16,6 @@ def k_comm():
     try:
         while True:
             data=ws.receive()
-            print(data)
             data_copy = data
             # p.stdin.write(data)
             ws.send(data)
@@ -30,8 +29,8 @@ def getValues(params):
     if params == []:
         error = { "code" : -32600, "message" : "*" }
     for param in params:
-        if param in data_copy2.keys():
-            result[param] = data_copy2.get(param)
+        if param in data_copy.keys():
+            result[param] = data_copy.get(param)
         else:
             error = { "code" : -32001, "message" : "Requested reading absent" }
             
