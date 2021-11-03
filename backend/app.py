@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import simple_websocket
 import subprocess
+import json
 import os
 
 app = Flask(__name__, static_folder="static")
@@ -16,7 +17,7 @@ def k_comm():
     try:
         while True:
             data=ws.receive()
-            data_copy = data
+            data_copy = json.loads(data)
             # p.stdin.write(data)
             ws.send(data)
     except simple_websocket.ConnectionClosed:
