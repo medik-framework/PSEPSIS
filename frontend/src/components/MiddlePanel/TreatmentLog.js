@@ -31,9 +31,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10px",
   },
   button: {
-    padding: theme.spacing(2),
     textAlign: "center",
-    color: theme.palette.text.secondary,
     height: "30px",
   },
 }));

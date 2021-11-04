@@ -12,10 +12,8 @@ const MiddlePanel = () => {
       </div>
       <div style={{ height: "40vh", display: "flex" }}>
         <div style={{ width: "25vw" }}>
-          <PendingOrders />
         </div>
         <div style={{ width: "25vw" }}>
-          <TreatmentLog />
         </div>
       </div>
     </>

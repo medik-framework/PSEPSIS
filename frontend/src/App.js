@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import theme from "./theme";
 
-import {WebSocketProvider} from "./WebSocketContext"
+import { WebSocketProvider } from "./WebSocketContext"
 import PsepsisTablet from "./PsepsisTablet";
 
 function App() {
