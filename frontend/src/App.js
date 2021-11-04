@@ -16,20 +16,24 @@ import {
 } from "@mui/material";
 import theme from "./theme";
 
+<<<<<<< HEAD
 import { WebSocketProvider } from "./WebSocketContext"
+=======
+import WebSocketContextProvider from "./WebSocketContextProvider";
+>>>>>>> origin/statemachine
 import PsepsisTablet from "./PsepsisTablet";
 
 function App() {
   return (
     <Provider store={store}>
-      <WebSocketProvider>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <PsepsisTablet />
-        </ThemeProvider>
-      </StyledEngineProvider>
-      </WebSocketProvider>
+      <WebSocketContextProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <PsepsisTablet />
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </WebSocketContextProvider>
     </Provider>
   );
 }

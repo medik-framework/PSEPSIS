@@ -1,38 +1,42 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import {Grid} from "@mui/material"
+import * as React from "react";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Grid } from "@mui/material";
 
-import { PatientBasic } from '../../resources/PatientConfig';
+import { PatientBasic } from "../../resources/PatientConfig";
 
-import { WebSocketContext } from '../../WebSocketContext';
+import WebSocketContext from "../../WebSocketContext";
 
-export default function FormDialog({open, setDialogOpen, selectedMeasurement}) {
+export default function FormDialog({
+  open,
+  setDialogOpen,
+  selectedMeasurement,
+}) {
+  const ws = React.useContext(WebSocketContext);
 
-  const ws = React.useContext(WebSocketContext)
-
-  let formContent = null
+  let formContent = null;
 
   const [value, setValue] = React.useState("");
-  
+
   const handleChange = (event) => {
     setValue(event.target.value);
   };
 
   const handleSubmit = () => {
-    setDialogOpen(false)
-    ws.sendMessage({type: "UPDATE_MEASUREMENT", [selectedMeasurement.name]: value})
-  }
+    setDialogOpen(false);
+    ws.sendMessage({
+      type: "UPDATE_MEASUREMENT",
+      [selectedMeasurement.name]: value,
+    });
+  };
 
   if (selectedMeasurement.type === "number") {
-    formContent = (
-      <TextField onChange={handleChange} />
-    )
+    formContent = <TextField onChange={handleChange} />;
   }
 
   return (
@@ -40,12 +44,8 @@ export default function FormDialog({open, setDialogOpen, selectedMeasurement}) {
       <Dialog open={open}>
         <DialogTitle>Please enter measurement</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {selectedMeasurement.name}
-          </DialogContentText>
-          <Grid container>
-            {formContent}
-          </Grid>
+          <DialogContentText>{selectedMeasurement.name}</DialogContentText>
+          <Grid container>{formContent}</Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit}>Submit</Button>
