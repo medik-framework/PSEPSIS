@@ -21,12 +21,12 @@ import PsepsisTablet from "./PsepsisTablet";
 function App() {
   return (
     <Provider store={store}>
-        <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <PsepsisTablet />
-          </ThemeProvider>
-        </StyledEngineProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <PsepsisTablet />
+        </ThemeProvider>
+      </StyledEngineProvider>
     </Provider>
   );
 }

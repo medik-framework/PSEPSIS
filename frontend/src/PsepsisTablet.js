@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 
 import LeftPanel from "./components/LeftPanel/";
 import MiddlePanel from "./components/MiddlePanel/";
-import PreScreen from "./components/Prescreen"
+import PreScreen from "./components/Prescreen";
 
 const PsepsisTablet = () => {
   return (
