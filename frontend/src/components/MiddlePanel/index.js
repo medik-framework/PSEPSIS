@@ -2,17 +2,16 @@ import { useState } from "react";
 import MedicationTable from "./MedicationTable";
 import PendingOrders from "./PendingOrders";
 import TreatmentLog from "./TreatmentLog";
+import OneHourBundle from "./OneHourBundle";
 
 const MiddlePanel = () => {
   return (
     <>
-      Medication and Lab/Vital Orders
-      <div style={{ height: "40vh", overflow: "scroll" }}>
-        <MedicationTable />
-      </div>
-      <div style={{ height: "40vh", display: "flex" }}>
-        <div style={{ width: "25vw" }}></div>
-        <div style={{ width: "25vw" }}></div>
+      OSF PSepsis Bundle
+      <div style={{ height: "100%"}}>
+        <div>
+            <OneHourBundle />
+        </div>
       </div>
     </>
   );

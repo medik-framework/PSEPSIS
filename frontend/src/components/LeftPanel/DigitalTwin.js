@@ -49,7 +49,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
               item
               xs={6}
               sx={{
-                height: "100px",
+                height: "80px",
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
               }}
@@ -81,9 +81,9 @@ const AssessmentForm = ({ selectedDT }) => {
   }
   return (
     <>
-      <Typography variant="h5" gutterBottom component="div">
+      {/* <Typography variant="h5" gutterBottom component="div">
         Assessments
-      </Typography>
+      </Typography> */}
       <Box
         sx={{
           boxShadow:
@@ -100,9 +100,9 @@ const AssessmentForm = ({ selectedDT }) => {
           return (
             <Grid
               item
-              xs={6}
+              xs={12}
               sx={{
-                height: "100px",
+                height: "50px",
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
               }}
@@ -126,12 +126,12 @@ const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
   return (
     <>
-      <Typography variant="h5" gutterBottom component="div">
+      {/* <Typography variant="h5" gutterBottom component="div">
         Digital Twins
-      </Typography>
+      </Typography> */}
       <DigitalTwinSelection {...{ selectedDT, setSelectedDT }} />
-      <DigitalTwinForm {...{ selectedDT }} />
       <AssessmentForm {...{ selectedDT }} />
+      <DigitalTwinForm {...{ selectedDT }} />
     </>
   );
 };

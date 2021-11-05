@@ -2,6 +2,7 @@ import { Grid } from "@mui/material";
 
 import LeftPanel from "./components/LeftPanel/";
 import MiddlePanel from "./components/MiddlePanel/";
+import RightPanel from "./components/RightPanel"
 import PreScreen from "./components/Prescreen";
 
 const PsepsisTablet = () => {
@@ -12,7 +13,7 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "36vw",
+            width: "25vw",
             height: "100vh",
           }}
         >
@@ -21,11 +22,20 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "40vw",
+            width: "30vw",
             height: "100vh",
           }}
         >
           <MiddlePanel />
+        </Grid>
+        <Grid
+          item
+          sx={{
+            width: "30vw",
+            height: "100vh",
+          }}
+        >
+          <RightPanel />
         </Grid>
       </Grid>
     </div>

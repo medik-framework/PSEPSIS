@@ -63,14 +63,6 @@ export default function CenteredGrid() {
         <div
           style={{
             display:
-              selectedCategory === medicationCategories[0] ? "block" : "none",
-          }}
-        >
-          <OneHourBundle />
-        </div>
-        <div
-          style={{
-            display:
               selectedCategory === medicationCategories[2] ? "block" : "none",
           }}
         >
