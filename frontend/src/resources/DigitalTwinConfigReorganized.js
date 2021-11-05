@@ -452,7 +452,12 @@ export const Neurologic = {
     GCS: {
       name: "GCS", fulltext: "Glasgow Coma Score",
       unit: "", type: "number",
-      minValue: 0, maxValue: 15, decimal: 0
+      minValue: 0, maxValue: 15, decimal: 0,
+      formula: (organs) => {
+        return organs.Neurologic.measurements.GlasgowEyeResponse.value +
+               organs.Neurologic.measurements.GlasgowVerbalResponse.value +
+               organs.Neurologic.measurements.GlasgowMotorResponse;
+      }
     },
     GlasgowEyeResponse: {
       name: "Glasgow Eye Response", fulltext: "Glasgow Eye Response",
