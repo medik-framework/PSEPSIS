@@ -10,14 +10,19 @@ import { Grid } from "@mui/material";
 
 import { PatientBasic } from "../../resources/PatientConfig";
 
-import WebSocketContext from "../../WebSocketContext";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 export default function FormDialog({
   open,
   setDialogOpen,
   selectedMeasurement,
 }) {
-  const ws = React.useContext(WebSocketContext);
+
+  const {
+    sendMessage,
+    lastMessage,
+    readyState,
+  } = useWebSocket("ws://psepsis.herokuapp.com/k_comm");
 
   let formContent = null;
 
@@ -29,7 +34,7 @@ export default function FormDialog({
 
   const handleSubmit = () => {
     setDialogOpen(false);
-    ws.sendMessage({
+    sendMessage({
       type: "UPDATE_MEASUREMENT",
       [selectedMeasurement.name]: value,
     });
