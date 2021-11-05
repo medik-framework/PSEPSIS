@@ -1,5 +1,4 @@
 export const medicationCategories = [
-  "OSF One-Hour Bundle",
   "Antibiotics-all",
   "Fluid therapy",
   "Inotropes",

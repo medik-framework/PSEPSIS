@@ -6,7 +6,6 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import { medicationCategories, sepsisTables } from "./MedicationTableSchema";
 
-import OneHourBundle from "./OneHourBundle";
 import FluidTherapy from "./FluidTherapy";
 
 const useStyles = makeStyles({

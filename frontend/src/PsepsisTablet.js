@@ -1,8 +1,8 @@
 import { Grid } from "@mui/material";
 
 import LeftPanel from "./components/LeftPanel/";
-import MiddlePanel from "./components/MiddlePanel/";
-import RightPanel from "./components/RightPanel"
+import MiddlePanel from "./components/MiddlePanel";
+import RightPanel from "./components/RightPanel";
 import PreScreen from "./components/Prescreen";
 
 const PsepsisTablet = () => {
@@ -31,7 +31,7 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "30vw",
+            width: "40vw",
             height: "100vh",
           }}
         >
