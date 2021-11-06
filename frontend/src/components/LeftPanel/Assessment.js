@@ -36,9 +36,7 @@ const AssessmentForm = ({ selectedAssessment }) => {
           width: "100%",
         }}
       >
-        <Typography align="center" variant="h6" component="div">
-          Current Score: 0
-        </Typography>
+
       </Box>
       <Grid container>
         {assessments[selectedAssessment].measurements.map((value) => {

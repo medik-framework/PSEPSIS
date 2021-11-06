@@ -5,8 +5,7 @@ import TreatmentLog from "./TreatmentLog";
 
 const MiddlePanel = () => {
   return (
-    <div style={{ height: "100vh", overflow: "scroll" }}>
-      Medication
+    <div style={{ height: "100vh", overflow: "hidden" }}>
       <div>
         <MedicationTable />
       </div>

@@ -1,8 +1,8 @@
 import {
   Cardiovascular as CardiovascularDT,
   Immune as ImmuneDT,
+  Neurologic as NeurologicDT,
   Respiratory as RespiratoryDT,
-  Others as Others2DT,
 } from "./DigitalTwinConfigReorganized";
 
 export const assessments = {
@@ -32,8 +32,8 @@ export const assessments = {
       CardiovascularDT.measurements["Capillary Refill"],
       CardiovascularDT.measurements.Temp,
       CardiovascularDT.measurements.CoreTemp,
-      Others2DT.measurements["Skin Color"],
-      Others2DT.measurements.Behavior,
+      NeurologicDT.measurements["Skin Color"],
+      NeurologicDT.measurements.Behavior,
     ],
     value: 0,
   },
