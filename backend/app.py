@@ -7,19 +7,23 @@ import os
 app = Flask(__name__, static_folder="static")
 
 data_copy = ""
-data_copy2 = {"HeartRate": 72, "BPSys": 120}
+data_copy2 = None
 
 @app.route("/k_comm", websocket=True)
 def k_comm():
-    global data_copy
+    global data_copy, data_copy2
     ws = simple_websocket.Server(request.environ)
     # p = subprocess.Popen(['krun'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     try:
         while True:
-            data=ws.receive()
-            data_copy = json.loads(data)
-            # p.stdin.write(data)
-            ws.send(data)
+            data=ws.receive(0.1)
+            if data is not None:
+                data_copy = json.loads(data)
+                # p.stdin.write(data)
+                # ws.send(data)
+            if data_copy2 is not None:
+                ws.send(data_copy2)
+                data_copy2 = None
     except simple_websocket.ConnectionClosed:
         pass
     return ''
@@ -50,9 +54,12 @@ def index():
     
     return jsonify(response)
 
-@app.route("/2")
+@app.route("/frontend_comm", methods=["POST"])
 def index2():
-    return "testdata"
+    global data_copy2
+    json = request.json
+    data_copy2 = json
+    return ""
 
 @app.route("/3")
 def index3():
