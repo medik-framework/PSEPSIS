@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import simple_websocket
 import subprocess
+import json
 import os
 
 app = Flask(__name__, static_folder="static")
@@ -16,8 +17,7 @@ def k_comm():
     try:
         while True:
             data=ws.receive()
-            print(data)
-            data_copy = data
+            data_copy = json.loads(data)
             # p.stdin.write(data)
             ws.send(data)
     except simple_websocket.ConnectionClosed:
@@ -30,8 +30,8 @@ def getValues(params):
     if params == []:
         error = { "code" : -32600, "message" : "*" }
     for param in params:
-        if param in data_copy2.keys():
-            result[param] = data_copy2.get(param)
+        if param in data_copy.keys():
+            result[param] = data_copy.get(param)
         else:
             error = { "code" : -32001, "message" : "Requested reading absent" }
             
