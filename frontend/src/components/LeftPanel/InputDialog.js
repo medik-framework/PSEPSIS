@@ -20,6 +20,12 @@ export default function FormDialog({
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     "ws://psepsis.herokuapp.com/k_comm"
   );
+  
+    React.useEffect(() => {
+    if (lastMessage !== null) {
+      console.log(lastMessage);
+    }
+  }, [lastMessage]);
 
   let formContent = null;
 
