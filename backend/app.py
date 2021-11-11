@@ -19,6 +19,8 @@ def k_comm():
         while True:
             data=ws.receive(0.1)
             if data is not None:
+                print("datadatatdatta")
+                print(data)
                 data_copy = json.loads(data)
                 
                 # p.stdin.write(data)
