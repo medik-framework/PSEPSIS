@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import simple_websocket
 import subprocess
 import json
 import os
 
 app = Flask(__name__, static_folder="static")
+CORS(app)
 
 data_copy = ""
 data_copy2 = None
