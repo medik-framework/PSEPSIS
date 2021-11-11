@@ -21,9 +21,9 @@ export default function FormDialog({
     "ws://psepsis.herokuapp.com/k_comm"
   );
   
-    React.useEffect(() => {
+  React.useEffect(() => {
     if (lastMessage !== null) {
-      console.log(lastMessage);
+      alert("heartrate too high");
     }
   }, [lastMessage]);
 
@@ -37,10 +37,10 @@ export default function FormDialog({
 
   const handleSubmit = () => {
     setDialogOpen(false);
-    sendMessage({
+    sendMessage(JSON.stringify({
       type: "UPDATE_MEASUREMENT",
       [selectedMeasurement.name]: value,
-    });
+    }));
   };
 
   if (selectedMeasurement.type === "number") {
