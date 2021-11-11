@@ -21,6 +21,7 @@ def k_comm():
             data=ws.receive(0.1)
             if data is not None:
                 data_copy = json.loads(data)
+                
                 # p.stdin.write(data)
                 # ws.send(data)
             if data_copy2 is not None:
@@ -37,7 +38,7 @@ def getValues(params):
         error = { "code" : -32600, "message" : "*" }
     for param in params:
         if param in data_copy.keys():
-            result[param] = data_copy.get(param)
+            result[param] = int(data_copy.get(param))
         else:
             error = { "code" : -32001, "message" : "Requested reading absent" }
             
