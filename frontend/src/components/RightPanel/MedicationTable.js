@@ -66,7 +66,7 @@ export default function CenteredGrid() {
         <div
           style={{
             display:
-              selectedCategory === medicationCategories[2] ? "block" : "none",
+              selectedCategory === medicationCategories[1] ? "block" : "none",
           }}
         >
           <FluidTherapy />

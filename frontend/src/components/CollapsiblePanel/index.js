@@ -1,5 +1,6 @@
 import {useState} from "react"
 import { Button, Grid, Typography } from "@mui/material";
+import TreatmentLog from "./TreatmentLog"
 import WorkflowTab from "./WorkflowTab"
 import CheckList from "./CheckList"
 
@@ -26,6 +27,7 @@ const CollapsiblePanel = () => {
           );
         })}
       </Grid>
+      {(selectedButton == "history") && <TreatmentLog />}
       {(selectedButton == "flowchart") && <WorkflowTab />}
       {(selectedButton == "checklists") && <CheckList />}
     </div>

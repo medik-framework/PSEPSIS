@@ -4,24 +4,6 @@ import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
 
-const checkLists = {
-  "Culture Checklist": [
-    "Urine culture obtained",
-    "Blood culture obtained from venipuncture",
-    "Blood culture obtained from line",
-    "IV catheter culture obtained",
-  ],
-  "History & General Condition Checklist": [
-    "High risk for pulmonary edema?",
-    "History of renal insufficiency?",
-    "History of immunodeficiency?",
-    "Chronic steroid use/adrenal insufficiency?",
-    "Unrepaired congenital heart disease?",
-    "Indwelling vascular catheter or other invasive devices?",
-    "History of pneumonia?",
-  ],
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -38,9 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TreatmentLog() {
   const classes = useStyles();
-  const [checkListName, setCheckListName] = useState(
-    Object.keys(checkLists)[0]
-  );
 
   return (
     <div className={classes.root}>
