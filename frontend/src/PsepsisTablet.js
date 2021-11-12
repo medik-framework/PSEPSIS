@@ -43,7 +43,7 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "10vw",
+            width: "8vw",
             height: "100vh",
           }}
         >

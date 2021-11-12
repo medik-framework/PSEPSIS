@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
+import { TextField, MenuItem, Button, Grid, Checkbox,   FormGroup,
+  FormControlLabel, } from "@mui/material";
 
 const checkLists = {
   "Culture Checklist": [
@@ -47,25 +48,15 @@ export default function CheckList() {
           </MenuItem>
         ))}
       </TextField>
-      <Grid container spacing={3}>
+      <FormGroup>
         {checkLists[checkListName].map((value) => {
           return (
             <Grid item xs={12}>
-              <Checkbox />
-              <Button
-                sx={{
-                  padding: 2,
-                  textAlign: "center",
-                  color: "white",
-                  height: "30px",
-                }}
-              >
-                {value}
-              </Button>
+              <FormControlLabel control={<Checkbox />} label={value} />
             </Grid>
           );
         })}
-      </Grid>
+      </FormGroup>
     </div>
   );
 }

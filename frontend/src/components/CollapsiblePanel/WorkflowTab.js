@@ -34,7 +34,7 @@ const Diagram = (props) => (
               }
             ]}
           >
-            <div style={boxStyle}>Step 1</div>
+            <div style={boxStyle}>Sepsis Screening</div>
           </ArcherElement>
           <ArcherElement
             id="element3"
@@ -46,10 +46,10 @@ const Diagram = (props) => (
               }
             ]}
           >
-            <div style={boxStyle}>step 2</div>
+            <div style={boxStyle}>Presume Sepsis</div>
           </ArcherElement>
           <ArcherElement id="element4">
-            <div style={boxStyle}>Treatment Step 3</div>
+            <div style={boxStyle}>Septic Shock</div>
           </ArcherElement>
         </div>
       </ArcherContainer>

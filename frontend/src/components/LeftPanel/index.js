@@ -12,7 +12,6 @@ import {
 import Assessment from "./Assessment";
 import DigitalTwin from "./DigitalTwin";
 import Measurement from "./Measurement";
-import CheckList from "./CheckList";
 
 const LeftPanel = () => {
   const [tab, setTab] = useState(0);
@@ -45,9 +44,6 @@ const LeftPanel = () => {
         <DigitalTwin />
       </div>
 
-      <div style={{ display: tab === 1 ? "block" : "none" }}>
-        <CheckList />
-      </div>
     </>
   );
 };
