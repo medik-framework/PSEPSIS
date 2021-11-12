@@ -798,6 +798,7 @@ export const Neurologic = {
         "Confused/Reduced Response to Pain": 0,
       },
     },
+    Pain: { name: "Pain", unit: "", type: "number" },
   },
 };
 
@@ -859,13 +860,6 @@ export const Immune = {
   },
 };
 
-export const Others = {
-  name: "Others",
-  measurements: {
-    Pain: { name: "Pain", unit: "", type: "number" },
-  },
-};
-
 export const organsDT = [
   Cardiovascular,
   Hematologic,
@@ -873,5 +867,4 @@ export const organsDT = [
   Neurologic,
   Renal,
   Respiratory,
-  Others,
 ];

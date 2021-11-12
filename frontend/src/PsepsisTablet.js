@@ -1,9 +1,10 @@
 import { Grid } from "@mui/material";
 
 import LeftPanel from "./components/LeftPanel/";
-import MiddlePanel from "./components/MiddlePanel/";
-import RightPanel from "./components/RightPanel"
+import MiddlePanel from "./components/MiddlePanel";
+import RightPanel from "./components/RightPanel";
 import PreScreen from "./components/Prescreen";
+import CollapsiblePanel from "./components/CollapsiblePanel";
 
 const PsepsisTablet = () => {
   return (
@@ -13,8 +14,9 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "25vw",
+            width: "30vw",
             height: "100vh",
+            paddingRight: "10px"
           }}
         >
           <LeftPanel />
@@ -22,8 +24,9 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "30vw",
+            width: "25vw",
             height: "100vh",
+            paddingRight: "10px"
           }}
         >
           <MiddlePanel />
@@ -31,11 +34,20 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "30vw",
+            width: "35vw",
             height: "100vh",
           }}
         >
           <RightPanel />
+        </Grid>
+        <Grid
+          item
+          sx={{
+            width: "10vw",
+            height: "100vh",
+          }}
+        >
+          <CollapsiblePanel />
         </Grid>
       </Grid>
     </div>

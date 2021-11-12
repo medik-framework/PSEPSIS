@@ -1,12 +1,11 @@
 import { useState } from "react";
 import clsx from "clsx";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
 
 import { medicationCategories, sepsisTables } from "./MedicationTableSchema";
 
-import OneHourBundle from "./OneHourBundle";
 import FluidTherapy from "./FluidTherapy";
 
 const useStyles = makeStyles({
@@ -17,7 +16,8 @@ const useStyles = makeStyles({
   button: {
     textAlign: "center",
     height: "40px",
-    width: "16vw",
+    width: "100%",
+    margin: "1px"
   },
   buttonSelected: {
     backgroundColor: "#0062cc",
@@ -41,10 +41,13 @@ export default function CenteredGrid() {
 
   return (
     <>
-      <Grid container spacing={0} className={classes.buttonGroup}>
+      <Typography variant="h4" gutterBottom component="div">
+        Medications
+      </Typography>
+      <Grid container spacing={0}>
         {medicationCategories.map((value) => {
           return (
-            <Grid item xs={4} border={1}>
+            <Grid item xs={6}>
               <Button
                 variant="contained"
                 className={clsx(classes.button, {
