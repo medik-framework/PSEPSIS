@@ -1,10 +1,18 @@
 import { useState } from "react";
 
-import { Grid, FormGroup, FormControlLabel, Checkbox, Typography } from "@mui/material";
-import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import {
+  Grid,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Typography,
+} from "@mui/material";
+import LinearProgress, {
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
 import makeStyles from "@mui/styles/makeStyles";
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
 
 const bundleList = [
   "Start continuous cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
@@ -38,20 +46,27 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 40,
   borderRadius: 5,
   [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+    backgroundColor:
+      theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
-    backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8',
+    backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
   },
 }));
 
 function LinearProgressWithLabel(props) {
   return (
     <>
-        <BorderLinearProgress variant="determinate" {...props} />
-        <Typography variant="body2" color="white" sx={{position:"relative", top:"-30px", left:"50%"}}
-        > 00:40:15 </Typography>
+      <BorderLinearProgress variant="determinate" {...props} />
+      <Typography
+        variant="body2"
+        color="white"
+        sx={{ position: "relative", top: "-30px", left: "50%" }}
+      >
+        {" "}
+        00:40:15{" "}
+      </Typography>
     </>
   );
 }

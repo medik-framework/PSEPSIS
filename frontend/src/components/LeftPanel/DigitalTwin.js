@@ -5,10 +5,15 @@ import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
 import InputDialog from "./InputDialog";
 
 const PaitentBasic = () => {
-  const assessments = {"Age": "2y", "Weight": "20kg", "Height": "50cm", "Gender": "male"};
+  const assessments = {
+    Age: "2y",
+    Weight: "20kg",
+    Height: "50cm",
+    Gender: "male",
+  };
   return (
     <>
-      <Grid container marginBottom={'10px'}>
+      <Grid container marginBottom={"10px"}>
         {Object.keys(assessments).map((key) => {
           return (
             <Grid
@@ -18,7 +23,7 @@ const PaitentBasic = () => {
                 height: "30px",
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "lightgray"
+                backgroundColor: "lightgray",
               }}
             >
               <div>
@@ -30,11 +35,11 @@ const PaitentBasic = () => {
       </Grid>
     </>
   );
-}
+};
 
 const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
   return (
-    <Grid container sx={{marginTop: '10px'}}>
+    <Grid container sx={{ marginTop: "10px" }}>
       {organsDT.map((value, index) => {
         return (
           <Grid item xs={4} key={value}>
@@ -80,7 +85,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
                 height: "80px",
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "lightgray"
+                backgroundColor: "lightgray",
               }}
               onClick={() => {
                 setSelectedMeasurement(measurements[key]);
@@ -104,23 +109,21 @@ const DigitalTwinForm = ({ selectedDT }) => {
 };
 
 const SystematicAssessmentForm = ({ selectedDT }) => {
-  const assessments = {"Sepsis": 2, "Septic shock": 1, "SIRS": 1, "PEW": 1};
+  const assessments = { Sepsis: 2, "Septic shock": 1, SIRS: 1, PEW: 1 };
   return (
     <>
       <Grid container>
         <Grid
-              item
-              xs={12}
-              sx={{
-                height: "30px",
-                boxShadow:
-                  "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "yellow"
-              }}
-            >
-              <div>
-                Screening Status:  Presume Sepsis
-              </div>
+          item
+          xs={12}
+          sx={{
+            height: "30px",
+            boxShadow:
+              "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
+            backgroundColor: "yellow",
+          }}
+        >
+          <div>Screening Status: Presume Sepsis</div>
         </Grid>
         {Object.keys(assessments).map((key) => {
           return (
@@ -131,12 +134,13 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
                 height: "50px",
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "yellow"
+                backgroundColor: "yellow",
               }}
             >
               <div>
                 {key}: {assessments[key]}
-                <br />30s ago
+                <br />
+                30s ago
               </div>
             </Grid>
           );
@@ -159,12 +163,12 @@ const OrganAssessmentForm = ({ selectedDT }) => {
           return (
             <Grid
               item
-              xs={12/count}
+              xs={12 / count}
               sx={{
                 height: "80px",
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "lightyellow"
+                backgroundColor: "lightyellow",
               }}
             >
               <div>

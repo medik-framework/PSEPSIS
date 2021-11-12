@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     textAlign: "center",
     height: "40px",
     width: "100%",
-    margin: "1px"
+    margin: "1px",
   },
   buttonSelected: {
     backgroundColor: "#0062cc",

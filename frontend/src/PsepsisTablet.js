@@ -16,7 +16,7 @@ const PsepsisTablet = () => {
           sx={{
             width: "30vw",
             height: "100vh",
-            paddingRight: "10px"
+            paddingRight: "10px",
           }}
         >
           <LeftPanel />
@@ -26,7 +26,7 @@ const PsepsisTablet = () => {
           sx={{
             width: "25vw",
             height: "100vh",
-            paddingRight: "10px"
+            paddingRight: "10px",
           }}
         >
           <MiddlePanel />

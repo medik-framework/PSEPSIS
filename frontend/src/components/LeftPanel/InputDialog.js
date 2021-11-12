@@ -20,7 +20,7 @@ export default function FormDialog({
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     "ws://psepsis.herokuapp.com/k_comm"
   );
-  
+
   React.useEffect(() => {
     if (lastMessage !== null) {
       alert("heartrate too high");
@@ -37,10 +37,12 @@ export default function FormDialog({
 
   const handleSubmit = () => {
     setDialogOpen(false);
-    sendMessage(JSON.stringify({
-      type: "UPDATE_MEASUREMENT",
-      [selectedMeasurement.name]: value,
-    }));
+    sendMessage(
+      JSON.stringify({
+        type: "UPDATE_MEASUREMENT",
+        [selectedMeasurement.name]: value,
+      })
+    );
   };
 
   if (selectedMeasurement.type === "number") {

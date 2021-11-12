@@ -35,9 +35,7 @@ const AssessmentForm = ({ selectedAssessment }) => {
             "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
           width: "100%",
         }}
-      >
-
-      </Box>
+      ></Box>
       <Grid container>
         {assessments[selectedAssessment].measurements.map((value) => {
           return (
