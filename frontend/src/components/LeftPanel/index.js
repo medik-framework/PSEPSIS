@@ -21,30 +21,9 @@ const LeftPanel = () => {
   };
 
   return (
-    <>
-      {/* <Tabs fullWidth value={tab} onChange={handleChange}>
-        <Tab
-          icon={<Icon path={mdiAccountDetails} size={1} />}
-          label={
-            <>
-              Measurements
-              <br />
-              Lab Results
-            </>
-          }
-        />
-        <Tab
-          icon={<Icon path={mdiClipboardListOutline} size={1} />}
-          label={"Checklists"}
-        />
-        <Tab icon={<Icon path={mdiInformation} size={1} />} label={"Info"} />
-      </Tabs> */}
-
       <div style={{ display: tab === 0 ? "block" : "none" }}>
         <DigitalTwin />
       </div>
-
-    </>
   );
 };
 
