@@ -73,6 +73,11 @@ def submit():
     data_copy2 = json
     return ""
 
+@app.route("/debug")
+def index3():
+    global data_copy2
+    return data_copy2
+
 @app.route("/3")
 def index3():
     global data_copy
