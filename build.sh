@@ -1,4 +1,4 @@
-rm -r static
+rm -r backend/static
 
 cd frontend
 yarn build
@@ -6,6 +6,7 @@ cd ../backend
 cp -r ../frontend/build/static .
 cp -r ../frontend/build/index.html ./static/
 
+cd ..
 cd sepsisform
 yarn build
 cd ../backend

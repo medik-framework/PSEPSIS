@@ -65,6 +65,13 @@ def index2():
     data_copy2 = json
     return ""
 
+@app.route("/submit", methods=["POST"])
+def submit():
+    global data_copy2
+    json = request.json
+    data_copy2 = json
+    return ""
+
 @app.route("/3")
 def index3():
     global data_copy
