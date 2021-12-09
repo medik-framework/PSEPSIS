@@ -4,7 +4,7 @@ import { organsDT } from "./resources/DigitalTwinConfigReorganized";
 
 import { FormSection } from "./components/FormSection";
 
-const apiUrl = "https://psepsis.heroku.app/submit";
+const apiUrl = "https://psepsis.herokuapp.com/submit";
 
 export const EvaluationForm = () => {
   const { handleSubmit, control, formState  } = useForm({});

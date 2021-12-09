@@ -6,6 +6,7 @@ import json
 import os
 
 app = Flask(__name__, static_folder="static")
+CORS(app)
 
 data_copy = ""
 data_copy2 = None
