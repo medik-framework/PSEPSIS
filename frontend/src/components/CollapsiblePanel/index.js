@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { Button, Grid, Typography, Popover } from "@mui/material";
+import { Button, Grid, Popover } from "@mui/material";
+
 import TreatmentLog from "./TreatmentLog";
 import WorkflowTab from "./WorkflowTab";
 import CheckList from "./CheckList";
@@ -7,31 +8,28 @@ import CheckList from "./CheckList";
 const CollapsiblePanel = () => {
   const [selectedButton, setSelectedButton] = useState();
   const [open, setOpen] = useState(false);
-
   const anchorEl = useRef(null);
 
   const buttons = ["history", "flowchart", "checklists", "references"];
   return (
-    <div style={{ height: "100vh", overflow: "hidden" }} ref={anchorEl}>
+    <div style={{ height: "100vh" }} ref={anchorEl}>
       <Grid container sx={{ marginTop: "10px" }}>
-        {buttons.map((value) => {
-          return (
-            <Grid item xs={12} key={value}>
-              <Button
-                sx={{
-                  height: "50px",
-                  width: "100%",
-                }}
-                onClick={() => {
-                  setSelectedButton(value);
-                  setOpen(true);
-                }}
-              >
-                {value}
-              </Button>
-            </Grid>
-          );
-        })}
+        {buttons.map((value) => (
+          <Grid item xs={12} key={value}>
+            <Button
+              sx={{
+                height: "50px",
+                width: "100%",
+              }}
+              onClick={() => {
+                setSelectedButton(value);
+                setOpen(true);
+              }}
+            >
+              {value}
+            </Button>
+          </Grid>
+        ))}
       </Grid>
       <Popover
         open={open}

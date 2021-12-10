@@ -10,9 +10,8 @@ const boxStyle = {
   margin: 20,
   padding: "10px",
   border: "1px solid grey",
-  borderRadius: 3,
-  fontFamily: "sans-serif",
-  color: "grey",
+  backgroundColor: "chartreuse",
+  color: "black",
 };
 
 const Diagram = (props) => {
@@ -30,37 +29,39 @@ const Diagram = (props) => {
 
   return (
     <div>
-      <ArcherContainer noCurves strokeColor="grey">
-        <div style={diagramStyle}>
-          <ArcherElement
-            id="element2"
-            relations={[
-              {
-                targetId: "element3",
-                targetAnchor: "top",
-                sourceAnchor: "bottom",
-              },
-            ]}
-          >
-            <div style={boxStyle}>Sepsis Screening</div>
-          </ArcherElement>
-          <ArcherElement
-            id="element3"
-            relations={[
-              {
-                targetId: "element4",
-                targetAnchor: "top",
-                sourceAnchor: "bottom",
-              },
-            ]}
-          >
-            <div style={boxStyle}>Presume Sepsis</div>
-          </ArcherElement>
-          <ArcherElement id="element4">
-            <div style={boxStyle}>Septic Shock</div>
-          </ArcherElement>
-        </div>
-      </ArcherContainer>
+      <div style={{ width: "50%" }}>
+        <ArcherContainer noCurves strokeColor="grey">
+          <div style={diagramStyle}>
+            <ArcherElement
+              id="element2"
+              relations={[
+                {
+                  targetId: "element3",
+                  targetAnchor: "top",
+                  sourceAnchor: "bottom",
+                },
+              ]}
+            >
+              <div style={boxStyle}>Sepsis Screening</div>
+            </ArcherElement>
+            <ArcherElement
+              id="element3"
+              relations={[
+                {
+                  targetId: "element4",
+                  targetAnchor: "top",
+                  sourceAnchor: "bottom",
+                },
+              ]}
+            >
+              <div style={boxStyle}>Presume Sepsis</div>
+            </ArcherElement>
+            <ArcherElement id="element4">
+              <div style={boxStyle}>Septic Shock</div>
+            </ArcherElement>
+          </div>
+        </ArcherContainer>
+      </div>
     </div>
   );
 };
