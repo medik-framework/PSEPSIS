@@ -1,57 +1,40 @@
 import { useState } from "react";
-import clsx from "clsx";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Grid, Typography } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
-
-import { medicationCategories, sepsisTables } from "./MedicationTableSchema";
+import {
+  medicationCategories,
+  sepsisTables,
+} from "../../resources/MedicationTableSchema";
 
 import FluidTherapy from "./FluidTherapy";
 
-const useStyles = makeStyles({
-  buttonGroup: {
-    marginTop: "5px",
-    marginBottom: "5px",
-  },
-  button: {
-    textAlign: "center",
-    height: "40px",
-    width: "100%",
-    margin: "1px",
-  },
-  buttonSelected: {
-    backgroundColor: "#0062cc",
-    "&:hover": {
-      backgroundColor: "#0062cc",
-    },
-  },
-  tableCell: {
-    height: "100px",
-    borderStyle: "solid",
-    borderWidth: "1px",
-    borderColor: "black",
-  },
-});
-
 export default function CenteredGrid() {
-  const classes = useStyles();
-  const [selectedCategory, setSelectedCategory] = useState(
-    medicationCategories[0]
-  );
+  const dispatch = useDispatch();
+
+  const selectedCategory = useSelector((state) => state.MedicationTab);
+
+  const updateSelectedCategory = (category) => {
+    dispatch({
+      type: "CHANGE_MEDICATION_TAB",
+      payload: category,
+    });
+  };
 
   return (
     <>
-
       <Grid container spacing={0}>
         {medicationCategories.map((value) => {
           return (
             <Grid item xs={6}>
               <Button
                 variant="contained"
-                className={clsx(classes.button, {
-                  [classes.buttonSelected]: selectedCategory === value,
-                })}
-                onClick={() => setSelectedCategory(value)}
+                sx={{
+                  width: "100%",
+                  backgroundColor:
+                    selectedCategory === value ? "#0062cc" : "#1976d2",
+                }}
+                onClick={() => updateSelectedCategory(value)}
               >
                 {value}
               </Button>

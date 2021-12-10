@@ -65,7 +65,7 @@ const SepsisTimeline = () => {
           2
         )}:${zeroPad(diff_as_date.getSeconds(), 2)}`
       );
-      setTimePercent(Math.round((diff / (1000 * 3600)) * 100));
+      setTimePercent(Math.min(Math.round((diff / (1000 * 3600)) * 100), 100));
     },
     started ? 1000 : null
   );

@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import simple_websocket
-import subprocess
 import json
 import os
 
@@ -9,7 +8,7 @@ app = Flask(__name__, static_folder="static")
 CORS(app)
 
 data_copy = ""
-data_copy2 = None
+data_copy2 = {}
 
 @app.route("/k_comm", websocket=True)
 def k_comm():
@@ -20,8 +19,6 @@ def k_comm():
         while True:
             data=ws.receive(0.1)
             if data is not None:
-                print("datadatatdatta")
-                print(data)
                 data_copy = json.loads(data)
                 
                 # p.stdin.write(data)
@@ -32,6 +29,11 @@ def k_comm():
     except simple_websocket.ConnectionClosed:
         pass
     return ''
+
+@app.route("/3")
+def index3():
+    global data_copy
+    return data_copy
     
 def getValues(params):
     result = {}
@@ -74,14 +76,10 @@ def submit():
     return ""
 
 @app.route("/debug")
-def index3():
+def debug_json():
     global data_copy2
-    return data_copy2
+    return jsonify(data_copy2)
 
-@app.route("/3")
-def index3():
-    global data_copy
-    return data_copy
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))

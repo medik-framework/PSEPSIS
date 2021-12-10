@@ -48,6 +48,7 @@ const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
               sx={{
                 height: "50px",
                 width: "100%",
+                backgroundColor: selectedDT === index ? "#0062cc" : "#1976d2",
               }}
               onClick={() => setSelectedDT(index)}
             >

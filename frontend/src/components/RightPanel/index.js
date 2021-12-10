@@ -4,8 +4,8 @@ import MedicationTable from "./MedicationTable";
 
 const MiddlePanel = () => {
   return (
-    <div >
-            <Typography variant="h4" gutterBottom component="div">
+    <div>
+      <Typography variant="h4" gutterBottom component="div">
         Medications
       </Typography>
       <MedicationTable />
