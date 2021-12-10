@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Button, Grid, Typography, Box } from "@mui/material";
 import { useSelector } from "react-redux";
+import {pick} from "lodash"
+import { Button, Grid, Typography, Box } from "@mui/material";
 import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
 import InputDialog from "./InputDialog";
 
+const assessments = ["Age", "Weight", "Height", "Gender"]
+
 const PaitentBasic = () => {
+
   const assessments = {
     Age: "2y",
     Weight: "20kg",

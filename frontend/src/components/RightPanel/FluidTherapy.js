@@ -4,7 +4,7 @@ import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
 
-import { FLUIDS } from "./AntibioticsList";
+import { FLUIDS } from "../../resources/AntibioticsList";
 
 const useStyles = makeStyles((theme) => ({
   root: {
