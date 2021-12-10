@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-router";
 
 import {
   TextField,
@@ -61,6 +63,17 @@ export default function CheckList() {
     Object.keys(checkLists)[0]
   );
 
+  const dispatch = useDispatch();
+
+  const checkedItems = useSelector(state => state.CheckList)
+
+  const checkItem = (label) => {
+    dispatch({type: "TOGGLE_CHECKLIST_ITEM", payload: {
+        checklist: checkListName,
+        item: label
+    }})
+}
+
   return (
     <div>
       <TextField
@@ -81,8 +94,8 @@ export default function CheckList() {
       <FormGroup>
         {checkLists[checkListName].map((value) => {
           return (
-            <Grid item xs={12}>
-              <FormControlLabel control={<Checkbox />} label={value} />
+            <Grid item xs={12} sx={{ backgroundColor: checkedItems[checkListName]?.contains(label) ? "yellow" : "white" }}>
+              <FormControlLabel control={<Checkbox />} label={value} onChange={() => checkItem(label)}/>
             </Grid>
           );
         })}
