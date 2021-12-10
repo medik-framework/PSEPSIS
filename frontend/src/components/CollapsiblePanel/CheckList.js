@@ -34,12 +34,7 @@ export default function CheckList() {
   );
 
   return (
-    <div
-      sx={{
-        flexGrow: 1,
-        width: "100%",
-      }}
-    >
+    <div>
       <TextField
         select
         fullWidth

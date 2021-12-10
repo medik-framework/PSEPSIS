@@ -1,11 +1,7 @@
+import { useState, useEffect } from "react";
+
 import { ArcherContainer, ArcherElement } from "react-archer";
 
-const colsStyle = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "flex-start",
-  height: "auto",
-};
 const diagramStyle = {
   display: "grid",
   gridTemplateColumns: "auto",
@@ -19,8 +15,20 @@ const boxStyle = {
   color: "grey",
 };
 
-const Diagram = (props) => (
-  <div style={colsStyle}>
+const Diagram = (props) => {
+  const [value, setValue] = useState(0); // integer state
+
+  function useForceUpdate() {
+    return () => setValue((value) => value + 1); // update the state to force render
+  }
+
+  const forceUpdate = useForceUpdate();
+
+  useEffect(() => {
+    forceUpdate();
+  }, [value]);
+
+  return (
     <div>
       <ArcherContainer noCurves strokeColor="grey">
         <div style={diagramStyle}>
@@ -54,7 +62,7 @@ const Diagram = (props) => (
         </div>
       </ArcherContainer>
     </div>
-  </div>
-);
+  );
+};
 
 export default Diagram;

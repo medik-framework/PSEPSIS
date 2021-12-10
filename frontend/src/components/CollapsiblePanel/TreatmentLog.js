@@ -5,10 +5,6 @@ import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "100%",
-  },
   select: {
     marginTop: "10px",
   },
@@ -22,7 +18,7 @@ export default function TreatmentLog() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div>
       Treatment and Lab/Vitals Log
       <Grid container spacing={3}>
         <div style={{ margin: 0, padding: 0 }}>
