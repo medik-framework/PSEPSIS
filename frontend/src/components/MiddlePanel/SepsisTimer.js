@@ -47,21 +47,28 @@ const wave = keyframes`
 100% { color: orange; }
 `;
 
+const zeroPad = (num, places) => String(num).padStart(places, "0");
+
 const SepsisTimeline = () => {
   const [started, setStarted] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
   const [timeDiff, setTimeDiff] = useState("00:00:00");
+  const [timePercent, setTimePercent] = useState(0);
 
-  useInterval(() => {
-    let diff = new Date() - startTime; // this is a time in milliseconds
-    let diff_as_date = new Date(diff);
-    diff_as_date.getHours(); // hours
-    diff_as_date.getMinutes(); // minutes
-    diff_as_date.getSeconds(); // seconds
-    setTimeDiff(
-      `${diff_as_date.getHours()}:${diff_as_date.getMinutes()}:${diff_as_date.getSeconds()}`
-    );
-  }, 1000);
+  useInterval(
+    () => {
+      let diff = new Date() - startTime; // this is a time in milliseconds
+      let diff_as_date = new Date(diff);
+      setTimeDiff(
+        `${zeroPad(Math.round(diff / (1000 * 60 * 60)), 2)}:${zeroPad(
+          diff_as_date.getMinutes(),
+          2
+        )}:${zeroPad(diff_as_date.getSeconds(), 2)}`
+      );
+      setTimePercent(Math.round((diff / (1000 * 3600)) * 100));
+    },
+    started ? 1000 : null
+  );
 
   return (
     <Grid container>
@@ -85,7 +92,7 @@ const SepsisTimeline = () => {
       <Grid item sx={{ width: "70%" }}>
         <LinearProgressWithLabel
           variant="determinate"
-          value={65}
+          value={started ? timePercent : 0}
           label={started ? timeDiff : "Not Started"}
         />
       </Grid>

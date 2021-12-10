@@ -1,8 +1,13 @@
+import { Typography } from "@mui/material";
+
 import MedicationTable from "./MedicationTable";
 
 const MiddlePanel = () => {
   return (
-    <div style={{ height: "100vh", overflow: "hidden" }}>
+    <div >
+            <Typography variant="h4" gutterBottom component="div">
+        Medications
+      </Typography>
       <MedicationTable />
     </div>
   );

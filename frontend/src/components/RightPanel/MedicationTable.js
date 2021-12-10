@@ -41,9 +41,7 @@ export default function CenteredGrid() {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom component="div">
-        Medications
-      </Typography>
+
       <Grid container spacing={0}>
         {medicationCategories.map((value) => {
           return (
