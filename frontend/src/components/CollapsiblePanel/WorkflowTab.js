@@ -4,11 +4,11 @@ const colsStyle = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "flex-start",
-  height: "auto"
+  height: "auto",
 };
 const diagramStyle = {
   display: "grid",
-  gridTemplateColumns: "auto"
+  gridTemplateColumns: "auto",
 };
 const boxStyle = {
   margin: 20,
@@ -16,7 +16,7 @@ const boxStyle = {
   border: "1px solid grey",
   borderRadius: 3,
   fontFamily: "sans-serif",
-  color: "grey"
+  color: "grey",
 };
 
 const Diagram = (props) => (
@@ -30,8 +30,8 @@ const Diagram = (props) => (
               {
                 targetId: "element3",
                 targetAnchor: "top",
-                sourceAnchor: "bottom"
-              }
+                sourceAnchor: "bottom",
+              },
             ]}
           >
             <div style={boxStyle}>Sepsis Screening</div>
@@ -42,8 +42,8 @@ const Diagram = (props) => (
               {
                 targetId: "element4",
                 targetAnchor: "top",
-                sourceAnchor: "bottom"
-              }
+                sourceAnchor: "bottom",
+              },
             ]}
           >
             <div style={boxStyle}>Presume Sepsis</div>

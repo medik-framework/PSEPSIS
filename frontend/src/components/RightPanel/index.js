@@ -3,7 +3,7 @@ import MedicationTable from "./MedicationTable";
 const MiddlePanel = () => {
   return (
     <div style={{ height: "100vh", overflow: "hidden" }}>
-        <MedicationTable />
+      <MedicationTable />
     </div>
   );
 };

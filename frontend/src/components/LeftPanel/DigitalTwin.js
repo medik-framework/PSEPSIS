@@ -62,19 +62,11 @@ const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
 
 const DigitalTwinForm = ({ selectedDT }) => {
   const measurements = organsDT[selectedDT].measurements;
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedMeasurement, setSelectedMeasurement] = useState(
-    measurements[Object.keys(measurements)[0]]
-  );
   const digitalTwinValue = useSelector((state) => state.DigitalTwin);
 
   console.log(digitalTwinValue);
   return (
     <>
-      <InputDialog
-        open={dialogOpen}
-        {...{ setDialogOpen, selectedMeasurement }}
-      />
       <Grid container>
         {Object.keys(measurements).map((key) => {
           return (
@@ -86,10 +78,6 @@ const DigitalTwinForm = ({ selectedDT }) => {
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
                 backgroundColor: "lightgray",
-              }}
-              onClick={() => {
-                setSelectedMeasurement(measurements[key]);
-                setDialogOpen(true);
               }}
             >
               <div>

@@ -1,11 +1,11 @@
-import {useState} from "react"
+import { useState } from "react";
 import { Button, Grid, Typography } from "@mui/material";
-import TreatmentLog from "./TreatmentLog"
-import WorkflowTab from "./WorkflowTab"
-import CheckList from "./CheckList"
+import TreatmentLog from "./TreatmentLog";
+import WorkflowTab from "./WorkflowTab";
+import CheckList from "./CheckList";
 
 const CollapsiblePanel = () => {
-  const [selectedButton, setSelectedButton] = useState()
+  const [selectedButton, setSelectedButton] = useState();
 
   const buttons = ["history", "flowchart", "checklists", "references"];
   return (
@@ -27,9 +27,9 @@ const CollapsiblePanel = () => {
           );
         })}
       </Grid>
-      {(selectedButton == "history") && <TreatmentLog />}
-      {(selectedButton == "flowchart") && <WorkflowTab />}
-      {(selectedButton == "checklists") && <CheckList />}
+      {selectedButton == "history" && <TreatmentLog />}
+      {selectedButton == "flowchart" && <WorkflowTab />}
+      {selectedButton == "checklists" && <CheckList />}
     </div>
   );
 };

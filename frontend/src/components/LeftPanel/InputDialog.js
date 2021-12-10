@@ -8,17 +8,19 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Grid } from "@mui/material";
 
-import { PatientBasic } from "../../resources/PatientConfig";
-
+import { useSelector } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+
+import { PatientBasic } from "../../resources/PatientConfig";
 
 export default function FormDialog({
   open,
   setDialogOpen,
   selectedMeasurement,
 }) {
+  const apiUrl = useSelector((state) => state.APIURL);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    "ws://psepsis.herokuapp.com/k_comm"
+    `ws://${apiUrl}/k_comm`
   );
 
   React.useEffect(() => {
