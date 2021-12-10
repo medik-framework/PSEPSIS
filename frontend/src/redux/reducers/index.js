@@ -1,15 +1,17 @@
 import { combineReducers } from "redux";
 
 import APIURL from "./apiUrl";
+import Timer from "./timer";
+import MedicationTab from "./medicationTab";
 import PatientInfo from "./patientInfo";
 import DigitalTwin from "./digitalTwin";
-import MedicationTab from "./medicationTab";
 
 const appReducer = combineReducers({
   APIURL,
+  Timer,
+  MedicationTab,
   PatientInfo,
   DigitalTwin,
-  MedicationTab,
 });
 
 export default appReducer;

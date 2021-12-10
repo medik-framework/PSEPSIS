@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { keyframes } from "@emotion/react";
 import { useInterval } from "react-use";
 import { Grid, Typography, Button } from "@mui/material";
@@ -50,10 +51,17 @@ const wave = keyframes`
 const zeroPad = (num, places) => String(num).padStart(places, "0");
 
 const SepsisTimeline = () => {
-  const [started, setStarted] = useState(false);
+  const dispatch = useDispatch();
+  const started = useSelector((state) => state.Timer);
   const [startTime, setStartTime] = useState(new Date());
   const [timeDiff, setTimeDiff] = useState("00:00:00");
   const [timePercent, setTimePercent] = useState(0);
+
+  useEffect(() => {
+    if (started) {
+      setStartTime(new Date());
+    }
+  }, [started]);
 
   useInterval(
     () => {
@@ -81,9 +89,7 @@ const SepsisTimeline = () => {
             animation: started ? "null" : `${wave} 1s infinite`,
           }}
           onClick={() => {
-            setStarted(true);
-            if (started) return;
-            setStartTime(new Date());
+            dispatch({ type: "START_TIMER" });
           }}
         >
           ↓ Start

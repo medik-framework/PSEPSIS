@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   FormGroup,
   Grid,
@@ -22,6 +23,7 @@ const bundleList = [
 ];
 
 const BundleForm = () => {
+  const dispatch = useDispatch();
   const [checkedIdx, setCheckedIdx] = useState(0);
   const [ventilationChecked, setVentilationChecked] = useState(false);
 
@@ -40,7 +42,10 @@ const BundleForm = () => {
               <FormControlLabel
                 control={<Checkbox />}
                 label={value}
-                onChange={() => setCheckedIdx(checkedIdx ^ (1 << idx))}
+                onChange={() => {
+                  setCheckedIdx(checkedIdx ^ (1 << idx));
+                  dispatch({ type: "START_TIMER" });
+                }}
               />
             </Grid>
           );
@@ -55,7 +60,10 @@ const BundleForm = () => {
         <FormControlLabel
           control={<Checkbox />}
           label={"Mechanical Ventilation"}
-          onChange={() => setVentilationChecked(!ventilationChecked)}
+          onChange={() => {
+            setVentilationChecked(!ventilationChecked);
+            dispatch({ type: "START_TIMER" });
+          }}
         />
       </Grid>
     </>
