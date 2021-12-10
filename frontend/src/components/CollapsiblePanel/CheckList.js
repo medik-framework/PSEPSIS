@@ -26,6 +26,34 @@ const checkLists = {
     "Indwelling vascular catheter or other invasive devices?",
     "History of pneumonia?",
   ],
+  "Fluid Checklist": [
+    "Pulmonary Edema",
+    "Renal Insufficiency",
+    "History of Congenital Heart Disease",
+    "None"
+  ],
+  "Fluid Overload Checklist": [
+    "Pulmonary Rales",
+    "Hepatomegaly",
+    "None"
+  ],
+  "High Risk Conditions": [
+
+"Congenital Heart Disease",
+"Splenectomy/Asplenia",
+"Sickle Cell Disease",
+"PICC/Central Venous Catheter",
+"CSF Shunt",
+"Tracheostomy",
+"Indwelling Urinary Catheter",
+"Cerebral Palsy",
+"Developmental Delay/Mental Retardation",
+"Cancer",
+"Immunosuppression",
+"Petechial or Purpuric Rash",
+"Large Surgical Incisions/ Serious Injury",
+"Obvious Source of Infection",
+  ]
 };
 
 export default function CheckList() {
