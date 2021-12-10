@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   TextField,
@@ -94,8 +94,8 @@ export default function CheckList() {
       <FormGroup>
         {checkLists[checkListName].map((value) => {
           return (
-            <Grid item xs={12} sx={{ backgroundColor: checkedItems[checkListName]?.contains(label) ? "yellow" : "white" }}>
-              <FormControlLabel control={<Checkbox />} label={value} onChange={() => checkItem(label)}/>
+            <Grid item xs={12} sx={{ backgroundColor: checkedItems[checkListName]?.contains(value) ? "yellow" : "white" }}>
+              <FormControlLabel control={<Checkbox />} label={value} onChange={() => checkItem(value)}/>
             </Grid>
           );
         })}
