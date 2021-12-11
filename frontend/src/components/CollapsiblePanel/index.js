@@ -4,6 +4,7 @@ import { Button, Grid, Popover } from "@mui/material";
 import TreatmentLog from "./TreatmentLog";
 import WorkflowTab from "./WorkflowTab";
 import CheckList from "./CheckList";
+import Reference from "./References";
 
 const CollapsiblePanel = () => {
   const [selectedButton, setSelectedButton] = useState();
@@ -48,6 +49,7 @@ const CollapsiblePanel = () => {
           {selectedButton == "history" && <TreatmentLog />}
           {selectedButton == "flowchart" && <WorkflowTab />}
           {selectedButton == "checklists" && <CheckList />}
+          {selectedButton == "references" && <Reference />}
         </div>
       </Popover>
     </div>
