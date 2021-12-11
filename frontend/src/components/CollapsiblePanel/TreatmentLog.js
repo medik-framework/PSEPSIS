@@ -1,39 +1,43 @@
-import { useState } from "react";
+import * as React from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
-import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
 
-import makeStyles from "@mui/styles/makeStyles";
+const rows = [createData("Frozen yoghurt", 159, 6.0, 24, 4.0)];
 
-const useStyles = makeStyles((theme) => ({
-  select: {
-    marginTop: "10px",
-  },
-  button: {
-    textAlign: "center",
-    height: "30px",
-  },
-}));
-
-export default function TreatmentLog() {
-  const classes = useStyles();
-
+export default function BasicTable() {
   return (
-    <div>
-      Treatment and Lab/Vitals Log
-      <Grid container spacing={3}>
-        <div style={{ margin: 0, padding: 0 }}>
-          <table size="sm" style={{ margin: 0, padding: 0 }}>
-            <thead style={{ display: "block", width: "100%" }}>
-              <tr style={{ display: "flex", width: "100%" }}>
-                <th>Time</th>
-                <th>Name</th>
-                <th>Value</th>
-                <th>Reminder</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-      </Grid>
-    </div>
+    <TableContainer component={Paper}>
+      <Table aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Time</TableCell>
+            <TableCell align="right">Action</TableCell>
+            <TableCell align="right">Details</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow
+              key={row.time}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.action}
+              </TableCell>
+              <TableCell align="right">{row.details}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

@@ -3,7 +3,7 @@ import { combineReducers } from "redux";
 import APIURL from "./apiUrl";
 import Timer from "./timer";
 import MedicationTab from "./medicationTab";
-import CheckList from "./checklist"
+import CheckList from "./checklist";
 import PatientInfo from "./patientInfo";
 import DigitalTwin from "./digitalTwin";
 

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -32,30 +31,25 @@ const checkLists = {
     "Pulmonary Edema",
     "Renal Insufficiency",
     "History of Congenital Heart Disease",
-    "None"
+    "None",
   ],
-  "Fluid Overload Checklist": [
-    "Pulmonary Rales",
-    "Hepatomegaly",
-    "None"
-  ],
+  "Fluid Overload Checklist": ["Pulmonary Rales", "Hepatomegaly", "None"],
   "High Risk Conditions": [
-
-"Congenital Heart Disease",
-"Splenectomy/Asplenia",
-"Sickle Cell Disease",
-"PICC/Central Venous Catheter",
-"CSF Shunt",
-"Tracheostomy",
-"Indwelling Urinary Catheter",
-"Cerebral Palsy",
-"Developmental Delay/Mental Retardation",
-"Cancer",
-"Immunosuppression",
-"Petechial or Purpuric Rash",
-"Large Surgical Incisions/ Serious Injury",
-"Obvious Source of Infection",
-  ]
+    "Congenital Heart Disease",
+    "Splenectomy/Asplenia",
+    "Sickle Cell Disease",
+    "PICC/Central Venous Catheter",
+    "CSF Shunt",
+    "Tracheostomy",
+    "Indwelling Urinary Catheter",
+    "Cerebral Palsy",
+    "Developmental Delay/Mental Retardation",
+    "Cancer",
+    "Immunosuppression",
+    "Petechial or Purpuric Rash",
+    "Large Surgical Incisions/ Serious Injury",
+    "Obvious Source of Infection",
+  ],
 };
 
 export default function CheckList() {
@@ -65,14 +59,17 @@ export default function CheckList() {
 
   const dispatch = useDispatch();
 
-  const checkedItems = useSelector(state => state.CheckList)
+  const checkedItems = useSelector((state) => state.CheckList);
 
   const checkItem = (label) => {
-    dispatch({type: "TOGGLE_CHECKLIST_ITEM", payload: {
+    dispatch({
+      type: "TOGGLE_CHECKLIST_ITEM",
+      payload: {
         checklist: checkListName,
-        item: label
-    }})
-}
+        item: label,
+      },
+    });
+  };
 
   return (
     <div>
@@ -94,9 +91,21 @@ export default function CheckList() {
       <FormGroup>
         {checkLists[checkListName].map((value) => {
           return (
-            <Grid item xs={12} sx={{ backgroundColor: checkedItems[checkListName]?.contains(value) ? "yellow" : "white" }}>
-              <FormControlLabel control={<Checkbox />} label={value} onChange={() => checkItem(value)}/>
-            </Grid>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checkedItems[checkListName]?.includes(value)}
+                />
+              }
+              label={value}
+              onChange={() => checkItem(value)}
+              sx={{
+                backgroundColor: checkedItems[checkListName]?.includes(value)
+                  ? "yellow"
+                  : "white",
+              }}
+              key={value}
+            />
           );
         })}
       </FormGroup>

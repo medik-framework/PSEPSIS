@@ -1,15 +1,21 @@
 import { useInterval } from "react-use";
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector, useDispatch } from "react-redux";
 import { Typography } from "@mui/material";
 
 import DigitalTwin from "./DigitalTwin";
 
 const LeftPanel = () => {
-  const apiUrl = useSelector(state => state.APIURL);
+  const apiUrl = useSelector((state) => state.APIURL);
   const dispatch = useDispatch();
-  useInterval(() => fetch(`https://${apiUrl}/debug`).then((response) =>
-  response.json()
-).then((json) => dispatch({type : "UPDATE_PATIENT_INFO", payload: json})), 1000);
+  useInterval(
+    () =>
+      fetch(`https://${apiUrl}/debug`)
+        .then((response) => response.json())
+        .then((json) =>
+          dispatch({ type: "UPDATE_PATIENT_INFO", payload: json })
+        ),
+    1000
+  );
 
   return (
     <>
