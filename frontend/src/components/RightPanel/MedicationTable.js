@@ -42,17 +42,14 @@ export default function CenteredGrid() {
           );
         })}
       </Grid>
-
-      <Grid container spacing={0}>
-        <div
-          style={{
-            display:
-              selectedCategory === medicationCategories[1] ? "block" : "none",
-          }}
-        >
-          <FluidTherapy />
-        </div>
-      </Grid>
+      <div
+        style={{
+          display:
+            selectedCategory === medicationCategories[1] ? "block" : "none",
+        }}
+      >
+        <FluidTherapy />
+      </div>
     </>
   );
 }

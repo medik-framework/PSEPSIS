@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
@@ -6,7 +5,6 @@ import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
 import { FLUIDS } from "../../resources/AntibioticsList";
-import MedicationCard from "./MedicationCard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,17 +22,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function OneHourBundle() {
+const MedicationCard = (props) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const { FLUIDS, key2: key } = props;
 
   return (
-    <div>
+    <Grid item xs={6} sx={{ backgroundColor: "mediumseagreen" }}>
+      {key}
+      {FLUIDS[key].value} {FLUIDS[key].unit}
       <Grid container>
-        {Object.keys(FLUIDS).map((key) => {
-          return <MedicationCard FLUIDS={FLUIDS} key={key} key2={key} />;
-        })}
+        <Grid item xs={6}>
+          Count
+          <br />
+          Last time
+        </Grid>
+        <Grid item xs={6}>
+          <Button className={classes.button}>Give</Button>
+        </Grid>
       </Grid>
-    </div>
+    </Grid>
   );
-}
+};
+
+export default MedicationCard;
