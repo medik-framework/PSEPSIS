@@ -67,12 +67,16 @@ const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
 const DigitalTwinForm = ({ selectedDT }) => {
   const measurements = organsDT[selectedDT].measurements;
   const digitalTwinValue = useSelector((state) => state.DigitalTwin);
+  const patientInfo = useSelector((state) => state.PatientInfo);
 
   console.log(digitalTwinValue);
   return (
     <>
       <Grid container>
         {Object.keys(measurements).map((key) => {
+          const range = measurements[key].getThres ? measurements[key].getThres({}) : {low: 0, high: 0}
+          const colorcode = patientInfo[key] > range?.high || patientInfo[key] < range?.low ? "red" : "lightgray"
+
           return (
             <Grid
               item
@@ -81,7 +85,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
                 height: "80px",
                 boxShadow:
                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "lightgray",
+                backgroundColor: colorcode,
               }}
             >
               <div>
@@ -90,8 +94,8 @@ const DigitalTwinForm = ({ selectedDT }) => {
                   ? `(${measurements[key]?.unit})`
                   : null}
               </div>
-              <div>{digitalTwinValue[selectedDT][key]?.value}</div>
-              <div>Last updated time:</div>
+              <div>{patientInfo[key]}</div>
+              <div>{/*Last updated time:*/}</div>
             </Grid>
           );
         })}
