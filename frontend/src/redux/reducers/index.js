@@ -6,6 +6,7 @@ import MedicationTab from "./medicationTab";
 import CheckList from "./checklist";
 import PatientInfo from "./patientInfo";
 import DigitalTwin from "./digitalTwin";
+import SepsisBundleForm from "./sepsisBundleForm";
 
 const appReducer = combineReducers({
   APIURL,
@@ -14,6 +15,7 @@ const appReducer = combineReducers({
   CheckList,
   PatientInfo,
   DigitalTwin,
+  SepsisBundleForm
 });
 
 export default appReducer;
