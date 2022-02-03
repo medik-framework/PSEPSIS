@@ -56,7 +56,7 @@ const BundleForm = () => {
               }}
             >
               <FormControlLabel
-                control={<Checkbox />}
+                control={<Checkbox checked={(checkedIdx >> idx) & 1} />}
                 label={value}
                 onChange={() => {
                   updateCheckedIdx(checkedIdx ^ (1 << idx));
@@ -74,7 +74,7 @@ const BundleForm = () => {
         sx={{ backgroundColor: ventilationChecked ? "yellow" : "white" }}
       >
         <FormControlLabel
-          control={<Checkbox />}
+          control={<Checkbox checked={ventilationChecked} />}
           label={"Mechanical Ventilation"}
           onChange={() => {
             updateCheckedVentilation(!ventilationChecked);
