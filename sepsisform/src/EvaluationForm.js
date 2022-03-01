@@ -4,12 +4,15 @@ import { organsDT } from "./resources/DigitalTwinConfigReorganized";
 
 import { FormSection } from "./components/FormSection";
 
-const apiUrl = "https://psepsis.herokuapp.com/submit";
+const apiUrl = "http://localhost:5000/submit";
 
 export const EvaluationForm = () => {
   const { handleSubmit, control, formState  } = useForm({});
 
-  const onSubmit = (data) => {console.log(data)
+  const onSubmit = (data) => {
+
+    const body = JSON.stringify(data, (k, v) => v === undefined? null : v)
+    console.log(body)
 
     fetch(apiUrl, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -22,7 +25,7 @@ export const EvaluationForm = () => {
         },
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data) // body data type must match "Content-Type" header
+        body: body
       });};
 
   return (
