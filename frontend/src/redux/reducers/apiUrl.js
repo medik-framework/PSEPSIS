@@ -1,4 +1,4 @@
-const apiUrlReducer = (state = "psepsis.herokuapp.com", action) => {
+const apiUrlReducer = (state = "http://localhost:5000", action) => {
   return state;
 };
 
