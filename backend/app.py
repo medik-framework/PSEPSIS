@@ -48,6 +48,29 @@ def getValues(params):
 
     return result, error
 
+def validate_evaluation_form(json):
+    if json['PulseQuality'] == '':
+        json['PulseQuality'] = 'Normal'
+
+    if json['RespirationQuality'] == '':
+        json['RespirationQuality'] = 'Normal'
+
+    if json['MentalState'] == '':
+        json['MentalState'] = 'Normal'
+
+    if json['Seizures'] == '':
+        json['Seizures'] = 'No'
+
+    if json['Dehydration'] == '':
+        json['Dehydration'] = 'No'
+
+    if json['MedicalDevice'] == '':
+        json['MedicalDevice'] = 'No'
+
+    return json
+
+
+
 
 @app.route("/", methods=["POST"])
 def index():
@@ -72,7 +95,8 @@ def index2():
 def submit():
     global data_copy2
     json = request.json
-    data_copy2 = json
+    json_with_default = validate_evaluation_form(json)
+    data_copy2 = json_with_default
     print("Recieved from frontend:", data_copy2)
     return ""
 
