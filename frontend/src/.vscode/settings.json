@@ -6,6 +6,10 @@
         "watchFile": "dynamicPriorityPolling"
     },
     "javascript.suggest.includeAutomaticOptionalChainCompletions": false,
+<<<<<<< HEAD
     "debug.saveBeforeStart": "none",
     "c3.welcome.showFeatureHighlight": false
+=======
+    "debug.saveBeforeStart": "none"
+>>>>>>> 8f1fdf5 (update redux architecture, add medical assessments and patient info)
 }
