@@ -105,7 +105,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
 };
 
 const SystematicAssessmentForm = ({ selectedDT }) => {
-  const assessments = { Sepsis: 2, "Septic shock": 1, SIRS: 1, PEW: 1 };
+  const assessments = { Sepsis: '', "Septic shock": '', SIRS: '', PEW: '' };
   return (
     <>
       <Grid container>
@@ -135,8 +135,8 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
             >
               <div>
                 {key}: {assessments[key]}
-                <br />
-                30s ago
+                {/* <br />
+                30s ago */}
               </div>
             </Grid>
           );
@@ -168,12 +168,10 @@ const OrganAssessmentForm = ({ selectedDT }) => {
               }}
             >
               <div>
-                {assessments[key]?.name}{" "}
-                {assessments[key]?.unit === ""
-                  ? null
-                  : `(${assessments[key]?.unit})`}
+                {assessments[key].name}{": "}
+                {assessments[key].value ? assessments[key].value : null}
               </div>
-              <div>Last updated time:</div>
+              {/* <div>Last updated time:</div> */}
             </Grid>
           );
         })}

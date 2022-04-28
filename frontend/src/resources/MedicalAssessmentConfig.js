@@ -5,7 +5,7 @@ import {
   Respiratory as RespiratoryDT,
 } from "./DigitalTwinConfigReorganized";
 
-export const assessments = {
+export const MedicalAssessment = {
   SIRS: {
     name: "SIRS Score",
     measurements: [
@@ -54,5 +54,8 @@ export const assessments = {
     ],
     value: 0,
   },
-  PEW: { name: "PEW Score", unit: "", type: "number" },
+  PEW: { 
+    name: "PEW Score", 
+    value: 0,
+  },
 };
