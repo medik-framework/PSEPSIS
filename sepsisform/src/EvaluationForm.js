@@ -10,7 +10,7 @@ export const EvaluationForm = () => {
   const { handleSubmit, control, formState  } = useForm({});
 
   const onSubmit = (data) => {console.log(data)
-
+    data.timeStamp = new Date();
     fetch(apiUrl, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
