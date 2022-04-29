@@ -867,7 +867,7 @@ export const Immune = {
   },
 };
 
-export const organsDT = [
+export const OrganDTConfig = [
   Cardiovascular,
   Hematologic,
   Hepatic,
