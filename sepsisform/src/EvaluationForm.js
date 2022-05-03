@@ -1,14 +1,9 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 
 import { useForm, Controller } from "react-hook-form";
-import { Button, Grid, Typography, TextField } from "@mui/material";
+import { Button, Grid, Typography, TextField, Select, MenuItem } from "@mui/material";
 
 import { OrganDTConfig } from "./resources/DigitalTwinConfigReorganized";
-import { MedicalAssessment } from "./resources/MedicalAssessmentConfig";
-import { PatientBasic } from "./resources/PatientConfig";
-
-import { FormSection } from "./components/FormSection";
 
 const apiUrl = "https://psepsis.herokuapp.com/submit";
 
@@ -16,7 +11,6 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
     <Grid container sx={{ marginTop: "10px" }}>
       {OrganDTConfig.map((value, index) => {
-        console.log(value)
         return (
           <Grid item xs={4} key={value.name}>
             <Button
@@ -37,62 +31,73 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   );
 };
 
-const OrganForm = ({ selectedDT, control }) => {
+const MeasurementInput = ({ control, register, getValues, setValue, organName, measurement }) => {
+  if (measurement.type === "choices") {
+    return(
+      <Grid xs={4} item key={measurement.name}>
+        <Typography>
+            {measurement.name} {measurement.unit ? `(${measurement.unit})` : null}
+        </Typography>
+        <select {...register(`${organName}.${measurement.name}`)}>
+          {Object.keys(measurement.options).map((key) =>
+            <option key={key} value={measurement.options[key]}>{key}</option>
+          )}
+        </select>
+      </Grid>
+    )
+  } else {
+    console.log(getValues(`${organName}.${measurement.name}`))
+    return(
+      <Grid xs={4} item key={measurement.name}>
+        <Typography>
+            {measurement.name} {measurement.unit ? `(${measurement.unit})` : null}
+        </Typography>
+        <Typography>
+            Current value: {getValues(`${organName}.${measurement.name}`)}
+        </Typography>
+        <TextField
+          variant="filled" 
+          {...register(`${organName}.${measurement.name}`)}
+        />
+      </Grid>
+    )
+  }
+
+}
+
+const OrganForm = ({ selectedDT, control, register, getValues, setValue }) => {
   const selectedOrganDTConfig = OrganDTConfig[selectedDT];
-  const measurementsValue = useSelector((state) => state.OrganDT[OrganDTConfig[selectedDT].name]);
-  // console.log(measurementsValue)
   return (
-    <Grid container>
-      {Object.keys(measurementsValue).map((key) => {
-        if (selectedOrganDTConfig.measurements[key].type === "group") {
-          return (
-            <>{
-                Object.keys(selectedOrganDTConfig.measurements[key].content).map((contentKey) => {
-                  console.log(contentKey);
-                  console.log(selectedOrganDTConfig.measurements[key].content[contentKey]);
-                  return (
-                    <Grid xs={4} item key={contentKey}>
-                    <Typography>
-                        {contentKey} {selectedOrganDTConfig.measurements[key].content[contentKey].unit
-                      ? `(${selectedOrganDTConfig.measurements[key].content[contentKey].unit})`
-                      : null}
-                    </Typography>
-                    <Controller
-                      key={contentKey}
-                      name={contentKey}
-                      control={control}
-                      render={({ field }) => <TextField variant="filled" {...field} />}
-                      
-                    />
-                  </Grid>
-                )
-              })
-            }</>
-          )
-        } else {
-          return (
-            <Grid xs={4} item key={key}>
-              <Typography>
-                  {key} {selectedOrganDTConfig.measurements[key]?.unit
-                ? `(${selectedOrganDTConfig.measurements[key]?.unit})`
-                : null}
-              </Typography>
-              <Controller
-                key={key}
-                name={key}
-                control={control}
-                render={({ field }) => <TextField variant="filled" {...field} />}
-              />
-            </Grid>
-          )
-        }
-      })}
+    <Grid container >
+      {Object.keys(selectedOrganDTConfig.measurements).map((key) => (
+        <MeasurementInput
+          key={`${selectedOrganDTConfig.name}.${selectedOrganDTConfig.measurements[key].name}`}
+          { ...{ control,
+                 register,
+                 getValues,
+                 setValue,
+                 organName: selectedOrganDTConfig.name, 
+                 measurement: selectedOrganDTConfig.measurements[key]
+          }}
+        />
+      ))}
     </Grid>
   )
 };
 
 export const EvaluationForm = () => {
-  const { handleSubmit, control, formState } = useForm({});
+  const initialState = {}
+  OrganDTConfig.map((organ) => {
+    const measurements = organ.measurements;
+    initialState[organ.name] = Object.keys(measurements).reduce((prev, measurementKey) => {
+      prev[measurements[measurementKey].name] = null;
+      return prev;
+    }, {});
+  });
+  const { register, handleSubmit, control, getValues, setValue } = useForm({
+    defaultValues: initialState
+  });
+  // console.log(getValues());
   const [selectedDT, setSelectedDT] = useState(0);
   
   const onSubmit = (data) => {console.log(data)
@@ -113,12 +118,9 @@ export const EvaluationForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <input type="submit" />
       <OrganSelection {...{ selectedDT, setSelectedDT }}/>
-      <OrganForm {...{ selectedDT, control }}/>
-      {/* {OrganDTConfig.map((organDT) => (
-        <FormSection control={control} organDT={organDT} key={organDT.name} />
-      ))}
-      <input type="submit" /> */}
+      <OrganForm {...{ selectedDT, control, register, getValues, setValue }}/>
     </form>
   );
 };
