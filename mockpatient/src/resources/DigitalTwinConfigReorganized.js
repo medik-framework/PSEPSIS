@@ -175,7 +175,11 @@ export const Cardiovascular = {
     SkinColor: {
       name: "Skin Color",
       fulltext: "Skin Color",
+<<<<<<< HEAD
       unit: "",
+=======
+      unit: "sec",
+>>>>>>> 8049a96 (update gitignore)
       type: "choices",
       options: { Flushed: 0, Pink: 2, Pale: 0, Gray: 0, "Gray and Mottled": 0 },
     },
