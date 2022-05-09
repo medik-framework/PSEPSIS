@@ -1,9 +1,9 @@
-import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
+import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 import { MedicalAssessment } from "../../resources/MedicalAssessmentConfig";
 import { PatientBasic } from "../../resources/PatientConfig";
 
 const initialState = {'organDT': {}, 'medicalAssessment': {}, 'patientBasic': {}};
-initialState.organsDT = organsDT.map((organ) => {
+initialState.OrganDTConfig = OrganDTConfig.map((organ) => {
   const measurements = organ.measurements;
   return Object.keys(measurements).reduce((prev, measurementKey) => {
     if (measurements[measurementKey].type === "group") {

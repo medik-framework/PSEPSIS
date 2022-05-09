@@ -9,7 +9,7 @@ const LeftPanel = () => {
   const dispatch = useDispatch();
   useInterval(
     () =>
-      fetch(`https://${apiUrl}/debug`)
+      fetch(`http://${apiUrl}/debug`)
         .then((response) => response.json())
         .then((json) =>
           dispatch({ type: "UPDATE_PATIENT_INFO", payload: json })

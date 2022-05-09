@@ -12,14 +12,14 @@ const PsepsisTablet = () => {
         <Grid
           item
           sx={{
-            width: "30%",
+            width: "50%",
             height: "100vh",
             paddingRight: "10px",
           }}
         >
           <LeftPanel />
         </Grid>
-        <Grid
+        {/* <Grid
           item
           sx={{
             width: "25%",
@@ -46,7 +46,7 @@ const PsepsisTablet = () => {
           }}
         >
           <CollapsiblePanel />
-        </Grid>
+        </Grid> */}
       </Grid>
     </div>
   );

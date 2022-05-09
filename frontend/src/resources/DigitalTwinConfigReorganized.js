@@ -29,76 +29,69 @@ export const Cardiovascular = {
       type: "choices",
       options: { Bounding: 0, Normal: 2, Thready: 0 },
     },
-    BP: {
-      name: "BP",
-      fulltext: "Blood Pressure",
-      type: "group",
-      content: {
-        BPSys: {
-          name: "BP Sys",
-          fulltext: "Systolic Blood Pressure",
-          unit: "mmHg",
-          type: "number",
-          minValue: 0,
-          maxValue: 250,
-          decimal: 0,
-          getThres: (AgeObject) => {
-            const AgeGroupVitals = AgeObject.AgeGroupVitals;
-            const AgeInYears = AgeObject.AgeInYears;
-            if (typeof AgeGroupVitals == "undefined" || AgeGroupVitals == null)
-              return { low: 100, high: 180 };
-            if (AgeGroupVitals === 1) return { low: 60, high: 180 };
-            if ([2, 3].includes(AgeGroupVitals)) return { low: 70, high: 180 };
-            if ([4, 5, 6, 7].includes(AgeGroupVitals))
-              return { low: 70 + AgeInYears * 2, high: 180 };
-            if ([8, 9].includes(AgeGroupVitals)) return { low: 90, high: 180 };
-            return { low: 100, high: 180 };
-          },
-        },
-        BPDia: {
-          name: "BP Dia",
-          fulltext: "Diastolic Blood Pressure",
-          unit: "mmHg",
-          type: "number",
-          minValue: 0,
-          maxValue: 150,
-          decimal: 0,
-          getThres: (AgeObject) => {
-            const AgeGroupVitals = AgeObject.AgeGroupVitals;
-            if (typeof AgeGroupVitals == "undefined" || AgeGroupVitals == null)
-              return { low: 60, high: 80 };
-            if (AgeGroupVitals === 1) return { low: 35, high: 53 };
-            if ([2, 3].includes(AgeGroupVitals)) return { low: 37, high: 56 };
-            if (AgeGroupVitals === 4) return { low: 42, high: 63 };
-            if (AgeGroupVitals === 5) return { low: 57, high: 76 };
-            if ([6, 7, 8, 9].includes(AgeGroupVitals))
-              return { low: 64, high: 83 };
-            return { low: 60, high: 80 };
-          },
-        },
-        MAP: {
-          name: "MAP",
-          fulltext: "Mean Arterial Pressure",
-          unit: "mmHg",
-          type: "number",
-          minValue: 0,
-          maxValue: 300,
-          decimal: 0,
-          getThres: (AgeObject) => {
-            const AgeGroupVitals = AgeObject.AgeGroupVitals;
-            if (typeof AgeGroupVitals == "undefined" || AgeGroupVitals == null)
-              return { low: 65, high: 110 };
-            if (AgeGroupVitals === 1) return { low: 46, high: 110 };
-            if ([2, 3].includes(AgeGroupVitals)) return { low: 55, high: 110 };
-            if (AgeGroupVitals === 4) return { low: 60, high: 110 };
-            if ([5, 6].includes(AgeGroupVitals)) return { low: 65, high: 110 };
-            if ([7, 8].includes(AgeGroupVitals)) return { low: 64, high: 110 };
-            if (AgeGroupVitals === 49) return { low: 67, high: 110 };
-            return { low: 65, high: 110 };
-          },
-          formula: (BP) => (BP.BPSys + 2 * BP.BPDia) / 3,
-        },
+    BPSys: {
+      name: "BP Sys",
+      fulltext: "Systolic Blood Pressure",
+      unit: "mmHg",
+      type: "number",
+      minValue: 0,
+      maxValue: 250,
+      decimal: 0,
+      getThres: (AgeObject) => {
+        const AgeGroupVitals = AgeObject.AgeGroupVitals;
+        const AgeInYears = AgeObject.AgeInYears;
+        if (typeof AgeGroupVitals == "undefined" || AgeGroupVitals == null)
+          return { low: 100, high: 180 };
+        if (AgeGroupVitals === 1) return { low: 60, high: 180 };
+        if ([2, 3].includes(AgeGroupVitals)) return { low: 70, high: 180 };
+        if ([4, 5, 6, 7].includes(AgeGroupVitals))
+          return { low: 70 + AgeInYears * 2, high: 180 };
+        if ([8, 9].includes(AgeGroupVitals)) return { low: 90, high: 180 };
+        return { low: 100, high: 180 };
       },
+    },
+    BPDia: {
+      name: "BP Dia",
+      fulltext: "Diastolic Blood Pressure",
+      unit: "mmHg",
+      type: "number",
+      minValue: 0,
+      maxValue: 150,
+      decimal: 0,
+      getThres: (AgeObject) => {
+        const AgeGroupVitals = AgeObject.AgeGroupVitals;
+        if (typeof AgeGroupVitals == "undefined" || AgeGroupVitals == null)
+          return { low: 60, high: 80 };
+        if (AgeGroupVitals === 1) return { low: 35, high: 53 };
+        if ([2, 3].includes(AgeGroupVitals)) return { low: 37, high: 56 };
+        if (AgeGroupVitals === 4) return { low: 42, high: 63 };
+        if (AgeGroupVitals === 5) return { low: 57, high: 76 };
+        if ([6, 7, 8, 9].includes(AgeGroupVitals))
+          return { low: 64, high: 83 };
+        return { low: 60, high: 80 };
+      },
+    },
+    MAP: {
+      name: "MAP",
+      fulltext: "Mean Arterial Pressure",
+      unit: "mmHg",
+      type: "number",
+      minValue: 0,
+      maxValue: 300,
+      decimal: 0,
+      getThres: (AgeObject) => {
+        const AgeGroupVitals = AgeObject.AgeGroupVitals;
+        if (typeof AgeGroupVitals == "undefined" || AgeGroupVitals == null)
+          return { low: 65, high: 110 };
+        if (AgeGroupVitals === 1) return { low: 46, high: 110 };
+        if ([2, 3].includes(AgeGroupVitals)) return { low: 55, high: 110 };
+        if (AgeGroupVitals === 4) return { low: 60, high: 110 };
+        if ([5, 6].includes(AgeGroupVitals)) return { low: 65, high: 110 };
+        if ([7, 8].includes(AgeGroupVitals)) return { low: 64, high: 110 };
+        if (AgeGroupVitals === 49) return { low: 67, high: 110 };
+        return { low: 65, high: 110 };
+      },
+      formula: (Cardiovascular) => (Cardiovascular.BPSys + 2 * Cardiovascular.BPDia) / 3,
     },
     CapillaryRefill: {
       name: "Capillary Refill",
@@ -196,7 +189,7 @@ export const Cardiovascular = {
         const AgeGroupVitals = patient.Age.AgeGroupVitals;
         const AgeInYears = patient.Age.AgeInYears;
         const BPSys = organs.Cardiovascular.measurements.BP.BPSys.value;
-        if (AgeGroupVitals == 1 && BPSys < 60) return true;
+        if (AgeGroupVitals === 1 && BPSys < 60) return true;
         if ([2, 3].includes(AgeGroupVitals) && BPSys < 70) return true;
         if (
           [4, 5, 6, 7].includes(AgeGroupVitals) &&
@@ -221,7 +214,7 @@ export const Cardiovascular = {
         if (isNaN(organs.Cardiovascular.measurements.BP.MAP.value)) return 0;
         if (organs.Cardiovascular.measurements.BP.MAP.value >= 70) return 0;
         else {
-          if (treatments.Drug.Dopamine.totalDosage == 0) return 1;
+          if (treatments.Drug.Dopamine.totalDosage === 0) return 1;
           if (treatments.Drug.Dopamine.totalDosage < 5) return 2;
           if (treatments.Drug.Dopamine.totalDosage < 15) return 3;
           if (treatments.Drug.Dopamine.totalDosage >= 15) return 4;
@@ -252,7 +245,7 @@ export const Cardiovascular = {
         if (organs.Renal.measurements.UrineOutput.value < 0.5) uoScore = 1;
         if (organs.Cardiovascular.measurements.Lactate.value >= 5)
           lactateScore = 1;
-        if (organs.Cardiovascular.measurements.CapillaryRefill.value == 5)
+        if (organs.Cardiovascular.measurements.CapillaryRefill.value === 5)
           capScore = 1;
         if (organs.Renal.measurements.baseExcess.value < -5)
           metabolicAcidosisScore = 1;
@@ -380,9 +373,9 @@ export const Respiratory = {
           organs.Respiratory.measurements.PaO2.value /
           organs.Respiratory.measurements.FiO2.value;
         if (ratio >= 400) return 0;
-        if (300 < ratio < 400) return 1;
-        if (200 < ratio <= 300) return 2;
-        if (100 < ratio <= 200) return 3;
+        if (300 < ratio && ratio < 400) return 1;
+        if (200 < ratio && ratio <= 300) return 2;
+        if (100 < ratio && ratio <= 200) return 3;
         if (ratio <= 100) return 4;
         return 0;
       },
@@ -581,13 +574,15 @@ export const Renal = {
         return { low: 0, high: 2 };
       },
       formula: (_, organs, _2) => {
-        if (organs.Renal.measurements.Creatinine.value <= 1.2) return 0;
-        if (1.2 < organs.Renal.measurements.Creatinine.value < 2.0) return 1;
-        if (2.0 <= organs.Renal.measurements.Creatinine.value < 3.5) return 2;
-        if (3.5 <= organs.Renal.measurements.Creatinine.value < 5) return 3;
-        if (organs.Renal.measurements.Creatinine.value >= 5) return 4;
-        if (200 < organs.Renal.measurements.UrineOutput.value < 500) return 3;
-        if (organs.Renal.measurements.UrineOutput.value <= 200) return 4;
+        const valueCreatinine = organs.Renal.measurements.Creatinine.value;
+        const valueUrineOutput = organs.Renal.measurements.UrineOutput.value;
+        if (valueCreatinine <= 1.2) return 0;
+        if (1.2 < valueCreatinine && valueCreatinine < 2.0) return 1;
+        if (2.0 <= valueCreatinine && valueCreatinine < 3.5) return 2;
+        if (3.5 <= valueCreatinine && valueCreatinine < 5) return 3;
+        if (valueCreatinine >= 5) return 4;
+        if (200 < valueUrineOutput && valueUrineOutput < 500) return 3;
+        if (valueUrineOutput <= 200) return 4;
         return 0;
       },
     },
@@ -867,11 +862,12 @@ export const Immune = {
   },
 };
 
-export const organsDT = [
+export const OrganDTConfig = [
   Cardiovascular,
+  Respiratory,
+  Immune,
+  Renal,
   Hematologic,
   Hepatic,
   Neurologic,
-  Renal,
-  Respiratory,
 ];
