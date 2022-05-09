@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { pick } from "lodash";
 import { Button, Grid, Typography, Box } from "@mui/material";
-import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
+import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 import InputDialog from "./InputDialog";
 
 const assessments = ["Age", "Weight", "Height", "Gender"];
@@ -43,7 +43,7 @@ const PaitentBasic = () => {
 const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
   return (
     <Grid container sx={{ marginTop: "10px" }}>
-      {organsDT.map((value, index) => {
+      {OrganDTConfig.map((value, index) => {
         return (
           <Grid item xs={4} key={value}>
             <Button
@@ -65,11 +65,12 @@ const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
 };
 
 const DigitalTwinForm = ({ selectedDT }) => {
-  const measurements = organsDT[selectedDT].measurements;
+  const organName = OrganDTConfig[selectedDT].name;
+  const measurements = OrganDTConfig[selectedDT].measurements;
   const digitalTwinValue = useSelector((state) => state.DigitalTwin);
-  const patientInfo = useSelector((state) => state.PatientInfo);
+  const patientInfo = useSelector((state) => state.PatientInfo[organName]);
 
-  console.log(digitalTwinValue);
+  console.log(patientInfo);
   return (
     <>
       <Grid container>
@@ -147,7 +148,7 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
 };
 
 const OrganAssessmentForm = ({ selectedDT }) => {
-  const assessments = organsDT[selectedDT].assessments;
+  const assessments = OrganDTConfig[selectedDT].assessments;
   if (!assessments) {
     return null;
   }
