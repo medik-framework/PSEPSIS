@@ -8,9 +8,9 @@ cp -r ../frontend/build/static .
 cp -r ../frontend/build/index.html ./static/
 
 cd ..
-cd sepsisform
+cd mockpatient
 yarn
 yarn build
 cd ../backend
-cp -r ../sepsisform/build/static .
-cp -r ../sepsisform/build/index.html ./static/index2.html
+cp -r ../mockpatient/build/static .
+cp -r ../mockpatient/build/index.html ./static/index2.html
