@@ -1,9 +1,10 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 
-import { useSelector, useDispatch } from 'react-redux'
-import { update, increment } from './organDataSlice'
-import { useInterval } from 'usehooks-ts'
+import { useSelector, useDispatch } from 'react-redux';
+import { update, increment } from './organDataSlice';
+import { updateURL } from "./miscSlice";
+import { useInterval } from 'usehooks-ts';
 
 import { Button, Grid, Typography, TextField, Select, MenuItem, Box, Tabs, Tab } from "@mui/material";
 import { OrganDTConfig } from "./resources/DigitalTwinConfigReorganized";
@@ -230,9 +231,10 @@ const MeasurementSelect = ({ organName, config }) => {
 function App() {
   const [selectedDT, setSelectedDT] = useState(0);
   const data = useSelector((state) => state.organData);
-  const apiURL = "http://127.0.0.1:5000/submit";
+  const apiURL = useSelector((state) => state.misc['apiURL']);
+  const dispatch = useDispatch();
 
-  const post = () => {
+  useEffect(() => {
     fetch(apiURL, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -245,13 +247,20 @@ function App() {
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(data) // body data type must match "Content-Type" header
+    }).catch(error => {
+      console.log('Post error:', error)
     })
-  };
-
-  setInterval(post, 1000);
+  }, [data, apiURL])
 
   return (
     <div className="App">
+      <TextField
+        id="url"
+        sx={{fontSize:'18px', backgroundColor:'white', width:'50%'}}
+        variant="outlined"
+        value={apiURL}
+        onChange={(e) => dispatch(updateURL(e.target.value))}
+      />
       <OrganSelection {...{ selectedDT, setSelectedDT }}/>
       <OrganPage {...{ selectedDT }}/>
     </div>
