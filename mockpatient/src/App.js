@@ -1,41 +1,34 @@
 import "./App.css";
-import { useState, useEffect, useRef } from "react";
-import store from './store'
-import { Provider, useSelector, useDispatch } from 'react-redux'
+import { useState, useEffect } from "react";
+
+import { useSelector, useDispatch } from 'react-redux'
 import { update, increment } from './organDataSlice'
 import { useInterval } from 'usehooks-ts'
 
-import { Button, Grid, Typography, TextField, Select, MenuItem, Card } from "@mui/material";
+import { Button, Grid, Typography, TextField, Select, MenuItem, Box, Tabs, Tab } from "@mui/material";
 import { OrganDTConfig } from "./resources/DigitalTwinConfigReorganized";
 
 const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
-    <Grid container sx={{ marginTop: "10px" }}>
-      {OrganDTConfig.map((value, index) => {
-        return (
-          <Grid item xs={4} key={value.name}>
-            <Button
-              variant="contained"
-              sx={{
-                height: "50px",
-                width: "100%",
-                backgroundColor: selectedDT === index ? "#0062cc" : "#1976d2",
-              }}
-              onClick={() => setSelectedDT(index)}
-            >
-              {value.name}
-            </Button>
-          </Grid>
-        );
-      })}
-    </Grid>
-  );
+    <Box sx={{ 
+      borderBottom: 1, 
+      borderColor: 'divider',
+    }}>
+      <Tabs value={selectedDT} onChange={(e, v) => setSelectedDT(v)}>
+        {OrganDTConfig.map((organ, index) => {
+          return (
+            <Tab label={organ.name} value={index} key={index}/>
+          );
+        })}
+      </Tabs>
+    </Box>
+  )
 };
 
 const OrganPage = ({ selectedDT }) => {
   const selectedOrganDTConfig = OrganDTConfig[selectedDT];
   return (
-    <Grid container >
+    <Grid container>
       {Object.keys(selectedOrganDTConfig.measurements).map((key) => {
         const config = selectedOrganDTConfig.measurements[key];
         if (config.type === 'number') {
@@ -85,7 +78,7 @@ const MeasurementNumeric = ({ organName, config }) => {
       dispatch(update({value: target, organName: organName, measurementName: config.name}));
     }
       
-  }, [ delay, setDelay, elapse, setElapse, period, target, organName, config])
+  }, [ delay, setDelay, elapse, setElapse, period, target, organName, config, dispatch])
 
   useInterval(() => {
     dispatch(increment({
@@ -102,7 +95,7 @@ const MeasurementNumeric = ({ organName, config }) => {
   }
 
   return (
-    <Grid xs={3} item spacing={1} key={config.name} 
+    <Grid xs={3} item key={config.name} 
       sx={{ 
         margin:'2px', 
         backgroundColor:'#F0F8FF', 
@@ -110,12 +103,12 @@ const MeasurementNumeric = ({ organName, config }) => {
         borderRadius: '5px',
       }}
     >
-      <Grid xs={12}>
+      <Grid item xs={12}>
         <Typography sx={{fontSize:'24px', padding:'1px'}}>
             {config.name} {config.unit ? `(${config.unit})` : null}: {value ? +value.toFixed(2):null}
         </Typography>
       </Grid>
-      <Grid container direction='row' xs={12} sx={{margin:'2px'}}>
+      <Grid container direction='row' sx={{margin:'2px'}}>
         <Grid item xs={3}>
           <Typography sx={{fontSize:'16px'}}>
               Instantly update to: 
@@ -145,7 +138,7 @@ const MeasurementNumeric = ({ organName, config }) => {
           </Button>
         </Grid>
       </Grid>
-      {!delay && <Grid container direction='row' xs={12} sx={{ margin:'2px' }}>
+      {!delay && <Grid container direction='row' sx={{ margin:'2px' }}>
         <Grid item xs={3}>
           <Typography>
               Gradually update to: 
@@ -188,7 +181,7 @@ const MeasurementNumeric = ({ organName, config }) => {
           </Button>
         </Grid>
       </Grid>}
-      {delay&&<Grid container direction='row' xs={12} hidden={delay}>
+      {delay&&<Grid container direction='row' hidden={delay}>
         <Grid item xs={9}>
           <Typography>
               Gradually updating to {target} in {period-elapse} secs.
@@ -211,7 +204,7 @@ const MeasurementSelect = ({ organName, config }) => {
   const dispatch = useDispatch();
 
   return (
-    <Grid xs={3} item spacing={1} key={config.name} 
+    <Grid xs={3} item key={config.name} 
       sx={{ 
         margin:'2px', 
         backgroundColor:'#F0F8FF', 
@@ -219,7 +212,7 @@ const MeasurementSelect = ({ organName, config }) => {
         borderRadius: '5px',
       }}
     >
-      <Typography>
+      <Typography sx={{fontSize:'24px', padding:'1px'}}>
           {config.name} {config.unit ? `(${config.unit})` : null}
       </Typography>
       <Select
@@ -236,12 +229,31 @@ const MeasurementSelect = ({ organName, config }) => {
 
 function App() {
   const [selectedDT, setSelectedDT] = useState(0);
+  const data = useSelector((state) => state.organData);
+  const apiURL = "http://127.0.0.1:5000/submit";
+
+  const post = () => {
+    fetch(apiURL, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    })
+  };
+
+  setInterval(post, 1000);
+
   return (
     <div className="App">
-      <Provider store={store}>
-        <OrganSelection {...{ selectedDT, setSelectedDT }}/>
-        <OrganPage {...{ selectedDT }}/>
-      </Provider>
+      <OrganSelection {...{ selectedDT, setSelectedDT }}/>
+      <OrganPage {...{ selectedDT }}/>
     </div>
   );
 }
