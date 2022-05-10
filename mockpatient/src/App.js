@@ -110,14 +110,14 @@ const MeasurementNumeric = ({ organName, config }) => {
           </Typography>
           <TextField
             id={config.name}
-            sx={{ fontSize:'18px', backgroundColor:'white', width:'55%' }}
+            sx={{ fontSize:'18px', backgroundColor:'white', width:'55%', height:'100%', margin:'auto' }}
             variant="outlined" 
             type="number"
             onChange={(e) => setInputValue(e.target.value)}
           />
           <Button
             disabled={!inputValue}
-            sx={{ fontSize:'16px', width:'25%', marginLeft:'5px' }}
+            sx={{ fontSize:'16px', width:'25%', marginLeft:'5px'}}
             variant="outlined"
             onClick={() => {
               resetInterval();
@@ -139,7 +139,7 @@ const MeasurementNumeric = ({ organName, config }) => {
             <TextField
                 id='target'
                 variant="outlined"
-                sx={{ fontSize:'18px', backgroundColor:'white', width:'20%'}}
+                sx={{ fontSize:'18px', backgroundColor:'white', width:'20%', height:'100%', margin:'auto' }}
                 type="number"
                 onChange={(e) => setTarget(Number(e.target.value))}
             />
@@ -149,7 +149,7 @@ const MeasurementNumeric = ({ organName, config }) => {
             <TextField
                 id='period'
                 variant="outlined"
-                sx={{ fontSize:'18px', backgroundColor:'white', width:'20%'}}
+                sx={{ fontSize:'18px', backgroundColor:'white', width:'20%', height:'100%', margin:'auto' }}
                 type="number"
                 onChange={(e) => setPeriod(Number(e.target.value))}
             />
