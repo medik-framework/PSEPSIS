@@ -11,11 +11,14 @@ import { OrganDTConfig } from "./resources/DigitalTwinConfigReorganized";
 
 const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
-    <Box sx={{ 
-      borderBottom: 1, 
-      borderColor: 'divider',
-    }}>
-      <Tabs value={selectedDT} onChange={(e, v) => setSelectedDT(v)}>
+    <Box>
+      <Tabs
+        orientation="vertical"
+        value={selectedDT} 
+        onChange={(e, v) => setSelectedDT(v)}
+        textColor="primary"
+        indicatorColor="primary"
+      >
         {OrganDTConfig.map((organ, index) => {
           return (
             <Tab label={organ.name} value={index} key={index}/>
@@ -29,7 +32,7 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 const OrganPage = ({ selectedDT }) => {
   const selectedOrganDTConfig = OrganDTConfig[selectedDT];
   return (
-    <Grid container>
+    <Grid container columns={{ xs: 6, sm: 6, md: 12, lg: 18, xl: 24}} spacing={1} p={1} sx={{ alignItems: 'stretch' }}>
       {Object.keys(selectedOrganDTConfig.measurements).map((key) => {
         const config = selectedOrganDTConfig.measurements[key];
         if (config.type === 'number') {
@@ -56,8 +59,6 @@ const OrganPage = ({ selectedDT }) => {
   )
 };
 
-
-
 const MeasurementNumeric = ({ organName, config }) => {
   const [inputValue, setInputValue] = useState(null);
   const [delay, setDelay] = useState(null);
@@ -70,6 +71,8 @@ const MeasurementNumeric = ({ organName, config }) => {
 
   const resetInterval = () => {
     setDelay(null);
+    setTarget(null);
+    setPeriod(null);
     setElapse(0);
   }
 
@@ -96,106 +99,88 @@ const MeasurementNumeric = ({ organName, config }) => {
   }
 
   return (
-    <Grid xs={3} item key={config.name} 
-      sx={{ 
-        margin:'2px', 
-        backgroundColor:'#F0F8FF', 
-        border: '2px solid #6495ED',
-        borderRadius: '5px',
-      }}
-    >
-      <Grid item xs={12}>
-        <Typography sx={{fontSize:'24px', padding:'1px'}}>
+    <Grid item key={config.name} xs={6}>
+      <Box bgcolor='#F0F8FF' border={2} borderColor='#6495ED' borderRadius={2} p={1} sx={{ height: 'calc(100% - 20px)'}}>
+        <Typography sx={{ fontSize:'24px', width:'100%', display:'inline-block', textAlign:'center' }}>
             {config.name} {config.unit ? `(${config.unit})` : null}: {value ? +value.toFixed(2):null}
         </Typography>
-      </Grid>
-      <Grid container direction='row' sx={{margin:'2px'}}>
-        <Grid item xs={3}>
-          <Typography sx={{fontSize:'16px'}}>
-              Instantly update to: 
+        <Box sx={{ width:'100%', display:'inline-flex', flexDirection:'row', marginBottom:'5px'}}>
+          <Typography sx={{ fontSize:'16px', width:'20%', margin:'auto', textAlign:'center'}}>
+            Instantly update to: 
           </Typography>
-        </Grid>
-        <Grid item xs={6}>
           <TextField
             id={config.name}
-            sx={{fontSize:'18px', backgroundColor:'white'}}
+            sx={{ fontSize:'18px', backgroundColor:'white', width:'55%' }}
             variant="outlined" 
             type="number"
             onChange={(e) => setInputValue(e.target.value)}
           />
-        </Grid>
-        <Grid item xs={3}>
           <Button
-              onClick={() => {
-                resetInterval();
-                dispatch(update({
-                  value: Number(inputValue), 
-                  organName: organName,
-                  measurementName: config.name
-                }));
-              }}
+            disabled={!inputValue}
+            sx={{ fontSize:'16px', width:'25%', marginLeft:'5px' }}
+            variant="outlined"
+            onClick={() => {
+              resetInterval();
+              dispatch(update({
+                value: Number(inputValue), 
+                organName: organName,
+                measurementName: config.name
+              }));
+            }}
           >
-              Confrim
+            Confrim
           </Button>
-        </Grid>
-      </Grid>
-      {!delay && <Grid container direction='row' sx={{ margin:'2px' }}>
-        <Grid item xs={3}>
-          <Typography>
-              Gradually update to: 
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-              id='target'
-              variant="outlined"
-              sx={{fontSize:'18px', backgroundColor:'white'}}
-              type="number"
-              onChange={(e) => setTarget(Number(e.target.value))}
-          />
-        </Grid>
-        <Grid item xs={1}>
-          <Typography>
-              in
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-              id='period'
-              variant="outlined"
-              sx={{fontSize:'18px', backgroundColor:'white'}}
-              type="number"
-              onChange={(e) => setPeriod(Number(e.target.value))}
-          />
-        </Grid>
-        <Grid item xs={1}>
-          <Typography>
-              sec
-          </Typography>
-        </Grid>
-        <Grid item xs={3}>
-          <Button
-              disabled={isNaN(value)}
-              onClick={() => gradualUpdate(value)}
-          >
-              Confirm
-          </Button>
-        </Grid>
-      </Grid>}
-      {delay&&<Grid container direction='row' hidden={delay}>
-        <Grid item xs={9}>
-          <Typography>
-              Gradually updating to {target} in {period-elapse} secs.
-          </Typography>
-        </Grid>
-        <Grid item xs={3}>
-          <Button
-              onClick={() => resetInterval()}
-          >
-              Cancel
-          </Button>
-        </Grid>
-      </Grid>}
+        </Box>
+        {!delay && 
+          <Box sx={{ width:'100%', display:'inline-flex', flexDirection:'row'}}>
+            <Typography sx={{ fontSize:'16px', width:'20%', margin:'auto', textAlign:'center'}}>
+                Gradually update to: 
+            </Typography>
+            <TextField
+                id='target'
+                variant="outlined"
+                sx={{ fontSize:'18px', backgroundColor:'white', width:'20%'}}
+                type="number"
+                onChange={(e) => setTarget(Number(e.target.value))}
+            />
+            <Typography sx={{ fontSize:'16px', width:'7.5%', margin:'auto', textAlign:'center'}}>
+                in
+            </Typography>
+            <TextField
+                id='period'
+                variant="outlined"
+                sx={{ fontSize:'18px', backgroundColor:'white', width:'20%'}}
+                type="number"
+                onChange={(e) => setPeriod(Number(e.target.value))}
+            />
+            <Typography sx={{ fontSize:'16px', width:'7.5%', margin:'auto', textAlign:'center'}}>
+                sec
+            </Typography>
+            <Button
+                sx={{ fontSize:'16px', width:'25%', marginLeft:'5px' }}
+                variant="outlined"
+                disabled={isNaN(value) || !target || !period}
+                onClick={() => gradualUpdate(value)}
+            >
+                Confirm
+            </Button>
+          </Box>
+        }
+        {delay&&
+          <Box sx={{ width:'100%', display:'inline-flex', flexDirection:'row'}}>
+            <Typography sx={{ fontSize:'16px', width:'75%', margin:'auto', textAlign:'left'}}>
+                Gradually updating to {target} in {period-elapse} secs.
+            </Typography>
+            <Button
+                sx={{ fontSize:'16px', width:'25%', marginLeft:'5px' }}
+                variant="outlined"
+                onClick={() => resetInterval()}
+            >
+                Cancel
+            </Button>
+          </Box>
+        }
+      </Box>
     </Grid>
   )
 }
@@ -205,25 +190,21 @@ const MeasurementSelect = ({ organName, config }) => {
   const dispatch = useDispatch();
 
   return (
-    <Grid xs={3} item key={config.name} 
-      sx={{ 
-        margin:'2px', 
-        backgroundColor:'#F0F8FF', 
-        border: '2px solid #6495ED',
-        borderRadius: '5px',
-      }}
-    >
-      <Typography sx={{fontSize:'24px', padding:'1px'}}>
-          {config.name} {config.unit ? `(${config.unit})` : null}
-      </Typography>
-      <Select
-        value={value? value:''}
-        onChange={(e) => dispatch(update({value: e.target.value, organName: organName, measurementName: config.name}))}
-      >
-        {Object.keys(config.options).map((key) =>
-          <MenuItem key={key} value={key}>{key}</MenuItem>
-        )}
-      </Select>
+    <Grid item key={config.name} xs={6}>
+      <Box Box bgcolor='#F0F8FF' border={2} borderColor='#6495ED' borderRadius={2} p={1} sx={{ height: 'calc(100% - 20px)'}}>
+        <Typography sx={{ fontSize:'24px', width:'100%', display:'inline-block', textAlign:'center' }}>
+            {config.name} {config.unit ? `(${config.unit})` : null}
+        </Typography>
+        <Select
+          sx={{ fontSize:'18px', display:'block', margin:'auto', marginTop:'20px', backgroundColor:'white', width:'70%' }}
+          value={value? value:''}
+          onChange={(e) => dispatch(update({value: e.target.value, organName: organName, measurementName: config.name}))}
+        >
+          {Object.keys(config.options).map((key) =>
+            <MenuItem key={key} value={key}>{key}</MenuItem>
+          )}
+        </Select>
+      </Box>
     </Grid>
   )
 }
@@ -253,17 +234,36 @@ function App() {
   }, [data, apiURL])
 
   return (
-    <div className="App">
-      <TextField
-        id="url"
-        sx={{fontSize:'18px', backgroundColor:'white', width:'50%'}}
-        variant="outlined"
-        value={apiURL}
-        onChange={(e) => dispatch(updateURL(e.target.value))}
-      />
-      <OrganSelection {...{ selectedDT, setSelectedDT }}/>
-      <OrganPage {...{ selectedDT }}/>
-    </div>
+    <Box sx={{ display:'flex', flexDirection:'column' }}>
+      <Box sx={{ display:'flex', width:'100vw' }}>
+        <Box 
+          sx={{ 
+            height:'90vh', 
+            width:'15vw', 
+          }}
+        >
+          <OrganSelection {...{ selectedDT, setSelectedDT }}/>
+        </Box>
+        <Box 
+          sx={{ 
+            height:'90vh', 
+            width:'85vw', 
+          }}
+        >
+          <OrganPage {...{ selectedDT }}/>
+        </Box>
+      </Box>
+      <Box>
+        <TextField
+          label="Set backend server API URL"
+          id="url"
+          sx={{fontSize:'18px', backgroundColor:'white', width:'40%', bottom: 0, right: 0, position:'absolute'}}
+          variant="outlined"
+          value={apiURL}
+          onChange={(e) => dispatch(updateURL(e.target.value))}
+        />
+      </Box>
+    </Box>
   );
 }
 
