@@ -40,30 +40,6 @@ const PaitentBasic = () => {
   );
 };
 
-const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
-  return (
-    <Grid container sx={{ marginTop: "10px" }}>
-      {OrganDTConfig.map((value, index) => {
-        return (
-          <Grid item xs={4} key={value}>
-            <Button
-              variant="contained"
-              sx={{
-                height: "50px",
-                width: "100%",
-                backgroundColor: selectedDT === index ? "#0062cc" : "#1976d2",
-              }}
-              onClick={() => setSelectedDT(index)}
-            >
-              {value.name}
-            </Button>
-          </Grid>
-        );
-      })}
-    </Grid>
-  );
-};
-
 const DigitalTwinForm = ({ selectedDT }) => {
   const organName = OrganDTConfig[selectedDT].name;
   const measurements = OrganDTConfig[selectedDT].measurements;
@@ -190,7 +166,7 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
     >
       {OrganDTConfig.map((organ, index) => {
         return (
-          <Tab label={organ.name} value={index} key={index}/>
+          <Tab label={organ.abbv} value={index} key={index}/>
         );
       })}
     </Tabs>
