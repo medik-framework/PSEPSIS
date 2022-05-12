@@ -6,5 +6,6 @@
         "watchFile": "dynamicPriorityPolling"
     },
     "javascript.suggest.includeAutomaticOptionalChainCompletions": false,
-    "debug.saveBeforeStart": "none"
+    "debug.saveBeforeStart": "none",
+    "c3.welcome.showFeatureHighlight": false
 }
