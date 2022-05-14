@@ -73,6 +73,7 @@ def submit():
     global data_copy2
     json = request.json
     data_copy2 = json
+    print(json)
     return ""
 
 @app.route("/debug")

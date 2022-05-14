@@ -1,6 +1,5 @@
 export const Cardiovascular = {
   name: "Cardiovascular",
-  abbv: "Cardiov.",
   measurements: {
     HR: {
       name: "HR",
@@ -280,7 +279,6 @@ export const Cardiovascular = {
 
 export const Respiratory = {
   name: "Respiratory",
-  abbv: "Resp.",
   measurements: {
     RR: {
       name: "RR",
@@ -424,7 +422,6 @@ export const Respiratory = {
 
 export const Renal = {
   name: "Renal",
-  abbv: "Renal",
   measurements: {
     pH: {
       name: "pH",
@@ -625,7 +622,6 @@ export const Renal = {
 
 export const Hematologic = {
   name: "Hematologic",
-  abbv: "Hematol",
   measurements: {
     INR: {
       name: "INR",
@@ -677,7 +673,6 @@ export const Hematologic = {
 
 export const Hepatic = {
   name: "Hepatic",
-  abbv: "Hepatic",
   measurements: {
     Bilirubin: {
       name: "Bilirubin",
@@ -737,7 +732,6 @@ export const Hepatic = {
 
 export const Neurologic = {
   name: "Neurologic",
-  abbv: "Neurol",
   measurements: {
     GCS: {
       name: "GCS",
@@ -812,7 +806,6 @@ export const Neurologic = {
 
 export const Immune = {
   name: "Immune",
-  abbv: "Immune",
   measurements: {
     WBC: {
       name: "WBC",
