@@ -20,7 +20,7 @@ def k_comm():
             data=ws.receive(0.1)
             if data is not None:
                 data_copy = json.loads(data)
-                
+
                 # p.stdin.write(data)
                 # ws.send(data)
             if data_copy2 is not None:
@@ -34,20 +34,43 @@ def k_comm():
 def index3():
     global data_copy
     return data_copy
-    
-def getValues(params):
-    result = {}
-    error = {}
-    if params == []:
-        error = { "code" : -32600, "message" : "*" }
-    for param in params:
-        if param in data_copy.keys():
-            result[param] = int(data_copy.get(param))
-        else:
-            error = { "code" : -32001, "message" : "Requested reading absent" }
-            
-    return result, error
-        
+
+
+    return {}
+    #result = {}
+    #error = {}
+    #if params == []:
+    #    error = { "code" : -32600, "message" : "*" }
+    #for param in params:
+    #    if param in data_copy.keys():
+    #        result[param] = int(data_copy.get(param))
+    #    else:
+    #        error = { "code" : -32001, "message" : "Requested reading absent" }
+
+    #return result, error
+
+
+def flatten_json(in_json):
+    return { "hr"                 : in_json["Cardiovascular"]["HR"]
+           , "sysBP"              : in_json["Cardiovascular"]["BP Sys"]
+           , "pulseQuality"       : in_json["Cardiovascular"]["Pulse Quality"]
+           , "capillaryRefill"    : in_json["Cardiovascular"]["Capillary Refill"]
+           , "temp"               : in_json["Immune"]["Temp"]
+           , "age"                : 60
+           , "highRiskConditions" : 0
+           , "skinCondition"      : in_json["Cardiovascular"]["Skin Color"]
+           , "mentalStatus"       : in_json["Neurologic"]["Behavior"] }
+
+@app.route("/get_values", methods=["POST", "GET"])
+def getValues():
+    global data_copy2
+    mapped_data = flatten_json(data_copy2)
+    requested_param = request.args.get("field_name")
+    print('requested param {}. Mapped data {}'.format(requested_param, mapped_data[requested_param]))
+    if requested_param in mapped_data.keys() and mapped_data[requested_param] != None:
+        return jsonify({'status': 'ok' , requested_param : mapped_data[requested_param]})
+    else:
+        return jsonify({'status': 'error' })
 
 @app.route("/", methods=["POST"])
 def index():
@@ -55,30 +78,33 @@ def index():
     response = {}
     response["id"] = json.get("id", -1)
     response["jsonrpc"] = json.get("jsonrpc", "2.0")
-    
+
     if json.get("method", "") == "getValues":
         response["result"], response["error"] = getValues(json.get("params", []))
-    
+
     return jsonify(response)
 
 @app.route("/frontend_comm", methods=["POST"])
 def index2():
     global data_copy2
     json = request.json
+
     data_copy2 = json
     return ""
 
 @app.route("/submit", methods=["POST"])
 def submit():
     global data_copy2
-    json = request.json
-    data_copy2 = json
-    print(json)
+    json_data = request.json
+    data_copy2 = json_data
+    #print(json.dumps(json_data, indent=4))
     return ""
 
 @app.route("/debug")
 def debug_json():
     global data_copy2
+    flattened_json = flatten_json(data_copy2)
+    print(json.dumps(flattened_json, indent=4))
     return jsonify(data_copy2)
 
 
