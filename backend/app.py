@@ -77,6 +77,8 @@ def getValues():
         else:
             return jsonify({'status': 'error' })
     else:
+        if "Sepsis Score" not in data_copy2["organDT"]:
+            return jsonify({'status': 'error' })
         mapped_data = flatten_json(data_copy2)
         #print('requested param {}. Mapped data {}'.format(requested_param, mapped_data[requested_param]))
         if requested_param in mapped_data.keys() and mapped_data[requested_param] != None:
@@ -126,6 +128,10 @@ def do_instruct():
     print('Got instruct with message: {}'.format(request.json['message']))
     if request.json['message'] == 'Obtain patient age':
         data_copy2['dialogs'] = {transaction_id: 'getAgeWeight'}
+    if request.json['message'] == 'Perform sepsis management':
+        data_copy2['dialogs'] = {transaction_id: 'showSepsisWarning'}
+    if request.json['message'] == 'Continue regular triage':
+        data_copy2['dialogs'] = {transaction_id: 'showSepsisClearance'}
     return jsonify({"status": "ok"})
 
 @app.route("/form_submit", methods=["POST"])
