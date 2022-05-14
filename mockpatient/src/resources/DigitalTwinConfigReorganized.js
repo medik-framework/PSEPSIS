@@ -921,5 +921,3 @@ export const PSepsisAssessment = {
     },
   }
 }
-
-export const DemoConfig = [ PSepsisAssessment, ]
