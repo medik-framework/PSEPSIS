@@ -1,5 +1,10 @@
-import { createStore } from "redux";
+import { configureStore } from '@reduxjs/toolkit'
+import apiUrlReducer from './reducers/misc'
+import organDTReducer from './reducers/organDT'
 
-import rootReducer from "./reducers";
-
-export default createStore(rootReducer);
+export default configureStore({
+  reducer: {
+    organDT: organDTReducer,
+    misc: apiUrlReducer
+  },
+})

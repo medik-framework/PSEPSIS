@@ -1,52 +1,29 @@
-import { useState } from "react";
-import clsx from "clsx";
-import { Tabs, Tab } from "@mui/material";
+import { useInterval } from "react-use";
+import { useSelector, useDispatch } from "react-redux";
+import { Typography, TextField } from "@mui/material";
+import { updateURL } from "../../redux/reducers/misc"
 
-import Icon from "@mdi/react";
-import {
-  mdiAccountDetails,
-  mdiClipboardListOutline,
-  mdiInformation,
-} from "@mdi/js";
-
-import Measurement from "./Measurement";
-import CheckList from "./CheckList";
+import DigitalTwin from "./DigitalTwin";
 
 const LeftPanel = () => {
-  const [tab, setTab] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
-  };
+  const apiURL = useSelector((state) => state.misc.apiURL);
+  const dispatch = useDispatch();
+  console.log(apiURL)
+  // useInterval(
+  //   () =>
+  //     fetch(`http://${apiURL}/debug`)
+  //       .then((response) => response.json())
+  //       .then((json) => {
+  //         dispatch({ type: "UPDATE_ORGAN_DT", payload: json })
+  //       })
+  //       .catch(error => {
+  //         console.log('Fetch error:', error)
+  //       })
+  //   , 1000
+  // );
 
   return (
-    <>
-      {/* <Tabs fullWidth value={tab} onChange={handleChange}>
-        <Tab
-          icon={<Icon path={mdiAccountDetails} size={1} />}
-          label={
-            <>
-              Measurements
-              <br />
-              Lab Results
-            </>
-          }
-        />
-        <Tab
-          icon={<Icon path={mdiClipboardListOutline} size={1} />}
-          label={"Checklists"}
-        />
-        <Tab icon={<Icon path={mdiInformation} size={1} />} label={"Info"} />
-      </Tabs> */}
-
-      <div style={{ display: tab === 0 ? "block" : "none" }}>
-        <Measurement />
-      </div>
-
-      <div style={{ display: tab === 1 ? "block" : "none" }}>
-        <CheckList />
-      </div>
-    </>
+    <DigitalTwin />
   );
 };
 
