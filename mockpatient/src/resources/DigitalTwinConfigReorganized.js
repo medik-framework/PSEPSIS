@@ -917,7 +917,7 @@ export const PSepsisAssessment = {
       unit: "sec",
       type: "choices",
       options: { Flash: 0, 1: 2, 2: 2, 3: 0, 4: 0, "5+": 0 },
-      value: 1,
+      value: "1",
     },
     SkinColor: {
       name: "Skin Color",
