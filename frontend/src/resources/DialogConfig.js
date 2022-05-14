@@ -30,5 +30,11 @@ export const DialogConfig = {
                 storage: "patientBasic/update",
             }
         ]
+    },
+    showSepsisWarning: {
+        title: "Sepsis suspected, please start treatment bundle"
+    },
+    showSepsisClearance: {
+        title: "Sepsis not suspected, please keep monitoring"
     }
 }

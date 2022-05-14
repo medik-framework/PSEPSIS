@@ -35,7 +35,7 @@ const InputContent = ({ config, setRetDict }) => {
 
 const InputDialog = ({ open, setOpen, id, config }) => {
   const [retDict, setRetDict] = useState({});
-  const [shouldContinue, setShouldContinue] = useState(false);
+  const [shouldContinue, setShouldContinue] = useState(!config.inputConfig);
   const apiURL = "http://127.0.0.1:5000/app_userinput";
   const dispatch = useDispatch();
 
@@ -80,7 +80,8 @@ const InputDialog = ({ open, setOpen, id, config }) => {
     <Dialog open={open}>
       <DialogTitle>{config.title}</DialogTitle>
       <DialogContent>
-        {config.inputConfig.map((config, id)=>(
+        {config.inputConfig &&
+          config.inputConfig.map((config, id)=>(
           <InputContent key={id} {...{ config, setRetDict }}/>
         ))}
       </DialogContent>
