@@ -52,26 +52,37 @@ def index3():
 
 
 def flatten_json(in_json):
-    return { "hr"                 : in_json["Cardiovascular"]["HR"]
-           , "sysBP"              : in_json["Cardiovascular"]["BP Sys"]
-           , "pulseQuality"       : in_json["Cardiovascular"]["Pulse Quality"]
-           , "capillaryRefill"    : in_json["Cardiovascular"]["Capillary Refill"]
-           , "temp"               : in_json["Immune"]["Temp"]
+    return { "hr"                 : in_json["organDT"]["Sepsis Score"]["HR"]
+           , "sysBP"              : in_json["organDT"]["Sepsis Score"]["BP Sys"]
+           , "pulseQuality"       : in_json["organDT"]["Sepsis Score"]["Pulse Quality"]
+           , "capillaryRefill"    : in_json["organDT"]["Sepsis Score"]["Capillary Refill"]
+           , "temp"               : in_json["organDT"]["Sepsis Score"]["Temp"]
            , "age"                : 60
            , "highRiskConditions" : 0
-           , "skinCondition"      : in_json["Cardiovascular"]["Skin Color"]
-           , "mentalStatus"       : in_json["Neurologic"]["Behavior"] }
+           , "skinCondition"      : in_json["organDT"]["Sepsis Score"]["Skin Color"]
+           , "mentalStatus"       : in_json["organDT"]["Sepsis Score"]["Behavior"] }
 
+transaction_id = 0
 @app.route("/get_values", methods=["POST", "GET"])
 def getValues():
+    global transaction_id
     global data_copy2
-    mapped_data = flatten_json(data_copy2)
     requested_param = request.args.get("field_name")
-    print('requested param {}. Mapped data {}'.format(requested_param, mapped_data[requested_param]))
-    if requested_param in mapped_data.keys() and mapped_data[requested_param] != None:
-        return jsonify({'status': 'ok' , requested_param : mapped_data[requested_param]})
+    print('requested param {}'.format(requested_param))
+    if requested_param == 'age':
+        print('current data copy {}'.format(json.dumps(data_copy2, indent=2)))
+        if str(transaction_id) in data_copy2["userInput"] and "Age" in data_copy2["userInput"][str(transaction_id)]:
+            print('Data copy2 {}'.format(data_copy2["userInput"][str(transaction_id)]["Age"]))
+            return jsonify({'status': 'ok' , requested_param : data_copy2["userInput"][str(transaction_id)]["Age"]})
+        else:
+            return jsonify({'status': 'error' })
     else:
-        return jsonify({'status': 'error' })
+        mapped_data = flatten_json(data_copy2)
+        #print('requested param {}. Mapped data {}'.format(requested_param, mapped_data[requested_param]))
+        if requested_param in mapped_data.keys() and mapped_data[requested_param] != None:
+            return jsonify({'status': 'ok' , requested_param : mapped_data[requested_param]})
+        else:
+            return jsonify({'status': 'error' })
 
 @app.route("/", methods=["POST"])
 def index():
@@ -107,15 +118,14 @@ def debug_json():
     flattened_json = flatten_json(data_copy2)
     print(json.dumps(flattened_json, indent=4))
     return jsonify(data_copy2)
-transaction_id = 1
 @app.route("/instruct", methods=["POST"])
 def do_instruct():
     global data_copy2
     global transaction_id
+    transaction_id = transaction_id + 1
     print('Got instruct with message: {}'.format(request.json['message']))
     if request.json['message'] == 'Obtain patient age':
         data_copy2['dialogs'] = {transaction_id: 'getAgeWeight'}
-    transaction_id = transaction_id + 1
     return jsonify({"status": "ok"})
 
 @app.route("/form_submit", methods=["POST"])
