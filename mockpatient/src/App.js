@@ -7,7 +7,7 @@ import { updateURL } from "./redux/miscSlice";
 import { useInterval } from 'usehooks-ts';
 
 import { Button, Grid, Typography, TextField, Select, MenuItem, Box, Tabs, Tab } from "@mui/material";
-import { DemoConfig } from "./resources/DigitalTwinConfigReorganized";
+import { OrganDTConfig } from "./resources/DigitalTwinConfigReorganized";
 
 const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
@@ -19,7 +19,7 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
         textColor="primary"
         indicatorColor="primary"
       >
-        {DemoConfig.map((organ, index) => {
+        {OrganDTConfig.map((organ, index) => {
           return (
             <Tab label={organ.name} value={index} key={index}/>
           );
@@ -30,16 +30,16 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 };
 
 const OrganPage = ({ selectedDT }) => {
-  const selectedDemoConfig = DemoConfig[selectedDT];
+  const selectedOrganDTConfig = OrganDTConfig[selectedDT];
   return (
     <Grid container columns={{ xs: 6, sm: 6, md: 12, lg: 18, xl: 24}} spacing={1} p={1} sx={{ alignItems: 'stretch' }}>
-      {Object.keys(selectedDemoConfig.measurements).map((key) => {
-        const config = selectedDemoConfig.measurements[key];
+      {Object.keys(selectedOrganDTConfig.measurements).map((key) => {
+        const config = selectedOrganDTConfig.measurements[key];
         if (config.type === 'number') {
           return (
             <MeasurementNumeric
-              key={`${selectedDemoConfig.name}.${config.name}`}
-              { ...{ organName: selectedDemoConfig.name, 
+              key={`${selectedOrganDTConfig.name}.${config.name}`}
+              { ...{ organName: selectedOrganDTConfig.name, 
                      config: config
               }}
             />
@@ -47,8 +47,8 @@ const OrganPage = ({ selectedDT }) => {
         } else {
           return (
             <MeasurementSelect
-              key={`${selectedDemoConfig.name}.${config.name}`}
-              { ...{ organName: selectedDemoConfig.name, 
+              key={`${selectedOrganDTConfig.name}.${config.name}`}
+              { ...{ organName: selectedOrganDTConfig.name, 
                      config: config
               }}
             />
