@@ -878,23 +878,27 @@ export const PSepsisAssessment = {
     HR: {
       name: "HR",
       unit: "bpm",
-      type: "number"
+      type: "number",
+      value: 100,
     },
     BPSys: {
       name: "BP Sys",
       unit: "mmHg",
       type: "number",
+      value: 100,
     },
     PulseQuality: {
       name: "Pulse Quality",
       unit: "",
       type: "choices",
       options: { Bounding: 0, Normal: 2, Thready: 0 },
+      value: "Normal"
     },
     Temp: {
       name: "Temp",
       unit: "°C",
       type: "number",
+      value: 37,
     },
     Behavior: {
       name: "Behavior",
@@ -906,18 +910,21 @@ export const PSepsisAssessment = {
         Irritable: 1,
         "Confused/Reduced Response to Pain": 0,
       },
+      value: "Playing/Appropriate"
     },
     CapillaryRefill: {
       name: "Capillary Refill",
       unit: "sec",
       type: "choices",
       options: { Flash: 0, 1: 2, 2: 2, 3: 0, 4: 0, "5+": 0 },
+      value: 1,
     },
     SkinColor: {
       name: "Skin Color",
       unit: "",
       type: "choices",
       options: { Flushed: 0, Pink: 2, Pale: 0, Gray: 0, "Gray and Mottled": 0 },
+      value: "Pink"
     },
   }
 }
