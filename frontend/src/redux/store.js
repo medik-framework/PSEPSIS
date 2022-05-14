@@ -36,7 +36,7 @@ rootReducer(
 );
 
 
- const store = createStore(
+const store = createStore(
   resettableAppReducer,
   loadFromLocalStorage(),
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
@@ -46,4 +46,4 @@ rootReducer(
 // save them to localStorage
 store.subscribe(() => saveToLocalStorage(store.getState()));
 
-export default store
+export default store;
