@@ -8,8 +8,8 @@ app = Flask(__name__, static_folder="static")
 CORS(app)
 
 data_copy = ""
-# data_copy2 = {}
-data_copy2 = {"organDT":{}, "dialogs":{1:"getAgeWeight", 2:"getHighRiskConditions"}, "userInput":{}}
+data_copy2 = {}
+data_copy2 = {"organDT":{}, "dialogs":{}, "userInput": {}}#1:"getAgeWeight", 2:"getHighRiskConditions"}, "userInput":{}}
 
 @app.route("/k_comm", websocket=True)
 def k_comm():
@@ -107,6 +107,16 @@ def debug_json():
     flattened_json = flatten_json(data_copy2)
     print(json.dumps(flattened_json, indent=4))
     return jsonify(data_copy2)
+transaction_id = 1
+@app.route("/instruct", methods=["POST"])
+def do_instruct():
+    global data_copy2
+    global transaction_id
+    print('Got instruct with message: {}'.format(request.json['message']))
+    if request.json['message'] == 'Obtain patient age':
+        data_copy2['dialogs'] = {transaction_id: 'getAgeWeight'}
+    transaction_id = transaction_id + 1
+    return jsonify({"status": "ok"})
 
 @app.route("/form_submit", methods=["POST"])
 def form_submit():
