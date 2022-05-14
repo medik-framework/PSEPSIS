@@ -2,8 +2,8 @@ import "./App.css";
 import { useState, useEffect } from "react";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { update, increment } from './organDataSlice';
-import { updateURL } from "./miscSlice";
+import { update, increment } from './redux/organDataSlice';
+import { updateURL } from "./redux/miscSlice";
 import { useInterval } from 'usehooks-ts';
 
 import { Button, Grid, Typography, TextField, Select, MenuItem, Box, Tabs, Tab } from "@mui/material";

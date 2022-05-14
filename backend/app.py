@@ -8,7 +8,8 @@ app = Flask(__name__, static_folder="static")
 CORS(app)
 
 data_copy = ""
-data_copy2 = {}
+# data_copy2 = {}
+data_copy2 = {"organDT":{}, "dialogs":{1:"getAgeWeight", 2:"getHighRiskConditions"}, "userInput":{}}
 
 @app.route("/k_comm", websocket=True)
 def k_comm():
@@ -107,6 +108,26 @@ def debug_json():
     print(json.dumps(flattened_json, indent=4))
     return jsonify(data_copy2)
 
+@app.route("/form_submit", methods=["POST"])
+def form_submit():
+    global data_copy2
+    json_data = request.json
+    data_copy2['organDT'] = json_data
+    print(json.dumps(data_copy2, indent=4))
+    return ""
+
+@app.route("/app_get")
+def app_get():
+    global data_copy2
+    return jsonify(data_copy2)
+
+@app.route("/app_userinput", methods=["POST"])
+def app_userinput():
+    global data_copy2
+    json_data = request.json
+    data_copy2['userInput'] = {**data_copy2['userInput'], **json_data}
+    print(json.dumps(data_copy2, indent=4))
+    return ""
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))

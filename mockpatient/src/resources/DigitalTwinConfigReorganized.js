@@ -873,7 +873,7 @@ export const OrganDTConfig = [
 ];
 
 export const PSepsisAssessment = {
-  name: 'Spesis Score',
+  name: 'Sepsis Score',
   measurements: {
     HR: {
       name: "HR",

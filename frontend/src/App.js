@@ -1,8 +1,8 @@
 import "./App.css";
 
 import { useEffect, useState } from "react";
-import { Provider, useDispatch } from "react-redux";
-import store from "./redux/store";
+import { useDispatch, useSelector } from "react-redux";
+
 
 import NumericInput from "./components/DialogContent/NumericInput";
 import Checklist from "./components/DialogContent/Checklist";
@@ -33,11 +33,11 @@ const InputContent = ({ config, setRetDict }) => {
   }
 }
 
-const InputDialog = () => {
-  const config = DialogConfig["getHighRiskConditions"];
+const InputDialog = ({ open, setOpen, id, config }) => {
   const [retDict, setRetDict] = useState({});
   const [shouldContinue, setShouldContinue] = useState(false);
-  const apiURL = "http://127.0.0.1:5000/submit";
+  const apiURL = "http://127.0.0.1:5000/app_userinput";
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let r = Object.keys(retDict).length > 0;
@@ -51,6 +51,9 @@ const InputDialog = () => {
   }, [retDict])
 
   const handleContinue = () => {
+    let data = {};
+    data[id] = retDict;
+    console.log(data)
     fetch(apiURL, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -62,16 +65,19 @@ const InputDialog = () => {
       },
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(retDict) // body data type must match "Content-Type" header
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
     }).then(response => {
       console.log(response)
     }).catch(error => {
       console.log(error)
+    }).then( () => {
+      dispatch({type: "dialogs/setDone", payload: {id: id, return: retDict}})
+      setOpen(false)
     })
   }
 
   return (
-    <Dialog open>
+    <Dialog open={open}>
       <DialogTitle>{config.title}</DialogTitle>
       <DialogContent>
         {config.inputConfig.map((config, id)=>(
@@ -91,30 +97,41 @@ const InputDialog = () => {
 }
 
 function App() {
-  const apiURL = "http://127.0.0.1:5000/submit";
-  // const dispatch = useDispatch();
+  const apiURL = "127.0.0.1:5000";
+  const [open, setOpen] = useState(false);
+  const [id, setID] = useState(0);
+  const [dialogConfig, setDialogConfig] = useState({});
+  const dispatch = useDispatch();
+  const dialogs = useSelector((state) => state.dialogs)
 
-  // useInterval(
-  //   () =>
-  //     fetch(`http://${apiURL}/debug`)
-  //       .catch(error => {
-  //         console.log('Fetch error:', error)
-  //       })
-  //       .then((response) => response.json())
-  //       .then((json) => {
-  //         dispatch({ type: "UPDATE_ORGAN_DT", payload: json.organDT });
-  //         dispatch({ type: "UPDATE_DIALOGS", payload: json.dialogs})
-  //       })
-  //   , 1000
-  // );
+  useEffect(() => {
+    if (dialogs.todo.length && !open){
+      console.log(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
+      setID(dialogs.todo[0]);
+      setDialogConfig(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
+      setOpen(true);
+    }
+  }, [dialogs, open, setDialogConfig, setOpen, setID])
+
+  useInterval(
+    () =>
+      fetch(`http://${apiURL}/app_get`)
+        .catch(error => {
+          console.log('Fetch error:', error)
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          // console.log(json)
+          // dispatch({ type: "UPDATE_ORGAN_DT", payload: json.organDT });
+          dispatch({ type: "dialogs/update", payload: json.dialogs})
+        })
+    , 1000
+  );
 
   return (
-    <Provider store={store}>
-      {/* <ThemeProvider theme={theme}> */}
-        {/* <PsepsisTablet /> */}
-        <InputDialog />
-      {/* </ThemeProvider> */}
-    </Provider>
+    <>
+      {open && <InputDialog {...{ open, setOpen, id, config:dialogConfig }}/>}
+    </>
   );
 }
 
