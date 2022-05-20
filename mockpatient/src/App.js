@@ -2,12 +2,12 @@ import "./App.css";
 import { useState, useEffect } from "react";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { update, increment } from './organDataSlice';
-import { updateURL } from "./miscSlice";
+import { update, increment } from './redux/organDataSlice';
+import { updateURL } from "./redux/miscSlice";
 import { useInterval } from 'usehooks-ts';
 
 import { Button, Grid, Typography, TextField, Select, MenuItem, Box, Tabs, Tab } from "@mui/material";
-import { OrganDTConfig } from "./resources/DigitalTwinConfigReorganized";
+import { DemoConfig } from "./resources/DigitalTwinConfigReorganized";
 
 const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
@@ -19,7 +19,7 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
         textColor="primary"
         indicatorColor="primary"
       >
-        {OrganDTConfig.map((organ, index) => {
+        {DemoConfig.map((organ, index) => {
           return (
             <Tab label={organ.name} value={index} key={index}/>
           );
@@ -30,16 +30,16 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 };
 
 const OrganPage = ({ selectedDT }) => {
-  const selectedOrganDTConfig = OrganDTConfig[selectedDT];
+  const selectedDemoConfig = DemoConfig[selectedDT];
   return (
     <Grid container columns={{ xs: 6, sm: 6, md: 12, lg: 18, xl: 24}} spacing={1} p={1} sx={{ alignItems: 'stretch' }}>
-      {Object.keys(selectedOrganDTConfig.measurements).map((key) => {
-        const config = selectedOrganDTConfig.measurements[key];
+      {Object.keys(selectedDemoConfig.measurements).map((key) => {
+        const config = selectedDemoConfig.measurements[key];
         if (config.type === 'number') {
           return (
             <MeasurementNumeric
-              key={`${selectedOrganDTConfig.name}.${config.name}`}
-              { ...{ organName: selectedOrganDTConfig.name, 
+              key={`${selectedDemoConfig.name}.${config.name}`}
+              { ...{ organName: selectedDemoConfig.name, 
                      config: config
               }}
             />
@@ -47,8 +47,8 @@ const OrganPage = ({ selectedDT }) => {
         } else {
           return (
             <MeasurementSelect
-              key={`${selectedOrganDTConfig.name}.${config.name}`}
-              { ...{ organName: selectedOrganDTConfig.name, 
+              key={`${selectedDemoConfig.name}.${config.name}`}
+              { ...{ organName: selectedDemoConfig.name, 
                      config: config
               }}
             />
@@ -215,7 +215,7 @@ function App() {
   const apiURL = useSelector((state) => state.misc['apiURL']);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const submit = (apiURL, data) => {
     fetch(apiURL, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -231,7 +231,9 @@ function App() {
     }).catch(error => {
       console.log('Post error:', error)
     })
-  }, [data, apiURL])
+  }
+
+  useEffect(() => {submit(apiURL, data)}, [data, apiURL])
 
   return (
     <Box sx={{ display:'flex', flexDirection:'column' }}>
@@ -254,6 +256,7 @@ function App() {
         </Box>
       </Box>
       <Box>
+        <Button>Submit</Button>
         <TextField
           label="Set backend server API URL"
           id="url"

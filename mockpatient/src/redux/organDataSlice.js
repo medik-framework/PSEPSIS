@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { DemoConfig } from "./resources/DigitalTwinConfigReorganized";
+import { DemoConfig } from "../resources/DigitalTwinConfigReorganized";
 
 const OrganDTConfig = DemoConfig;
 
@@ -7,7 +7,7 @@ const initialState = {}
 OrganDTConfig.map((organ) => {
     const measurements = organ.measurements;
     initialState[organ.name] = Object.keys(measurements).reduce((prev, key) => {
-        prev[measurements[key].name] = NaN;
+        prev[measurements[key].name] = measurements[key].value;
         return prev;
     }, {});
     return [];
