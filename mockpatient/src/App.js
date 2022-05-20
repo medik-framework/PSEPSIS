@@ -100,7 +100,7 @@ const MeasurementNumeric = ({ organName, config }) => {
 
   return (
     <Grid item key={config.name} xs={6}>
-      <Box bgcolor='#F0F8FF' border={2} borderColor='#6495ED' borderRadius={2} p={1} sx={{ height: 'calc(100% - 20px)'}}>
+      <Box bgcolor='#F0F8FF' border={2} borderColor='#6495ED' borderRadius={2} p={1} sx={{ height: '160px'}}>
         <Typography sx={{ fontSize:'24px', width:'100%', display:'inline-block', textAlign:'center' }}>
             {config.name} {config.unit ? `(${config.unit})` : null}: {value ? +value.toFixed(2):null}
         </Typography>
@@ -191,7 +191,7 @@ const MeasurementSelect = ({ organName, config }) => {
 
   return (
     <Grid item key={config.name} xs={6}>
-      <Box Box bgcolor='#F0F8FF' border={2} borderColor='#6495ED' borderRadius={2} p={1} sx={{ height: 'calc(100% - 20px)'}}>
+      <Box Box bgcolor='#F0F8FF' border={2} borderColor='#6495ED' borderRadius={2} p={1} sx={{ height: '160px'}}>
         <Typography sx={{ fontSize:'24px', width:'100%', display:'inline-block', textAlign:'center' }}>
             {config.name} {config.unit ? `(${config.unit})` : null}
         </Typography>
