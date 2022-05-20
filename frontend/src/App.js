@@ -3,6 +3,13 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+<<<<<<< HEAD
+import { useEffect, useState } from "react";
+
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
+=======
 
 import NumericInput from "./components/DialogContent/NumericInput";
 import Checklist from "./components/DialogContent/Checklist";
@@ -16,6 +23,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useInterval } from 'usehooks-ts';
 
 
+>>>>>>> demo-docker
 // import { ThemeProvider } from "@mui/material";
 // import theme from "./theme";
 
@@ -130,9 +138,17 @@ function App() {
   );
 
   return (
+<<<<<<< HEAD
+    <Provider store={store}>
+      {/* <ThemeProvider theme={theme}> */}
+        <PsepsisTablet />
+      {/* </ThemeProvider> */}
+    </Provider>
+=======
     <>
       {open && <InputDialog {...{ open, setOpen, id, config:dialogConfig }}/>}
     </>
+>>>>>>> demo-docker
   );
 }
 
