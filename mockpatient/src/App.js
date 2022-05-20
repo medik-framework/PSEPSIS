@@ -2,8 +2,8 @@ import "./App.css";
 import { useState, useEffect } from "react";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { update, increment } from './organDataSlice';
-import { updateURL } from "./miscSlice";
+import { update, increment } from './redux/organDataSlice';
+import { updateURL } from "./redux/miscSlice";
 import { useInterval } from 'usehooks-ts';
 
 import { Button, Grid, Typography, TextField, Select, MenuItem, Box, Tabs, Tab } from "@mui/material";
@@ -215,7 +215,7 @@ function App() {
   const apiURL = useSelector((state) => state.misc['apiURL']);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const submit = (apiURL, data) => {
     fetch(apiURL, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -231,7 +231,9 @@ function App() {
     }).catch(error => {
       console.log('Post error:', error)
     })
-  }, [data, apiURL])
+  }
+
+  useEffect(() => {submit(apiURL, data)}, [data, apiURL])
 
   return (
     <Box sx={{ display:'flex', flexDirection:'column' }}>
@@ -254,6 +256,7 @@ function App() {
         </Box>
       </Box>
       <Box>
+        <Button>Submit</Button>
         <TextField
           label="Set backend server API URL"
           id="url"
