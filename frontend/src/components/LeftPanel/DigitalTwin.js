@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { pick } from "lodash";
-import { Button, Grid, Typography, Box } from "@mui/material";
-import { organsDT } from "../../resources/DigitalTwinConfigReorganized";
+import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
+import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 import InputDialog from "./InputDialog";
 
 const assessments = ["Age", "Weight", "Height", "Gender"];
@@ -40,42 +40,18 @@ const PaitentBasic = () => {
   );
 };
 
-const DigitalTwinSelection = ({ selectedDT, setSelectedDT }) => {
-  return (
-    <Grid container sx={{ marginTop: "10px" }}>
-      {organsDT.map((value, index) => {
-        return (
-          <Grid item xs={4} key={value}>
-            <Button
-              variant="contained"
-              sx={{
-                height: "50px",
-                width: "100%",
-                backgroundColor: selectedDT === index ? "#0062cc" : "#1976d2",
-              }}
-              onClick={() => setSelectedDT(index)}
-            >
-              {value.name}
-            </Button>
-          </Grid>
-        );
-      })}
-    </Grid>
-  );
-};
-
 const DigitalTwinForm = ({ selectedDT }) => {
-  const measurements = organsDT[selectedDT].measurements;
-  const digitalTwinValue = useSelector((state) => state.DigitalTwin);
-  const patientInfo = useSelector((state) => state.PatientInfo);
+  const organName = OrganDTConfig[selectedDT].name;
+  const measurements = OrganDTConfig[selectedDT].measurements;
+  const organDTValue = useSelector((state) => state.organDT[organName]);
 
-  console.log(digitalTwinValue);
+  console.log(organDTValue);
   return (
     <>
       <Grid container>
         {Object.keys(measurements).map((key) => {
           const range = measurements[key].getThres ? measurements[key].getThres({}) : {low: 0, high: 0}
-          const colorcode = patientInfo[key] > range?.high || patientInfo[key] < range?.low ? "red" : "lightgray"
+          const colorcode = organDTValue[key] > range?.high || organDTValue[key] < range?.low ? "red" : "lightgray"
 
           return (
             <Grid
@@ -94,7 +70,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
                   ? `(${measurements[key]?.unit})`
                   : null}
               </div>
-              <div>{patientInfo[key]}</div>
+              <div>{organDTValue[key]}</div>
               <div>{/*Last updated time:*/}</div>
             </Grid>
           );
@@ -105,7 +81,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
 };
 
 const SystematicAssessmentForm = ({ selectedDT }) => {
-  const assessments = { Sepsis: 2, "Septic shock": 1, SIRS: 1, PEW: 1 };
+  const assessments = { Sepsis: '', "Septic shock": '', SIRS: '', PEW: '' };
   return (
     <>
       <Grid container>
@@ -135,8 +111,8 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
             >
               <div>
                 {key}: {assessments[key]}
-                <br />
-                30s ago
+                {/* <br />
+                30s ago */}
               </div>
             </Grid>
           );
@@ -147,7 +123,7 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
 };
 
 const OrganAssessmentForm = ({ selectedDT }) => {
-  const assessments = organsDT[selectedDT].assessments;
+  const assessments = OrganDTConfig[selectedDT].assessments;
   if (!assessments) {
     return null;
   }
@@ -168,12 +144,10 @@ const OrganAssessmentForm = ({ selectedDT }) => {
               }}
             >
               <div>
-                {assessments[key]?.name}{" "}
-                {assessments[key]?.unit === ""
-                  ? null
-                  : `(${assessments[key]?.unit})`}
+                {assessments[key].name}{": "}
+                {assessments[key].value ? assessments[key].value : null}
               </div>
-              <div>Last updated time:</div>
+              {/* <div>Last updated time:</div> */}
             </Grid>
           );
         })}
@@ -182,16 +156,36 @@ const OrganAssessmentForm = ({ selectedDT }) => {
   );
 };
 
+const OrganSelection = ({ selectedDT, setSelectedDT }) => {
+  return (
+    <Tabs
+      value={selectedDT} 
+      onChange={(e, v) => setSelectedDT(v)}
+      textColor="primary"
+      indicatorColor="primary"
+    >
+      {OrganDTConfig.map((organ, index) => {
+        return (
+          <Tab label={organ.abbv} value={index} key={index}/>
+        );
+      })}
+    </Tabs>
+  )
+};
+
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
   return (
-    <>
+    <Box width='100%' height='100%' display='flex' flexDirection='column'>
+      <Typography height='5%' variant="h4" component="div">
+        Patient Digital Twin
+      </Typography>
       <PaitentBasic />
       <SystematicAssessmentForm {...{ selectedDT }} />
-      <DigitalTwinSelection {...{ selectedDT, setSelectedDT }} />
+      <OrganSelection {...{ selectedDT, setSelectedDT }} />
       <OrganAssessmentForm {...{ selectedDT }} />
       <DigitalTwinForm {...{ selectedDT }} />
-    </>
+    </Box>
   );
 };
 
