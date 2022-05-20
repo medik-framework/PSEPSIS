@@ -8,7 +8,11 @@ cp -r ../frontend/build/static .
 cp -r ../frontend/build/index.html ./static/
 
 cd ..
+<<<<<<< HEAD
+cd sepsisform
+=======
 cd mockpatient
+>>>>>>> main
 yarn
 yarn build
 cd ../backend

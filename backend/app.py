@@ -36,8 +36,6 @@ def index3():
     global data_copy
     return data_copy
 
-
-    return {}
     #result = {}
     #error = {}
     #if params == []:
@@ -114,8 +112,8 @@ def submit():
     #print(json.dumps(json_data, indent=4))
     return ""
 
-@app.route("/debug")
-def debug_json():
+@app.route("/get_stats")
+def get_stats():
     global data_copy2
     flattened_json = flatten_json(data_copy2)
     print(json.dumps(flattened_json, indent=4))

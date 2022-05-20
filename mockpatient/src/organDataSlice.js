@@ -1,7 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
+<<<<<<< HEAD
+import { OrganDTConfig } from "./resources/DigitalTwinConfigReorganized";
+=======
 import { DemoConfig } from "./resources/DigitalTwinConfigReorganized";
 
 const OrganDTConfig = DemoConfig;
+>>>>>>> 4a227e0fc2cf6503645043f147d4c38504ce1ffa
 
 const initialState = {}
 OrganDTConfig.map((organ) => {

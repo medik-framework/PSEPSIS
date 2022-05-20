@@ -59,6 +59,8 @@ const OrganPage = ({ selectedDT }) => {
   )
 };
 
+
+
 const MeasurementNumeric = ({ organName, config }) => {
   const [inputValue, setInputValue] = useState(null);
   const [delay, setDelay] = useState(null);
