@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FormGroup,
   Grid,
@@ -24,8 +25,24 @@ const bundleList = [
 
 const BundleForm = () => {
   const dispatch = useDispatch();
-  const [checkedIdx, setCheckedIdx] = useState(0);
-  const [ventilationChecked, setVentilationChecked] = useState(false);
+
+  const started = useSelector((state) => state.Timer.started);
+  const checkedIdx = useSelector((state) => state.SepsisBundleForm.checkedIdx);
+  const ventilationChecked = useSelector((state) => state.SepsisBundleForm.ventilationChecked);
+
+  const updateCheckedIdx = (newCheckedIdx) => {
+    dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: newCheckedIdx} })
+  }
+
+  const updateCheckedVentilation = (ventilation) => {
+    dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {ventilationChecked: ventilation} })
+  }
+
+  const startTimerIfNotStarted = () => {
+    if (!started) {
+    dispatch({ type: "START_TIMER" })
+    }
+  }
 
   return (
     <>
@@ -40,11 +57,11 @@ const BundleForm = () => {
               }}
             >
               <FormControlLabel
-                control={<Checkbox />}
+                control={<Checkbox checked={(checkedIdx >> idx) & 1} />}
                 label={value}
                 onChange={() => {
-                  setCheckedIdx(checkedIdx ^ (1 << idx));
-                  dispatch({ type: "START_TIMER" });
+                  updateCheckedIdx(checkedIdx ^ (1 << idx));
+                  startTimerIfNotStarted();
                 }}
               />
             </Grid>
@@ -58,11 +75,11 @@ const BundleForm = () => {
         sx={{ backgroundColor: ventilationChecked ? "yellow" : "white" }}
       >
         <FormControlLabel
-          control={<Checkbox />}
+          control={<Checkbox checked={ventilationChecked} />}
           label={"Mechanical Ventilation"}
           onChange={() => {
-            setVentilationChecked(!ventilationChecked);
-            dispatch({ type: "START_TIMER" });
+            updateCheckedVentilation(!ventilationChecked);
+            startTimerIfNotStarted();
           }}
         />
       </Grid>

@@ -52,20 +52,14 @@ const zeroPad = (num, places) => String(num).padStart(places, "0");
 
 const SepsisTimeline = () => {
   const dispatch = useDispatch();
-  const started = useSelector((state) => state.Timer);
-  const [startTime, setStartTime] = useState(new Date());
+  const started = useSelector((state) => state.Timer.started);
+  const startTime = useSelector((state) => state.Timer.start_time);
   const [timeDiff, setTimeDiff] = useState("00:00:00");
   const [timePercent, setTimePercent] = useState(0);
 
-  useEffect(() => {
-    if (started) {
-      setStartTime(new Date());
-    }
-  }, [started]);
-
   useInterval(
     () => {
-      let diff = new Date() - startTime; // this is a time in milliseconds
+      let diff = new Date() - Date.parse(startTime); // this is a time in milliseconds
       let diff_as_date = new Date(diff);
       setTimeDiff(
         `${zeroPad(Math.round(diff / (1000 * 60 * 60)), 2)}:${zeroPad(

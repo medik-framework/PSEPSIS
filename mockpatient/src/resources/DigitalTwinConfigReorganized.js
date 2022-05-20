@@ -1,6 +1,5 @@
 export const Cardiovascular = {
   name: "Cardiovascular",
-  abbv: "Cardiov.",
   measurements: {
     HR: {
       name: "HR",
@@ -176,7 +175,11 @@ export const Cardiovascular = {
     SkinColor: {
       name: "Skin Color",
       fulltext: "Skin Color",
+<<<<<<< HEAD
+      unit: "",
+=======
       unit: "sec",
+>>>>>>> 8049a96 (update gitignore)
       type: "choices",
       options: { Flushed: 0, Pink: 2, Pale: 0, Gray: 0, "Gray and Mottled": 0 },
     },
@@ -280,7 +283,6 @@ export const Cardiovascular = {
 
 export const Respiratory = {
   name: "Respiratory",
-  abbv: "Resp.",
   measurements: {
     RR: {
       name: "RR",
@@ -424,7 +426,6 @@ export const Respiratory = {
 
 export const Renal = {
   name: "Renal",
-  abbv: "Renal",
   measurements: {
     pH: {
       name: "pH",
@@ -625,7 +626,6 @@ export const Renal = {
 
 export const Hematologic = {
   name: "Hematologic",
-  abbv: "Hematol",
   measurements: {
     INR: {
       name: "INR",
@@ -677,7 +677,6 @@ export const Hematologic = {
 
 export const Hepatic = {
   name: "Hepatic",
-  abbv: "Hepatic",
   measurements: {
     Bilirubin: {
       name: "Bilirubin",
@@ -737,7 +736,6 @@ export const Hepatic = {
 
 export const Neurologic = {
   name: "Neurologic",
-  abbv: "Neurol",
   measurements: {
     GCS: {
       name: "GCS",
@@ -812,7 +810,6 @@ export const Neurologic = {
 
 export const Immune = {
   name: "Immune",
-  abbv: "Immune",
   measurements: {
     WBC: {
       name: "WBC",
@@ -878,3 +875,62 @@ export const OrganDTConfig = [
   Hepatic,
   Neurologic,
 ];
+
+export const PSepsisAssessment = {
+  name: 'Sepsis Score',
+  measurements: {
+    HR: {
+      name: "HR",
+      unit: "bpm",
+      type: "number",
+      value: 100,
+    },
+    BPSys: {
+      name: "BP Sys",
+      unit: "mmHg",
+      type: "number",
+      value: 100,
+    },
+    PulseQuality: {
+      name: "Pulse Quality",
+      unit: "",
+      type: "choices",
+      options: { Bounding: 0, Normal: 2, Thready: 0 },
+      value: "Normal"
+    },
+    Temp: {
+      name: "Temp",
+      unit: "°C",
+      type: "number",
+      value: 37,
+    },
+    Behavior: {
+      name: "Behavior",
+      unit: "",
+      type: "choices",
+      options: {
+        "Playing/Appropriate": 2,
+        Sleeping: 2,
+        Irritable: 1,
+        "Confused/Reduced Response to Pain": 0,
+      },
+      value: "Playing/Appropriate"
+    },
+    CapillaryRefill: {
+      name: "Capillary Refill",
+      unit: "sec",
+      type: "choices",
+      options: { Flash: 0, 1: 2, 2: 2, 3: 0, 4: 0, "5+": 0 },
+      value: "1",
+    },
+    SkinColor: {
+      name: "Skin Color",
+      unit: "",
+      type: "choices",
+      options: { Flushed: 0, Pink: 2, Pale: 0, Gray: 0, "Gray and Mottled": 0 },
+      value: "Pink"
+    },
+  }
+}
+
+export const DemoConfig = [ PSepsisAssessment, ]

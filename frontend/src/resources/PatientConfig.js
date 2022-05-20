@@ -1,45 +1,91 @@
-export const getVitalsAgeGroup = (days) => {
-  if (days < 28) return 1;
-  else if (days < 60) return 2;
-  else if (days < 356) return 3;
-  else if (days < 365 * 2) return 4;
-  else if (days < 365 * 4) return 5;
-  else if (days < 365 * 6) return 6;
-  else if (days < 365 * 10) return 7;
-  else if (days < 365 * 13) return 8;
-  else return 9;
-};
+// export const getVitalsAgeGroup = (days) => {
+//   if (days < 28) return 1;
+//   else if (days < 60) return 2;
+//   else if (days < 356) return 3;
+//   else if (days < 365 * 2) return 4;
+//   else if (days < 365 * 4) return 5;
+//   else if (days < 365 * 6) return 6;
+//   else if (days < 365 * 10) return 7;
+//   else if (days < 365 * 13) return 8;
+//   else return 9;
+// };
 
-export const getShockAgeGroup = (days) => {
-  if (days < 28) return 1;
-  else if (days < 356) return 2;
-  else if (days < 365 * 2) return 3;
-  else if (days < 365 * 5) return 4;
-  else if (days < 365 * 12) return 5;
-  else if (days < 365 * 18) return 6;
-  else return 7;
-};
+// export const getShockAgeGroup = (days) => {
+//   if (days < 28) return 1;
+//   else if (days < 356) return 2;
+//   else if (days < 365 * 2) return 3;
+//   else if (days < 365 * 5) return 4;
+//   else if (days < 365 * 12) return 5;
+//   else if (days < 365 * 18) return 6;
+//   else return 7;
+// };
 
-export const convertAge = (value, unit) => {
-  let days, years;
-  if (unit === "weeks old") {
-    days = value * 7;
-    years = Math.floor(this.days / 365);
-  } else if (unit === "months old") {
-    days = value * 30;
-    years = Math.floor(value / 12);
-  } else if (unit === "years old") {
-    days = value * 365;
-    years = value;
-  }
-  return { ageInDays: days, ageInYears: years };
-};
+// export const convertAge = (value, unit) => {
+//   let days, years;
+//   if (unit === "weeks") {
+//     days = value * 7;
+//     years = Math.floor(this.days / 365);
+//   } else if (unit === "months") {
+//     days = value * 30;
+//     years = Math.floor(value / 12);
+//   } else if (unit === "years") {
+//     days = value * 365;
+//     years = value;
+//   }
+//   return { ageInDays: days, ageInYears: years };
+// };
+
 
 export const PatientBasic = {
   Age: {
     name: "Age",
     type: "group",
+    getDays: (value, unit) => {
+      let days;
+        if (unit === "weeks") {
+          days = value * 7;
+        } else if (unit === "months") {
+          days = value * 30;
+        } else if (unit === "years") {
+          days = value * 365;
+        }
+        return days;
+    },
     generateContent: (value, unit) => {
+      const convertAge = (value, unit) => {
+        let days, years;
+        if (unit === "weeks") {
+          days = value * 7;
+          years = Math.floor(days / 365);
+        } else if (unit === "months") {
+          days = value * 30;
+          years = Math.floor(value / 12);
+        } else if (unit === "years") {
+          days = value * 365;
+          years = Number(value);
+        }
+        return { ageInDays: days, ageInYears: years };
+      };
+      const getShockAgeGroup = (days) => {
+        if (days < 28) return 1;
+        else if (days < 356) return 2;
+        else if (days < 365 * 2) return 3;
+        else if (days < 365 * 5) return 4;
+        else if (days < 365 * 12) return 5;
+        else if (days < 365 * 18) return 6;
+        else return 7;
+      };
+      const getVitalsAgeGroup = (days) => {
+        if (days < 28) return 1;
+        else if (days < 60) return 2;
+        else if (days < 356) return 3;
+        else if (days < 365 * 2) return 4;
+        else if (days < 365 * 4) return 5;
+        else if (days < 365 * 6) return 6;
+        else if (days < 365 * 10) return 7;
+        else if (days < 365 * 13) return 8;
+        else return 9;
+      };
       const { ageInDays, ageInYears } = convertAge(value, unit);
       return {
         value: value,
@@ -80,7 +126,4 @@ export const PatientBasic = {
       "Large Surgical Incisions/ Serious Injury": 1,
     },
   },
-  Comorbidity: [],
-  Chronic: [],
-  Medication: [],
 };
