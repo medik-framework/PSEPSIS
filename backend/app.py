@@ -35,6 +35,7 @@ def k_comm():
 def index3():
     global data_copy
     return data_copy
+
     #result = {}
     #error = {}
     #if params == []:

@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 
-import { organsDT } from "./resources/DigitalTwinConfig";
+import { organsDT } from "./resources/DigitalTwinConfigReorganized";
+
 
 import { FormSection } from "./components/FormSection";
 
