@@ -1,0 +1,59 @@
+{
+  "Cardiovascular": [
+    "BP Dia",
+    "BP Sys",
+    "CVP",
+    "Capillary Refill",
+    "Cardio Output",
+    "HR",
+    "Hgb",
+    "Lactate",
+    "MAP",
+    "PRA",
+    "Pulse Quality",
+    "ScvO2",
+    "Skin Color"
+  ],
+  "Respiratory": [
+    "FiO2",
+    "PaCO2",
+    "PaO2",
+    "RR",
+    "SpO2",
+    "etCO2"
+  ],
+  "Immune": [
+    "CoreTemp",
+    "Temp",
+    "WBC"
+  ],
+  "Renal": [
+    "BUN",
+    "Base Excess",
+    "Baseline Creatinine",
+    "Bicabonate",
+    "Chloride",
+    "Creatinine",
+    "Magnesium",
+    "Potassium",
+    "Sodium",
+    "Urine Output",
+    "pH"
+  ],
+  "Hematologic": [
+    "INR",
+    "Platelet"
+  ],
+  "Hepatic": [
+    "ALT",
+    "Bilirubin"
+  ],
+  "Neurologic": [
+    "Behavior",
+    "GCS",
+    "Glasgow Eye Response",
+    "Glasgow Motor Response",
+    "Glasgow Verbal Response",
+    "Pain"
+  ]
+}
