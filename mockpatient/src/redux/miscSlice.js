@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { apiURL: "http://127.0.0.1:5000/form_submit"}
+const initialState = { apiURL: "http://127.0.0.1:5000/"}
 
 export const miscSlice = createSlice({
   name: 'misc',
