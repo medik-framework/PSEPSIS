@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import NumericInput from "./components/DialogContent/NumericInput";
 import Checklist from "./components/DialogContent/Checklist";
 
+import ThreeBucket from "./components/DialogContent/ThreeBucket";
+
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -131,7 +133,7 @@ function App() {
   return (
     <>
       {open && <InputDialog {...{ open, setOpen, id, config:dialogConfig }}/>}
-      <PsepsisTablet></PsepsisTablet>
+      <ThreeBucket></ThreeBucket>
     </>
   );
 }
