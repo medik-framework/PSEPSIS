@@ -115,20 +115,20 @@ function App() {
     }
   }, [dialogs, open, setDialogConfig, setOpen, setID])
 
-  useInterval(
-    () =>
-      fetch(`http://${apiURL}/app_get`)
-        .catch(error => {
-          console.log('Fetch error:', error)
-        })
-        .then((response) => response.json())
-        .then((json) => {
-          console.log(json)
-          dispatch({ type: "organDT/update", payload: json.organDT });
-          dispatch({ type: "dialogs/update", payload: json.dialogs})
-        })
-    , 5000
-  );
+  // useInterval(
+  //   () =>
+  //     fetch(`http://${apiURL}/app_get`)
+  //       .catch(error => {
+  //         console.log('Fetch error:', error)
+  //       })
+  //       .then((response) => response.json())
+  //       .then((json) => {
+  //         console.log(json)
+  //         dispatch({ type: "organDT/update", payload: json.organDT });
+  //         dispatch({ type: "dialogs/update", payload: json.dialogs})
+  //       })
+  //   , 5000
+  // );
 
   return (
     <>
