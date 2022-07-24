@@ -15,9 +15,28 @@ const boxStyle = {
   border: '1px solid black',
 };
 
+const nodeConfig = [
+  [
+    {key: '30', id: 'Cap Refill', label:'Cap Refill', targetId:'Perfusion'}, 
+    {key: '31', id: 'Skin Color', label:'Skin Color', targetId:'Perfusion'}
+  ],
+  [
+    {key: '20', id: 'Heart Rate', label:'Heart Rate', targetId:'Bucket 1'}, 
+    {key: '21', id: 'Systolic BP', label:'Systolic BP', targetId:'Bucket 1'}, 
+    {key: '22', id: 'Pulse Quality', label:'Pulse Quality', targetId:'Bucket 1'}, 
+    {key: '23', id: 'Temperature', label:'Temperature', targetId:'Bucket 2'}, 
+    {key: '24', id: 'Mental Status', label:'Mental Status', targetId:'Bucket 3'}, 
+    {key: '25', id: 'Perfusion', label:'Perfusion', targetId:'Bucket 3'}, 
+    {key: '26', id: 'High Risk Condition', label:'High Risk Condition', targetId:'Bucket 3'}, 
+  ],
+  [
+    {key: '10', id: 'Bucket 1', label:'Bucket 1', targetId:'Sepsis'}, 
+    {key: '11', id: 'Bucket 2', label:'Bucket 2', targetId:'Sepsis'}, 
+    {key: '12', id: 'Bucket 3', label:'Bucket 3', targetId:'Sepsis'}, 
+  ]
+]
+
 const ThreeBucket = () => {
-  const [nbElements, setNbElements] = React.useState(3);
-  const [labels, setLabels] = React.useState('hello');
   return (
     <div
       style={{
@@ -25,55 +44,40 @@ const ThreeBucket = () => {
         margin: '50px',
       }}
     >
-      <div>
-        <div>Change labels</div>
-        <input
-          data-cy="change-labels-input"
-          type="text"
-          onChange={(event) => {
-            setLabels(event.currentTarget.value);
-          }}
-        />
-      </div>
-      <div>
-        <div>Add elements</div>
-        <button data-cy="add-element" onClick={() => setNbElements(nbElements + 1)}>
-          +
-        </button>
-        <button onClick={() => setNbElements(nbElements > 1 ? nbElements - 1 : 0)}>-</button>
-      </div>
-      <ArcherContainer strokeColor="red">
+      <ArcherContainer strokeColor="red" startMarker endMarker>
+        {nodeConfig.map((_, i) => (
+            <div style={rowStyle} key={i}>
+              {nodeConfig[i].map((_, j) => (
+                <ArcherElement
+                  key={nodeConfig[i][j].key}
+                  id={nodeConfig[i][j].id}
+                  relations={[
+                    {
+                      targetId: nodeConfig[i][j].targetId,
+                      targetAnchor: 'top',
+                      sourceAnchor: 'bottom',
+                      style: { 
+                        endShape: {
+                          circle: { radius : 10 }
+                        }
+                      }
+                    },
+                  ]}
+                >
+                  <div style={boxStyle}>{nodeConfig[i][j].label}</div>
+                </ArcherElement>
+              ))}
+            </div>
+          ))
+        }
+
         <div style={rootStyle}>
-          <ArcherElement id="root">
-            <div style={boxStyle}>Root</div>
+          <ArcherElement id="Sepsis">
+            <div style={boxStyle}>Sepsis</div>
           </ArcherElement>
         </div>
-
-        <div style={rowStyle}>
-          {Array(nbElements)
-            .fill(0)
-            .map((_, i) => (
-              <ArcherElement
-                key={`element${i}`}
-                id={`element${i}`}
-                relations={[
-                  {
-                    targetId: 'root',
-                    targetAnchor: 'bottom',
-                    sourceAnchor: 'top',
-                    label: (
-                      <div>
-                        {i} {labels}
-                      </div>
-                    ),
-                  },
-                ]}
-              >
-                <div style={boxStyle}>Element {i}</div>
-              </ArcherElement>
-            ))}
-        </div>
       </ArcherContainer>
+
     </div>
   );
 };
