@@ -43,7 +43,7 @@ const InputDialog = ({ open, setOpen, id, config }) => {
   useEffect(() => {
     let r = Object.keys(retDict).length > 0;
     if (r) {
-      r = Object.keys(retDict).reduce((prev, i) => 
+      r = Object.keys(retDict).reduce((prev, i) =>
         prev && !( retDict[i] === null )
       , r)
     }
@@ -87,7 +87,7 @@ const InputDialog = ({ open, setOpen, id, config }) => {
         ))}
       </DialogContent>
       <DialogActions>
-        <Button 
+        <Button
           disabled={!shouldContinue}
           onClick={handleContinue}
         >
@@ -99,7 +99,7 @@ const InputDialog = ({ open, setOpen, id, config }) => {
 }
 
 function App() {
-  const apiURL = "127.0.0.1:5000";
+  const apiURL = "127.0.0.1:4000";
   const [open, setOpen] = useState(false);
   const [id, setID] = useState(0);
   const [dialogConfig, setDialogConfig] = useState({});
@@ -115,20 +115,20 @@ function App() {
     }
   }, [dialogs, open, setDialogConfig, setOpen, setID])
 
-  // useInterval(
-  //   () =>
-  //     fetch(`http://${apiURL}/app_get`)
-  //       .catch(error => {
-  //         console.log('Fetch error:', error)
-  //       })
-  //       .then((response) => response.json())
-  //       .then((json) => {
-  //         console.log(json)
-  //         dispatch({ type: "organDT/update", payload: json.organDT });
-  //         dispatch({ type: "dialogs/update", payload: json.dialogs})
-  //       })
-  //   , 5000
-  // );
+  useInterval(
+    () =>
+      fetch(`http://${apiURL}/get_all_values`)
+        .catch(error => {
+          console.log('Fetch error:', error)
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json)
+          dispatch({ type: "organDT/update", payload: json.organDT });
+          dispatch({ type: "dialogs/update", payload: json.dialogs})
+        })
+    , 5000
+  );
 
   return (
     <>

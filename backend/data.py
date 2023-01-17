@@ -1,6 +1,7 @@
 from typing import List, Dict, Tuple, TypeAlias, Optional
 from dataclasses import dataclass, field
 import pickle
+from flask import jsonify
 
 debug = True
 
@@ -59,6 +60,9 @@ class OrganDt:
     def get_series(self, meas: str) -> DataSeries:
         return self.data[meas]
 
+    def get_all(self) -> Dict:
+        return {oname: {mname: self.get_value(mname) for mname in mnames} for oname, mnames in ORGAN_DT_MAP.items()}
+
     def update(self, meas: str, time: int, val: float):
         self.data[meas].update(time, val)
 
@@ -76,6 +80,11 @@ class OrganDt:
     def save(self, file: str):
         with open(file, "wb") as out:
             pickle.dump(self.data, out)
+
+    def print(self):
+        print(jsonify(self.data))
+        # print(self.data)
+
 
 def test():
     import random
@@ -127,6 +136,10 @@ def test():
         dbg("all value", {k: odt.get_value(k) for k in MEASES})
         time = random_time(time)
     odt.save("test.pkl")
+
+    # with open("test.pkl", "rb") as file:
+    #     data = pickle.load(file)
+    # print(data)
 
 if __name__ == "__main__":
     test()
