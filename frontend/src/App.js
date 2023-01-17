@@ -3,14 +3,6 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-
-import { Provider } from "react-redux";
-import store from "./redux/store";
-
-=======
-
 import NumericInput from "./components/DialogContent/NumericInput";
 import Checklist from "./components/DialogContent/Checklist";
 
@@ -23,7 +15,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useInterval } from 'usehooks-ts';
 
 
->>>>>>> demo-docker
 // import { ThemeProvider } from "@mui/material";
 // import theme from "./theme";
 
@@ -130,25 +121,18 @@ function App() {
         })
         .then((response) => response.json())
         .then((json) => {
-          // console.log(json)
-          // dispatch({ type: "UPDATE_ORGAN_DT", payload: json.organDT });
+          console.log(json)
+          dispatch({ type: "organDT/update", payload: json.organDT });
           dispatch({ type: "dialogs/update", payload: json.dialogs})
         })
-    , 1000
+    , 5000
   );
 
   return (
-<<<<<<< HEAD
-    <Provider store={store}>
-      {/* <ThemeProvider theme={theme}> */}
-        <PsepsisTablet />
-      {/* </ThemeProvider> */}
-    </Provider>
-=======
     <>
       {open && <InputDialog {...{ open, setOpen, id, config:dialogConfig }}/>}
+      <PsepsisTablet></PsepsisTablet>
     </>
->>>>>>> demo-docker
   );
 }
 

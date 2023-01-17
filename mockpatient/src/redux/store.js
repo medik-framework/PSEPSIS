@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import OrganDTReducer from './reducers'
+import OrganDTReducer from './organDataSlice'
+import MiscReducer from './miscSlice'
 
 export default configureStore({
   reducer: {
-    OrganDT: OrganDTReducer
+    OrganDT: OrganDTReducer,
+    misc: MiscReducer
   }
 })

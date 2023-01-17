@@ -1,20 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { DemoConfig } from "../resources/DigitalTwinConfigReorganized";
-
-const OrganDTConfig = DemoConfig;
+import { OrganDTConfig } from "../resources/DigitalTwinConfigReorganized";
 
 const initialState = {}
 OrganDTConfig.map((organ) => {
     const measurements = organ.measurements;
     initialState[organ.name] = Object.keys(measurements).reduce((prev, key) => {
-        prev[measurements[key].name] = measurements[key].value;
+        prev[measurements[key].name] = null;
         return prev;
     }, {});
     return [];
 });
 
 export const organDataSlice = createSlice({
-  name: 'organdata',
+  name: 'organDT',
   initialState: { ...initialState },
   reducers: {
     update: (state, action) => {
@@ -26,11 +24,15 @@ export const organDataSlice = createSlice({
     },
     increment: (state, action) => {
       state[action.payload.organName][action.payload.measurementName] += action.payload.value
+    },
+    reset: (state, action) => {
+      console.log("reset");
+      state = initialState;
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { update, increment } = organDataSlice.actions
+export const { update, increment, reset } = organDataSlice.actions
 
 export default organDataSlice.reducer
