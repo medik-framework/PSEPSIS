@@ -35,8 +35,8 @@ const MeasurementNumeric = ({ organName, config }) => {
         if (value) {
             const method = apiURL + 'form_update';
             const data = {
-                organ: organName, 
-                measurement: config.name, 
+                organ: organName,
+                measurement: config.name,
                 value: value,
                 timeStamp: new Date().getTime()
             }
@@ -60,8 +60,8 @@ const MeasurementNumeric = ({ organName, config }) => {
 
     useInterval(() => {
         dispatch(increment({
-            value: step, 
-            organName: organName, 
+            value: step,
+            organName: organName,
             measurementName: config.name
         }));
         setElapse(elapse + 1);
@@ -79,24 +79,24 @@ const MeasurementNumeric = ({ organName, config }) => {
                 {config.name} {config.unit ? `(${config.unit})` : null}: {value ? +value.toFixed(2):null}
             </Typography>
             <Box sx={{ width:'100%', display:'inline-flex', flexDirection:'row', marginBottom:'5px'}}>
-            <Typography sx={{ fontSize:'16px', width:'20%', margin:'auto', textAlign:'center'}}>
-                Instantly update to: 
+            <Typography sx={{ fontSize:'14px', width:'20%', margin:'auto', textAlign:'center'}}>
+                Instantly update to:
             </Typography>
             <TextField
                 id={config.name}
                 sx={{ fontSize:'18px', backgroundColor:'white', width:'55%', height:'100%', margin:'auto' }}
-                variant="outlined" 
+                variant="outlined"
                 type="number"
                 onChange={(e) => setInputValue(e.target.value)}
             />
             <Button
                 disabled={(!inputValue) || (Number(inputValue) === value)}
-                sx={{ fontSize:'16px', width:'25%', marginLeft:'5px'}}
+                sx={{ fontSize:'14px', width:'25%', marginLeft:'5px'}}
                 variant="outlined"
                 onClick={() => {
                 resetInterval();
                 dispatch(update({
-                    value: Number(inputValue), 
+                    value: Number(inputValue),
                     organName: organName,
                     measurementName: config.name
                 }));
@@ -105,10 +105,10 @@ const MeasurementNumeric = ({ organName, config }) => {
                 Confrim
             </Button>
             </Box>
-            {!delay && 
+            {!delay &&
             <Box sx={{ width:'100%', display:'inline-flex', flexDirection:'row'}}>
-                <Typography sx={{ fontSize:'16px', width:'20%', margin:'auto', textAlign:'center'}}>
-                    Gradually update to: 
+                <Typography sx={{ fontSize:'14px', width:'20%', margin:'auto', textAlign:'center'}}>
+                    Gradually update to:
                 </Typography>
                 <TextField
                     id='target'
@@ -117,7 +117,7 @@ const MeasurementNumeric = ({ organName, config }) => {
                     type="number"
                     onChange={(e) => setTarget(Number(e.target.value))}
                 />
-                <Typography sx={{ fontSize:'16px', width:'7.5%', margin:'auto', textAlign:'center'}}>
+                <Typography sx={{ fontSize:'14px', width:'7.5%', margin:'auto', textAlign:'center'}}>
                     in
                 </Typography>
                 <TextField
@@ -127,11 +127,11 @@ const MeasurementNumeric = ({ organName, config }) => {
                     type="number"
                     onChange={(e) => setPeriod(Number(e.target.value))}
                 />
-                <Typography sx={{ fontSize:'16px', width:'7.5%', margin:'auto', textAlign:'center'}}>
+                <Typography sx={{ fontSize:'14px', width:'7.5%', margin:'auto', textAlign:'center'}}>
                     sec
                 </Typography>
                 <Button
-                    sx={{ fontSize:'16px', width:'25%', marginLeft:'5px' }}
+                    sx={{ fontSize:'14px', width:'25%', marginLeft:'5px' }}
                     variant="outlined"
                     disabled={isNaN(value) || !target || !period}
                     onClick={() => gradualUpdate(value)}
@@ -142,11 +142,11 @@ const MeasurementNumeric = ({ organName, config }) => {
             }
             {delay&&
             <Box sx={{ width:'100%', display:'inline-flex', flexDirection:'row'}}>
-                <Typography sx={{ fontSize:'16px', width:'75%', margin:'auto', textAlign:'left'}}>
+                <Typography sx={{ fontSize:'14px', width:'75%', margin:'auto', textAlign:'left'}}>
                     Gradually updating to {target} in {period-elapse} secs.
                 </Typography>
                 <Button
-                    sx={{ fontSize:'16px', width:'25%', marginLeft:'5px' }}
+                    sx={{ fontSize:'14px', width:'25%', marginLeft:'5px' }}
                     variant="outlined"
                     onClick={() => resetInterval()}
                 >
