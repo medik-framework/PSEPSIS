@@ -33,7 +33,7 @@ const MeasurementNumeric = ({ organName, config }) => {
 
     useEffect(() => {
         if (value) {
-            const method = apiURL + 'form_update';
+            const method = apiURL + 'update_data';
             const data = {
                 organ: organName,
                 measurement: config.name,
