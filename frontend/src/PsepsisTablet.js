@@ -8,7 +8,7 @@ import CollapsiblePanel from "./components/CollapsiblePanel";
 const PsepsisTablet = () => {
   return (
     <div>
-      <Box width="50vw" height="100vh">
+      <Box width="30vw" height="100vh">
         <LeftPanel />
       </Box>
       {/* <Grid container>

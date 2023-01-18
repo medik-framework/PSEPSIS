@@ -43,6 +43,11 @@ class DataSeries:
             return None
         return self.data[-1].value
 
+    def get_data_point(self) -> Optional[float]:
+        if len(self.data) == 0:
+            return {'value': None, 'time':None}
+        return {'value': self.data[-1].value, 'time':self.data[-1].time}
+
 import json
 ORGAN_DT_MAP = json.load(open("organdt.json"))
 MEAS_MAP = {v: k for k, vs in ORGAN_DT_MAP.items() for v in vs}
@@ -57,11 +62,14 @@ class OrganDt:
     def get_value(self, meas: str) -> Optional[float]:
         return self.data[meas].get_value()
 
+    def get_data_point(self, meas: str) -> Optional[float]:
+        return self.data[meas].get_data_point()
+
     def get_series(self, meas: str) -> DataSeries:
         return self.data[meas]
 
     def get_all(self) -> Dict:
-        return {oname: {mname: self.get_value(mname) for mname in mnames} for oname, mnames in ORGAN_DT_MAP.items()}
+        return {oname: {mname: self.get_data_point(mname) for mname in mnames} for oname, mnames in ORGAN_DT_MAP.items()}
 
     def update(self, meas: str, time: int, val: float):
         self.data[meas].update(time, val)

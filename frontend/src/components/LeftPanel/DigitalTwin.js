@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { pick } from "lodash";
 import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
+import { TabUnstyled, TabPanelUnstyled } from '@mui/base';
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 import InputDialog from "./InputDialog";
 
@@ -44,14 +45,16 @@ const DigitalTwinForm = ({ selectedDT }) => {
   const organName = OrganDTConfig[selectedDT].name;
   const measurements = OrganDTConfig[selectedDT].measurements;
   const organDTValue = useSelector((state) => state.organDT[organName]);
-
-  console.log(organDTValue);
+  console.log(organDTValue)
+  console.log(measurements)
   return (
     <>
       <Grid container>
         {Object.keys(measurements).map((key) => {
           const range = measurements[key].getThres ? measurements[key].getThres({}) : {low: 0, high: 0}
-          const colorcode = organDTValue[key] > range?.high || organDTValue[key] < range?.low ? "red" : "lightgray"
+          const mname = measurements[key].name
+          console.log(key, organDTValue[mname])
+          const colorcode = organDTValue[mname]['value'] > range?.high || organDTValue[mname]['value'] < range?.low ? "red" : "lightgray"
 
           return (
             <Grid
@@ -70,7 +73,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
                   ? `(${measurements[key]?.unit})`
                   : null}
               </div>
-              <div>{organDTValue[key]}</div>
+              <div>{organDTValue[mname]['value']}</div>
               <div>{/*Last updated time:*/}</div>
             </Grid>
           );
@@ -159,16 +162,40 @@ const OrganAssessmentForm = ({ selectedDT }) => {
 const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
     <Tabs
-      value={selectedDT} 
+      value={selectedDT}
       onChange={(e, v) => setSelectedDT(v)}
       textColor="primary"
       indicatorColor="primary"
+      sx={{
+        // "& .MuiTabs-flexContainer": {
+        //   width:'30vw'
+        // },
+        // "& .MuiTabs-indicator": {
+        //   width:'52px'
+        // },
+        // "& .MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary Mui-selected": {
+        //   padding:0
+        // },
+        "& .MuiTouchRipple-root":{
+          minWidth:'20px'
+        }
+      }}
     >
-      {OrganDTConfig.map((organ, index) => {
-        return (
-          <Tab label={organ.abbv} value={index} key={index}/>
-        );
-      })}
+      {OrganDTConfig.map((organ, index) =>
+        <Tab
+          icon={<img
+            hight={50}
+            width={50}
+            src={process.env.PUBLIC_URL + 'organicons/'+organ.name+'.png'}
+          />}
+          sx={{
+            padding:1,
+            width:'52px'
+          }}
+          value={index}
+          key={index}
+        />
+      )}
     </Tabs>
   )
 };
