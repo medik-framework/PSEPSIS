@@ -7,9 +7,24 @@ import os
 from data import OrganDt
 
 organDT = OrganDt()
+portal_connected = False
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
+
+@app.route("/portal_connect", methods=["POST"])
+def portal_connect():
+    global portal_connected
+    portal_connected = True
+    print("Simulation data portal connected")
+    return ""
+
+@app.route("/portal_disconnect", methods=["POST"])
+def portal_disconnect():
+    global portal_connected
+    portal_connected = False
+    print("Simulation data portal disconnected")
+    return ""
 
 @app.route("/update_data", methods=["POST"])
 def update_data():

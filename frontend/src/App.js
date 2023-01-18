@@ -122,8 +122,8 @@ function App() {
         .then((response) => response.json())
         .then((json) => {
           console.log(json)
-          dispatch({ type: "organDT/update", payload: json.organDT });
-          dispatch({ type: "dialogs/update", payload: json.dialogs})
+          dispatch({ type: "organDT/update", payload: json });
+          // dispatch({ type: "dialogs/update", payload: json.dialogs})
         })
     , 5000
   );

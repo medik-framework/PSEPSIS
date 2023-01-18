@@ -737,7 +737,7 @@ export const Hepatic = {
 
 export const Neurologic = {
   name: "Neurologic",
-  abbv: "Neurol",
+  abbv: "Neurol.",
   measurements: {
     GCS: {
       name: "GCS",
