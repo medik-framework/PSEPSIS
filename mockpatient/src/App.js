@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useSelector, useDispatch } from 'react-redux';
 import { reset } from './redux/organDataSlice';
@@ -32,13 +32,13 @@ function App() {
 
   const startSession = () => {
     setStarted(true);
-    const method = apiURL + 'form_start';
+    const method = apiURL + 'portal_connect';
     sendRemoteRequest(method, {});
   }
 
   const exitSession = () => {
     setStarted(false);
-    const method = apiURL + 'form_exit';
+    const method = apiURL + 'portal_disconnect';
     sendRemoteRequest(method, {});
     dispatch(reset());
   }
