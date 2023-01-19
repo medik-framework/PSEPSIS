@@ -45,41 +45,45 @@ const DigitalTwinForm = ({ selectedDT }) => {
   const organName = OrganDTConfig[selectedDT].name;
   const measurements = OrganDTConfig[selectedDT].measurements;
   const organDTValue = useSelector((state) => state.organDT[organName]);
-  console.log(organDTValue)
-  console.log(measurements)
-  return (
-    <>
-      <Grid container>
-        {Object.keys(measurements).map((key) => {
-          const range = measurements[key].getThres ? measurements[key].getThres({}) : {low: 0, high: 0}
-          const mname = measurements[key].name
-          console.log(key, organDTValue[mname])
-          const colorcode = organDTValue[mname]['value'] > range?.high || organDTValue[mname]['value'] < range?.low ? "red" : "lightgray"
 
-          return (
-            <Grid
-              item
-              xs={6}
-              sx={{
-                height: "80px",
-                boxShadow:
-                  "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: colorcode,
-              }}
-            >
-              <div>
-                {measurements[key]?.name}{" "}
-                {measurements[key]?.unit
-                  ? `(${measurements[key]?.unit})`
-                  : null}
-              </div>
-              <div>{organDTValue[mname]['value']}</div>
-              <div>{/*Last updated time:*/}</div>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </>
+  const get_colorcode = (range, value) => {
+    if(value > range.high || value < range.low) return 'red';
+    if(value < range.high && value > range.low) return 'green';
+    else return 'lightgray';
+    // if(isNaN(value) || isNaN(range)) return 'lightgray';
+  }
+
+  return (
+    <Grid container>
+      {Object.keys(measurements).map((key) => {
+        const range = measurements[key].getThres ? measurements[key].getThres({}) : {low: 0, high: 0}
+        const mname = measurements[key].name
+        const colorcode = get_colorcode(range, organDTValue[mname]['value'])
+        // organDTValue[mname]['value'] > range?.high || organDTValue[mname]['value'] < range?.low ? "red" : "green"
+
+        return (
+          <Grid
+            item
+            xs={6}
+            sx={{
+              height: "80px",
+              boxShadow:
+                "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
+              backgroundColor: colorcode,
+            }}
+          >
+            <div>
+              {measurements[key]?.name}{" "}
+              {measurements[key]?.unit
+                ? `(${measurements[key]?.unit})`
+                : null}
+            </div>
+            <div>{organDTValue[mname]['value']}</div>
+            <div>{/*Last updated time:*/}</div>
+          </Grid>
+        );
+      })}
+    </Grid>
   );
 };
 
@@ -166,32 +170,18 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
       onChange={(e, v) => setSelectedDT(v)}
       textColor="primary"
       indicatorColor="primary"
-      sx={{
-        // "& .MuiTabs-flexContainer": {
-        //   width:'30vw'
-        // },
-        // "& .MuiTabs-indicator": {
-        //   width:'52px'
-        // },
-        // "& .MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary Mui-selected": {
-        //   padding:0
-        // },
-        "& .MuiTouchRipple-root":{
-          minWidth:'20px'
-        }
-      }}
     >
       {OrganDTConfig.map((organ, index) =>
         <Tab
+          sx={{
+            padding: 1,
+            minWidth: 0,
+          }}
           icon={<img
             hight={50}
             width={50}
             src={process.env.PUBLIC_URL + 'organicons/'+organ.name+'.png'}
           />}
-          sx={{
-            padding:1,
-            width:'52px'
-          }}
           value={index}
           key={index}
         />
