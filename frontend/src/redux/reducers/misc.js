@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 // "psepsis.herokuapp.com/submi"
 
-const initialState = { apiURL: "127.0.0.1:5000"}
+const initialState = { apiURL: "127.0.0.1:4000"}
 
 export const miscSlice = createSlice({
   name: 'misc',

@@ -1,29 +1,41 @@
-import React from 'react';
-import './WelcomePage.css'
+import { Button, Box, Typography } from "@mui/material";
 
-import {useDispatch} from "react-redux";
-
-const WelcomePage = ({setIsDisplayScreen}) => {
-
-    const dispatch = useDispatch()
-
-    const newSession = () => {
-        dispatch({type: "CLEAR_PREVIOUS_SESSION"})
-        setIsDisplayScreen(true)
-    }
-        return (
-            <div className='bgimg-1'>
-                <div className="caption">
-                    <span className="border">Pediatric Sepsis Guidance System</span><br/>
-                    <button className="welcom-btn">
-                        <a href="#display_screen" onClick={() => newSession()}> Create New Session</a>
-                    </button><br/>
-                    <button  className="welcom-btn">
-                        <a href="#display_screen" onClick={() => setIsDisplayScreen(true)}> Restore Previous Session </a>
-                    </button>
-                </div>
-            </div>
-        );
-}
+const WelcomePage = ({ startSession }) => {
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100vw',
+                height: '100vh',
+                backgroundImage: `url(${process.env.PUBLIC_URL + 'bgimg.jpg'})`,
+                position: 'relative',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                alignItems: 'center',
+                justifyContent: "center"
+            }}
+        >
+            <Typography fontSize={36} color='white'>
+                Pediatric Sepsis Guidance System
+            </Typography>
+            <Button
+                variant="contained"
+                size="large"
+                sx={{
+                    marginTop: '50px',
+                    color: '#FFFAFA',
+                    backgroundColor: '#32CD32',
+                    fontWeight: 'bold',
+                    fontSize: '24px'
+                }}
+                onClick={() => startSession()}
+            >
+                Start New Session
+            </Button>
+        </Box>
+    )
+};
 
 export default WelcomePage;
