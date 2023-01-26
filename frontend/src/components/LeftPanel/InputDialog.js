@@ -11,7 +11,7 @@ import { Grid } from "@mui/material";
 import { useSelector } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
-import { PatientBasic } from "../../resources/PatientConfig";
+import { PatientConfig } from "../../resources/PatientConfig";
 
 export default function FormDialog({
   open,

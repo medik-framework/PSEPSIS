@@ -18,7 +18,6 @@ OrganDTConfig.map((organ) => {
 const organDTReducer = createReducer(initialState, (builder) => {
   builder
       .addCase(update, (state, action) => {
-        console.log(action.payload)
         OrganDTConfig.map((organ) => {
           state[organ.name] = action.payload[organ.name]
           return [];

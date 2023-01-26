@@ -14,6 +14,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useInterval } from 'usehooks-ts';
 
+import useWebSocket, { ReadyState } from "react-use-websocket";
+
 
 // import { ThemeProvider } from "@mui/material";
 // import theme from "./theme";
@@ -32,53 +34,55 @@ const InputContent = ({ config, setRetDict }) => {
   }
 }
 
-const InputDialog = ({ open, setOpen, id, config }) => {
+const InputDialog = ({ open, setOpen, id, info }) => {
   const [retDict, setRetDict] = useState({});
-  const [shouldContinue, setShouldContinue] = useState(!config.inputConfig);
-  const apiURL = "http://127.0.0.1:5000/app_userinput";
+  // const [shouldContinue, setShouldContinue] = useState(!config.inputConfig);
+  // const apiURL = "http://127.0.0.1:5000/app_userinput";
   const dispatch = useDispatch();
+  const config = DialogConfig[info['args'][0]]
+  console.log(config)
 
-  useEffect(() => {
-    let r = Object.keys(retDict).length > 0;
-    if (r) {
-      r = Object.keys(retDict).reduce((prev, i) =>
-        prev && !( retDict[i] === null )
-      , r)
-    }
-    setShouldContinue(r);
-    console.log(retDict)
-  }, [retDict])
+  // useEffect(() => {
+  //   let r = Object.keys(retDict).length > 0;
+  //   if (r) {
+  //     r = Object.keys(retDict).reduce((prev, i) =>
+  //       prev && !( retDict[i] === null )
+  //     , r)
+  //   }
+  //   setShouldContinue(r);
+  //   console.log(retDict)
+  // }, [retDict])
 
-  const handleContinue = () => {
-    let data = {};
-    data[id] = retDict;
-    console.log(data)
-    fetch(apiURL, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    }).then(response => {
-      console.log(response)
-    }).catch(error => {
-      console.log(error)
-    }).then( () => {
-      dispatch({type: "dialogs/setDone", payload: {id: id, return: retDict}})
-      setOpen(false)
-    })
-  }
+  // const handleContinue = () => {
+  //   let data = {};
+  //   data[id] = retDict;
+  //   console.log(data)
+  //   fetch(apiURL, {
+  //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+  //     mode: 'cors', // no-cors, *cors, same-origin
+  //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+  //     credentials: 'same-origin', // include, *same-origin, omit
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //       // 'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+  //     redirect: 'follow', // manual, *follow, error
+  //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  //     body: JSON.stringify(data) // body data type must match "Content-Type" header
+  //   }).then(response => {
+  //     console.log(response)
+  //   }).catch(error => {
+  //     console.log(error)
+  //   }).then( () => {
+  //     dispatch({type: "dialogs/setDone", payload: {id: id, return: retDict}})
+  //     setOpen(false)
+  //   })
+  // }
 
   return (
     <Dialog open={open}>
       <DialogTitle>{config.title}</DialogTitle>
-      <DialogContent>
+      {/* <DialogContent>
         {config.inputConfig &&
           config.inputConfig.map((config, id)=>(
           <InputContent key={id} {...{ config, setRetDict }}/>
@@ -91,27 +95,49 @@ const InputDialog = ({ open, setOpen, id, config }) => {
         >
           Continue
         </Button>
-      </DialogActions>
+      </DialogActions> */}
     </Dialog>
   );
 }
 
 function App() {
   const apiURL = "127.0.0.1:4000";
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
+    `ws://${apiURL}/app_dialog`
+  );
+
   const [open, setOpen] = useState(false);
   const [id, setID] = useState(0);
+  const [info, setInfo] = useState({});
   const [dialogConfig, setDialogConfig] = useState({});
   const dispatch = useDispatch();
-  const dialogs = useSelector((state) => state.dialogs)
+  const dialogs = useSelector((state) => state.dialogs.todo)
 
   useEffect(() => {
-    if (dialogs.todo.length && !open){
-      console.log(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
-      setID(dialogs.todo[0]);
-      setDialogConfig(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
+    if (lastMessage !== null) {
+      const d = lastMessage.data.replace(/'/g, '"');
+      dispatch({ type: "dialogs/update", payload: d});
+    }
+  }, [lastMessage]);
+
+  useEffect(() => {
+    console.log(dialogs)
+    if(dialogs.length != 0) {
+      setInfo(JSON.parse(dialogs[0]));
       setOpen(true);
     }
-  }, [dialogs, open, setDialogConfig, setOpen, setID])
+    // if(dialogs.some(e => e == true)) {
+    //   console.log('Exists');
+    // } else {
+    //   console.log('Not exist')
+    // }
+    // if (dialogs.todo.length && !open){
+    //   console.log(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
+    //   setID(dialogs.todo[0]);
+    //   setDialogConfig(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
+    //   setOpen(true);
+    // }
+  }, [dialogs, open, setDialogConfig, setOpen, setID, setInfo])
 
   useInterval(
     () =>
@@ -121,19 +147,18 @@ function App() {
         })
         .then((response) => response.json())
         .then((json) => {
-          console.log(json)
           dispatch({ type: "organDT/update", payload: json });
-          // dispatch({ type: "dialogs/update", payload: json.dialogs})
         })
     , 5000
   );
 
   return (
     <>
-      {open && <InputDialog {...{ open, setOpen, id, config:dialogConfig }}/>}
+      {open && <InputDialog {...{ open, setOpen, id, info }}/>}
       <PsepsisTablet></PsepsisTablet>
     </>
   );
 }
 
 export default App;
+
