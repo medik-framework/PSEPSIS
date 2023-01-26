@@ -93,6 +93,20 @@ class OrganDt:
         print(jsonify(self.data))
         # print(self.data)
 
+class Patient:
+    def __init__(self) -> None:
+        self.data = {}
+
+    def update(self, data):
+        new_data = {}
+        for k, v in data.items():
+            if len(v):
+                new_data[k] = v
+        self.data = self.data | new_data
+
+    def get_value(self, key):
+        return self.data[key]
+
 
 def test():
     import random

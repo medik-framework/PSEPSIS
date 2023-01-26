@@ -3,11 +3,30 @@ from flask_cors import CORS
 import simple_websocket
 import json
 import os
+import queue
+import time
 
-from data import OrganDt
+from data import OrganDt, Patient
 
 organDT = OrganDt()
+patient = Patient()
 portal_connected = False
+
+q = queue.Queue()
+q.put({ "type"      : "dialog",
+        "id"        : 1,
+        "args"      : [ "getAge" ]
+      })
+q.put({ "type"      : "dialog",
+        "id"        : 2,
+        "args"      : [ "getWeight" ]
+      })
+q.put({ "type"      : "dialog",
+        "id"        : 3,
+        "args"      : [ "getHighRiskConditions" ]
+      })
+
+dt_updates = queue.Queue()
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
@@ -29,9 +48,27 @@ def portal_disconnect():
 @app.route("/update_data", methods=["POST"])
 def update_data():
     global organDT
+    global dt_updates
+    json_data = request.json
+    print("Recv from sim porgtal: ", json_data)
+    organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
+    dt_updates.put(json.dumps(organDT.get_all()))
+    return ""
+
+@app.route("/update_patient", methods=["POST"])
+def update_patient():
+    global patient
     json_data = request.json
     print(json_data)
-    organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
+    patient.update(json_data)
+    return ""
+
+@app.route("/add_to_q", methods=["POST"])
+def add_to_q():
+    global q
+    json_data = request.json
+    print(json_data)
+    q.put(json_data)
     return ""
 
 @app.route("/get_value", methods=["POST", "GET"])
@@ -45,6 +82,44 @@ def get_value():
 def get_all_values():
     global organDT
     return jsonify(organDT.get_all())
+
+@app.route("/get_organdt_upadte", websocket=True)
+def get_organdt_upadte():
+    ws = simple_websocket.Server(request.environ)
+    global dt_updates
+    try:
+        while True:
+            try:
+                to_app = dt_updates.get_nowait()
+                print("Send to app ", to_app)
+                ws.send(to_app)
+            except queue.Empty:
+                time.sleep(1)
+
+    except simple_websocket.ConnectionClosed:
+        pass
+    return ''
+
+
+@app.route("/app_dialog", websocket=True)
+def app_dialog():
+    ws = simple_websocket.Server(request.environ)
+    global q
+    try:
+        while True:
+            from_app = ws.receive(0.1)
+            if from_app is not None:
+                print(from_app)
+                # forward to MediK
+            try:
+                to_app = q.get_nowait()
+                ws.send(to_app)
+            except queue.Empty:
+                pass
+
+    except simple_websocket.ConnectionClosed:
+        pass
+    return ''
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 4000))
@@ -81,25 +156,7 @@ if __name__ == "__main__":
 # data_copy2 = {}
 # data_copy2 = {"organDT":{}, "dialogs":{}, "userInput": {}}#1:"getAgeWeight", 2:"getHighRiskConditions"}, "userInput":{}}
 
-# @app.route("/k_comm", websocket=True)
-# def k_comm():
-#     global data_copy, data_copy2
-#     ws = simple_websocket.Server(request.environ)
-#     # p = subprocess.Popen(['krun'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-#     try:
-#         while True:
-#             data=ws.receive(0.1)
-#             if data is not None:
-#                 data_copy = json.loads(data)
 
-#                 # p.stdin.write(data)
-#                 # ws.send(data)
-#             if data_copy2 is not None:
-#                 ws.send(data_copy2)
-#                 data_copy2 = None
-#     except simple_websocket.ConnectionClosed:
-#         pass
-#     return ''
 
 # @app.route("/3")
 # def index3():

@@ -8,7 +8,7 @@ import DigitalTwin from "./DigitalTwin";
 const LeftPanel = () => {
   const apiURL = useSelector((state) => state.misc.apiURL);
   const dispatch = useDispatch();
-  console.log(apiURL)
+
   // useInterval(
   //   () =>
   //     fetch(`http://${apiURL}/debug`)
