@@ -4,7 +4,7 @@ import { pick } from "lodash";
 import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
 import { TabUnstyled, TabPanelUnstyled } from '@mui/base';
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
-import InputDialog from "./InputDialog";
+import InputDialog from "../DialogContent/InputDialog";
 
 const assessments = ["Age", "Weight"];
 

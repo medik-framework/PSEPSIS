@@ -4,17 +4,21 @@ import { PatientConfig } from "../../resources/PatientConfig";
 
 const update_age = createAction("patientBasic/update_age")
 const update = createAction("patientBasic/update")
-const initialState = {"age": null, "weight": null};
+const initialState = {};
 
 const patientBasicReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(update_age, (state, action) => {
-      state["age"] = PatientConfig.Age.generateContent(...action.payload);
+      const label = action.payload.label;
+      const value = action.payload.value
+      const unit = action.payload.unit
+      state[label] = PatientConfig.Age.generateContent(value, unit);
     })
     .addCase(update, (state, action) => {
       const label = action.payload.label;
       const value = action.payload.value;
-      state[label] = value;
+      const unit = action.payload.unit;
+      state[label] = {'value':value, 'unit':unit};
     })
 })
 

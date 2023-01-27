@@ -17,6 +17,10 @@ q.put({ "id"        : 1,
 q.put({ "id"        : 2,
         "args"      : [ "getWeight" ]
       })
+q.put({ "id"        : 3,
+        "args"      : [ "getHighRiskConditions" ]
+      })
+
 
 app = Flask(__name__, static_folder="static")
 CORS(app)

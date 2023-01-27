@@ -3,33 +3,33 @@ import { useDispatch } from "react-redux";
 
 import { FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 
-const Checklist = ({ config, setRetDict }) => { 
-  const [state, setState] = useState(config.options.reduce((p, v) => ({ ...p, [v]: false}), {}));
+const Checklist = ({ inputConfig, setRetDict }) => {
+  const [state, setState] = useState(inputConfig.options.reduce((p, v) => ({ ...p, [v]: false}), {}));
   const dispatch = useDispatch();
 
   useEffect(() => {
     const v = Object.keys(state).reduce((p, v) => state[v]===true ? p+1 : p, 0);
-    setRetDict( prev => ({ 
+    setRetDict( prev => ({
       ...prev,
-      [config.label]: v
+      [inputConfig.label]: v
     }));
-    dispatch({ 
-      type: config.storage, 
-      payload: { 
-        label: config.label, 
+    dispatch({
+      type: inputConfig.storage,
+      payload: {
+        label: inputConfig.label,
         value: state
       }
     });
-  }, [state, config])
+  }, [state, inputConfig])
 
   return(
     <FormGroup>
-      {config.options.map((i, id) => 
-        <FormControlLabel 
+      {inputConfig.options.map((i, id) =>
+        <FormControlLabel
           control={<Checkbox
             onChange={(e) => setState({...state, [i]:e.target.checked})}
-          />} 
-          label={i} 
+          />}
+          label={i}
           key={id}
         />
       )}
