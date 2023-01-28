@@ -4,7 +4,7 @@ import { PatientConfig } from "../../resources/PatientConfig";
 
 const update_age = createAction("patientBasic/update_age")
 const update = createAction("patientBasic/update")
-const initialState = {};
+const initialState = {'Age':'', 'Weight':''};
 
 const patientBasicReducer = createReducer(initialState, (builder) => {
   builder

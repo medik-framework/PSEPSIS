@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-
 import { Box, TextField, Typography, MenuItem } from "@mui/material";
 
-const NumericInput = ({ inputConfig, setRetDict }) => {
+const NumericInput = ({ inputConfig, setStoreDict, setRetDict }) => {
   const [value, setValue] = useState("");
   const initUnit = Array.isArray(inputConfig.unit) ? inputConfig.unit[0] : inputConfig.unit;
   const [unit, setUnit] = useState(initUnit);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (value != "") {
@@ -15,16 +12,14 @@ const NumericInput = ({ inputConfig, setRetDict }) => {
         ...prev,
         [inputConfig.label]: inputConfig.processReturn ? inputConfig.processReturn(value, unit) : value,
       }));
-      dispatch({
-        type: inputConfig.storage,
-        payload: {
-          label: inputConfig.label,
-          value: value,
-          unit: unit
-        }
-      });
+      setStoreDict( prev => ({
+        ...prev,
+        label: inputConfig.label,
+        value: value,
+        unit: unit
+      }));
     }
-  }, [value, unit, setRetDict])
+  }, [value, unit, inputConfig, setStoreDict, setRetDict])
 
   const getUnitComp = (unitinputConfig) => {
     if (Array.isArray(unitinputConfig)) {

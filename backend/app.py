@@ -4,23 +4,29 @@ import simple_websocket
 import json
 import os
 import queue
+import time
 
-from data import OrganDt
+from data import OrganDt, Patient
 
 organDT = OrganDt()
+patient = Patient()
 portal_connected = False
 
 q = queue.Queue()
-q.put({ "id"        : 1,
+q.put({ "type"      : "dialog",
+        "id"        : 1,
         "args"      : [ "getAge" ]
       })
-q.put({ "id"        : 2,
+q.put({ "type"      : "dialog",
+        "id"        : 2,
         "args"      : [ "getWeight" ]
       })
-q.put({ "id"        : 3,
+q.put({ "type"      : "dialog",
+        "id"        : 3,
         "args"      : [ "getHighRiskConditions" ]
       })
 
+dt_updates = queue.Queue()
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
@@ -42,9 +48,19 @@ def portal_disconnect():
 @app.route("/update_data", methods=["POST"])
 def update_data():
     global organDT
+    global dt_updates
+    json_data = request.json
+    print("Recv from sim porgtal: ", json_data)
+    organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
+    dt_updates.put(json.dumps(organDT.get_all()))
+    return ""
+
+@app.route("/update_patient", methods=["POST"])
+def update_patient():
+    global patient
     json_data = request.json
     print(json_data)
-    organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
+    patient.update(json_data)
     return ""
 
 @app.route("/add_to_q", methods=["POST"])
@@ -67,13 +83,28 @@ def get_all_values():
     global organDT
     return jsonify(organDT.get_all())
 
-# @app.route("/to_app", methods=["POST", "GET"])
-# def get_dialogs():
-#     return jsonify({1:"getAge", 2:"getWeight"})
+@app.route("/get_organdt_upadte", websocket=True)
+def get_organdt_upadte():
+    ws = simple_websocket.Server(request.environ)
+    global dt_updates
+    try:
+        while True:
+            try:
+                to_app = dt_updates.get_nowait()
+                print("Send to app ", to_app)
+                ws.send(to_app)
+            except queue.Empty:
+                time.sleep(1)
+
+    except simple_websocket.ConnectionClosed:
+        pass
+    return ''
+
 
 @app.route("/app_dialog", websocket=True)
 def app_dialog():
     ws = simple_websocket.Server(request.environ)
+    global q
     try:
         while True:
             from_app = ws.receive(0.1)

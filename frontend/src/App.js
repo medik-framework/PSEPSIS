@@ -2,18 +2,10 @@ import "./App.css";
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useInterval } from 'usehooks-ts';
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
 import InputDialog from "./components/DialogContent/InputDialog";
-
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { useInterval } from 'usehooks-ts';
-
-import useWebSocket, { ReadyState } from "react-use-websocket";
 
 // import { ThemeProvider } from "@mui/material";
 // import theme from "./theme";
@@ -28,9 +20,9 @@ function App() {
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
-  const [dialogConfig, setDialogConfig] = useState({});
   const dispatch = useDispatch();
   const dialogs = useSelector((state) => state.dialogs.todo)
+  const patientBasic = useSelector((state) => state.patientBasic)
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -40,35 +32,40 @@ function App() {
   }, [lastMessage]);
 
   useEffect(() => {
-    if(dialogs.length != 0) {
+    if(dialogs.length != 0 && !open) {
       setInfo(JSON.parse(dialogs[0]));
       setOpen(true);
     }
-    // if(dialogs.some(e => e == true)) {
-    //   console.log('Exists');
-    // } else {
-    //   console.log('Not exist')
-    // }
-    // if (dialogs.todo.length && !open){
-    //   console.log(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
-    //   setID(dialogs.todo[0]);
-    //   setDialogConfig(DialogConfig[dialogs.hist[dialogs.todo[0]].title]);
-    //   setOpen(true);
-    // }
-  }, [dialogs, open, setDialogConfig, setOpen, setInfo])
+  }, [dialogs, open, setOpen, setInfo])
 
-  useInterval(
-    () =>
-      fetch(`http://${apiURL}/get_all_values`)
-        .catch(error => {
-          console.log('Fetch error:', error)
-        })
-        .then((response) => response.json())
-        .then((json) => {
-          dispatch({ type: "organDT/update", payload: json });
-        })
-    , 5000
-  );
+  // useEffect(() => {
+  //   fetch(`http://${apiURL}/update_patient`, {
+  //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+  //     mode: 'cors', // no-cors, *cors, same-origin
+  //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+  //     credentials: 'same-origin', // include, *same-origin, omit
+  //     headers: {
+  //     'Content-Type': 'application/json'
+  //     // 'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+  //     redirect: 'follow', // manual, *follow, error
+  //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  //     body: JSON.stringify(patientBasic) // body data type must match "Content-Type" header
+  //   }).catch(error => {
+  //     console.log('Post error:', error)
+  //   })
+  // },[patientBasic])
+
+  // useEffect(() => {
+  //   fetch(`http://${apiURL}/get_all_values`)
+  //   .catch(error => {
+  //     console.log('Fetch error:', error)
+  //   })
+  //   .then((response) => response.json())
+  //   .then((json) => {
+  //     dispatch({ type: "organDT/update_all", payload: json });
+  //   })
+  // },[])
 
   return (
     <>
