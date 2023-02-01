@@ -61,9 +61,11 @@ def app_disconnect():
 @app.route("/update_data", methods=["POST"])
 def update_data():
     global organDT
+    global dt_updates
     json_data = request.json
     # print("Recv from sim porgtal: ", json_data)
     organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
+    dt_updates.put(json.dumps(organDT.get_all()))
     return ""
 
 @app.route("/get_value", methods=["POST", "GET"])
