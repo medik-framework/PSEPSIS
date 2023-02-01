@@ -1,4 +1,3 @@
-import { Label } from '@mui/icons-material';
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { PatientConfig } from "../../resources/PatientConfig";
 

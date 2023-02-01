@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
-import { pick } from "lodash";
 import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
-import { TabUnstyled, TabPanelUnstyled } from '@mui/base';
 
-import { DialogConfig } from "../../resources/DialogConfig";
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
 import { update_all } from "../../redux/reducers/organDT";
 import InputDialog from "../DialogContent/InputDialog";
-
-const assessments = ["Age", "Weight"];
 
 const PaitentBasic = () => {
   const age = useSelector((state) => state.patientBasic['Age'])
@@ -176,11 +171,10 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
                 backgroundColor: "yellow",
                 border: '0.5px solid black',
               }}
+              key={key}
             >
               <div>
                 {key}: {assessments[key]}
-                {/* <br />
-                30s ago */}
               </div>
             </Grid>
           );
@@ -271,7 +265,7 @@ const DigitalTwin = () => {
         Patient Digital Twin
       </Typography> */}
       <PaitentBasic />
-      {/* <SystematicAssessmentForm {...{ selectedDT }} /> */}
+      <SystematicAssessmentForm {...{ selectedDT }} />
       <OrganSelection {...{ selectedDT, setSelectedDT }} />
       {/* <OrganAssessmentForm {...{ selectedDT }} /> */}
       <DigitalTwinForm {...{ selectedDT }} />
