@@ -87,6 +87,7 @@ def add_to_q():
     q.put(json_data)
     # print("Recv from sim porgtal: ", json_data)
     organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
+    dt_updates.put(json.dumps(organDT.get_all()))
     return ""
 
 @app.route("/get_value", methods=["POST", "GET"])
