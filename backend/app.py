@@ -8,6 +8,7 @@ from data import OrganDt
 
 organDT = OrganDt()
 portal_connected = False
+app_connected = False
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
@@ -26,11 +27,26 @@ def portal_disconnect():
     print("Simulation data portal disconnected")
     return ""
 
+@app.route("/app_connect", methods=["POST"])
+def app_connect():
+    global app_connected
+    app_connected = True
+    print("Guidance App connected")
+    dt_updates.put(json.dumps(organDT.get_all()))
+    return ""
+
+@app.route("/app_disconnect", methods=["POST"])
+def app_disconnect():
+    global app_connected
+    app_connected = False
+    print("Guidance App disconnected")
+    return ""
+
 @app.route("/update_data", methods=["POST"])
 def update_data():
     global organDT
     json_data = request.json
-    print(json_data)
+    # print("Recv from sim porgtal: ", json_data)
     organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
     return ""
 
@@ -45,6 +61,45 @@ def get_value():
 def get_all_values():
     global organDT
     return jsonify(organDT.get_all())
+
+@app.route("/get_organdt_upadte", websocket=True)
+def get_organdt_upadte():
+    ws = simple_websocket.Server(request.environ)
+    global dt_updates
+    try:
+        while True:
+            try:
+                to_app = dt_updates.get_nowait()
+                print("Send organdt to app ")
+                # print("Send to app ", to_app)
+                ws.send(to_app)
+            except queue.Empty:
+                time.sleep(1)
+
+    except simple_websocket.ConnectionClosed:
+        pass
+    return ''
+
+
+@app.route("/app_dialog", websocket=True)
+def app_dialog():
+    ws = simple_websocket.Server(request.environ)
+    global q
+    try:
+        while True:
+            from_app = ws.receive(0.1)
+            if from_app is not None:
+                print(from_app)
+                # forward to MediK
+            try:
+                to_app = q.get_nowait()
+                ws.send(to_app)
+            except queue.Empty:
+                pass
+
+    except simple_websocket.ConnectionClosed:
+        pass
+    return ''
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 4000))
