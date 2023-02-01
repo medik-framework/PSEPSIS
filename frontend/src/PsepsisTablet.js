@@ -39,10 +39,13 @@ const PsepsisTablet = () => {
 
 
   return (
-    <div>
+    <Box width="100vw" height="100vh" display="flex">
       {open && <InputDialog {...{ open, setOpen, info, sendMessage }}/>}
-      <Box width="30vw" height="100vh">
+      <Box width="30vw" height="100vh" sx={{display:'inline-flex'}}>
         <LeftPanel />
+      </Box>
+      <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
+        <MiddlePanel />
       </Box>
       {/* <Grid container>
         <Grid
@@ -84,7 +87,7 @@ const PsepsisTablet = () => {
           <CollapsiblePanel />
         </Grid> */}
       {/* </Grid> */}
-    </div>
+    </Box>
   );
 };
 
