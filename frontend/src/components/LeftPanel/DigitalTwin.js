@@ -6,15 +6,11 @@ import { pick } from "lodash";
 import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
 import { TabUnstyled, TabPanelUnstyled } from '@mui/base';
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-
-import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
-import InputDialog from "../DialogContent/InputDialog";
-
 import { DialogConfig } from "../../resources/DialogConfig";
+import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
+
+import { update_all } from "../../redux/reducers/organDT";
+import InputDialog from "../DialogContent/InputDialog";
 
 const assessments = ["Age", "Weight"];
 
@@ -27,6 +23,10 @@ const PaitentBasic = () => {
   return (
     <Grid>
       <Button
+        sx={{
+          width:'50%',
+          textAlign:'left'
+        }}
         onClick={() => {
           setInfo({"args": ["getAge"]})
           setOpen(true);
@@ -35,6 +35,9 @@ const PaitentBasic = () => {
         Age:{age.value ? (" "+age.value+" "+age.unit) : ''}
       </Button>
       <Button
+        sx={{
+          width:'50%',
+        }}
         onClick={() => {
           setInfo({"args": ["getWeight"]})
           setOpen(true);
@@ -54,15 +57,15 @@ const DigitalTwinForm = ({ selectedDT }) => {
   const ageObject = useSelector((state) => state.patientBasic['Age']);
 
   const get_colorcode = (measurement, value) => {
-    if (!value) return 'lightgray';
+    if (!value || !ageObject) return 'lightgray';
     if(measurement.type === 'choices') {
-      if (measurement.options[value] === 2) return 'green';
-      else return 'red';
+      if (measurement.options[value] === 2) return '#33ff33';
+      else return '#ff4c4c';
     }
     else {
       const range = measurement.getThres ? measurement.getThres(ageObject) : {low: 0, high: 0}
-      if(value > range.high || value < range.low) return 'red';
-      if(value < range.high && value > range.low) return 'green';
+      if(value > range.high || value < range.low) return '#ff4c4c';
+      if(value < range.high && value > range.low) return '#33ff33';
     }
   }
 
@@ -74,14 +77,23 @@ const DigitalTwinForm = ({ selectedDT }) => {
     return minstr +':'+ secstr
   }
 
+  const getDisplayValue = (oname, value, measurement) => {
+    if (!value && value !== 0) return null;
+    if (oname === 'Neurologic' && measurement.type === 'choices'){
+      return measurement.options[value];
+    } else return value;
+  }
+
   return (
     <Grid container>
       {Object.keys(measurements).map((key) => {
         const measurement = measurements[key];
         const mname = measurement.name;
-        const colorcode = get_colorcode(measurement, organDTValue[mname]['value'])
+        const value = organDTValue[mname]['value']
+        const colorcode = get_colorcode(measurement, value)
         const timestamp = organDTValue[mname]['time'];
         const timediff = timestamp ? new Date().getTime() - timestamp : null
+        const displayValue = getDisplayValue(organName, value, measurement)
 
         return (
           <Grid
@@ -90,14 +102,47 @@ const DigitalTwinForm = ({ selectedDT }) => {
             sx={{
               height: "80px",
               backgroundColor: colorcode,
+              paddingLeft: "5px",
+              border: '0.5px solid black',
+              borderColor: 'black'
             }}
             key={mname}
           >
-            <div>
-              {mname}{" "}{measurement.unit}
-            </div>
-            <div>{organDTValue[mname]['value'] ? organDTValue[mname]['value'] : ""}</div>
-            <div>{timestamp ? msecondToString(timediff)+' ago' : ''}</div>
+            <Typography
+              sx={{
+                fontSize: '16px',
+                fontWeight: 'bold',
+                display:'block'
+              }}
+            >
+              {mname}
+            </Typography>
+            <Box
+              sx={{
+                width:'50%',
+                display:'inline-block'
+              }}
+            >
+              <Typography
+              >
+                {" "}{measurement.unit ? "("+measurement.unit+")":""}
+              </Typography>
+              <Typography
+              >
+                {timestamp ? msecondToString(timediff)+' ago' : ''}
+              </Typography>
+            </Box>
+            <Typography
+              sx={{
+                fontSize: '24px',
+                width:'50%',
+                float: 'right',
+                display: 'inline-block',
+                margin: 'auto'
+              }}
+            >
+              {(displayValue || displayValue === 0) ? displayValue : ""}
+            </Typography>
           </Grid>
         );
       })}
@@ -105,47 +150,45 @@ const DigitalTwinForm = ({ selectedDT }) => {
   );
 };
 
-// const SystematicAssessmentForm = ({ selectedDT }) => {
-//   const assessments = { Sepsis: '', "Septic shock": '', SIRS: '', PEW: '' };
-//   return (
-//     <>
-//       <Grid container>
-//         <Grid
-//           item
-//           xs={12}
-//           sx={{
-//             height: "30px",
-//             boxShadow:
-//               "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-//             backgroundColor: "yellow",
-//           }}
-//         >
-//           <div>Screening Status: Presume Sepsis</div>
-//         </Grid>
-//         {Object.keys(assessments).map((key) => {
-//           return (
-//             <Grid
-//               item
-//               xs={3}
-//               sx={{
-//                 height: "50px",
-//                 boxShadow:
-//                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-//                 backgroundColor: "yellow",
-//               }}
-//             >
-//               <div>
-//                 {key}: {assessments[key]}
-//                 {/* <br />
-//                 30s ago */}
-//               </div>
-//             </Grid>
-//           );
-//         })}
-//       </Grid>
-//     </>
-//   );
-// };
+const SystematicAssessmentForm = ({ selectedDT }) => {
+  const assessments = { Sepsis: '', "Septic shock": '', SIRS: '', PEW: '' };
+  return (
+    <>
+      <Grid container>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            height: "30px",
+            border: '1px solid black',
+            backgroundColor: "yellow",
+          }}
+        >
+          <div>Screening Status: Presume Sepsis</div>
+        </Grid>
+        {Object.keys(assessments).map((key) => {
+          return (
+            <Grid
+              item
+              xs={3}
+              sx={{
+                height: "50px",
+                backgroundColor: "yellow",
+                border: '0.5px solid black',
+              }}
+            >
+              <div>
+                {key}: {assessments[key]}
+                {/* <br />
+                30s ago */}
+              </div>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </>
+  );
+};
 
 // const OrganAssessmentForm = ({ selectedDT }) => {
 //   const assessments = OrganDTConfig[selectedDT].assessments;
@@ -163,8 +206,6 @@ const DigitalTwinForm = ({ selectedDT }) => {
 //               xs={12 / count}
 //               sx={{
 //                 height: "80px",
-//                 boxShadow:
-//                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
 //                 backgroundColor: "lightyellow",
 //               }}
 //             >
@@ -210,7 +251,7 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
-  const apiURL = "127.0.0.1:4000";
+  const apiURL = useSelector((state) => state.misc['apiURL']);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     `ws://${apiURL}/get_organdt_upadte`
   );
@@ -218,8 +259,9 @@ const DigitalTwin = () => {
 
   useEffect(() => {
     if (lastMessage !== null) {
-      const d = lastMessage.data.replace(/'/g, '"');
-      dispatch({ type: "organDT/update_all", payload: JSON.parse(d)});
+      const d = JSON.parse(lastMessage.data.replace(/'/g, '"'));
+      console.log("received organ update")
+      dispatch(update_all(d));
     }
   }, [lastMessage]);
 
