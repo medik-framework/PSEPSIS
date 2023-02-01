@@ -10,6 +10,22 @@ organDT = OrganDt()
 portal_connected = False
 app_connected = False
 
+q = queue.Queue()
+q.put({ "type"      : "dialog",
+        "id"        : 1,
+        "args"      : [ "getAge" ]
+      })
+q.put({ "type"      : "dialog",
+        "id"        : 2,
+        "args"      : [ "getWeight" ]
+      })
+q.put({ "type"      : "dialog",
+        "id"        : 3,
+        "args"      : [ "getHighRiskConditions" ]
+      })
+
+dt_updates = queue.Queue()
+
 app = Flask(__name__, static_folder="static")
 CORS(app)
 
