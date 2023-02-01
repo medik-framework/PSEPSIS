@@ -1,9 +1,5 @@
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
-import { createAction, createReducer } from '@reduxjs/toolkit'
-import { ConnectedTvOutlined } from "@mui/icons-material";
-import { act } from "react-dom/test-utils";
-
-const update = createAction("organDT/update");
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {};
 OrganDTConfig.map((organ) => {
@@ -15,15 +11,21 @@ OrganDTConfig.map((organ) => {
     return [];
 });
 
-const organDTReducer = createReducer(initialState, (builder) => {
-  builder
-      .addCase(update, (state, action) => {
-        console.log(action.payload)
-        OrganDTConfig.map((organ) => {
-          state[organ.name] = action.payload[organ.name]
-          return [];
-        });
-      })
+export const organDTSlice = createSlice({
+  name: 'organDT',
+  initialState: {...initialState},
+  reducers:{
+    update_all: (state, action) => {
+      const data = action.payload;
+      console.log("update organ data")
+      OrganDTConfig.map((organ) => {
+        state[organ.name] = data[organ.name]
+        return [];
+      });
+    },
+  }
 });
 
-export default organDTReducer;
+export const { update_all }  = organDTSlice.actions
+
+export default organDTSlice.reducer

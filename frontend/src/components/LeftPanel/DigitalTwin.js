@@ -6,7 +6,10 @@ import { TabUnstyled, TabPanelUnstyled } from '@mui/base';
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 import InputDialog from "./InputDialog";
 
-const assessments = ["Age", "Weight", "Height", "Gender"];
+import { DialogConfig } from "../../resources/DialogConfig";
+import { update_all } from "../../redux/reducers/organDT";
+
+const assessments = ["Age", "Weight"];
 
 const PaitentBasic = () => {
   const assessments = {
@@ -16,28 +19,32 @@ const PaitentBasic = () => {
     Gender: "male",
   };
   return (
-    <>
-      <Grid container marginBottom={"10px"}>
-        {Object.keys(assessments).map((key) => {
-          return (
-            <Grid
-              item
-              xs={3}
-              sx={{
-                height: "30px",
-                boxShadow:
-                  "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "lightgray",
-              }}
-            >
-              <div>
-                {key}: {assessments[key]}
-              </div>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </>
+    <Grid>
+      <Button
+        sx={{
+          width:'50%',
+          textAlign:'left'
+        }}
+        onClick={() => {
+          setInfo({"args": ["getAge"]})
+          setOpen(true);
+        }}
+      >
+        Age:{age.value ? (" "+age.value+" "+age.unit) : ''}
+      </Button>
+      <Button
+        sx={{
+          width:'50%',
+        }}
+        onClick={() => {
+          setInfo({"args": ["getWeight"]})
+          setOpen(true);
+        }}
+      >
+        Weight:{weight.value ? (" "+weight.value+" "+weight.unit) : ''}
+      </Button>
+      {open && <InputDialog {...{ open, setOpen, info }}/>}
+    </Grid>
   );
 };
 
@@ -46,20 +53,44 @@ const DigitalTwinForm = ({ selectedDT }) => {
   const measurements = OrganDTConfig[selectedDT].measurements;
   const organDTValue = useSelector((state) => state.organDT[organName]);
 
-  const get_colorcode = (range, value) => {
-    if(value > range.high || value < range.low) return 'red';
-    if(value < range.high && value > range.low) return 'green';
-    else return 'lightgray';
-    // if(isNaN(value) || isNaN(range)) return 'lightgray';
+  const get_colorcode = (measurement, value) => {
+    if (!value || !ageObject) return 'lightgray';
+    if(measurement.type === 'choices') {
+      if (measurement.options[value] === 2) return '#33ff33';
+      else return '#ff4c4c';
+    }
+    else {
+      const range = measurement.getThres ? measurement.getThres(ageObject) : {low: 0, high: 0}
+      if(value > range.high || value < range.low) return '#ff4c4c';
+      if(value < range.high && value > range.low) return '#33ff33';
+    }
+  }
+
+  const msecondToString = (msec) => {
+    let min = Math.floor(Math.round(msec/1000)/60);
+    let minstr = min >= 10 ?  min : '0' + min;
+    let sec = Math.round(msec/1000) % 60;
+    let secstr = sec >= 10 ? sec : '0' + sec;
+    return minstr +':'+ secstr
+  }
+
+  const getDisplayValue = (oname, value, measurement) => {
+    if (!value && value !== 0) return null;
+    if (oname === 'Neurologic' && measurement.type === 'choices'){
+      return measurement.options[value];
+    } else return value;
   }
 
   return (
     <Grid container>
       {Object.keys(measurements).map((key) => {
-        const range = measurements[key].getThres ? measurements[key].getThres({}) : {low: 0, high: 0}
-        const mname = measurements[key].name
-        const colorcode = get_colorcode(range, organDTValue[mname]['value'])
-        // organDTValue[mname]['value'] > range?.high || organDTValue[mname]['value'] < range?.low ? "red" : "green"
+        const measurement = measurements[key];
+        const mname = measurement.name;
+        const value = organDTValue[mname]['value']
+        const colorcode = get_colorcode(measurement, value)
+        const timestamp = organDTValue[mname]['time'];
+        const timediff = timestamp ? new Date().getTime() - timestamp : null
+        const displayValue = getDisplayValue(organName, value, measurement)
 
         return (
           <Grid
@@ -70,16 +101,46 @@ const DigitalTwinForm = ({ selectedDT }) => {
               boxShadow:
                 "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
               backgroundColor: colorcode,
+              paddingLeft: "5px",
+              border: '0.5px solid black',
+              borderColor: 'black'
             }}
           >
-            <div>
-              {measurements[key]?.name}{" "}
-              {measurements[key]?.unit
-                ? `(${measurements[key]?.unit})`
-                : null}
-            </div>
-            <div>{organDTValue[mname]['value']}</div>
-            <div>{/*Last updated time:*/}</div>
+            <Typography
+              sx={{
+                fontSize: '16px',
+                fontWeight: 'bold',
+                display:'block'
+              }}
+            >
+              {mname}
+            </Typography>
+            <Box
+              sx={{
+                width:'50%',
+                display:'inline-block'
+              }}
+            >
+              <Typography
+              >
+                {" "}{measurement.unit ? "("+measurement.unit+")":""}
+              </Typography>
+              <Typography
+              >
+                {timestamp ? msecondToString(timediff)+' ago' : ''}
+              </Typography>
+            </Box>
+            <Typography
+              sx={{
+                fontSize: '24px',
+                width:'50%',
+                float: 'right',
+                display: 'inline-block',
+                margin: 'auto'
+              }}
+            >
+              {(displayValue || displayValue === 0) ? displayValue : ""}
+            </Typography>
           </Grid>
         );
       })}
@@ -97,8 +158,7 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
           xs={12}
           sx={{
             height: "30px",
-            boxShadow:
-              "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
+            border: '1px solid black',
             backgroundColor: "yellow",
           }}
         >
@@ -111,9 +171,8 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
               xs={3}
               sx={{
                 height: "50px",
-                boxShadow:
-                  "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
                 backgroundColor: "yellow",
+                border: '0.5px solid black',
               }}
             >
               <div>
@@ -129,39 +188,37 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
   );
 };
 
-const OrganAssessmentForm = ({ selectedDT }) => {
-  const assessments = OrganDTConfig[selectedDT].assessments;
-  if (!assessments) {
-    return null;
-  }
-  const count = Object.keys(assessments).length;
-  return (
-    <>
-      <Grid container>
-        {Object.keys(assessments).map((key) => {
-          return (
-            <Grid
-              item
-              xs={12 / count}
-              sx={{
-                height: "80px",
-                boxShadow:
-                  "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-                backgroundColor: "lightyellow",
-              }}
-            >
-              <div>
-                {assessments[key].name}{": "}
-                {assessments[key].value ? assessments[key].value : null}
-              </div>
-              {/* <div>Last updated time:</div> */}
-            </Grid>
-          );
-        })}
-      </Grid>
-    </>
-  );
-};
+// const OrganAssessmentForm = ({ selectedDT }) => {
+//   const assessments = OrganDTConfig[selectedDT].assessments;
+//   if (!assessments) {
+//     return null;
+//   }
+//   const count = Object.keys(assessments).length;
+//   return (
+//     <>
+//       <Grid container>
+//         {Object.keys(assessments).map((key) => {
+//           return (
+//             <Grid
+//               item
+//               xs={12 / count}
+//               sx={{
+//                 height: "80px",
+//                 backgroundColor: "lightyellow",
+//               }}
+//             >
+//               <div>
+//                 {assessments[key].name}{": "}
+//                 {assessments[key].value ? assessments[key].value : null}
+//               </div>
+//               {/* <div>Last updated time:</div> */}
+//             </Grid>
+//           );
+//         })}
+//       </Grid>
+//     </>
+//   );
+// };
 
 const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
@@ -192,6 +249,20 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
+  const apiURL = useSelector((state) => state.misc['apiURL']);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
+    `ws://${apiURL}/get_organdt_upadte`
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (lastMessage !== null) {
+      const d = JSON.parse(lastMessage.data.replace(/'/g, '"'));
+      console.log("received organ update")
+      dispatch(update_all(d));
+    }
+  }, [lastMessage]);
+
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>
       <Typography height='5%' variant="h4" component="div">
