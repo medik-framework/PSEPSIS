@@ -52,8 +52,8 @@ const zeroPad = (num, places) => String(num).padStart(places, "0");
 
 const SepsisTimeline = () => {
   const dispatch = useDispatch();
-  const started = useSelector((state) => state.Timer.started);
-  const startTime = useSelector((state) => state.Timer.start_time);
+  const started = useSelector((state) => state.treatment.started);
+  const startTime = useSelector((state) => state.treatment.startTime);
   const [timeDiff, setTimeDiff] = useState("00:00:00");
   const [timePercent, setTimePercent] = useState(0);
 
