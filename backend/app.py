@@ -11,6 +11,7 @@ from data import OrganDt, Patient
 organDT = OrganDt()
 patient = Patient()
 portal_connected = False
+app_connected = False
 
 q = queue.Queue()
 q.put({ "type"      : "dialog",
@@ -45,6 +46,21 @@ def portal_disconnect():
     print("Simulation data portal disconnected")
     return ""
 
+@app.route("/app_connect", methods=["POST"])
+def app_connect():
+    global app_connected
+    app_connected = True
+    print("Guidance App connected")
+    dt_updates.put(json.dumps(organDT.get_all()))
+    return ""
+
+@app.route("/app_disconnect", methods=["POST"])
+def app_disconnect():
+    global app_connected
+    app_connected = False
+    print("Guidance App disconnected")
+    return ""
+
 @app.route("/update_data", methods=["POST"])
 def update_data():
     global organDT
@@ -69,6 +85,8 @@ def add_to_q():
     json_data = request.json
     print(json_data)
     q.put(json_data)
+    # print("Recv from sim porgtal: ", json_data)
+    organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
     return ""
 
 @app.route("/get_value", methods=["POST", "GET"])
@@ -91,7 +109,8 @@ def get_organdt_upadte():
         while True:
             try:
                 to_app = dt_updates.get_nowait()
-                print("Send to app ", to_app)
+                print("Send organdt to app ")
+                # print("Send to app ", to_app)
                 ws.send(to_app)
             except queue.Empty:
                 time.sleep(1)
