@@ -1,8 +1,6 @@
-import { findAllByDisplayValue } from "@testing-library/react";
-
 const initialState = {
     checkedIdx: 0,
-    ventilationChecked: findAllByDisplayValue
+    ventilationChecked: false
 };
 
 const sepsisBundleFormReducer = (state = initialState, action) => {

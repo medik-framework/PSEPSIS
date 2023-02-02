@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
 
-import { start } from "./redux/reducers/treatment"
 import useRemoteRequest from "./components/Utility/Hooks";
 
 function App() {
