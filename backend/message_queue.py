@@ -13,8 +13,9 @@ class MessageQueue:
     def next_message_to_gui(self):
         while self.sent_index < len(self.message_list):
             curr_message = json.loads(self.message_list[self.sent_index])
+            print("curr_message: ", curr_message)
             self.sent_index += 1
-            if curr_message["source"] == SenderList.MEDIK:
+            if curr_message["source"] == SenderList.MEDIK.value:
                 return str(curr_message)
         return EMPTY_QUEUE
 
