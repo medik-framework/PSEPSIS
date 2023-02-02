@@ -17,22 +17,22 @@ const boxStyle = {
 
 const nodeConfig = [
   [
-    {key: '30', id: 'Cap Refill', label:'Cap Refill', targetId:'Perfusion'}, 
+    {key: '30', id: 'Cap Refill', label:'Cap Refill', targetId:'Perfusion'},
     {key: '31', id: 'Skin Color', label:'Skin Color', targetId:'Perfusion'}
   ],
   [
-    {key: '20', id: 'Heart Rate', label:'Heart Rate', targetId:'Bucket 1'}, 
-    {key: '21', id: 'Systolic BP', label:'Systolic BP', targetId:'Bucket 1'}, 
-    {key: '22', id: 'Pulse Quality', label:'Pulse Quality', targetId:'Bucket 1'}, 
-    {key: '23', id: 'Temperature', label:'Temperature', targetId:'Bucket 2'}, 
-    {key: '24', id: 'Mental Status', label:'Mental Status', targetId:'Bucket 3'}, 
-    {key: '25', id: 'Perfusion', label:'Perfusion', targetId:'Bucket 3'}, 
-    {key: '26', id: 'High Risk Condition', label:'High Risk Condition', targetId:'Bucket 3'}, 
+    {key: '20', id: 'Heart Rate', label:'Heart Rate', targetId:'Bucket 1'},
+    {key: '21', id: 'Systolic BP', label:'Systolic BP', targetId:'Bucket 1'},
+    {key: '22', id: 'Pulse Quality', label:'Pulse Quality', targetId:'Bucket 1'},
+    {key: '23', id: 'Temperature', label:'Temperature', targetId:'Bucket 2'},
+    {key: '24', id: 'Mental Status', label:'Mental Status', targetId:'Bucket 3'},
+    {key: '25', id: 'Perfusion', label:'Perfusion', targetId:'Bucket 3'},
+    {key: '26', id: 'High Risk Condition', label:'High Risk Condition', targetId:'Bucket 3'},
   ],
   [
-    {key: '10', id: 'Bucket 1', label:'Bucket 1', targetId:'Sepsis'}, 
-    {key: '11', id: 'Bucket 2', label:'Bucket 2', targetId:'Sepsis'}, 
-    {key: '12', id: 'Bucket 3', label:'Bucket 3', targetId:'Sepsis'}, 
+    {key: '10', id: 'Bucket 1', label:'Bucket 1', targetId:'Sepsis'},
+    {key: '11', id: 'Bucket 2', label:'Bucket 2', targetId:'Sepsis'},
+    {key: '12', id: 'Bucket 3', label:'Bucket 3', targetId:'Sepsis'},
   ]
 ]
 
@@ -40,7 +40,7 @@ const ThreeBucket = () => {
   return (
     <div
       style={{
-        height: '500px',
+        height: '400px',
         margin: '50px',
       }}
     >
@@ -56,7 +56,7 @@ const ThreeBucket = () => {
                       targetId: nodeConfig[i][j].targetId,
                       targetAnchor: 'top',
                       sourceAnchor: 'bottom',
-                      style: { 
+                      style: {
                         endShape: {
                           circle: { radius : 10 }
                         }
