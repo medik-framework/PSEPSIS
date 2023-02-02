@@ -5,7 +5,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 
 import { Box } from "@mui/material";
 
-import LeftPanel from "./components/LeftPanel/";
+import DigitalTwin from "./components/LeftPanel/DigitalTwin";
 import MiddlePanel from "./components/MiddlePanel";
 import RightPanel from "./components/RightPanel";
 import CollapsiblePanel from "./components/CollapsiblePanel";
@@ -42,7 +42,7 @@ const PsepsisTablet = () => {
     <Box width="100vw" height="100vh" display="flex">
       {open && <InputDialog {...{ open, setOpen, info, sendMessage }}/>}
       <Box width="30vw" height="100vh" sx={{display:'inline-flex'}}>
-        <LeftPanel />
+        <DigitalTwin />
       </Box>
       <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
         <MiddlePanel />
