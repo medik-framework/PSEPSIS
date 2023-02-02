@@ -10,7 +10,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import NumericInput from "./NumericInput";
 import Checklist from "./Checklist";
 import { DialogConfig } from "../../resources/DialogConfig";
-import { useSelect } from "@mui/base";
 
 const InputContent = (args) => {
   switch (args.inputConfig.type) {

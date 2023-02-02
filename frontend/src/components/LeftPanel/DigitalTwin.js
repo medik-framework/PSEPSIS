@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useInterval } from "react-use";
 
 import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
 
@@ -45,11 +46,10 @@ const PaitentBasic = () => {
   );
 };
 
-const DigitalTwinForm = ({ selectedDT }) => {
-  const organName = OrganDTConfig[selectedDT].name;
-  const measurements = OrganDTConfig[selectedDT].measurements;
-  const organDTValue = useSelector((state) => state.organDT[organName]);
-  const ageObject = useSelector((state) => state.patientBasic['Age']);
+const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
+  const value = valueCombo.value;
+  const timestamp = valueCombo.time;
+  const mname = measurement.name;
 
   const get_colorcode = (measurement, value) => {
     if (!value || !ageObject) return 'lightgray';
@@ -79,68 +79,82 @@ const DigitalTwinForm = ({ selectedDT }) => {
     } else return value;
   }
 
+  const colorcode = get_colorcode(measurement, value);
+  const [timeDiff, setTimeDiff] = useState(null);
+  const displayValue = getDisplayValue(organName, value, measurement);
+
+  useInterval(() => {
+    if(timestamp) setTimeDiff(new Date().getTime() - timestamp)
+  }, 1000);
+
+  return (
+    <Grid item xs={6}
+      sx={{
+        height: "80px",
+        backgroundColor: colorcode,
+        paddingLeft: "5px",
+        border: '0.5px solid black',
+        borderColor: 'black'
+      }}
+    >
+      <Typography
+        sx={{
+          fontSize: '16px',
+          fontWeight: 'bold',
+          display:'block'
+        }}
+      >
+        {mname}
+      </Typography>
+      <Box
+        sx={{
+          width:'50%',
+          display:'inline-block'
+        }}
+      >
+        <Typography
+        >
+          {" "}{measurement.unit ? "("+measurement.unit+")":""}
+        </Typography>
+        <Typography>
+          {timestamp ? msecondToString(timeDiff)+' ago' : ''}
+        </Typography>
+      </Box>
+      <Typography
+        sx={{
+          fontSize: '24px',
+          width:'50%',
+          float: 'right',
+          display: 'inline-block',
+          margin: 'auto'
+        }}
+      >
+        {(displayValue || displayValue === 0) ? displayValue : ""}
+      </Typography>
+    </Grid>
+  );
+}
+
+const DigitalTwinForm = ({ selectedDT }) => {
+  const organName = OrganDTConfig[selectedDT].name;
+  const measurements = OrganDTConfig[selectedDT].measurements;
+  const organDTValue = useSelector((state) => state.organDT[organName]);
+  const ageObject = useSelector((state) => state.patientBasic['Age']);
+
+
   return (
     <Grid container>
-      {Object.keys(measurements).map((key) => {
-        const measurement = measurements[key];
-        const mname = measurement.name;
-        const value = organDTValue[mname]['value']
-        const colorcode = get_colorcode(measurement, value)
-        const timestamp = organDTValue[mname]['time'];
-        const timediff = timestamp ? new Date().getTime() - timestamp : null
-        const displayValue = getDisplayValue(organName, value, measurement)
-
-        return (
-          <Grid
-            item
-            xs={6}
-            sx={{
-              height: "80px",
-              backgroundColor: colorcode,
-              paddingLeft: "5px",
-              border: '0.5px solid black',
-              borderColor: 'black'
-            }}
-            key={mname}
-          >
-            <Typography
-              sx={{
-                fontSize: '16px',
-                fontWeight: 'bold',
-                display:'block'
-              }}
-            >
-              {mname}
-            </Typography>
-            <Box
-              sx={{
-                width:'50%',
-                display:'inline-block'
-              }}
-            >
-              <Typography
-              >
-                {" "}{measurement.unit ? "("+measurement.unit+")":""}
-              </Typography>
-              <Typography
-              >
-                {timestamp ? msecondToString(timediff)+' ago' : ''}
-              </Typography>
-            </Box>
-            <Typography
-              sx={{
-                fontSize: '24px',
-                width:'50%',
-                float: 'right',
-                display: 'inline-block',
-                margin: 'auto'
-              }}
-            >
-              {(displayValue || displayValue === 0) ? displayValue : ""}
-            </Typography>
-          </Grid>
-        );
-      })}
+      {Object.keys(measurements).map((key) =>
+        <DigitalTwinCell
+          key={measurements[key].name}
+          {...{
+            measurement: measurements[key],
+            valueCombo: organDTValue[measurements[key].name],
+            organName: organName,
+            ageObject: ageObject
+          }}
+        />
+      )}
     </Grid>
   );
 };
