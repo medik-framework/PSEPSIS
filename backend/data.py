@@ -105,7 +105,15 @@ class Patient:
         self.data = self.data | new_data
 
     def get_value(self, key):
-        return self.data[key]
+        if key == 'Age' and self.data.has_key('Age'):
+            return self.data['Age']['AgeInDays']
+        if key == 'Weight' and self.data.has_key('Weight'):
+            return self.data['Weight']['value']
+        if key == 'HighRiskConditions' and self.data.has_key('HighRiskConditions'):
+            return self.data['HighRiskConditions']['value']
+        else:
+            return "Data not exist"
+
 
 
 def test():

@@ -8,6 +8,7 @@ import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
 import InputDialog from "../DialogContent/InputDialog";
+import useRemoteRequest from "../Utility/Hooks";
 
 import { DialogConfig } from "../../resources/DialogConfig";
 import { update_all } from "../../redux/reducers/organDT";
@@ -270,6 +271,8 @@ const DigitalTwin = () => {
     `ws://${apiURL}/get_organdt_upadte`
   );
   const dispatch = useDispatch();
+  const [send] = useRemoteRequest();
+  const patientBasic = useSelector((state) => state.patientBasic)
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -278,6 +281,10 @@ const DigitalTwin = () => {
       dispatch(update_all(d));
     }
   }, [lastMessage]);
+
+  useEffect(() => {
+    send('/update_patient', JSON.stringify(patientBasic));
+  }, [patientBasic])
 
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>

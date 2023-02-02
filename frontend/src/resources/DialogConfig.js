@@ -31,6 +31,12 @@ export const DialogConfig = {
                 storage: "patientBasic/update",
             },
     },
+    threeBucket: {
+        title: "Compute OSF Sepsis Score",
+        inputConfig :{
+            type: "threebucket"
+        }
+    },
     showSepsisWarning: {
         title: "Sepsis suspected, please start treatment bundle"
     },
