@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -10,6 +10,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import NumericInput from "./NumericInput";
 import Checklist from "./Checklist";
 import { DialogConfig } from "../../resources/DialogConfig";
+import { useSelect } from "@mui/base";
 
 const InputContent = (args) => {
   switch (args.inputConfig.type) {
@@ -25,6 +26,7 @@ const InputContent = (args) => {
 const InputDialog = ({ open, setOpen, info, sendMessage }) => {
   const [retDict, setRetDict] = useState({});
   const [storeDict, setStoreDict] = useState({});
+  const counter = useSelector((state) => state.dialogs.counter);
   const config = DialogConfig[info['args'][0]];
   const inputConfig = config.inputConfig;
   const [shouldContinue, setShouldContinue] = useState(!config.inputConfig);
@@ -52,7 +54,12 @@ const InputDialog = ({ open, setOpen, info, sendMessage }) => {
 
   const handleContinue = () => {
     if(info.id){
-      const data = {'id':info.id, ...retDict};
+      const data = {
+        'source':'app',
+        'id':counter,
+        'response_to':info.id,
+        'args':retDict
+      };
       sendMessage(JSON.stringify(data));
       dispatch({type: "dialogs/setDone", payload: data});
     }
