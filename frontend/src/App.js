@@ -1,6 +1,5 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 
 import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
@@ -10,7 +9,6 @@ import useRemoteRequest from "./components/Utility/Hooks";
 function App() {
   const [started, setStarted] = useState(false);
   const [send] = useRemoteRequest();
-  const dispatch = useDispatch();
 
   const startSession = () => {
     setStarted(true);
