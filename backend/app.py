@@ -3,10 +3,13 @@ from flask_cors import CORS
 import simple_websocket
 import json
 import os
+import queue
+import time
 
-from data import OrganDt
+from data import OrganDt, Patient
 
 organDT = OrganDt()
+patient = Patient()
 portal_connected = False
 app_connected = False
 
@@ -63,9 +66,25 @@ def update_data():
     global organDT
     global dt_updates
     json_data = request.json
-    # print("Recv from sim porgtal: ", json_data)
+    print("Recv from sim porgtal: ", json_data)
     organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
     dt_updates.put(json.dumps(organDT.get_all()))
+    return ""
+
+@app.route("/update_patient", methods=["POST"])
+def update_patient():
+    global patient
+    json_data = request.json
+    print(json_data)
+    patient.update(json_data)
+    return ""
+
+@app.route("/add_to_q", methods=["POST"])
+def add_to_q():
+    global q
+    json_data = request.json
+    print(json_data)
+    q.put(json_data)
     return ""
 
 @app.route("/get_value", methods=["POST", "GET"])
@@ -154,25 +173,7 @@ if __name__ == "__main__":
 # data_copy2 = {}
 # data_copy2 = {"organDT":{}, "dialogs":{}, "userInput": {}}#1:"getAgeWeight", 2:"getHighRiskConditions"}, "userInput":{}}
 
-# @app.route("/k_comm", websocket=True)
-# def k_comm():
-#     global data_copy, data_copy2
-#     ws = simple_websocket.Server(request.environ)
-#     # p = subprocess.Popen(['krun'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-#     try:
-#         while True:
-#             data=ws.receive(0.1)
-#             if data is not None:
-#                 data_copy = json.loads(data)
 
-#                 # p.stdin.write(data)
-#                 # ws.send(data)
-#             if data_copy2 is not None:
-#                 ws.send(data_copy2)
-#                 data_copy2 = None
-#     except simple_websocket.ConnectionClosed:
-#         pass
-#     return ''
 
 # @app.route("/3")
 # def index3():

@@ -1,23 +1,20 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { pick } from "lodash";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import useWebSocket, { ReadyState } from "react-use-websocket";
+
 import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
-import { TabUnstyled, TabPanelUnstyled } from '@mui/base';
+
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
-import InputDialog from "./InputDialog";
 
-import { DialogConfig } from "../../resources/DialogConfig";
 import { update_all } from "../../redux/reducers/organDT";
-
-const assessments = ["Age", "Weight"];
+import InputDialog from "../DialogContent/InputDialog";
 
 const PaitentBasic = () => {
-  const assessments = {
-    Age: "2y",
-    Weight: "20kg",
-    Height: "50cm",
-    Gender: "male",
-  };
+  const age = useSelector((state) => state.patientBasic['Age'])
+  const weight = useSelector((state) => state.patientBasic['Weight'])
+  const [open, setOpen] = useState(false)
+  const [info, setInfo] = useState({})
+
   return (
     <Grid>
       <Button
@@ -52,6 +49,7 @@ const DigitalTwinForm = ({ selectedDT }) => {
   const organName = OrganDTConfig[selectedDT].name;
   const measurements = OrganDTConfig[selectedDT].measurements;
   const organDTValue = useSelector((state) => state.organDT[organName]);
+  const ageObject = useSelector((state) => state.patientBasic['Age']);
 
   const get_colorcode = (measurement, value) => {
     if (!value || !ageObject) return 'lightgray';
@@ -98,13 +96,12 @@ const DigitalTwinForm = ({ selectedDT }) => {
             xs={6}
             sx={{
               height: "80px",
-              boxShadow:
-                "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
               backgroundColor: colorcode,
               paddingLeft: "5px",
               border: '0.5px solid black',
               borderColor: 'black'
             }}
+            key={mname}
           >
             <Typography
               sx={{
@@ -174,11 +171,10 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
                 backgroundColor: "yellow",
                 border: '0.5px solid black',
               }}
+              key={key}
             >
               <div>
                 {key}: {assessments[key]}
-                {/* <br />
-                30s ago */}
               </div>
             </Grid>
           );
@@ -265,13 +261,13 @@ const DigitalTwin = () => {
 
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>
-      <Typography height='5%' variant="h4" component="div">
+      {/* <Typography height='5%' variant="h4" component="div">
         Patient Digital Twin
-      </Typography>
+      </Typography> */}
       <PaitentBasic />
       <SystematicAssessmentForm {...{ selectedDT }} />
       <OrganSelection {...{ selectedDT, setSelectedDT }} />
-      <OrganAssessmentForm {...{ selectedDT }} />
+      {/* <OrganAssessmentForm {...{ selectedDT }} /> */}
       <DigitalTwinForm {...{ selectedDT }} />
     </Box>
   );

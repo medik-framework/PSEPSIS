@@ -1,13 +1,16 @@
 import "./App.css";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
 
+import { start } from "./redux/reducers/treatment"
+
 function App() {
   const [started, setStarted] = useState(false);
   const apiURL = useSelector((state) => state.misc['apiURL']);
+  const dispatch = useDispatch()
 
   const sendRemoteRequest = (method, data) => {
     fetch(method, {
@@ -31,6 +34,7 @@ function App() {
     setStarted(true);
     const method = 'http://' + apiURL + '/app_connect';
     sendRemoteRequest(method, {});
+    dispatch(start())
   }
 
   const exitSession = () => {
@@ -48,3 +52,4 @@ function App() {
 }
 
 export default App;
+
