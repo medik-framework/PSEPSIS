@@ -94,6 +94,13 @@ def get_value():
     value = organDT.get_value(requested_param)
     return jsonify({'status': 'ok' , 'value': value})
 
+@app.route("/get_patient_info", methods=["POST", "GET"])
+def get_value():
+    global patient
+    requested_param = request.args.get("field_name")
+    value = patient.get_value(requested_param)
+    return jsonify({'status': 'ok' , 'value': value})
+
 @app.route("/get_all_values", methods=["POST", "GET"])
 def get_all_values():
     global organDT

@@ -78,7 +78,7 @@ const MainPage = ({ exitSession }) => {
                         },
                         redirect: 'follow', // manual, *follow, error
                         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                        body: JSON.stringify({'id':id, 'args':['getAge']}) // body data type must match "Content-Type" header
+                        body: JSON.stringify({'id':id, 'args':['threeBucket']}) // body data type must match "Content-Type" header
                     }).catch(error => {
                         console.log('Post error:', error)
                     })

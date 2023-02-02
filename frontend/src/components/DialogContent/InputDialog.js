@@ -9,6 +9,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import NumericInput from "./NumericInput";
 import Checklist from "./Checklist";
+import ThreeBucket from "./ThreeBucket";
+
 import { DialogConfig } from "../../resources/DialogConfig";
 
 const InputContent = (args) => {
@@ -17,6 +19,8 @@ const InputContent = (args) => {
       return <NumericInput {...args}/>
     case "checklist":
       return <Checklist {...args}/>
+    case "threebucket":
+      return <ThreeBucket />
     default:
       return <></>
   }
