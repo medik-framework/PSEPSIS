@@ -24,7 +24,7 @@ q.put({ "type"      : "dialog",
       })
 q.put({ "type"      : "dialog",
         "id"        : 3,
-        "args"      : [ "getHighRiskConditions" ]
+        "args"      : [ "getHighRiskConditions" ],
       })
 
 dt_updates = queue.Queue()
