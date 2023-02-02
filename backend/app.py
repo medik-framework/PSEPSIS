@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import simple_websocket
 import json
+from typing import Dict, List
 import os
 import queue
 import time
 
 from data import OrganDt, Patient
+from message import Message, SenderList, INVALID_RESPONSE_ID
+from message_queue import MessageQueue
+from waiting_list import WaitingList
 
 organDT = OrganDt()
 patient = Patient()
@@ -28,6 +32,9 @@ q.put({ "type"      : "dialog",
       })
 
 dt_updates = queue.Queue()
+
+waiting_list = WaitingList()
+message_queue = MessageQueue()
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
@@ -104,6 +111,7 @@ def get_value():
 @app.route("/get_all_values", methods=["POST", "GET"])
 def get_all_values():
     global organDT
+    print("get all message")
     return jsonify(organDT.get_all())
 
 @app.route("/get_organdt_upadte", websocket=True)
@@ -144,6 +152,23 @@ def app_dialog():
     except simple_websocket.ConnectionClosed:
         pass
     return ''
+@app.route("/send_message", methods=["POST"])
+def send_message():
+    message = request.json
+    message_queue.add_message(str(message))
+    message_id = message["id"]
+    if message["source"] == SenderList.MEDIK and message["need_response"]:
+        waiting_list.add_message(message_id)
+    response_id = message["response_to"]
+    if message["source"] == SenderList.GUI and response_id != INVALID_RESPONSE_ID:
+        waiting_list.add_response(response_id, str(message))
+    return jsonify(organDT.get_all())
+
+@app.route("/get_response")
+def get_response():
+    message = request.json
+    message_id = message["id"]
+    return waiting_list.get_response(message_id)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 4000))
