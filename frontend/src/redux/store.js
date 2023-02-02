@@ -3,6 +3,8 @@ import apiUrlReducer from './reducers/misc'
 import organDTReducer from './reducers/organDT'
 import patientBasicReducer from './reducers/patientBasic'
 import dialogsReducer from './reducers/dialogs'
+import treatmentReducer from './reducers/treatment'
+import sepsisBundleForm from './reducers/sepsisBundleForm'
 
 export default configureStore({
   reducer: {
@@ -10,5 +12,7 @@ export default configureStore({
     patientBasic: patientBasicReducer,
     misc: apiUrlReducer,
     dialogs: dialogsReducer,
+    treatment: treatmentReducer,
+    SepsisBundleForm: sepsisBundleForm
   },
 })

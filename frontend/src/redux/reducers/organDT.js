@@ -1,23 +1,31 @@
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
-import { createAction, createReducer } from '@reduxjs/toolkit'
-
-const update = createAction("organDT/update");
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {};
 OrganDTConfig.map((organ) => {
     const measurements = organ.measurements;
     initialState[organ.name] = Object.keys(measurements).reduce((prev, key) => {
-        prev[measurements[key].name] = NaN;
+        prev[measurements[key].name] = {'value':NaN, 'time':NaN};
         return prev;
     }, {});
     return [];
 });
 
-const organDTReducer = createReducer(initialState, (builder) => {
-  builder
-      .addCase(update, (state, action) => {
-        state = action.payload;
-      })
+export const organDTSlice = createSlice({
+  name: 'organDT',
+  initialState: {...initialState},
+  reducers:{
+    update_all: (state, action) => {
+      const data = action.payload;
+      console.log("update organ data")
+      OrganDTConfig.map((organ) => {
+        state[organ.name] = data[organ.name]
+        return [];
+      });
+    },
+  }
 });
 
-export default organDTReducer;
+export const { update_all }  = organDTSlice.actions
+
+export default organDTSlice.reducer

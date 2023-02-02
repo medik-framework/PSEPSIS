@@ -36,7 +36,7 @@
 // };
 
 
-export const PatientBasic = {
+export const PatientConfig = {
   Age: {
     name: "Age",
     type: "group",
