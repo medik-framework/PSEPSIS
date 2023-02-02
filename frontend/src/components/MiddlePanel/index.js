@@ -10,7 +10,7 @@ export default function OneHourBundle() {
         OSF PSepsis Bundle
       </Typography>
       <SepsisTimeline />
-      {/* <BundleForm /> */}
+      <BundleForm />
     </div>
   );
 }

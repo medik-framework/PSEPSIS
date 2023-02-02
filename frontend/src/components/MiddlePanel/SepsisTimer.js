@@ -8,6 +8,8 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 
+import { start } from "../../redux/reducers/treatment"
+
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 50,
   borderRadius: 5,
@@ -74,7 +76,7 @@ const SepsisTimeline = () => {
 
   return (
     <Grid container>
-      <Grid item sx={{ width: "30%" }}>
+      <Grid item sx={{ width: "20%" }}>
         <Button
           variant="contained"
           sx={{
@@ -83,13 +85,13 @@ const SepsisTimeline = () => {
             animation: started ? "null" : `${wave} 1s infinite`,
           }}
           onClick={() => {
-            dispatch({ type: "START_TIMER" });
+            if (!started) dispatch(start());
           }}
         >
           ↓ Start
         </Button>
       </Grid>
-      <Grid item sx={{ width: "70%" }}>
+      <Grid item sx={{ width: "80%" }}>
         <LinearProgressWithLabel
           variant="determinate"
           value={started ? timePercent : 0}

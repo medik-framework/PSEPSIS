@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { started: false, startTime: null}
+const initialState = {
+  started: false,
+  startTime: null,
+}
 
 export const treatmentSlice = createSlice({
   name: 'treatment',
@@ -8,7 +11,7 @@ export const treatmentSlice = createSlice({
   reducers: {
     start: (state, action) => {
       state.started = true
-      state.startTime = new Date()
+      state.startTime = new Date().toJSON()
     },
     end: (state, action) => {
       state['started'] = false
