@@ -9,9 +9,25 @@ import {
   Typography,
 } from "@mui/material";
 
+import { start } from "../../redux/reducers/treatment"
+
+// const bundleList = [
+//   "Start continuous cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
+//   "Respiratory interventions. Administer oxygen to maintain SpO2 of at least 94%",
+//   "Obtain IV/IO",
+//   "POCT Lactic Acid / Blood Gas",
+//   "Complete Blood Count (CBC) WITH Diff",
+//   "Comprehensive Metablic Panel (CMP)",
+//   "Culture",
+//   "Give antibiotics",
+//   "Consider fluid resuscitation",
+//   "Infection Source Control. Consider diagnostic imaging based on patient's clinical exam",
+//   "Consider inotropic support early",
+// ];
+
 const bundleList = [
-  "Start continuous cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
-  "Respiratory interventions. Administer oxygen to maintain SpO2 of at least 94%",
+  "Cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
+  "Respiratory: Administer oxygen to maintain SpO2 >= 94%",
   "Obtain IV/IO",
   "POCT Lactic Acid / Blood Gas",
   "Complete Blood Count (CBC) WITH Diff",
@@ -19,14 +35,14 @@ const bundleList = [
   "Culture",
   "Give antibiotics",
   "Consider fluid resuscitation",
-  "Infection Source Control. Consider diagnostic imaging based on patient's clinical exam",
+  "Infection Source Control. Consider diagnostic imaging",
   "Consider inotropic support early",
 ];
 
 const BundleForm = () => {
   const dispatch = useDispatch();
 
-  const started = useSelector((state) => state.Timer.started);
+  const started = useSelector((state) => state.treatment.started);
   const checkedIdx = useSelector((state) => state.SepsisBundleForm.checkedIdx);
   const ventilationChecked = useSelector((state) => state.SepsisBundleForm.ventilationChecked);
 
@@ -39,9 +55,7 @@ const BundleForm = () => {
   }
 
   const startTimerIfNotStarted = () => {
-    if (!started) {
-    dispatch({ type: "START_TIMER" })
-    }
+    if (!started) dispatch(start())
   }
 
   return (
@@ -51,13 +65,14 @@ const BundleForm = () => {
           return (
             <Grid
               item
+              key={idx}
               xs={12}
               sx={{
                 backgroundColor: (checkedIdx >> idx) & 1 ? "yellow" : "white",
               }}
             >
               <FormControlLabel
-                control={<Checkbox checked={(checkedIdx >> idx) & 1} />}
+                control={<Checkbox checked={ Boolean((checkedIdx >> idx) & 1) } />}
                 label={value}
                 onChange={() => {
                   updateCheckedIdx(checkedIdx ^ (1 << idx));
