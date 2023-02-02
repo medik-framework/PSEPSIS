@@ -5,7 +5,7 @@ RESPONSE_NOT_RECEIVED = ""
 
 @dataclass
 class WaitingList:
-    waiting_list:Dict[int, str] = field(default_factory=Dict, init=False)
+    waiting_list:Dict[int, str] = field(default_factory=dict)
     
     def add_message(self, message_id: int):
         self.waiting_list[message_id] = RESPONSE_NOT_RECEIVED

@@ -9,7 +9,7 @@ import time
 
 from data import OrganDt, Patient
 from message import Message, SenderList, INVALID_RESPONSE_ID
-from message_queue import MessageQueue
+from message_queue import MessageQueue, EMPTY_QUEUE
 from waiting_list import WaitingList
 
 organDT = OrganDt()
@@ -33,8 +33,8 @@ q.put({ "type"      : "dialog",
 
 dt_updates = queue.Queue()
 
-waiting_list = WaitingList()
 message_queue = MessageQueue()
+waiting_list = WaitingList()
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
@@ -114,7 +114,7 @@ def get_all_values():
     print("get all message")
     return jsonify(organDT.get_all())
 
-@app.route("/get_organdt_upadte", websocket=True)
+@app.route("/get_organdt_update", websocket=True)
 def get_organdt_upadte():
     ws = simple_websocket.Server(request.environ)
     global dt_updates
@@ -135,37 +135,46 @@ def get_organdt_upadte():
 
 @app.route("/app_dialog", websocket=True)
 def app_dialog():
+    print("app dialog")
     ws = simple_websocket.Server(request.environ)
-    global q
+    global message_queue
+    global waiting_list
     try:
         while True:
             from_app = ws.receive(0.1)
             if from_app is not None:
-                print(from_app)
-                # forward to MediK
+                print("received from gui")
+                message = json.loads(from_app)
+                message_queue.add_message(from_app)
+                response_id = message["response_to"]
+                if response_id != INVALID_RESPONSE_ID:
+                    waiting_list.add_response(response_id, str(message))
             try:
-                to_app = q.get_nowait()
-                ws.send(to_app)
+                message_to_app = message_queue.next_message_to_gui()
+                while message_to_app != EMPTY_QUEUE:
+                    ws.send(message_to_app)
+                    print("sent: ", message_to_app)
+                    message_to_app = message_queue.next_message_to_gui()
             except queue.Empty:
                 pass
-
     except simple_websocket.ConnectionClosed:
         pass
     return ''
+
 @app.route("/send_message", methods=["POST"])
 def send_message():
+    print("send messages")
     message = request.json
-    message_queue.add_message(str(message))
+    message_str = json.dumps(message)
+    message_queue.add_message(message_str)
     message_id = message["id"]
     if message["source"] == SenderList.MEDIK and message["need_response"]:
         waiting_list.add_message(message_id)
-    response_id = message["response_to"]
-    if message["source"] == SenderList.GUI and response_id != INVALID_RESPONSE_ID:
-        waiting_list.add_response(response_id, str(message))
     return jsonify(organDT.get_all())
 
 @app.route("/get_response")
 def get_response():
+    print("get response")
     message = request.json
     message_id = message["id"]
     return waiting_list.get_response(message_id)
