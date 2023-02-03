@@ -262,7 +262,7 @@ const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
   const apiURL = useSelector((state) => state.misc['apiURL']);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `ws://${apiURL}/get_organdt_upadte`
+    `ws://${apiURL}/get_organdt_update`
   );
   const dispatch = useDispatch();
   const [send] = useRemoteRequest();
