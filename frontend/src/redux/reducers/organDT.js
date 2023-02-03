@@ -56,12 +56,14 @@ export const organDTSlice = createSlice({
   initialState: {...initialState},
   reducers:{
     update_all: (state, action) => {
-      const data = action.payload;
-      console.log("update organ data")
-      OrganDTConfig.map((organ) => {
-        state[organ.name] = data[organ.name]
-        return [];
-      });
+      // const data = action.payload;
+      // console.log("update organ data")
+      // OrganDTConfig.map((organ) => {
+      //   state[organ.name] = data[organ.name]
+      //   return [];
+      // });
+      state = action.payload
+      return state
     },
   }
 >>>>>>> f9df0bb (finish digital twin)

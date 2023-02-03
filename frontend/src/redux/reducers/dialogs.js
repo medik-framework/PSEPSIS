@@ -4,7 +4,7 @@ const update = createAction("dialogs/update");
 const setDone = createAction("dialogs/setDone");
 
 const initialState = {
-  counter: 0,
+  counter: 1,
   hist: {},
   todo: []
 };
@@ -16,11 +16,11 @@ const dialogsReducer = createReducer(initialState, (builder) => {
     })
     .addCase(setDone, (state, action) => {
       state.todo.splice(0, 1);
-      state.counter += 1;
       state.hist = {
         ...state.hist,
         [state.counter]: action.payload
       }
+      state.counter += 1;
     })
 })
 
