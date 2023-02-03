@@ -7,7 +7,7 @@ export const miscSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     updateURL: (state, action) => {
-      state['apiURL'] = action.payload.value
+      state['apiURL'] = action.payload
     }
   },
 })
