@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
-RESPONSE_NOT_RECEIVED = ""
+RESPONSE_NOT_RECEIVED = "response not received"
 
 @dataclass
 class WaitingList:

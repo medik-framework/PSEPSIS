@@ -54,15 +54,16 @@ const InputDialog = ({ open, setOpen, info, sendMessage }) => {
         setShouldContinue(r);
     }
   }, [retDict, storeDict])
-
   const handleContinue = () => {
-    if(info.id){
+    if(info.id !== undefined){
       const data = {
-        'source':'app',
         'id':counter,
+        'source': 1,
+        'args':retDict,
         'response_to':info.id,
-        'args':retDict
-      };
+        "need_response": false,
+        "timestamp": Date.now()
+      }
       sendMessage(JSON.stringify(data));
       dispatch({type: "dialogs/setDone", payload: data});
     }

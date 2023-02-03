@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import simple_websocket
 import json
-from typing import Dict, List
+from logger import Logger
 import os
 import queue
 import time
@@ -18,24 +18,24 @@ portal_connected = False
 app_connected = False
 
 q = queue.Queue()
-q.put({ "type"      : "dialog",
-        "id"        : 1,
-        "args"      : [ "getAge" ]
-      })
-q.put({ "type"      : "dialog",
-        "id"        : 2,
-        "args"      : [ "getWeight" ]
-      })
-q.put({ "type"      : "dialog",
-        "id"        : 3,
-        "args"      : [ "getHighRiskConditions" ],
-      })
+# q.put({ "type"      : "dialog",
+#         "id"        : 1,
+#         "args"      : [ "getAge" ]
+#       })
+# q.put({ "type"      : "dialog",
+#         "id"        : 2,
+#         "args"      : [ "getWeight" ]
+#       })
+# q.put({ "type"      : "dialog",
+#         "id"        : 3,
+#         "args"      : [ "getHighRiskConditions" ],
+#       })
 
 dt_updates = queue.Queue()
 
 message_queue = MessageQueue()
 waiting_list = WaitingList()
-
+logger = Logger()
 app = Flask(__name__, static_folder="static")
 CORS(app)
 
@@ -111,7 +111,6 @@ def get_value():
 @app.route("/get_all_values", methods=["POST", "GET"])
 def get_all_values():
     global organDT
-    print("get all message")
     return jsonify(organDT.get_all())
 
 @app.route("/get_organdt_update", websocket=True)
@@ -122,8 +121,6 @@ def get_organdt_upadte():
         while True:
             try:
                 to_app = dt_updates.get_nowait()
-                print("Send organdt to app ")
-                # print("Send to app ", to_app)
                 ws.send(to_app)
             except queue.Empty:
                 time.sleep(1)
@@ -135,7 +132,7 @@ def get_organdt_upadte():
 
 @app.route("/app_dialog", websocket=True)
 def app_dialog():
-    print("app dialog")
+    # print("Connected with GUI")
     ws = simple_websocket.Server(request.environ)
     global message_queue
     global waiting_list
@@ -143,8 +140,8 @@ def app_dialog():
         while True:
             from_app = ws.receive(0.1)
             if from_app is not None:
-                print("received from gui")
                 message = json.loads(from_app)
+                logger.log(message)
                 message_queue.add_message(from_app)
                 response_id = message["response_to"]
                 if response_id != INVALID_RESPONSE_ID:
@@ -153,7 +150,7 @@ def app_dialog():
                 message_to_app = message_queue.next_message_to_gui()
                 while message_to_app != EMPTY_QUEUE:
                     ws.send(message_to_app)
-                    print("sent: ", message_to_app)
+                    print("tosent: ", message_to_app)
                     message_to_app = message_queue.next_message_to_gui()
             except queue.Empty:
                 pass
@@ -163,10 +160,10 @@ def app_dialog():
 
 @app.route("/send_message", methods=["POST"])
 def send_message():
-    print("send messages")
     message = request.json
-    message_str = json.dumps(message)
-    message_queue.add_message(message_str)
+    print(message)
+    logger.log(message)
+    message_queue.add_message(json.dumps(message))
     message_id = message["id"]
     if message["source"] == SenderList.MEDIK and message["need_response"]:
         waiting_list.add_message(message_id)
@@ -174,7 +171,6 @@ def send_message():
 
 @app.route("/get_response")
 def get_response():
-    print("get response")
     message = request.json
     message_id = message["id"]
     return waiting_list.get_response(message_id)
