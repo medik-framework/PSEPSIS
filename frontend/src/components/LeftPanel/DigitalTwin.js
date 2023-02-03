@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useInterval } from "react-use";
 
-import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
+import { Button, Grid, Typography, Box, Tabs, Tab, TextField } from "@mui/material";
 
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
+import { update_all } from "../../redux/reducers/organDT";
+import { updateURL } from "../../redux/reducers/misc";
 import InputDialog from "../DialogContent/InputDialog";
 import useRemoteRequest from "../Utility/Hooks";
 
@@ -273,6 +275,7 @@ const DigitalTwin = () => {
   const dispatch = useDispatch();
   const [send] = useRemoteRequest();
   const patientBasic = useSelector((state) => state.patientBasic)
+  const [inputURL, setInputURL] = useState(apiURL)
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -296,6 +299,22 @@ const DigitalTwin = () => {
       <OrganSelection {...{ selectedDT, setSelectedDT }} />
       {/* <OrganAssessmentForm {...{ selectedDT }} /> */}
       <DigitalTwinForm {...{ selectedDT }} />
+      <Box
+        sx={{fontSize:'18px', backgroundColor:'white', width:'40%', bottom: 0, right: 0, position:'absolute'}}
+      >
+          <TextField
+            label="Set backend server API URL"
+            id="url"
+            variant="outlined"
+            value={inputURL}
+            onChange={(e) => setInputURL(e.target.value)}
+          />
+          <Button
+            onClick={() => dispatch(updateURL(inputURL))}
+          >
+            Confirm
+          </Button>
+      </Box>
     </Box>
   );
 };
