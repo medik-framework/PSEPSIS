@@ -97,12 +97,12 @@ def add_to_q():
 @app.route("/get_value", methods=["POST", "GET"])
 def get_value():
     global organDT
-    requested_param = request.args.get("field_name")
+    requested_param = request.json["args"]["field_name"]
     value = organDT.get_value(requested_param)
     return jsonify({'status': 'ok' , 'value': value})
 
 @app.route("/get_patient_info", methods=["POST", "GET"])
-def get_value():
+def get_patient_info():
     global patient
     requested_param = request.args.get("field_name")
     value = patient.get_value(requested_param)
