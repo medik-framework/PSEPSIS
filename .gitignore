@@ -1,2 +1,4 @@
 *vscode
 *__pycache
+backend/message_log/
+backend/__pycache__/
