@@ -2,3 +2,4 @@
 *__pycache
 backend/message_log/
 backend/__pycache__/
+backend/static/*
