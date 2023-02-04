@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+(trap 'kill 0' SIGINT; \
+  (cd frontend ; yarn start) & \
+  (cd mockpatient ; yarn start) & \
+  (cd backend ; python3 app.py))
