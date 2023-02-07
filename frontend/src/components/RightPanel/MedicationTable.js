@@ -1,55 +1,41 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Grid, Typography } from "@mui/material";
 
+import { TextField, MenuItem, Button, Grid, Checkbox } from "@mui/material";
+
+import makeStyles from "@mui/styles/makeStyles";
+
+import { FLUIDS } from "../../resources/AntibioticsList";
 import {
-  medicationCategories,
-  sepsisTables,
+  MedicationCategories,
+  MedicationConfig
 } from "../../resources/MedicationTableSchema";
+import MedicationCard from "./MedicationCard";
 
-import FluidTherapy from "./FluidTherapy";
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    width: "100%",
+  },
+  select: {
+    marginTop: "10px",
+  },
+  button: {
+    textAlign: "center",
+    height: "30px",
+    backgroundColor: "gray",
+    color: "white",
+  },
+}));
 
-export default function CenteredGrid() {
-  const dispatch = useDispatch();
-
-  const selectedCategory = useSelector((state) => state.MedicationTab);
-
-  const updateSelectedCategory = (category) => {
-    dispatch({
-      type: "CHANGE_MEDICATION_TAB",
-      payload: category,
-    });
-  };
+export default function MedicationTable({selectedCategory}) {
+  const medList = MedicationConfig[MedicationCategories[[selectedCategory]]];
 
   return (
-    <>
-      <Grid container spacing={0}>
-        {medicationCategories.map((value) => {
-          return (
-            <Grid item xs={6}>
-              <Button
-                variant="contained"
-                sx={{
-                  width: "100%",
-                  backgroundColor:
-                    selectedCategory === value ? "#0062cc" : "#1976d2",
-                }}
-                onClick={() => updateSelectedCategory(value)}
-              >
-                {value}
-              </Button>
-            </Grid>
-          );
-        })}
-      </Grid>
-      <div
-        style={{
-          display:
-            selectedCategory === medicationCategories[1] ? "block" : "none",
-        }}
-      >
-        <FluidTherapy />
-      </div>
-    </>
+    <Grid container>
+      {medList.map((med, idx) => {
+        return <MedicationCard key={idx} {...med} />;
+      })}
+    </Grid>
   );
 }

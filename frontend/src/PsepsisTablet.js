@@ -7,7 +7,7 @@ import { Box } from "@mui/material";
 
 import DigitalTwin from "./components/LeftPanel/DigitalTwin";
 import MiddlePanel from "./components/MiddlePanel";
-import RightPanel from "./components/RightPanel";
+import RightPanel from "./components/RightPanel/MiddlePanel";
 import CollapsiblePanel from "./components/CollapsiblePanel";
 
 import InputDialog from "./components/DialogContent/InputDialog";
@@ -47,6 +47,9 @@ const PsepsisTablet = () => {
       </Box>
       <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
         <MiddlePanel />
+      </Box>
+      <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
+        <RightPanel />
       </Box>
       {/* <Grid container>
         <Grid
