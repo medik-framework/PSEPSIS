@@ -293,7 +293,7 @@ const DigitalTwin = () => {
       {/* <OrganAssessmentForm {...{ selectedDT }} /> */}
       <DigitalTwinForm {...{ selectedDT }} />
       <Box
-        sx={{fontSize:'18px', backgroundColor:'white', width:'40%', bottom: 0, right: 0, position:'absolute'}}
+        sx={{fontSize:'18px', backgroundColor:'white', width:'40%', bottom: 0, left: 0, position:'absolute'}}
       >
           <TextField
             label="Set backend server API URL"
