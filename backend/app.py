@@ -121,6 +121,7 @@ def get_organdt_upadte():
         while True:
             try:
                 to_app = dt_updates.get_nowait()
+                print("Send to app: ", to_app)
                 ws.send(to_app)
             except queue.Empty:
                 time.sleep(1)
