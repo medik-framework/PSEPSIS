@@ -26,7 +26,7 @@ const PaitentBasic = () => {
           textAlign:'left'
         }}
         onClick={() => {
-          setInfo({"args": ["getAge"]})
+          setInfo({"args": ["threeBucket"]})
           setOpen(true);
         }}
       >
