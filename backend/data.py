@@ -48,6 +48,7 @@ class DataSeries:
             return {'value': None, 'time':None}
         return {'value': self.data[-1].value, 'time':self.data[-1].time}
 
+
 import json
 ORGAN_DT_MAP = json.load(open("organdt.json"))
 MEAS_MAP = {v: k for k, vs in ORGAN_DT_MAP.items() for v in vs}
@@ -92,6 +93,21 @@ class OrganDt:
     def print(self):
         print(jsonify(self.data))
         # print(self.data)
+
+class DrugHist:
+    data: Dict[str, DataSeries]
+
+    def __init__(self) -> None:
+        pass
+
+    def get_total_dose(self, drugname):
+        pass
+
+    def get_dose_count(self, drugname):
+        pass
+
+    def record_dose(self, value, ts, drugname):
+        pass
 
 class Patient:
     def __init__(self) -> None:
