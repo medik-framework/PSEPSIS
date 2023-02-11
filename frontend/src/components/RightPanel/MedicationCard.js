@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { add } from "../../redux/reducers/drugs";
 import { useInterval } from "react-use";
+import useRemoteRequest from "../Utility/Hooks";
 
 import {
   TextField, Button, Grid, Autocomplete, Typography, Box
@@ -55,6 +56,7 @@ const MedicationCard = (config) => {
   const count = useSelector((state) => state.drug[config.name].count);
   const lastts = useSelector((state) => state.drug[config.name].lastts);
   const dispatch = useDispatch();
+  const [send] = useRemoteRequest();
 
   const msecondToString = (msec) => {
     let min = Math.floor(Math.round(msec/1000)/60);
@@ -101,11 +103,17 @@ const MedicationCard = (config) => {
         <Box width={'40%'} className={classes.box}>
           <Button
             className={classes.button}
-            onClick={() => dispatch(add({
-              'timestamp':new Date().getTime(),
-              'name':config.name,
-              'dose':dose
-            }))}
+            onClick={() => {
+                dispatch(add({
+                  'timestamp': new Date().getTime(),
+                  'name'     : config.name
+                }));
+                send('/record_dose', {
+                  'name' : config.name,
+                  'time' : new Date().getTime(),
+                  'value': dose
+                });
+            }}
           >
             Give
           </Button>
