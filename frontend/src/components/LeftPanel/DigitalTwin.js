@@ -23,7 +23,8 @@ const PaitentBasic = () => {
       <Button
         sx={{
           width:'50%',
-          textAlign:'left'
+          textAlign:'left',
+          fontSize: '16px'
         }}
         onClick={() => {
           setInfo({"args": ["threeBucket"]})
@@ -35,6 +36,7 @@ const PaitentBasic = () => {
       <Button
         sx={{
           width:'50%',
+          fontSize: '16px'
         }}
         onClick={() => {
           setInfo({"args": ["getWeight"]})
@@ -172,7 +174,7 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
           sx={{
             height: "30px",
             border: '1px solid black',
-            backgroundColor: "yellow",
+            backgroundColor: "white",
           }}
         >
           <div>Screening Status: Presume Sepsis</div>
@@ -184,7 +186,7 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
               xs={3}
               sx={{
                 height: "50px",
-                backgroundColor: "yellow",
+                backgroundColor: "white",
                 border: '0.5px solid black',
               }}
               key={key}
@@ -263,7 +265,10 @@ const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
   const apiURL = useSelector((state) => state.misc['apiURL']);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `ws://${apiURL}/get_organdt_update`
+    `ws://${apiURL}/get_organdt_update`, {
+      onOpen: () => console.log('Organ DT connected'),
+      shouldReconnect: (CloseEvent) => true,
+    }
   );
   const dispatch = useDispatch();
   const [send] = useRemoteRequest();
@@ -284,8 +289,8 @@ const DigitalTwin = () => {
 
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>
-      {/* <Typography height='5%' variant="h4" component="div">
-        Patient Digital Twin
+      {/* <Typography variant="h4" gutterBottom component="div">
+        Patient Data
       </Typography> */}
       <PaitentBasic />
       <SystematicAssessmentForm {...{ selectedDT }} />

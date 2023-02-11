@@ -6,8 +6,8 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Box } from "@mui/material";
 
 import DigitalTwin from "./components/LeftPanel/DigitalTwin";
-import MiddlePanel from "./components/MiddlePanel";
-import RightPanel from "./components/RightPanel/MiddlePanel";
+import MiddlePanel from "./components/MiddlePanel/MiddlePanel";
+import RightPanel from "./components/RightPanel/RightPanel";
 import CollapsiblePanel from "./components/CollapsiblePanel";
 
 import InputDialog from "./components/DialogContent/InputDialog";
@@ -15,7 +15,10 @@ import InputDialog from "./components/DialogContent/InputDialog";
 const PsepsisTablet = () => {
   const apiURL = useSelector((state) => state.misc.apiURL);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `ws://${apiURL}/app_dialog`
+    `ws://${apiURL}/app_dialog`, {
+      onOpen: () => console.log('Organ DT connected'),
+      shouldReconnect: (CloseEvent) => true,
+    }
   );
 
   const [open, setOpen] = useState(false);
@@ -25,6 +28,7 @@ const PsepsisTablet = () => {
 
   useEffect(() => {
     if (lastMessage !== null) {
+      console.log(lastMessage.data)
       console.log(typeof(lastMessage.data))
       const d = lastMessage.data.replace(/'/g, '"');
       dispatch({ type: "dialogs/update", payload: d});
@@ -40,9 +44,9 @@ const PsepsisTablet = () => {
 
 
   return (
-    <Box width="100vw" height="100vh" display="flex">
+    <Box width="100vw" height="100vh" overflow="hidden" display="flex">
       {open && <InputDialog {...{ open, setOpen, info, sendMessage }}/>}
-      <Box width="30vw" height="100vh" sx={{display:'inline-flex'}}>
+      <Box width="30vw" height="100vh" sx={{display:'inline-flex', paddingRight: '5px'}}>
         <DigitalTwin />
       </Box>
       <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>

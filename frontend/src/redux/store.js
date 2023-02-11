@@ -6,6 +6,7 @@ import dialogsReducer from './reducers/dialogs'
 import treatmentReducer from './reducers/treatment'
 import sepsisBundleForm from './reducers/sepsisBundleForm'
 import logReducer from './reducers/logs'
+import drugReducer from './reducers/drugs'
 
 export default configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export default configureStore({
     treatment: treatmentReducer,
     SepsisBundleForm: sepsisBundleForm,
     logs: logReducer,
+    drug: drugReducer,
   },
 })
