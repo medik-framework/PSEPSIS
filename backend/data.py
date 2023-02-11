@@ -43,6 +43,9 @@ class DataSeries:
             return None
         return self.data[-1].value
 
+    def get_len(self) -> int:
+        return len(self.data)
+
     def get_data_point(self) -> Optional[float]:
         if len(self.data) == 0:
             return {'value': None, 'time':None}
@@ -94,20 +97,25 @@ class OrganDt:
         print(jsonify(self.data))
         # print(self.data)
 
+DRUG_INFO = json.load(open("drugs.json"))
+DRUG_NAME = {drug["name"] for drug in DRUG_INFO}
+
 class DrugHist:
     data: Dict[str, DataSeries]
 
     def __init__(self) -> None:
-        pass
+        self.data = {k: DataSeries() for k in DRUG_NAME}
 
-    def get_total_dose(self, drugname):
-        pass
+    def get_total_dose(self, drug_name):
+        records = self.data[drug_name].get_series()
+        total_dose = sum(record.value for record in records)
+        return total_dose
 
-    def get_dose_count(self, drugname):
-        pass
+    def get_dose_count(self, drug_name):
+        return self.data[drug_name].get_len()
 
-    def record_dose(self, value, ts, drugname):
-        pass
+    def record_dose(self, drug_name, timestamp, value):
+        self.data[drug_name].update(timestamp, value)
 
 class Patient:
     def __init__(self) -> None:
