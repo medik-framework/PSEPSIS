@@ -108,11 +108,11 @@ const MedicationCard = (config) => {
                   'timestamp': new Date().getTime(),
                   'name'     : config.name
                 }));
-                send('/record_dose', {
-                  'name' : config.name,
-                  'time' : new Date().getTime(),
-                  'value': dose
-                });
+                send('/record_dose', JSON.stringify({
+                  "name" : config.name,
+                  "time" : new Date().getTime(),
+                  "value": dose
+                }));
             }}
           >
             Give
