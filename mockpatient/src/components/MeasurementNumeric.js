@@ -26,8 +26,8 @@ const MeasurementNumeric = ({ organName, config }) => {
 
     useEffect(() => {
         if (delay && elapse === period){
-        resetInterval();
-        dispatch(update({value: target, organName: organName, measurementName: config.name}));
+            resetInterval();
+            dispatch(update({value: target, organName: organName, measurementName: config.name}));
         }
     }, [ delay, setDelay, elapse, setElapse, period, target, organName, config, dispatch])
 
@@ -93,13 +93,14 @@ const MeasurementNumeric = ({ organName, config }) => {
                 disabled={(!inputValue) || (Number(inputValue) === value)}
                 sx={{ fontSize:'14px', width:'25%', marginLeft:'5px'}}
                 variant="outlined"
+                color="error"
                 onClick={() => {
-                resetInterval();
-                dispatch(update({
-                    value: Number(inputValue),
-                    organName: organName,
-                    measurementName: config.name
-                }));
+                    resetInterval();
+                    dispatch(update({
+                        value: Number(inputValue),
+                        organName: organName,
+                        measurementName: config.name
+                    }));
                 }}
             >
                 Confrim
@@ -133,6 +134,7 @@ const MeasurementNumeric = ({ organName, config }) => {
                 <Button
                     sx={{ fontSize:'14px', width:'25%', marginLeft:'5px' }}
                     variant="outlined"
+                    color="error"
                     disabled={isNaN(value) || !target || !period}
                     onClick={() => gradualUpdate(value)}
                 >

@@ -43,9 +43,9 @@ const MeasurementSelect = ({ organName, config }) => {
                 {config.name} {config.unit ? `(${config.unit})` : null}
             </Typography>
             <Select
-            sx={{ fontSize:'18px', display:'block', margin:'auto', marginTop:'20px', backgroundColor:'white', width:'70%' }}
-            value={value? value:''}
-            onChange={(e) => dispatch(update({value: e.target.value, organName: organName, measurementName: config.name}))}
+                sx={{ fontSize:'18px', display:'block', margin:'auto', marginTop:'20px', backgroundColor:'white', width:'70%' }}
+                value={value? value:''}
+                onChange={(e) => dispatch(update({value: e.target.value, organName: organName, measurementName: config.name}))}
             >
             {Object.keys(config.options).map((key) =>
                 <MenuItem key={key} value={key}>{key}</MenuItem>
