@@ -28,8 +28,6 @@ const PsepsisTablet = () => {
 
   useEffect(() => {
     if (lastMessage !== null) {
-      console.log(lastMessage.data)
-      console.log(typeof(lastMessage.data))
       const d = lastMessage.data.replace(/'/g, '"');
       dispatch({ type: "dialogs/update", payload: d});
     }

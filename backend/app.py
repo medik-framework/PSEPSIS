@@ -88,10 +88,10 @@ def update_patient():
 
 @app.route("/add_to_q", methods=["POST"])
 def add_to_q():
-    global q
+    global message_queue
     json_data = request.json
     print(json_data)
-    q.put(json_data)
+    message_queue.add_message(json.dumps(json_data))
     return ""
 
 @app.route("/get_value", methods=["POST", "GET"])
@@ -151,7 +151,7 @@ def app_dialog():
                 message_to_app = message_queue.next_message_to_gui()
                 while message_to_app != EMPTY_QUEUE:
                     ws.send(message_to_app)
-                    print("tosent: ", message_to_app)
+                    print("send to app: ", message_to_app)
                     message_to_app = message_queue.next_message_to_gui()
             except queue.Empty:
                 pass

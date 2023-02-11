@@ -14,9 +14,10 @@ export const drugSlice = createSlice({
   initialState: {...initialState},
   reducers:{
     add: (state, action) => {
+      console.log(action.payload)
       state[action.payload.name] = {
         'lastts': action.payload.timestamp,
-        'total': state[action.payload.name].count + 1
+        'count': state[action.payload.name].count + 1
       }
       return state
     },

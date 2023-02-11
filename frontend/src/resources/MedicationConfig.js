@@ -150,7 +150,7 @@ export const MedicationConfig = {
       "dosage": ['20']
     },
     {
-      "name": "Dobutamine",
+      "name": "Normal Saline",
       "includeDisplay": true,
       "unit": "mL/kg",
       "dosage": ['20']

@@ -34,7 +34,7 @@ const MainPage = ({ exitSession }) => {
     const apiURL = useSelector((state) => state.misc['apiURL']);
     const [selectedDT, setSelectedDT] = useState(0);
     const [open, setOpen] = useState(false);
-    const [id, setID] = useState(3);
+    const [id, setID] = useState(1);
     return (
         <Box sx={{ display:'flex', flexDirection:'column' }}>
             <Box sx={{ display:'flex', width:'100vw' }}>
@@ -67,6 +67,14 @@ const MainPage = ({ exitSession }) => {
             </Box>
             <Button
                 onClick={() => {
+                    const data ={
+                        "id": id,
+                        "source": 0,
+                        "args": [ "getAge" ],
+                        "response_to": -1,
+                        "need_response": true,
+                        "timestamp": 4008
+                    }
                     fetch(apiURL+'add_to_q', {
                         method: 'POST', // *GET, POST, PUT, DELETE, etc.
                         mode: 'cors', // no-cors, *cors, same-origin
@@ -78,7 +86,7 @@ const MainPage = ({ exitSession }) => {
                         },
                         redirect: 'follow', // manual, *follow, error
                         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                        body: JSON.stringify({'id':id, 'args':['threeBucket']}) // body data type must match "Content-Type" header
+                        body: JSON.stringify(data) // body data type must match "Content-Type" header
                     }).catch(error => {
                         console.log('Post error:', error)
                     })

@@ -9,7 +9,7 @@ EMPTY_QUEUE = ""
 class MessageQueue:
     message_list: List[str]= field(default_factory=list, init=False)
     sent_index: int = field(default=0, init=False)
-    
+
     def next_message_to_gui(self):
         while self.sent_index < len(self.message_list):
             message_str = self.message_list[self.sent_index]
@@ -21,7 +21,7 @@ class MessageQueue:
 
     def add_message(self, message):
         self.message_list.append(message)
-    
+
     def get_all_message(self):
         return self.message_list.copy()
 
