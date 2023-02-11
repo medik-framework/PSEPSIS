@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { add } from "../../redux/reducers/drugs";
+import { useInterval } from "react-use";
 
 import {
   TextField, Button, Grid, Autocomplete, Typography, Box
@@ -39,36 +40,54 @@ const useStyles = makeStyles((theme) => ({
   button: {
     textAlign: "center",
     height: "40px",
-    backgroundColor: "gray",
+    backgroundColor: "green",
     color: "white",
     float: "right",
     marginTop: "5px"
   },
 }));
 
-const DoseDropdown = ({options}) => {
-  return (
-    <Autocomplete
-      freeSolo
-      options={options}
-      renderInput={(params) => <TextField {...params} label="dosage" />}
-    />
-  );
-}
-
 const MedicationCard = (config) => {
   const classes = useStyles();
-  const [inputCount, setInputCount] = useState(config.dosage[0]);
+  const [dose, setDose] = useState(config.dosage[0]);
+  const [inputDose, setInputDose] = useState(config.dosage[0]);
+  const [timeDiff, setTimeDiff] = useState(null);
   const count = useSelector((state) => state.drug[config.name].count);
   const lastts = useSelector((state) => state.drug[config.name].lastts);
   const dispatch = useDispatch();
+
+  const msecondToString = (msec) => {
+    let min = Math.floor(Math.round(msec/1000)/60);
+    let minstr = min >= 10 ?  min : '0' + min;
+    let sec = Math.round(msec/1000) % 60;
+    let secstr = sec >= 10 ? sec : '0' + sec;
+    return minstr +':'+ secstr
+  }
+
+  useInterval(() => {
+    if(lastts) {
+      setTimeDiff(msecondToString(new Date().getTime() - lastts))
+    }
+  }, 1000);
 
   return (
     <Grid item xs={6} className={classes.card} key={config.name}>
       <Typography className={classes.title}>{config.name}</Typography>
       <Box display={'flex'} marginTop={"10px"}>
         <Box width={'60%'} className={classes.box}>
-          <DoseDropdown options={config.dosage} />
+          <Autocomplete
+            freeSolo
+            key={config.name}
+            options={config.dosage}
+            renderInput={(params) => <TextField {...params} label="dosage"/>}
+            value={dose}
+            onChange={(e,v) => setDose(v)}
+            inputValue={inputDose}
+            onInputChange={(e,v) => {
+              setDose(v)
+              setInputDose(v)
+            }}
+          />
         </Box>
         <Box width={'40%'} className={classes.box}>
           <Typography className={classes.unit}>{config.unit}</Typography>
@@ -77,10 +96,19 @@ const MedicationCard = (config) => {
       <Box display={'flex'}>
         <Box width={'60%'} className={classes.box}>
           <Typography>Count: {count}</Typography>
-          <Typography>Last time: {lastts}</Typography>
+          <Typography>Elapse: {timeDiff}</Typography>
         </Box>
         <Box width={'40%'} className={classes.box}>
-          <Button className={classes.button}>Give</Button>
+          <Button
+            className={classes.button}
+            onClick={() => dispatch(add({
+              'timestamp':new Date().getTime(),
+              'name':config.name,
+              'dose':dose
+            }))}
+          >
+            Give
+          </Button>
         </Box>
       </Box>
     </Grid>
