@@ -45,15 +45,20 @@ const InputDialog = ({ open, setOpen, info, sendMessage }) => {
       }
       setShouldContinue(r);
     } else {
+      console.log("here")
       let r = Object.keys(storeDict).length > 0;
+      console.log(r)
       if (r) {
         r = Object.keys(storeDict).reduce((prev, i) =>
           prev && !( storeDict[i] === null )
-        , r)
-      }
+        , r);
         setShouldContinue(r);
+      } else {
+        setShouldContinue(true);
+      }
     }
   }, [retDict, storeDict])
+
   const handleContinue = () => {
     if(info.id !== undefined){
       const data = {
