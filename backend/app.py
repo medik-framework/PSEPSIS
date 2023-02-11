@@ -7,7 +7,7 @@ import os
 import queue
 import time
 
-from data import OrganDt, Patient
+from data import OrganDt, Patient, DrugHist
 from message import Message, SenderList, INVALID_RESPONSE_ID
 from message_queue import MessageQueue, EMPTY_QUEUE
 from waiting_list import WaitingList
@@ -33,9 +33,10 @@ q = queue.Queue()
 
 dt_updates = queue.Queue()
 
-message_queue = MessageQueue()
+message_queue = queue.Queue()
 waiting_list = WaitingList()
 logger = Logger()
+drug_hist = DrugHist()
 app = Flask(__name__, static_folder="static")
 CORS(app)
 
@@ -76,22 +77,24 @@ def update_data():
     print("Recv from sim porgtal: ", json_data)
     organDT.update(json_data['measurement'], json_data['timeStamp'], json_data['value'])
     dt_updates.put(json.dumps(organDT.get_all()))
+    logger.log(json.dumps(json_data), "update_data")
     return ""
 
 @app.route("/update_patient", methods=["POST"])
 def update_patient():
     global patient
+    global logger
     json_data = request.json
-    print(json_data)
     patient.update(json_data)
+    logger.log(json.dumps(json_data), "update_patient")
     return ""
 
 @app.route("/add_to_q", methods=["POST"])
 def add_to_q():
     global message_queue
     json_data = request.json
-    print(json_data)
-    message_queue.add_message(json.dumps(json_data))
+    logger.log(json.dumps(json_data), "add_to_q")
+    message_queue.put(json_data)
     return ""
 
 @app.route("/get_value", methods=["POST", "GET"])
@@ -99,6 +102,7 @@ def get_value():
     global organDT
     requested_param = request.json["args"]["field_name"]
     value = organDT.get_value(requested_param)
+    logger.log(json.dumps(request.json), "get_value")
     return jsonify({'status': 'ok' , 'value': value})
 
 @app.route("/get_patient_info", methods=["POST", "GET"])
@@ -106,6 +110,7 @@ def get_patient_info():
     global patient
     requested_param = request.args.get("field_name")
     value = patient.get_value(requested_param)
+    logger.log(json.dumps(request.json), "get_patient_info")
     return jsonify({'status': 'ok' , 'value': value})
 
 @app.route("/get_all_values", methods=["POST", "GET"])
@@ -114,15 +119,15 @@ def get_all_values():
     return jsonify(organDT.get_all())
 
 @app.route("/get_organdt_update", websocket=True)
-def get_organdt_upadte():
+def get_organdt_update():
     ws = simple_websocket.Server(request.environ)
     global dt_updates
     try:
         while True:
             try:
                 to_app = dt_updates.get_nowait()
-                print("Send to app: ", to_app)
                 ws.send(to_app)
+                logger.log(to_app, "get_organdt_update")
             except queue.Empty:
                 time.sleep(1)
 
@@ -137,22 +142,20 @@ def app_dialog():
     ws = simple_websocket.Server(request.environ)
     global message_queue
     global waiting_list
+    global logger
     try:
         while True:
             from_app = ws.receive(0.1)
             if from_app is not None:
                 message = json.loads(from_app)
-                logger.log(message)
-                message_queue.add_message(from_app)
+                logger.log(from_app, "app_dialog_received_message")
                 response_id = message["response_to"]
                 if response_id != INVALID_RESPONSE_ID:
                     waiting_list.add_response(response_id, str(message))
             try:
-                message_to_app = message_queue.next_message_to_gui()
-                while message_to_app != EMPTY_QUEUE:
-                    ws.send(message_to_app)
-                    print("send to app: ", message_to_app)
-                    message_to_app = message_queue.next_message_to_gui()
+                message_to_app = message_queue.get_nowait()
+                ws.send(message_to_app)
+                logger.log(message_to_app, "app_dialog_send_message")
             except queue.Empty:
                 pass
     except simple_websocket.ConnectionClosed:
@@ -161,10 +164,13 @@ def app_dialog():
 
 @app.route("/send_message", methods=["POST"])
 def send_message():
+    global message_queue
+    global logger
+    global waiting_list
     message = request.json
-    print(message)
-    logger.log(message)
-    message_queue.add_message(json.dumps(message))
+    logger.log(json.dumps(message), "send_message")
+    if message["source"] == SenderList.MEDIK:
+        message_queue.put(json.dumps(message))
     message_id = message["id"]
     if message["source"] == SenderList.MEDIK and message["need_response"]:
         waiting_list.add_message(message_id)
@@ -172,9 +178,34 @@ def send_message():
 
 @app.route("/get_response")
 def get_response():
+    global logger
     message = request.json
     message_id = message["id"]
+    logger.log(json.dumps(message), "get_response")
     return waiting_list.get_response(message_id)
+
+@app.route("/get_total_dose", methods=["GET"])
+def get_total_dose():
+    global drug_hist
+    drug_name = request.json["name"]
+    logger.log(json.dumps(request.json), "get_total_dose")
+    return jsonify({'total dose': drug_hist.get_total_dose(drug_name)})
+
+@app.route("/get_dose_count", methods=["GET"])
+def get_dose_count():
+    global drug_hist
+    drug_name = request.json["name"]
+    logger.log(json.dumps(request.json), "get_dose_count")
+    return jsonify({'count': drug_hist.get_dose_count(drug_name)})
+
+@app.route("/record_dose", methods=["POST"])
+def record_dose():
+    global drug_hist
+    record = request.json
+    logger.log(json.dumps(request.json), "record_dose")
+    drug_hist.record_dose(record["name"], record["time"], record["value"])
+    return jsonify({'status': 'success'})
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 4000))

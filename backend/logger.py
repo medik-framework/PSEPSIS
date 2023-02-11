@@ -1,10 +1,6 @@
 import logging
 import json
 from datetime import datetime
-senders_id = {
-    0: "MEDIK",
-    1: "GUI"
-}
 class Logger:
     def get_curr_time(self):
         now = datetime.now()
@@ -18,8 +14,6 @@ class Logger:
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)
 
-    def log(self, message:dict):
-        message_copy = message.copy()
-        message_copy["source"] = senders_id[message_copy["source"]]
-        self.logger.info(json.dumps(message_copy))
+    def log(self, message:str, endpoint:str):
+        self.logger.info(endpoint+": "+json.dumps(message))
         
