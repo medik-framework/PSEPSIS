@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { keyframes } from "@emotion/react";
+
 import { useInterval } from "react-use";
-import { Grid, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 
-import { start } from "../../redux/reducers/treatment"
+
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 50,
@@ -44,16 +44,9 @@ function LinearProgressWithLabel(props) {
   );
 }
 
-const wave = keyframes`
-0% { color: orange; }
-50% { color: black; }
-100% { color: orange; }
-`;
-
 const zeroPad = (num, places) => String(num).padStart(places, "0");
 
 const SepsisTimeline = () => {
-  const dispatch = useDispatch();
   const started = useSelector((state) => state.treatment.started);
   const startTime = useSelector((state) => state.treatment.startTime);
   const [timeDiff, setTimeDiff] = useState("00:00:00");
@@ -75,30 +68,13 @@ const SepsisTimeline = () => {
   );
 
   return (
-    <Grid container>
-      <Grid item sx={{ width: "20%" }}>
-        <Button
-          variant="contained"
-          sx={{
-            height: "50px",
-            fontWeight: "bold",
-            animation: started ? "null" : `${wave} 1s infinite`,
-          }}
-          onClick={() => {
-            if (!started) dispatch(start());
-          }}
-        >
-          ↓ Start
-        </Button>
-      </Grid>
-      <Grid item sx={{ width: "80%" }}>
+    <Box container>
         <LinearProgressWithLabel
           variant="determinate"
           value={started ? timePercent : 0}
           label={started ? timeDiff : "Not Started"}
         />
-      </Grid>
-    </Grid>
+    </Box>
   );
 };
 

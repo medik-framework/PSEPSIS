@@ -5,7 +5,7 @@ import MedicationTable from "./MedicationTable";
 
 import {
   MedicationCategories,
-} from "../../resources/MedicationTableSchema";
+} from "../../resources/MedicationConfig";
 
 const MiddlePanel = () => {
   const [selectedCategory, setSelectedCategory] = useState(0);
