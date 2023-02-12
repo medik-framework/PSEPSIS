@@ -8,8 +8,7 @@ import queue
 import time
 
 from data import OrganDt, Patient, DrugHist
-from message import Message, SenderList, INVALID_RESPONSE_ID
-from message_queue import MessageQueue, EMPTY_QUEUE
+from message import SenderList, INVALID_RESPONSE_ID
 from waiting_list import WaitingList
 
 organDT = OrganDt()
@@ -169,10 +168,10 @@ def send_message():
     global waiting_list
     message = request.json
     logger.log(json.dumps(message), "send_message")
-    if message["source"] == SenderList.MEDIK:
+    if message["source"] == SenderList.MEDIK.value:
         message_queue.put(json.dumps(message))
     message_id = message["id"]
-    if message["source"] == SenderList.MEDIK and message["need_response"]:
+    if message["source"] == SenderList.MEDIK.value and message["need_response"]:
         waiting_list.add_message(message_id)
     return jsonify(organDT.get_all())
 
