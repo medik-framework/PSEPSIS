@@ -108,7 +108,7 @@ class DrugHist:
 
     def get_total_dose(self, drug_name):
         records = self.data[drug_name].get_series()
-        total_dose = sum(record.value for record in records)
+        total_dose = sum(float(record.value) for record in records)
         return total_dose
 
     def get_dose_count(self, drug_name):
