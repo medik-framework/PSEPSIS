@@ -3,4 +3,4 @@
 (trap 'kill 0' SIGINT; \
   (cd frontend ; yarn start) & \
   (cd mockpatient ; yarn start) & \
-  (cd backend ; python3 app.py))
+  (cd backend ; python3.10 app.py))
