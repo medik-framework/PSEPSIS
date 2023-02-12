@@ -53,6 +53,9 @@ const PsepsisTablet = () => {
       <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
         <RightPanel />
       </Box>
+      <Box width="10vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
+        <CollapsiblePanel />
+      </Box>
       {/* <Grid container>
         <Grid
           item

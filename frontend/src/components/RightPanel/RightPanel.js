@@ -35,7 +35,8 @@ const MiddlePanel = () => {
           );
         })}
       </Grid>
-      <MedicationTable {...{selectedCategory}} />
+      {selectedCategory !== 3 && <MedicationTable {...{selectedCategory}}/>}
+      {selectedCategory === 3 && <>{selectedCategory}</>}
     </div>
   );
 };

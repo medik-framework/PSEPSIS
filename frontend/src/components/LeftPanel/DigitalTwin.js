@@ -125,7 +125,7 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
         >
           {" "}{measurement.unit ? "("+measurement.unit+")":""}
         </Typography>
-        <Typography>
+        <Typography sx={{alignSelf:"bottom"}}>
           {timestamp ? msecondToString(timeDiff)+' ago' : ''}
         </Typography>
       </Box>

@@ -155,5 +155,25 @@ export const MedicationConfig = {
       "unit": "mL/kg",
       "dosage": ['20']
     }
-  ]
+  ],
+  "OSF Antibiotics Set": {
+      "Children > 28 days normal host":{
+
+      },
+      "Children > 28 days immunosuppressed/at resk for infection Pseudomonas species":{
+
+      },
+      "Children > 28 cannot recieve penicillin or have recently received braod-spectrum antibiotics":{
+
+      },
+      "Patinet at increased risk of fungal infection":{
+
+      },
+      "Patients with risk for rickettsial infection":{
+
+      },
+      "infants 0-28 days":{
+
+      },
+    }
 }
