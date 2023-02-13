@@ -1,21 +1,26 @@
 from pathlib import Path
 from fractions import Fraction
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import os
 
 import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
 
 base_dir     = Path(__file__).parents[0]
-psepsis_dir  = base_dir     / 'psepsis-system'
-psepsis_pgm  = psepsis_dir  / 'ext'           / 'psepsis.medik'
+psepsis_dir  = base_dir     / 'ext'           / 'psepsis-system'
+psepsis_pgm  = psepsis_dir  / 'psepsis.medik'
 medik_dir    = psepsis_dir  / 'ext'           / 'medik-semantics'
-kompiled_dir = medik_dir    / '.build'        / 'medik-kompiled'
-krelease_dir = medik_dir    / 'ext'           / 'k' / 'k-distribution' / 'target' / 'release' / 'k'
+kompiled_dir = medik_dir    / '.build'        / 'llvm-exec'      / 'medik-llvm-kompiled'
+krelease_dir = medik_dir    / 'ext'           / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
 kbin_dir     = krelease_dir / 'bin'
-print(str(kbin_dir))
+
+app = Flask(__name__, static_folder="static")
+CORS(app)
 
 def set_env():
     path_entires = [ kbin_dir ]
     os.environ['PATH'] = str(kbin_dir.resolve()) \
-                            + os.pathsep + os.environ['PATH']
+                                + os.pathsep + os.environ['PATH']
 
 class MedikProcess:
     async def parse_json_stream(self, json_stream):
@@ -24,11 +29,12 @@ class MedikProcess:
         last_scan_index   = 0
         json_byte_str       = b''
         while True:
-            print("awaiting for json stream")
+            logging.info("awaiting for json stream")
             json_byte_str     += await json_stream.readuntil(b'}')
             open_brace_count  += json_byte_str.count(b'{', last_scan_index)
             close_brace_count += json_byte_str.count(b'}', last_scan_index)
             if len(json_byte_str) == 0:
+                logging.info("return from parse_json_stream")
                 return None
             if open_brace_count == close_brace_count:
                 obj = json.loads(json_byte_str)
@@ -36,8 +42,8 @@ class MedikProcess:
                 last_scan_index   = 0
                 open_proce_count  = 0
                 close_brace_count = 0
-                print('read {}'.format(json.dumps(obj, indent=2)))
-                print('json object: ' + str(obj))
+                logging.info('read {}'.format(json.dumps(obj, indent=2)))
+                logging.info('json object: ' + str(obj))
                 return obj
             last_scan_index = len(json_byte_str)
 
@@ -70,6 +76,7 @@ class MedikProcess:
                 print('awaiting input from json stream')
                 out_json = await self.parse_json_stream(k_process.stdout)
                 if out_json == None:
+                    print("!!! Got nothing from K")
                     break;
                 processed_json = self.process_rats(out_json)
                 match out_json.get('action'):
@@ -122,7 +129,7 @@ class MedikProcess:
         k_command = ( 'krun' , ['-d' , str(kompiled_dir.resolve())
                                , '--output' , 'none'
                                , str(psepsis_pgm.resolve()) ])
-        tasks = []
+        tasks = None
         try:
             k_process = await asyncio.create_subprocess_exec( k_command[0]
                                                             , *k_command[1]
@@ -134,7 +141,7 @@ class MedikProcess:
             tasks += [asyncio.create_task(self.read_stdout(k_process), name='read-stdout')]
             tasks += [asyncio.create_task(self.read_stderr(k_process), name='read-stderr')]
 
-            print('is loop running? {}'.format(self.event_loop.is_running()))
+            print('!!! is loop running? {}'.format(self.event_loop.is_running()))
             await asyncio.gather(*tasks)
         except Exception as e:
             print(str(e))
@@ -147,6 +154,12 @@ class MedikProcess:
         self.event_loop.run_until_complete(self._launch_medik())
         print('loop completed')
 
+    async def broadcast(self, interface_id, name, args):
+        await self.to_k_queue.put( { 'id'        : interface_id
+                                   , 'action'    : 'broadcast'
+                                   , 'eventName' : name
+                                   , 'eventArgs' : args })
+
     def __init__(self, event_loop):
         set_env()
         self.from_k_queue = asyncio.Queue()
@@ -154,13 +167,15 @@ class MedikProcess:
         self.event_loop = event_loop
 
 
-class Middleware:
-    def __init__(self, medik_process, event_loop):
-        self.medik_process = medik_process
-        self.event_loop = event_loop
 
-    def start_middleware(self):
-        print('launching middleware')
+@app.route("/app_connect", methods=["POST"])
+def app_connect():
+    future = asyncio.run_coroutine_threadsafe(k_process.broadcast( 'tabletApp'
+                                                                 , 'StartSystem'
+                                                                 , [])
+                                             , event_loop)
+    future.result()
+    return ""
 
 if __name__ == "__main__":
     event_loop = asyncio.new_event_loop()
@@ -168,6 +183,8 @@ if __name__ == "__main__":
     k_process = MedikProcess(event_loop)
     medik_thread = threading.Thread(target=k_process.launch_medik)
     medik_thread.start()
+    port = int(os.environ.get('PORT', 4000))
+    app.run(host="0.0.0.0",port=port)
     medik_thread.join()
 
 
