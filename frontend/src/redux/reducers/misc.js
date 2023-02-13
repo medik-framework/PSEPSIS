@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { apiURL: "127.0.0.1:4000"}
+const initialState = { apiURL: "172.17.0.2:4002" }
 
 export const miscSlice = createSlice({
   name: 'misc',
