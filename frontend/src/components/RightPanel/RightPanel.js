@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {  Button, Grid, Typography } from "@mui/material";
 
-import MedicationTable from "./MedicationTable";
+import MedicationTable, { AntibioticsSetTable } from "./MedicationTable";
 
 import {
   MedicationCategories,
@@ -36,7 +36,7 @@ const MiddlePanel = () => {
         })}
       </Grid>
       {selectedCategory !== 3 && <MedicationTable {...{selectedCategory}}/>}
-      {selectedCategory === 3 && <>{selectedCategory}</>}
+      {selectedCategory === 3 && <AntibioticsSetTable />}
     </div>
   );
 };

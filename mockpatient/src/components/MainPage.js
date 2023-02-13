@@ -12,7 +12,6 @@ import OrganSelection from "./OrganSelection";
 import OrganPage from "./OrganPage";
 
 import { updateURL } from "../redux/miscSlice";
-import { set } from "react-hook-form";
 
 const ExitConfirmationDialog = ({ open, handleCancel, handleOk }) => {
     return(

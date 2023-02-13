@@ -2,7 +2,7 @@ export const MedicationCategories = [
   "Antibiotics-all",
   "Fluid therapy",
   "Inotropes",
-  "OSF Antibiotics Set",
+  "OSF Antibiotics Set"
 ];
 
 export const MedicationConfig = {
@@ -156,24 +156,121 @@ export const MedicationConfig = {
       "dosage": ['20']
     }
   ],
-  "OSF Antibiotics Set": {
-      "Children > 28 days normal host":{
+}
 
-      },
-      "Children > 28 days immunosuppressed/at resk for infection Pseudomonas species":{
-
-      },
-      "Children > 28 cannot recieve penicillin or have recently received braod-spectrum antibiotics":{
-
-      },
-      "Patinet at increased risk of fungal infection":{
-
-      },
-      "Patients with risk for rickettsial infection":{
-
-      },
-      "infants 0-28 days":{
-
-      },
+export const AntibioticsSetConfig = {
+  "Children > 28 days normal host":[
+    {
+      "title": "Vancomycin + Cefotaxime",
+      "drugs": [
+        {
+          "name": "Vancomycin",
+          "dosage": ["15","60"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Cefotaxime",
+          "dosage": ["50","100","150"],
+          "unit": "mg/kg"
+        }
+      ]
+    },
+    {
+      "title": "Vancomycin + Ceftriaxone",
+      "drugs": [
+        {
+          "name": "Vancomycin",
+          "dosage": ["15","60"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Ceftriaxone",
+          "dosage": ["75","50"],
+          "unit": "mg/kg"
+        }
+      ]
+    },
+  ],
+  "Children > 28 days immunosuppressed/at risk for infection Pseudomonas species":
+  [
+    {
+      "title": "Vancomycin + Cefepime",
+      "drugs": [
+        {
+          "name": "Vancomycin",
+          "dosage": ["15","60"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Cefepime",
+          "dosage": ["50"],
+          "unit": "mg/kg"
+        }
+      ]
+    },
+    {
+      "title": "Vancomycin + Ceftazidime",
+      "drugs": [
+        {
+          "name": "Vancomycin",
+          "dosage": ["15","60"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Ceftazidime",
+          "dosage": ["50"],
+          "unit": "mg/kg"
+        }
+      ]
+    },
+  ],
+  "Children > 28 cannot recieve penicillin or have recently received broad-spectrum antibiotics":
+  [
+    {
+      "title": "Vancomycin + Meropenem",
+      "drugs": [
+        {
+          "name": "Vancomycin",
+          "dosage": ["15","60"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Meropenem",
+          "dosage": ["20"],
+          "unit": "mg/kg"
+        }
+      ]
     }
+  ],
+  "Patient at increased risk of fungal infection":
+  {
+    "title": "Add liposomal Amphotericin B or an echinocandin (eg, caspofungin, micafungin) to the antimicrobial regimen"
+  },
+  "Patient with risk for rickettsial infection":
+  {
+    "title": "Add a tetracycline antibiotic (eg, doxycycline) to the antimicrobial regimen"
+  },
+  "Infants 0-28 days":
+  [
+    {
+      "title": "Ampicillin + Cefotaxime + Gentamicin",
+      "drugs": [
+        {
+          "name": "Ampicillin",
+          "dosage": ["50","200"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Cefotaxime",
+          "dosage": ["50","100","150"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Gentamicin",
+          "dosage": ["2.5","7.5"],
+          "unit": "mg/kg"
+        }
+      ]
+    }
+  ],
 }
