@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Grid, Button, Box } from "@mui/material";
-import { BsFillArrowLeftCircleFill } from 'react-icons/bs';
+import { Grid, Button, Box, Typography } from "@mui/material";
+import { BsFillArrowLeftSquareFill, BsFillArrowRightSquareFill } from 'react-icons/bs';
 
 import makeStyles from "@mui/styles/makeStyles";
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     textTransform: "none",
-    fontSize: "14px"
+    fontSize: "14px",
   },
   returnbtn: {
     textTransform: "none",
@@ -74,7 +74,12 @@ export const AntibioticsSetTable = () => {
             className={classes.card}
             onClick={() => setSelected(idx)}
           >
-            {name}
+            <Box height={"100%"} width={"80%"}>
+              <Typography>{name}</Typography>
+            </Box>
+            <Box height={"100%"} width={"20%"}>
+              <BsFillArrowRightSquareFill size={50}/>
+            </Box>
           </Button>
         )}
       </Grid>}
@@ -84,7 +89,7 @@ export const AntibioticsSetTable = () => {
             className={classes.returnbtn}
             onClick={() => setSelected(-1)}
           >
-            <BsFillArrowLeftCircleFill /> Return to Antibiotics sets selection
+            <BsFillArrowLeftSquareFill /> Return to Antibiotics sets selection
           </Button>
           <Grid container className={classes.root}>
             {AntibioticsSetConfig[Object.keys(AntibioticsSetConfig)[selected]].map((config, idx) =>
