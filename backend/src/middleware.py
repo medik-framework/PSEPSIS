@@ -4,11 +4,13 @@ from fractions import Fraction
 import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
 
 base_dir     = Path(__file__).parents[0]
-psepsis_pgm  = base_dir     / 'psepsis.medik'
-medik_dir    = base_dir     / 'ext'           / 'medik-semantics'
+psepsis_dir  = base_dir     / 'psepsis-system'
+psepsis_pgm  = psepsis_dir  / 'ext'           / 'psepsis.medik'
+medik_dir    = psepsis_dir  / 'ext'           / 'medik-semantics'
 kompiled_dir = medik_dir    / '.build'        / 'medik-kompiled'
 krelease_dir = medik_dir    / 'ext'           / 'k' / 'k-distribution' / 'target' / 'release' / 'k'
 kbin_dir     = krelease_dir / 'bin'
+print(str(kbin_dir))
 
 def set_env():
     path_entires = [ kbin_dir ]
@@ -16,7 +18,6 @@ def set_env():
                             + os.pathsep + os.environ['PATH']
 
 class MedikProcess:
-
     async def parse_json_stream(self, json_stream):
         open_brace_count  = 0
         close_brace_count = 0
@@ -121,6 +122,7 @@ class MedikProcess:
         k_command = ( 'krun' , ['-d' , str(kompiled_dir.resolve())
                                , '--output' , 'none'
                                , str(psepsis_pgm.resolve()) ])
+        tasks = []
         try:
             k_process = await asyncio.create_subprocess_exec( k_command[0]
                                                             , *k_command[1]
@@ -150,4 +152,23 @@ class MedikProcess:
         self.from_k_queue = asyncio.Queue()
         self.to_k_queue = asyncio.Queue()
         self.event_loop = event_loop
+
+
+class Middleware:
+    def __init__(self, medik_process, event_loop):
+        self.medik_process = medik_process
+        self.event_loop = event_loop
+
+    def start_middleware(self):
+        print('launching middleware')
+
+if __name__ == "__main__":
+    event_loop = asyncio.new_event_loop()
+    event_loop.set_debug(True)
+    k_process = MedikProcess(event_loop)
+    medik_thread = threading.Thread(target=k_process.launch_medik)
+    medik_thread.start()
+    medik_thread.join()
+
+
 
