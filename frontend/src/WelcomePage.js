@@ -1,6 +1,14 @@
-import { Button, Box, Typography } from "@mui/material";
+import { useState } from "react";
+import { Button, Box, Typography, TextField } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+
+import { updateURL } from "./redux/reducers/misc";
 
 const WelcomePage = ({ startSession }) => {
+    const apiURL = useSelector((state) => state.misc['apiURL']);
+    const [inputURL, setInputURL] = useState(apiURL);
+    const dispatch = useDispatch();
+
     return (
         <Box
             sx={{
@@ -34,6 +42,23 @@ const WelcomePage = ({ startSession }) => {
             >
                 Start New Session
             </Button>
+
+            <Box
+                sx={{fontSize:'18px', backgroundColor:'white', marginTop:"20px"}}
+            >
+                <TextField
+                    label="Set backend server API URL"
+                    id="url"
+                    variant="outlined"
+                    value={inputURL}
+                    onChange={(e) => setInputURL(e.target.value)}
+                />
+                <Button
+                    onClick={() => dispatch(updateURL(inputURL))}
+                >
+                    Confirm
+                </Button>
+            </Box>
         </Box>
     )
 };
