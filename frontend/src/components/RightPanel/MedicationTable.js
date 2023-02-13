@@ -1,12 +1,15 @@
-import { Grid } from "@mui/material";
+import { useState } from "react";
+import { Grid, Button, Box } from "@mui/material";
+import { BsFillArrowLeftCircleFill } from 'react-icons/bs';
 
 import makeStyles from "@mui/styles/makeStyles";
 
 import {
   MedicationCategories,
-  MedicationConfig
+  MedicationConfig,
+  AntibioticsSetConfig
 } from "../../resources/MedicationConfig";
-import MedicationCard from "./MedicationCard";
+import MedicationCard, { ComboCard } from "./MedicationCard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,9 +17,30 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: "solid 1px",
     borderTop: "solid 1px",
     borderRadius: "2px",
-    height: "85vh",
+    height: "auto",
+    maxHeight: "85vh",
     overflowY: "scroll",
     overflowX: "hidden",
+    alignContent: "flex-start"
+  },
+  card: {
+    background: "lightcyan",
+    borderRight: "solid 1px",
+    borderBottom: "solid 1px",
+    borderColor: "black",
+    borderRadius: "2px",
+    height: "100px",
+    width:  "100%",
+    textAlign: "center",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textTransform: "none",
+    fontSize: "14px"
+  },
+  returnbtn: {
+    textTransform: "none",
+    fontSize: "14px"
   }
 }));
 
@@ -27,7 +51,6 @@ export default function MedicationTable({selectedCategory}) {
   return (
     <Grid container
       direction={"row"}
-      alignContent={"flex-start"}
       className={classes.root}
       key={selectedCategory}
     >
@@ -36,4 +59,41 @@ export default function MedicationTable({selectedCategory}) {
       })}
     </Grid>
   );
+}
+
+export const AntibioticsSetTable = () => {
+  const classes = useStyles();
+  const [selected, setSelected] = useState(-1);
+
+  return(
+    <>
+      {selected < 0 && <Grid container className={classes.root}>
+        {Object.keys(AntibioticsSetConfig).map((name, idx) =>
+          <Button
+            key={String("AS"+idx)}
+            className={classes.card}
+            onClick={() => setSelected(idx)}
+          >
+            {name}
+          </Button>
+        )}
+      </Grid>}
+      {selected >= 0 &&
+        <>
+          <Button
+            className={classes.returnbtn}
+            onClick={() => setSelected(-1)}
+          >
+            <BsFillArrowLeftCircleFill /> Return to Antibiotics sets selection
+          </Button>
+          <Grid container className={classes.root}>
+            {AntibioticsSetConfig[Object.keys(AntibioticsSetConfig)[selected]].map((config, idx) =>
+              <ComboCard key={"Combo"+selected+idx} {...{config}} />
+            )}
+          </Grid>
+        </>
+      }
+    </>
+
+  )
 }
