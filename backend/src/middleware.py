@@ -3,6 +3,7 @@ from fractions import Fraction
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+import simple_websocket
 
 import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
 
@@ -76,7 +77,6 @@ class MedikProcess:
                 print('awaiting input from json stream')
                 out_json = await self.parse_json_stream(k_process.stdout)
                 if out_json == None:
-                    print("!!! Got nothing from K")
                     break;
                 processed_json = self.process_rats(out_json)
                 match out_json.get('action'):
@@ -141,7 +141,6 @@ class MedikProcess:
             tasks += [asyncio.create_task(self.read_stdout(k_process), name='read-stdout')]
             tasks += [asyncio.create_task(self.read_stderr(k_process), name='read-stderr')]
 
-            print('!!! is loop running? {}'.format(self.event_loop.is_running()))
             await asyncio.gather(*tasks)
         except Exception as e:
             print(str(e))
@@ -171,11 +170,19 @@ class MedikProcess:
 @app.route("/app_connect", methods=["POST"])
 def app_connect():
     future = asyncio.run_coroutine_threadsafe(k_process.broadcast( 'tabletApp'
-                                                                 , 'StartSystem'
+                                                                 , 'StartScreening'
                                                                  , [])
                                              , event_loop)
     future.result()
     return ""
+
+@app.route("/app_dialog", websocket=True)
+def app_dialog():
+    print("doing app dialog")
+    ws = simple_websocket.Server(request.environ)
+    while True:
+        future = asyncio.run_coroutine_threadsafe(k_process.from_k_queue.get(), k_process.event_loop)
+        print(future.result())
 
 if __name__ == "__main__":
     event_loop = asyncio.new_event_loop()
