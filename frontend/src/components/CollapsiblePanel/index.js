@@ -3,7 +3,7 @@ import { Button, Grid, Popover } from "@mui/material";
 
 import TreatmentLog from "./TreatmentLog";
 import WorkflowTab from "./WorkflowTab";
-import CheckList from "./CheckList";
+import Checklist from "./Checklist";
 import Reference from "./References";
 
 const CollapsiblePanel = () => {
@@ -48,7 +48,7 @@ const CollapsiblePanel = () => {
         <div style={{ width: "33vw", height: "100vh" }}>
           {selectedButton === "history" && <TreatmentLog />}
           {selectedButton === "flowchart" && <WorkflowTab />}
-          {selectedButton === "checklists" && <CheckList />}
+          {selectedButton === "checklists" && <Checklist />}
           {selectedButton === "references" && <Reference />}
         </div>
       </Popover>

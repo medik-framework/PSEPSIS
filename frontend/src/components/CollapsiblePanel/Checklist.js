@@ -9,7 +9,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-const checkLists = {
+const checklists = {
   "Culture Checklist": [
     "Urine culture obtained",
     "Blood culture obtained from venipuncture",
@@ -50,20 +50,20 @@ const checkLists = {
   ],
 };
 
-export default function CheckList() {
-  const [checkListName, setCheckListName] = useState(
-    Object.keys(checkLists)[0]
+export default function Checklist() {
+  const [checklistName, setChecklistName] = useState(
+    Object.keys(checklists)[0]
   );
 
   const dispatch = useDispatch();
 
-  const checkedItems = useSelector((state) => state.CheckList);
+  const checkedItems = useSelector((state) => state.checklist);
 
   const checkItem = (label) => {
     dispatch({
       type: "TOGGLE_CHECKLIST_ITEM",
       payload: {
-        checklist: checkListName,
+        checklist: checklistName,
         item: label,
       },
     });
@@ -74,31 +74,31 @@ export default function CheckList() {
       <TextField
         select
         fullWidth
-        value={checkListName}
+        value={checklistName}
         sx={{
           marginTop: "10px",
         }}
-        onChange={(event) => setCheckListName(event.target.value)}
+        onChange={(event) => setChecklistName(event.target.value)}
       >
-        {Object.keys(checkLists).map((option) => (
+        {Object.keys(checklists).map((option) => (
           <MenuItem key={option} value={option}>
             {option}
           </MenuItem>
         ))}
       </TextField>
       <FormGroup>
-        {checkLists[checkListName].map((value) => {
+        {checklists[checklistName].map((value) => {
           return (
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={checkedItems[checkListName]?.includes(value)}
+                  checked={checkedItems[checklistName]?.includes(value)}
                 />
               }
               label={value}
               onChange={() => checkItem(value)}
               sx={{
-                backgroundColor: checkedItems[checkListName]?.includes(value)
+                backgroundColor: checkedItems[checklistName]?.includes(value)
                   ? "yellow"
                   : "white",
               }}

@@ -8,6 +8,7 @@ import sepsisBundleForm from './reducers/sepsisBundleForm'
 import logReducer from './reducers/logs'
 import drugReducer from './reducers/drugs'
 import endpointsReducer from './reducers/endpoints'
+import checkListReducer from './reducers/checklist'
 
 export default configureStore({
   reducer: {
@@ -19,7 +20,8 @@ export default configureStore({
     SepsisBundleForm: sepsisBundleForm,
     logs: logReducer,
     drug: drugReducer,
-    endpoints: endpointsReducer
+    endpoints: endpointsReducer,
+    checklist: checkListReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
