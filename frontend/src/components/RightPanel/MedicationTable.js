@@ -27,20 +27,21 @@ const useStyles = makeStyles((theme) => ({
     background: "lightcyan",
     borderRight: "solid 1px",
     borderBottom: "solid 1px",
-    borderColor: "black",
     borderRadius: "2px",
     height: "100px",
     width:  "100%",
-    textAlign: "center",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     textTransform: "none",
-    fontSize: "14px",
   },
   returnbtn: {
     textTransform: "none",
-    fontSize: "14px"
+    fontSize: "20px",
+    height: "50px"
+  },
+  box: {
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    display:"flex"
   }
 }));
 
@@ -74,28 +75,50 @@ export const AntibioticsSetTable = () => {
             className={classes.card}
             onClick={() => setSelected(idx)}
           >
-            <Box height={"100%"} width={"80%"}>
+            <Box className={classes.box} width={"80%"}>
               <Typography>{name}</Typography>
             </Box>
-            <Box height={"100%"} width={"20%"}>
+            <Box className={classes.box} width={"20%"}>
               <BsFillArrowRightSquareFill size={50}/>
             </Box>
           </Button>
         )}
       </Grid>}
-      {selected >= 0 &&
+      {[0,1,2,5].includes(selected) &&
         <>
           <Button
             className={classes.returnbtn}
             onClick={() => setSelected(-1)}
           >
-            <BsFillArrowLeftSquareFill /> Return to Antibiotics sets selection
+            <BsFillArrowLeftSquareFill /> &nbsp; Return to Antibiotics sets selection
           </Button>
           <Grid container className={classes.root}>
             {AntibioticsSetConfig[Object.keys(AntibioticsSetConfig)[selected]].map((config, idx) =>
               <ComboCard key={"Combo"+selected+idx} {...{config}} />
             )}
           </Grid>
+        </>
+      }
+      {[3, 4].includes(selected) &&
+        <>
+          <Button
+            className={classes.returnbtn}
+            onClick={() => setSelected(-1)}
+          >
+            <BsFillArrowLeftSquareFill /> &nbsp; Return to Antibiotics sets selection
+          </Button>
+          <Typography
+            className={classes.card}
+            sx={{
+              textAlign: "center",
+              border: "1px solid",
+              verticalAlign:"middle",
+              display:"table-cell",
+              padding:"10px"
+            }}
+          >
+            {AntibioticsSetConfig[Object.keys(AntibioticsSetConfig)[selected]]}
+          </Typography>
         </>
       }
     </>

@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "green",
     color: "white",
     float: "right",
-    marginTop: "5px"
   },
 }));
 
@@ -104,13 +103,14 @@ const MedicationCard = (config) => {
           <Button
             className={classes.button}
             onClick={() => {
+                const ts = new Date().getTime();
                 dispatch(add({
-                  'timestamp': new Date().getTime(),
+                  'timestamp': ts,
                   'name'     : config.name
                 }));
                 send('/record_dose', JSON.stringify({
                   "name" : config.name,
-                  "time" : new Date().getTime(),
+                  "time" : ts,
                   "value": dose
                 }));
             }}
@@ -125,30 +125,78 @@ const MedicationCard = (config) => {
 
 export default MedicationCard;
 
+const ComboEntry = ({ drug, order, setOrder }) => {
+  const classes = useStyles();
+  return (
+    <Box key={drug.name} margin={"10px"}>
+      <Typography width={"30%"} display={"inline-flex"}>{drug.name}</Typography>
+      <Autocomplete
+        freeSolo
+        sx={{
+          width: "40%",
+          display: "inline-flex"
+        }}
+        key={drug.name}
+        options={drug.dosage}
+        renderInput={(params) => <TextField {...params} label="dosage"/>}
+        value={order[drug.name].dose}
+        onChange={(e,v) => setOrder({
+          ...order,
+          [drug.name]: {
+            ...order[drug.name],
+            "dose": v
+          }
+        })}
+        inputValue={order[drug.name].inputDose}
+        onInputChange={(e,v) => setOrder({
+          ...order,
+          [drug.name]: {
+            ...order[drug.name],
+            "inputDose": v
+          }
+        })}
+      />
+      <Typography className={classes.unit}>{drug.unit}</Typography>
+    </Box>
+  )
+}
+
 export const ComboCard = ({ config }) => {
   const classes = useStyles();
+  let initOrder = {};
+  config.drugs.map((drug) => {
+    initOrder[drug.name] = {
+      dose: drug.dosage[0],
+      inputDose: drug.dosage[0]
+    }
+  })
+  const [order, setOrder] = useState(initOrder);
+  const dispatch = useDispatch();
+  const [send] = useRemoteRequest();
 
   return(
     <Grid item xs={12} className={classes.card} key={config.title}>
       <Typography className={classes.title}>{config.title}</Typography>
-      {config.drugs.map((drug) =>
-        <Box key={drug.name}>
-          <Typography width={"30%"} display={"inline-flex"}>{drug.name}</Typography>
-          <Autocomplete
-            freeSolo
-            sx={{
-              width: "40%",
-              display: "inline-flex"
-            }}
-            key={drug.name}
-            options={drug.dosage}
-            renderInput={(params) => <TextField {...params} label="dosage"/>}
-          />
-          {drug.unit}
-        </Box>
+      {config.drugs.map((drug, idx) =>
+        <ComboEntry key={idx} {...{ drug, order , setOrder }}/>
       )}
       <Button
         className={classes.button}
+        sx ={{marginRight: "10px", marginBottom:"10px"}}
+        onClick={() => {
+          const ts = new Date().getTime();
+          config.drugs.map((drug) => {
+            dispatch(add({
+              'timestamp': ts,
+              'name'     : drug.name
+            }));
+            send('/record_dose', JSON.stringify({
+              "name" : drug.name,
+              "time" : ts,
+              "value": order[drug.name].dose
+            }));
+          })
+        }}
       >
         Give
       </Button>
