@@ -1,7 +1,7 @@
 import { PatientConfig } from "./PatientConfig"
 
 export const DialogConfig = {
-    getAge: {
+    "get age": {
         title: "Please enter patient age",
         inputConfig:
             {

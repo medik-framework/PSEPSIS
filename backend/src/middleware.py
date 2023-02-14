@@ -89,9 +89,14 @@ class MedikProcess:
                     case 'exit':
                         break
                     case _:
-                        print('putting to from-k-queue'.format(json.dumps(out_json)))
-                        await self.from_k_queue.put(out_json)
-                        print('put to from k queue successful')
+                        match out_json.get('name'):
+                            case 'Instruct':
+                                print('putting to from-k-queue -  {}'.format(json.dumps(out_json)))
+                                await self.to_app_queue.put(out_json)
+                                print('put to from k queue successful')
+                            case 'Obtain':
+                                print('Not implemented yet!')
+
         except asyncio.CancelledError:
             return None
 
@@ -161,7 +166,7 @@ class MedikProcess:
 
     def __init__(self, event_loop):
         set_env()
-        self.from_k_queue = asyncio.Queue()
+        self.to_app_queue = asyncio.Queue()
         self.to_k_queue = asyncio.Queue()
         self.event_loop = event_loop
 
@@ -178,11 +183,13 @@ def app_connect():
 
 @app.route("/app_dialog", websocket=True)
 def app_dialog():
-    print("doing app dialog")
+    print("!!! doing app dialog !!!!")
+    print(request.environ)
     ws = simple_websocket.Server(request.environ)
     while True:
-        future = asyncio.run_coroutine_threadsafe(k_process.from_k_queue.get(), k_process.event_loop)
+        future = asyncio.run_coroutine_threadsafe(k_process.to_app_queue.get(), k_process.event_loop)
         print(future.result())
+        ws.send(future.result())
 
 if __name__ == "__main__":
     event_loop = asyncio.new_event_loop()

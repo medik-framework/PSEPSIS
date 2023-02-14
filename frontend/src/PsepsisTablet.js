@@ -14,6 +14,7 @@ import InputDialog from "./components/DialogContent/InputDialog";
 
 const PsepsisTablet = () => {
   const apiURL = useSelector((state) => state.misc.apiURL);
+  console.log(apiURL)
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     `ws://${apiURL}/app_dialog`, {
       onOpen: () => console.log('Organ DT connected'),
@@ -27,7 +28,10 @@ const PsepsisTablet = () => {
   const dialogs = useSelector((state) => state.dialogs.todo)
 
   useEffect(() => {
+    console.log("check message")
     if (lastMessage !== null) {
+      console.log("there is some message")
+      console.log(lastMessage);
       const d = lastMessage.data.replace(/'/g, '"');
       dispatch({ type: "dialogs/update", payload: d});
     }
@@ -44,9 +48,9 @@ const PsepsisTablet = () => {
   return (
     <Box width="100vw" height="100vh" overflow="hidden" display="flex">
       {open && <InputDialog {...{ open, setOpen, info, sendMessage }}/>}
-      <Box width="30vw" height="100vh" sx={{display:'inline-flex', paddingRight: '5px'}}>
+    {/*<Box width="30vw" height="100vh" sx={{display:'inline-flex', paddingRight: '5px'}}>
         <DigitalTwin />
-      </Box>
+      </Box>*/}
       <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
         <MiddlePanel />
       </Box>
