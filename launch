@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
+FREE_PORT=`python3.10 <<END
+import socket
+sock = socket.socket()
+sock.bind(('', 0))
+print(sock.getsockname()[1]);
+END`
+
+export K_BACKEND_URL=ws://172.17.0.2:$FREE_PORT
+
 (trap 'kill 0' SIGINT; \
-  (cd frontend ; yarn start) & \
-  (cd mockpatient ; yarn start) & \
-  (cd backend ; PORT=4002 python3.10 src/middleware.py))
+  (cd frontend ; yarn && yarn start) & \
+  (cd mockpatient ; yarn && yarn start) & \
+  (cd backend ; python3.10 src/middleware.py --port $FREE_PORT))
