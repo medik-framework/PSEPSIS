@@ -22,6 +22,8 @@ const PsepsisTablet = () => {
     }
   );
 
+  sendMessage(JSON.stringify({'args':'StartSystem'}))
+
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
   const dispatch = useDispatch();
