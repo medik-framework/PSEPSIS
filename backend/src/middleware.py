@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import simple_websocket
+import websockets
 
 import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
 
@@ -130,7 +131,7 @@ class MedikProcess:
         except asyncio.CancelledError:
             return None
 
-    async def _launch_medik(self):
+    async def launch_medik(self):
         k_command = ( 'krun' , ['-d' , str(kompiled_dir.resolve())
                                , '--output' , 'none'
                                , str(psepsis_pgm.resolve()) ])
@@ -154,9 +155,6 @@ class MedikProcess:
                     print('cancelling task {}'.format(str(task.get_name())))
                     task.cancel()
 
-    def launch_medik(self):
-        self.event_loop.run_until_complete(self._launch_medik())
-        print('loop completed')
 
     async def broadcast(self, interface_id, name, args):
         await self.to_k_queue.put( { 'id'        : interface_id
@@ -164,11 +162,10 @@ class MedikProcess:
                                    , 'eventName' : name
                                    , 'eventArgs' : args })
 
-    def __init__(self, event_loop):
+    def __init__(self):
         set_env()
         self.to_app_queue = asyncio.Queue()
         self.to_k_queue = asyncio.Queue()
-        self.event_loop = event_loop
 
 
 
@@ -187,19 +184,72 @@ def app_dialog():
     print(request.environ)
     ws = simple_websocket.Server(request.environ)
     while True:
+        user_response = ws.receive()
         future = asyncio.run_coroutine_threadsafe(k_process.to_app_queue.get(), k_process.event_loop)
-        print(future.result())
-        ws.send(future.result())
+        result = future.result()
+        ws.send(result)
+
+
+class AppProcess:
+
+    def __init__(self, ws_port, k_process):
+        self.ws_port = ws_port
+        self.k_process = k_process
+
+
+    async def to_app_handler(self, websocket):
+        while True:
+            from_k = await self.k_process.to_app_queue.get()
+            print(from_k)
+            await websocket.send(from_k)
+
+
+    async def from_app_handler(self, websocket):
+        async for message in websocket:
+            print(message)
+
+    async def setup_connections(self, websocket):
+        to_app_task = asyncio.create_task(self.to_app_handler(websocket))
+        from_app_task = asyncio.create_task(self.from_app_handler(websocket))
+        done, pending = await asyncio.wait(
+                            [to_app_task, from_app_task],
+                            return_when=asyncio.FIRST_COMPLETED,
+                        )
+        for task in pending:
+            task.cancel()
+
+    async def start(self):
+        async with websockets.serve(self.setup_connections, '172.17.0.2', self.ws_port):
+            await asyncio.Future()
+
+async def main(app_process, k_process):
+    await asyncio.gather(app_process.start(), k_process.launch_medik())
 
 if __name__ == "__main__":
-    event_loop = asyncio.new_event_loop()
-    event_loop.set_debug(True)
-    k_process = MedikProcess(event_loop)
-    medik_thread = threading.Thread(target=k_process.launch_medik)
-    medik_thread.start()
-    port = int(os.environ.get('PORT', 4000))
-    app.run(host="0.0.0.0",port=port)
-    medik_thread.join()
+    parser = argparse.ArgumentParser(description='PSepsis Middleware')
+    parser.add_argument( '-p'
+                       , '--port'
+                       , metavar='PORT'
+                       , type=int
+                       , help='Port to run server on'
+                       , default=23232)
+    args = parser.parse_args()
+    print('port to be used is {}'.format(args.port))
+    k_process = MedikProcess()
+    app_process = AppProcess(args.port, k_process)
+    asyncio.run(main(app_process, k_process))
+    app.run(host="0.0.0.0",port=4002)
+
+#if __name__ == "__main__":
+#    event_loop = asyncio.new_event_loop()
+#    event_loop.set_debug(True)
+#    k_process = MedikProcess(event_loop)
+#    ws =
+#    medik_thread = threading.Thread(target=k_process.launch_medik)
+#    medik_thread.start()
+#    port = int(os.environ.get('PORT', 4000))
+#    app.run(host="0.0.0.0",port=port)
+#    medik_thread.join()
 
 
 
