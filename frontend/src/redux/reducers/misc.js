@@ -1,6 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { apiURL: "172.17.0.2:4002" }
+const { REACT_APP_K_BACKEND_URL } = process.env
+
+const initialState = {
+  apiURL: "172.17.0.2:4002",
+  kwsURL: REACT_APP_K_BACKEND_URL,
+}
 
 export const miscSlice = createSlice({
   name: 'misc',

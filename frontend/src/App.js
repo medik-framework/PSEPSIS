@@ -10,6 +10,10 @@ function App() {
   const [started, setStarted] = useState(false);
   const [send] = useRemoteRequest();
 
+  const { REACT_APP_K_BACKEND_URL } = process.env;
+  console.log(process.env);
+  console.log(`Version ${REACT_APP_K_BACKEND_URL}`);
+
   const startSession = () => {
     setStarted(true);
     send('/app_connect', {});

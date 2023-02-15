@@ -13,11 +13,11 @@ import CollapsiblePanel from "./components/CollapsiblePanel";
 import InputDialog from "./components/DialogContent/InputDialog";
 
 const PsepsisTablet = () => {
-  const apiURL = useSelector((state) => state.misc.apiURL);
-  console.log(apiURL)
+  const kwsURL = useSelector((state) => state.misc.kwsURL);
+  console.log("Using websocket url: ", kwsURL)
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `ws://${apiURL}/app_dialog`, {
-      onOpen: () => console.log('Organ DT connected'),
+    kwsURL, {
+      onOpen: () => console.log('K WebSocket connected'),
       shouldReconnect: (CloseEvent) => true,
     }
   );
