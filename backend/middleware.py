@@ -23,12 +23,60 @@ def set_env():
     os.environ['PATH'] = str(kbin_dir.resolve()) \
                                 + os.pathsep + os.environ['PATH']
 
+
+class StubProcess:
+    async def launch(self):
+        tasks = []
+        try:
+            with open(self.stub_file_path, 'r') as stub_file:
+                self.commands = map(lambda x: json.loads(x), stub_file.readlines())
+
+            tasks += [asyncio.create_task(self.feed_commands(), name='stub-feed-commands')]
+            tasks += [asyncio.create_task(self.read_commands(), name='stub-read-commands')]
+
+            await asyncio.gather(*tasks)
+        except Exception as e:
+            print(str(e))
+            for task in tasks:
+                if not task.cancelled():
+                    print('cancelling task {}'.format(str(task.get_name())))
+                    task.cancel()
+
+
+
+    async def feed_commands(self):
+        for command in self.commands:
+            await self.feed_event.wait()
+            print('==== putting in to-app queue {}'.format(json.dumps(command, indent=2)))
+            await self.to_app_queue.put(command)
+            self.feed_event.clear()
+
+    async def read_commands(self):
+        to_k = await self.to_k_queue.get()
+        print('==== Got from app {}'.format(to_k))
+        self.feed_event.set()
+
+    async def broadcast(self, interface_id, name, args):
+        await self.to_k_queue.put( { 'id'        : interface_id
+                                   , 'action'    : 'broadcast'
+                                   , 'eventName' : name
+                                   , 'eventArgs' : args })
+
+    def __init__(self, stub_file_path):
+        set_env()
+        self.to_app_queue = asyncio.Queue()
+        self.to_k_queue = asyncio.Queue()
+        self.stub_file_path = stub_file_path
+        self.feed_event = asyncio.Event()
+        self.feed_event.clear()
+
+
 class MedikProcess:
     async def parse_json_stream(self, json_stream):
         open_brace_count  = 0
         close_brace_count = 0
         last_scan_index   = 0
-        json_byte_str       = b''
+        json_byte_str     = b''
         while True:
             logging.info("awaiting for json stream")
             json_byte_str     += await json_stream.readuntil(b'}')
@@ -130,7 +178,7 @@ class MedikProcess:
         except asyncio.CancelledError:
             return None
 
-    async def launch_medik(self):
+    async def launch(self):
         k_command = ( 'krun' , ['-d' , str(kompiled_dir.resolve())
                                , '--output' , 'none'
                                , str(psepsis_pgm.resolve()) ])
@@ -224,7 +272,7 @@ class AppProcess:
             await asyncio.Future()
 
 async def main(app_process, k_process):
-    await asyncio.gather(app_process.start(), k_process.launch_medik())
+    await asyncio.gather(app_process.start(), k_process.launch())
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PSepsis Middleware')
@@ -234,9 +282,16 @@ if __name__ == "__main__":
                        , type=int
                        , help='Port to run server on'
                        , default=23232)
+    parser.add_argument( '-ts'
+                       , '--stub'
+                       , metavar='STUB_FILE'
+                       , help='Path to stub containing simulate k messages' )
+
     args = parser.parse_args()
-    print('port to be used is {}'.format(args.port))
-    k_process = MedikProcess()
+    if args.stub:
+        k_process = StubProcess(args.stub)
+    else:
+        k_process = MedikProcess()
     app_process = AppProcess(args.port, k_process)
     asyncio.run(main(app_process, k_process))
     app.run(host="0.0.0.0",port=4002)

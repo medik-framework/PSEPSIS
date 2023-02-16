@@ -9,7 +9,26 @@ END`
 
 export K_BACKEND_URL=ws://172.17.0.2:$FREE_PORT
 
-(trap 'kill 0' SIGINT; \
-  (cd frontend ; yarn && yarn start) & \
-  (cd mockpatient ; yarn && yarn start) & \
-  (cd backend ; python3.10 middleware.py --port $FREE_PORT))
+echo ${OPTARG}
+while getopts "t:" flag
+do
+  case "${flag}" in
+    t) STUB=${OPTARG};;
+  esac
+done
+
+if [ ${STUB+x} ]; then
+  case $STUB in
+    /*) STUB_PATH=$STUB;;
+    *) STUB_PATH=$(pwd)/$STUB;;
+  esac
+  (trap 'kill 0' SIGINT; \
+    (cd frontend ; yarn && yarn start) & \
+    (cd mockpatient ; yarn && yarn start) & \
+    (cd backend ; python3.10 middleware.py --port $FREE_PORT --stub $STUB_PATH))
+else
+  (trap 'kill 0' SIGINT; \
+    (cd frontend ; yarn && yarn start) & \
+    (cd mockpatient ; yarn && yarn start) & \
+    (cd backend ; python3.10 middleware.py --port $FREE_PORT))
+fi
