@@ -1,0 +1,1283 @@
+machine MeasurementBounds
+  receives AgeEntered
+         , WeightEntered
+         , HighRiskConditionsEntered
+         , FluidOverdoseRisksEntered {
+
+  vars age, weight, highRiskConditions, fluidOverdoseRisks;
+
+  vars hrUpperBound              , hrLowerBound
+     , bpSysUpperBound           , bpSysLowerBound
+     , tempUpperBound            , tempLowerBound
+     , coreTempUpperBound        , coreTempLowerBound
+     , mapUpperBound             , mapLowerBound
+     , baseExcessUpperBound      , baseExcessLowerBound
+     , lactateUpperBound         , lactateLowerBound
+     , urineOutputUpperBound     , urineOutputLowerBound
+     , arterialLactateUpperBound , arterialLactateLowerBound;
+
+  var salineDosageUpperBound         = 5;
+  var epinephrineDosageUpperBound    = 5;
+  var norepinephrineDosageUpperBound = 5;
+  var dopamineDosageUpperBound       = 5;
+  var dobutamineDosageUpperBound     = 5;
+
+  var vancomycinDosageUpperBound;
+  var cefotaximeDosageUpperBound;
+  var ceftriaxoneDosageUpperBound;
+  var cefladizimeDosageUpperBound;
+  var cefepimeDosageUpperBound;
+  var meroprenemDosageUpperBound;
+  var ampicillinDosageUpperBound;
+  var gentamicinDosageUpperBound;
+  var acyclovirDosageUpperBound;
+
+  var vancomycinInitialDosage;
+  var ampicillinInitialDosage;
+  var cefotaximeInitialDosage;
+  var gentamicinInitialDosage;
+
+  var baseDeficitUpperBound = 5;
+  var urineOutputLowerBound = 5;
+
+  var pulseQuality       = "normal";
+  var skinColor          = "normal";
+  var mentalStatus       = "normal";
+  var capillaryRefill    = 1;
+  var highRiskConditions = 0;
+  var fluidOverdoseRisks = 0;
+  var fluidOverdoseSigns = 0;
+
+  fun days(age) {
+    return age;
+  }
+
+  fun months(age) {
+    return 30 * age;
+  }
+
+  fun years(age) {
+    return 365 * age;
+  }
+
+  fun ageInYears(age) {
+    return age / 365;
+  }
+
+  fun safeHRLowerBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 100;
+        interval(months(1), months(2)) : return 100;
+        interval(months(2), years(1))  : return 90;
+        interval(years(1),  years(2))  : return 80;
+        interval(years(2),  years(4))  : return 70;
+        interval(years(4),  years(6))  : return 60;
+        interval(years(6),  years(10)) : return 60;
+        interval(years(10), years(13)) : return 60;
+        default                        : return 60;
+    }
+  }
+
+  fun safeHRUpperBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 205;
+        interval(months(1), months(2)) : return 205;
+        interval(months(2), years(1))  : return 190;
+        interval(years(1),  years(2))  : return 190;
+        interval(years(2),  years(4))  : return 140;
+        interval(years(4),  years(6))  : return 140;
+        interval(years(6),  years(10)) : return 140;
+        interval(years(10), years(13)) : return 100;
+        default                        : return 100;
+    }
+  }
+
+  fun safeBpSysLowerBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 60;
+        interval(months(1), months(2)) : return 70;
+        interval(months(2), years(1))  : return 70;
+        interval(years(1),  years(2))  : return 70 + (ageInYears(age) * 2);
+        interval(years(2),  years(4))  : return 70 + (ageInYears(age) * 2);
+        interval(years(4),  years(6))  : return 70 + (ageInYears(age) * 2);
+        interval(years(6),  years(10)) : return 70 + (ageInYears(age) * 2);
+        interval(years(10), years(13)) : return 90;
+        default                        : return 90;
+    }
+  }
+
+  fun safeBpSysUpperBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 180;
+        interval(months(1), months(2)) : return 180;
+        interval(months(2), years(1))  : return 180;
+        interval(years(1),  years(2))  : return 180;
+        interval(years(2),  years(4))  : return 180;
+        interval(years(4),  years(6))  : return 180;
+        interval(years(6),  years(10)) : return 180;
+        interval(years(10), years(13)) : return 180;
+        default                        : return 180;
+    }
+  }
+
+  fun safeTempLowerBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 36;
+        interval(months(1), months(2)) : return 36;
+        interval(months(2), years(1))  : return 36;
+        interval(years(1),  years(2))  : return 36;
+        interval(years(2),  years(4))  : return 36;
+        interval(years(4),  years(6))  : return 36;
+        interval(years(6),  years(10)) : return 36;
+        interval(years(10), years(13)) : return 36;
+        default                        : return 36;
+    }
+  }
+
+  fun safeTempUpperBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 38;
+        interval(months(1), months(2)) : return 38;
+        interval(months(2), years(1))  : return 38.5;
+        interval(years(1),  years(2))  : return 38.5;
+        interval(years(2),  years(4))  : return 38.5;
+        interval(years(4),  years(6))  : return 38.5;
+        interval(years(6),  years(10)) : return 38.5;
+        interval(years(10), years(13)) : return 38.5;
+        default                        : return 38.5;
+    }
+  }
+
+  fun safeMapLowerBound(age) {
+    days(age) in {
+      interval(days(0), months(1))       : return 46;
+      interval(months(0), months(12))    : return 55;
+      interval(months(12), months(24))   : return 60;
+      interval(months(24), months(60))   : return 62;
+      interval(months(60), months(144))  : return 65;
+      interval(months(144), months(216)) : return 67;
+      default                            : return 70;
+    }
+  }
+
+  fun safeArterialLactateLowerBound(age) {
+    days(age) in {
+      interval(days(0), months(1))   : return 60;
+      interval(months(1), months(2)) : return 70;
+      interval(months(2), years(1))  : return 70;
+      interval(years(1), years(2))   : return 70;
+      interval(years(2), years(4))   : return 70;
+      interval(years(4), years(6))   : return 70;
+      interval(years(6), years(10))  : return 70;
+      interval(years(10), years(13)) : return 90;
+      default                        : return 90;
+    }
+  }
+
+  fun safeArterialLactateUpperBound(age) {
+    days(age) in {
+      interval(days(0), months(1))   : return 180;
+      interval(months(1), months(2)) : return 180;
+      interval(months(2), years(1))  : return 180;
+      interval(years(1), years(2))   : return 180;
+      interval(years(2), years(4))   : return 180;
+      interval(years(4), years(6))   : return 180;
+      interval(years(6), years(10))  : return 180;
+      interval(years(10), years(13)) : return 180;
+      default                        : return 180;
+    }
+  }
+
+  fun safeUrineOutputLowerBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 36;
+        interval(months(1), months(2)) : return 36;
+        interval(months(2), years(1))  : return 36;
+        interval(years(1),  years(2))  : return 36;
+        interval(years(2),  years(4))  : return 36;
+        interval(years(4),  years(6))  : return 36;
+        interval(years(6),  years(10)) : return 36;
+        interval(years(10), years(13)) : return 36;
+        default                        : return 36;
+    }
+  }
+
+  fun safeUrineOutputUpperBound(age) {
+    days(age) in {
+        interval(days(0)  , months(1)) : return 38;
+        interval(months(1), months(2)) : return 38;
+        interval(months(2), years(1))  : return 39;
+        interval(years(1),  years(2))  : return 39;
+        interval(years(2),  years(4))  : return 39;
+        interval(years(4),  years(6))  : return 39;
+        interval(years(6),  years(10)) : return 39;
+        interval(years(10), years(13)) : return 39;
+        default                        : return 39;
+    }
+  }
+
+
+  init state Running {
+    on AgeEntered(age) do {
+      this.age = age;
+
+      this.hrLowerBound              = safeHRLowerBound(age);
+      this.hrUpperBound              = safeHRUpperBound(age);
+
+      this.bpSysLowerBound           = safeBpSysLowerBound(age);
+      this.bpSysUpperBound           = safeBpSysUpperBound(age);
+
+      this.tempLowerBound            = safeTempLowerBound(age);
+      this.tempUpperBound            = safeTempUpperBound(age);
+
+      this.mapLowerBound             = safeMapLowerBound(age);
+
+      this.arterialLactateLowerBound = safeArterialLactateLowerBound(age);
+      this.arterialLactateUpperBound = safeArterialLactateUpperBound(age);
+
+      this.urineOutputLowerBound     = safeUrineOutputLowerBound(age);
+      this.urineOutputUpperBound     = safeUrineOutputUpperBound(age);
+
+      broadcast ConfirmAgeEntered;
+      goto Running;
+    }
+
+    on WeightEntered(weight) do {
+      this.weight = weight;
+
+      this.vancomycinDosageUpperBound  = weight * 15;
+      this.cefotaximeDosageUpperBound  = weight * 100;
+      this.ceftriaxoneDosageUpperBound = weight * 75;
+      this.cefepimeDosageUpperBound    = weight * 50;
+      this.cefladizimeDosageUpperBound = weight * 50;
+      this.meroprenemDosageUpperBound  = weight * 20;
+      this.ampicillinDosageUpperBound  = weight * 50;
+      this.gentamicinDosageUpperBound  = weight * 2.5;
+      this.acyclovirDosageUpperBound   = weight * 20;
+
+      this.vancomycinInitialDosage = weight * 15;
+      this.ampicillinInitialDosage = weight * 50;
+      this.cefotaximeInitialDosage = weight * 50;
+      this.gentamicinInitialDosage = weight * 2.5;
+
+      broadcast ConfirmWeightEntered;
+      goto Running;
+    }
+
+    on HighRiskConditionsEntered(highRiskConditions) do {
+      broadcast ConfirmHighRiskConditionsEntered;
+      goto Running;
+    }
+
+    on FluidOverdoseRisksEntered(fluidOverdoseRisks) do {
+      broadcast ConfirmFluidOverdoseRisksEntered;
+      goto Running;
+    }
+  }
+}
+
+interface TabletApp
+  receives  ConfirmAgeEntered
+          , ConfirmWeightEntered
+          , ConfirmHighRiskConditionsEntered
+          , ConfirmFluidOverdoseRisksEntered { }
+
+interface Datastore {  }
+
+machine SepsisScreening
+  receives  ConfirmAgeEntered
+          , StartScreening
+          , ConfirmWeightEntered
+          , ConfirmHighRiskConditionsEntered
+          , ConfirmMeasurementsObtained {
+
+  vars tabletApp, datastore, measurementBounds;
+
+  init state Start {
+    entry (tabletApp, datastore, measurementBounds) {
+      this.tabletApp           = tabletApp;
+      this.datastore           = datastore;
+      this.measurementBounds   = measurementBounds;
+      print("In state Start of SepsisScreening\n");
+    }
+    on StartScreening do {
+      print("Recv StartScreening\n");
+      goto ObtainAge;
+    }
+    on ConfirmAgeEntered do {
+      goto Start(this.tabletApp, this.datastore, this.measurementBounds);
+    }
+  }
+
+  state ObtainAge {
+    entry {
+      if (measurementBounds.age == undef) {
+        send tabletApp, Instruct, ("get age");
+      } else {
+        goto ObtainWeight;
+      }
+    }
+    on ConfirmAgeEntered do {
+      goto ObtainWeight;
+    }
+  }
+
+  state ObtainWeight {
+    entry {
+      if (measurementBounds.weight == undef) {
+        send tabletApp, Instruct, ("Enter patient weight");
+      } else {
+        goto ObtainHighRiskConditions;
+      }
+    }
+    on ConfirmWeightEntered do {
+      goto ObtainHighRiskConditions;
+    }
+  }
+
+  state ObtainHighRiskConditions{
+    entry {
+      var highRiskConditions = obtainFrom(datastore, "highRiskConditions");
+      if (highRiskConditions == undef) {
+        send tabletApp, Instruct, ("Enter high risk conditions");
+      } else {
+        goto ObtainMeasurements;
+      }
+    }
+    on ConfirmHighRiskConditionsEntered do {
+      goto ObtainMeasurements;
+    }
+  }
+
+  state ObtainMeasurements {
+    entry {
+      send tabletApp, Instruct, ("Obtain Measurements");
+    }
+    on ConfirmMeasurementsObtained do {
+      goto CalculateScore;
+    }
+  }
+
+  fun isInNormalRange(parameter, normalLowerBound, normalUpperBound) {
+    var storedMeasurement = obtainFrom(datastore, parameter);
+    if (!(storedMeasurement == undef)) {
+      return ((storedMeasurement >= normalLowerBound) && (storedMeasurement <= normalUpperBound));
+    } else {
+      return true;
+    }
+  }
+
+  fun isNormal(parameter, normalMeasurement) {
+    var storedMeasurement = obtainFrom(datastore, parameter);
+    if (!(storedMeasurement == undef)) {
+      return storedMeasurement == normalMeasurement;
+    } else {
+      return true;
+    }
+  }
+
+
+  state CalculateScore {
+    entry() {
+      var hrAbnormal              = !isInNormalRange("hr",          measurementBounds.hrLowerBound,    measurementBounds.hrUpperBound);
+      var bpSysAbnormal           = !isInNormalRange("bpSys",       measurementBounds.bpSysLowerBound, measurementBounds.bpSysUpperBound);
+      var tempAbnormal            = !isInNormalRange("temp",        measurementBounds.tempLowerBound,  measurementBounds.tempUpperBound);
+      var pulseQualityAbnormal    = !isNormal("pulseQuality",       measurementBounds.pulseQuality);
+      var mentalStatusAbnormal    = !isNormal("mentalStatus",       measurementBounds.mentalStatus);
+      var capillaryRefillAbnormal = !isNormal("capillaryRefill",    measurementBounds.capillaryRefill);
+      var skinColorAbnormal       = !isNormal("skinColor",          measurementBounds.skinColor);
+      var highRiskConditions      = !isNormal("highRiskConditions", measurementBounds.highRiskConditions);
+
+      var bucket1 = hrAbnormal || bpSysAbnormal || pulseQualityAbnormal;
+
+      var bucket2 = tempAbnormal;
+
+      var perfusion = capillaryRefillAbnormal || skinColorAbnormal;
+      var bucket3   = mentalStatusAbnormal    || perfusion || highRiskConditions;
+
+      var sepsisSuspected = bucket1 || bucket2 || bucket3;
+      send tabletApp, DisplayDiagnosis, ( sepsisSuspected );
+
+      if (sepsisSuspected) {
+        broadcast SepsisSuspected;
+      } else {
+        sleep(30);
+        goto ObtainMeasurements;
+      }
+    }
+  }
+}
+init machine PSepsisGuidanceSystem receives StopGuidance {
+  vars tabletApp, datastore, measurementBounds;
+
+  init state CreateMachines {
+    entry {
+      print("=== Creating Machines \n");
+      tabletApp = createFromInterface(TabletApp, "tabletApp");
+      datastore = createFromInterface(Datastore, "datastore");
+      measurementBounds = new MeasurementBounds();
+
+      // Screening Machines
+      new SepsisScreening(tabletApp, datastore, measurementBounds);
+      //new SepticShockScreening(tabletApp, datastore, measurementBounds);
+
+      //// Treatment Machines
+      //new FluidTherapy(tabletApp, datastore, measurementBounds);
+      //new IonotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+
+      //// Supplementary Machines
+      //new HighFlowOxygen(tabletApp);
+      //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+    }
+  }
+}
+//
+//machine SepticShockScreening
+//  receives SepsisSuspected
+//         , StartShockScreening
+//         , ConfirmSepticShockMeasurementsObtained {
+//
+//  vars tabletApp, datastore, measurementBounds;
+//
+//  fun isBelowNormalLowerBound(paramter, normalLowerBound) {
+//    var storedMeasurement = obtainFrom(datastore, parameter);
+//
+//    if (!(storedMeasurement == undef)) {
+//      return (storedMeasurement < normalLowerBound);
+//    } else {
+//      return false;
+//    }
+//  }
+//
+//  fun needsAbnormalVasoactive(drugName, safeDose) {
+//    var administeredDose = obtainFrom(datastore, drugName);
+//
+//    if (!(administeredDose == undef)) {
+//      return (administeredDose > safeDose);
+//    } else {
+//      return false;
+//    }
+//  }
+//
+//  fun isBelowIfPresent(parameter, bound) {
+//    var storedMeasurement = obtainFrom(datastore, parameter);
+//
+//    if (!(storedMeasurement == undef)) {
+//      return (storedMeasurement < bound);
+//    } else {
+//      return false;
+//    }
+//  }
+//  fun isAboveIfPresent(parameter, bound) {
+//    var storedMeasurement = obtainFrom(datastore, parameter);
+//
+//    if (!(storedMeasurement == undef)) {
+//      return (storedMeasurement > bound);
+//    } else {
+//      return false;
+//    }
+//  }
+//
+//  init state Start {
+//    entry(tabletApp, datastore, measurementBounds) {
+//      this.tabletApp         = tabletApp;
+//      this.datastore         = datastore;
+//      this.measurementBounds = measurementBounds;
+//    }
+//
+//    on SepsisSuspected do {
+//      goto WaitForStart;
+//    }
+//  }
+//
+//  state WaitForStart {
+//    on StartShockScreening do {
+//      goto CheckFluidBolus;
+//    }
+//  }
+//
+//  state CheckFluidBolus {
+//    entry {
+//      var fluidDose = obtainFrom(datastore, "normalSaline");
+//
+//      if ((fluidDose == undef) || (fluidDose < 40)) {
+//        send tabletApp, Instruct, ("Continue Fluid Therapy");
+//        send tabletApp, ShowSleepTimer, ("SepticShockScreening", 10);
+//        sleep(10);
+//        goto CheckFluidBolus;
+//      } else {
+//        goto ObtainMeasurements;
+//      }
+//    }
+//  }
+//
+//  state ObtainMeasurements {
+//    entry {
+//      send tabletApp, Instruct, ("Obtain Septic Shock Measurements");
+//    }
+//
+//    on ConfirmSepticShockMeasurementsObtained do {
+//      print("Confirm Measurements Obtained \n");
+//      goto CalculateSepticShockScore;
+//    }
+//  }
+//
+//  state CalculateSepticShockScore {
+//    entry {
+//     var mapAbnormal = isBelowIfPresent("map", measurementBounds.mapLowerBound);
+//
+//     if (mapAbnormal) {
+//       send tabletApp, Instruct, ("Septic Shock Suspected");
+//       broadcast SepticShockSuspected;
+//
+//       goto CheckShockType;
+//     }
+//
+//     var needsExcessEpinephrine     = needsAbnormalVasoactive("epinephrine"   , measurementBounds.epinephrineDosageUpperBound);
+//     var needsExcessNorepinephrine  = needsAbnormalVasoactive("norepinephrine", measurementBounds.norepinephrineDosageUpperBound);
+//     var needsExcessDopamine        = needsAbnormalVasoactive("dopamine"      , measurementBounds.dopamineDosageUpperBound);
+//     var needsExcessDobutamine      = needsAbnormalVasoactive("dobutamine"    , measurementBounds.dobutamineDosageUpperBound);
+//
+//     if (    (needsExcessEpinephrine)
+//          || (needsExcessNorepinephrine)
+//          || (needsExcessDopamine)
+//          || (needsExcessDobutamine) ) {
+//
+//       send tabletApp, Instruct, ("Septic Shock Suspected");
+//       broadcast SepticShockSuspected;
+//       goto CheckShockType;
+//     }
+//
+//
+//      var perfusion = 0;
+//      if ( isAboveIfPresent("baseDeficit", 5)) {
+//        perfusion = perfusion + 1;
+//      }
+//
+//      if ( isAboveIfPresent("arterialLactate", 2 * measurementBounds.arterialLactateUpperBound)) {
+//        perfusion = perfusion + 1;
+//      }
+//
+//      if ( isBelowIfPresent("urineOutput", 1)) {
+//        perfusion = perfusion + 1;
+//      }
+//
+//      if ( isAboveIfPresent("capillaryRefill", 5)) {
+//        perfusion = perfusion + 1;
+//      }
+//
+//      if (perfusion > 2) {
+//        send tabletApp, Instruct, ("Septic Shock Suspected");
+//        broadcast SepticShockSuspected;
+//        goto CheckShockType;
+//      } else {
+//        send tabletApp, Instruct, ("Septic Shock Not Suspected");
+//        send tabletApp, ShowSleepTimer, ("SepticShockScreening", 10);
+//        sleep(10);
+//        goto CheckFluidBolus;
+//      }
+//    }
+//  }
+//
+//  state CheckShockType {
+//    entry {
+//      print("Check shock type");
+//    }
+//  }
+//}
+//
+//machine FluidTherapy
+//  receives StartFluidTherapy
+//         , ConfirmFluidOverdoseRisksEntered
+//         , ConfirmFluidOverdoseSignsEntered
+//         , ConfirmFluidAdministered
+//         , PositiveResponsiveness
+//         , NegativeResponsiveness
+//         , PositiveFluidTherapyRestart
+//         , NegativeFluidTherapyRestart
+//         , ContinueWithFluidOverdose {
+//
+//  vars tabletApp, datastore, measurementBounds;
+//  var isResponsiveToFluids;
+//
+//  fun isNormal(parameter, normalMeasurement) {
+//    var storedMeasurement = obtainFrom(datastore, parameter);
+//    if (!(storedMeasurement == undef)) {
+//      return storedMeasurement == normalMeasurement;
+//    } else {
+//      return true;
+//    }
+//  }
+//
+//  init state Start {
+//    entry(tabletApp, datastore, measurementBounds) {
+//      this.tabletApp            = tabletApp;
+//      this.datastore            = datastore;
+//      this.measurementBounds    = measurementBounds;
+//      this.isResponsiveToFluids = false;
+//    }
+//
+//    on StartFluidTherapy do {
+//      goto ObtainRisks;
+//    }
+//  }
+//
+//  state ObtainRisks {
+//    entry {
+//      if (obtainFrom(datastore, "fluidOverdoseRisks") == undef) {
+//        send tabletApp, Instruct, ("Obtain Fluid Overdose Risks");
+//      }
+//    }
+//    on ConfirmFluidOverdoseRisksEntered do {
+//      print("confirmed fluid overdose risks entered");
+//      goto SuggestFluidDosage;
+//    }
+//  }
+//
+//  state SuggestFluidDosage {
+//    entry {
+//      if( !isNormal("fluidOverdoseRisks", measurementBounds.fluidOverdoseRisks) ) {
+//        send tabletApp, Instruct, ("Administer 5-10 ml/kg Normal Saline");
+//        goto WaitForAdministerFluidConfirmation;
+//      } else {
+//        send tabletApp, Instruct, ("Administer 20 ml/kg Normal Saline");
+//        goto WaitForAdministerFluidConfirmation;
+//      }
+//    }
+//  }
+//
+//  state WaitForAdministerFluidConfirmation {
+//    on ConfirmFluidAdministered do {
+//      // Wait for fluid responsiveness
+//      send tabletApp, ShowSleepTimer, ("FluidTherapy", 10);
+//      sleep(10);
+//      goto EvaluateResponsiveness;
+//    }
+//  }
+//
+//  state EvaluateResponsiveness {
+//    entry {
+//      send tabletApp, Instruct, ("Check Responsiveness to Fluids");
+//    }
+//
+//    on PositiveResponsiveness do {
+//      this.isResponsiveToFluids = true;
+//      goto AskNextStep;
+//    }
+//
+//    on NegativeResponsiveness do {
+//      this.isResponsiveToFluids = false;
+//      goto CheckOverdoseSigns;
+//    }
+//  }
+//
+//  state AskNextStep {
+//    entry {
+//      send tabletApp, Instruct, ("Restart Fluid Therapy?");
+//    }
+//
+//    on PositiveFluidTherapyRestart do {
+//      goto SuggestFluidDosage;
+//    }
+//
+//    on NegativeFluidTherapyRestart do {
+//      goto MaintainIVFluid;
+//    }
+//  }
+//
+//  state MaintainIVFluid {
+//    entry {
+//      send tabletApp, Instruct, ("Maintain IV-Fluid Levels");
+//    }
+//  }
+//
+//  state CheckOverdoseSigns {
+//    entry {
+//      if (obtainFrom(datastore, "fluidOverdoseSigns") == undef) {
+//        goto ObtainOverdoseSigns;
+//      }
+//
+//      print("Evaluating fluid overdose signs \n");
+//      if (! isNormal("fluidOverdoseSigns", measurementBounds.fluidOverdoseSigns)) {
+//        goto HandleFluidOverdose;
+//      } else {
+//        goto EvaluateInotropicSupport;
+//      }
+//    }
+//  }
+//
+//  state HandleFluidOverdose {
+//    entry {
+//      send tabletApp, Instruct, ("Handle Fluid Overdose");
+//    }
+//    on ContinueWithFluidOverdose do {
+//      goto SuggestFluidDosage;
+//    }
+//  }
+//
+//  state ObtainOverdoseSigns {
+//    entry {
+//      send tabletApp, Instruct, ("Obtain Fluid Overdose Signs");
+//    }
+//    on ConfirmFluidOverdoseSignsEntered do {
+//      goto CheckOverdoseSigns;
+//    }
+//  }
+//
+//  state EvaluateInotropicSupport {
+//    entry {
+//      var totalSalineDose = obtainFrom(datastore, "normalSaline");
+//      print("Evaluating Ionotropic Support. Administered " + totalSalineDose + "\n");
+//      if ((totalSalineDose > measurementBounds.salineDosageUpperBound) && !(isResponsiveToFluids)) {
+//        broadcast ConsiderIonotropicSupport;
+//      } else {
+//        goto AskNextStep;
+//      }
+//    }
+//  }
+//}
+//
+//machine IonotropicSupportTherapy
+//  receives SepsisSuspected
+//         , ConsiderIonotropicSupport
+//         , ConfirmBPSysEntered
+//         , StartIonotropicTherapy
+//         , IonotropicMedicationsAdministered
+//         , ContinueIonotropicTherapy
+//         , StopIonotropicTherapy {
+//
+//  vars tabletApp, datastore, measurementBounds;
+//
+//  fun isHypotensive(bpSys) {
+//    return (bpSys < measurementBounds.bpSysLowerBound);
+//  }
+//
+//  init state Start {
+//    entry(tabletApp, datastore, measurementBounds) {
+//      this.tabletApp         = tabletApp;
+//      this.datastore         = datastore;
+//      this.measurementBounds = measurementBounds;
+//    }
+//
+//    on SepsisSuspected do {
+//      goto WaitForFluidTherapy;
+//    }
+//  }
+//
+//  state WaitForFluidTherapy {
+//    on ConsiderIonotropicSupport do {
+//      goto EvaluateHypotension;
+//    }
+//  }
+//
+//  state EvaluateHypotension {
+//    entry {
+//      var bpSys = obtainFrom(datastore, "bpSys");
+//
+//      if (bpSys == undef) {
+//        goto ObtainBpSys;
+//      }
+//
+//      if (isHypotensive(bpSys)) {
+//        goto SuggestIonotropicTherapy;
+//      } else {
+//        goto PatientNotHypotensive;
+//      }
+//    }
+//  }
+//
+//  state PatientNotHypotensive {
+//    entry {
+//      send tabletApp, Instruct, ("Handle Non Hypotensive Ionotropic Therapy");
+//      send tabletApp, ShowSleepTimer, ("FluidTherapy", 10);
+//      sleep(10);
+//      goto EvaluateHypotension;
+//    }
+//  }
+//
+//  state ObtainBpSys {
+//    entry {
+//      send tabletApp, Instruct, ("Obtain Systolic Blood Pressure");
+//    }
+//
+//    on ConfirmBpSysEntered do {
+//      goto EvaluateHypotension;
+//    }
+//  }
+//
+//  state SuggestIonotropicTherapy {
+//    entry {
+//      send tabletApp, Instruct, ("Consider Ionotropic Support");
+//    }
+//
+//    on StartIonotropicTherapy do {
+//      goto ShowIonotropicTreatment;
+//    }
+//  }
+//
+//  state ShowIonotropicTreatment {
+//    entry {
+//      send tabletApp, Instruct, ("Show Ionotropic Medications");
+//      goto WaitForAdministration;
+//    }
+//  }
+//
+//  state WaitForAdministration {
+//    on IonotropicMedicationsAdministered do {
+//      send tabletApp, ShowSleepTimer, ("IonotropicTherapy", 10);
+//      sleep(10);
+//      goto EvaluateResponsivenessToIonotropicMedications;
+//    }
+//  }
+//
+//  state EvaluateResponsivenessToIonotropicMedications {
+//    entry {
+//      var bpSys = obtainFrom(datastore, "bpSys");
+//
+//      if (bpSys < measurementBounds.bpSysLowerBound) {
+//        goto WaitForInstruction;
+//      } else {
+//        send tabletApp, Instruct, ("Handle Positive Ionotropic Response");
+//        goto TransferToHigherCare;
+//      }
+//    }
+//  }
+//
+//  state WaitForInstruction {
+//    entry {
+//      send tabletApp, Instruct, ("Handle Negative Ionotropic Response");
+//    }
+//
+//    on ContinueIonotropicTherapy do {
+//      goto ShowIonotropicTreatment;
+//    }
+//
+//    on StopIonotropicTherapy do {
+//      send tabletApp, Instruct, ("Ionotropic Therapy Completed");
+//    }
+//  }
+//
+//  state TransferToHigherCare {
+//    entry {
+//      send tabletApp, Instruct, ("Transfer To Higher Level Care");
+//    }
+//  }
+//}
+//
+//machine HighFlowOxygen
+//  receives SepsisSuspected
+//         , ConfirmHighFlowOxygenAttached {
+//
+//  var tabletApp;
+//
+//  init state WaitForSepsisDiagnosis {
+//    entry(tabletApp) {
+//      this.tabletApp = tabletApp;
+//    }
+//    on SepsisSuspected do {
+//      goto WaitForOxygenAttachedConfirmation;
+//    }
+//  }
+//
+//  state WaitForOxygenAttachedConfirmation {
+//    on ConfirmHighFlowOxygenAttached do {
+//      send tabletApp, Instruct, ("Acknowledge Oxygen Attached");
+//    }
+//  }
+//}
+//
+//machine AntibioticsTherapy
+//  receives SepsisSuspected
+//         , StartAntibioticsTherapy
+//         , PositiveImmunosuppression
+//         , NegativeImmunosuppression
+//         , PositivePseudomonasRisk
+//         , NegativePseudomonasRisk
+//         , CanReceivePenicillin
+//         , CannotReceivePenicillin
+//         , PositiveBroadSpectrumAntibiotics
+//         , NegativeBroadSpectrumAntibiotics
+//         , PositiveIncreasedFungalInfectionRisk
+//         , NegativeIncreasedFungalInfectionRisk
+//         , PositiveIncreasedRickettsialRisk
+//         , NegativeIncreasedRickettsialRisk
+//         , PositiveESBLPrevalent
+//         , NegativeESBLPrevalent
+//         , PositiveCarbapenemResistance
+//         , NegativeCarbapenemResistance
+//         , PositiveStaphylococcusPrevalence
+//         , NegativeStaphylococcusPrevalence
+//         , PositiveHSVInfectionRisk
+//         , NegativeHSVInfectionRisk
+//         , SepticShockSuspected {
+//
+//  vars tabletApp, datastore, measurementBounds;
+//
+//  vars isImmunosuppressed       , hasPseudomonasInfection
+//     , cannotReceivePenicillin  , increasedFungalInfectionRisk
+//     , increasedRickettsialRisk , receivedBroadSpectrumAntibiotics
+//     , esblPrevalent            , carbapenemResistant
+//     , staphylococcusPrevalent  , hsvInfectionRisk
+//     , inSepticShock;
+//
+//  fun isNormalHost() {
+//    return ((! (isImmunosuppressed))
+//        && (! (hasPseudomonasInfection))
+//        && (! (increasedRickettsialRisk))
+//        && (! (receivedBroadSpectrumAntibiotics))
+//        && (! (carbapenemResistant))
+//        && (! (hsvInfectionRisk)));
+//  }
+//
+//  fun days(count) {
+//    return count;
+//  }
+//
+//  fun canReceivePenicillin() {
+//    return (!(cannotReceivePenicillin));
+//  }
+//
+//  init state Start {
+//    entry(tabletApp, datastore, measurementBounds) {
+//      this.tabletApp = tabletApp;
+//      this.datastore = datastore;
+//      this.measurementBounds = measurementBounds;
+//      this.inSepticShock = false;
+//    }
+//
+//    on SepsisSuspected do {
+//      goto WaitForStartAntibioticTherapy;
+//    }
+//
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto WaitForStartAntibioticTherapy;
+//    }
+//  }
+//
+//  state WaitForStartAntibioticTherapy {
+//    on StartAntibioticsTherapy do {
+//      goto AskImmunosuppression(true);
+//    }
+//
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto WaitForStartAntibioticTherapy;
+//    }
+//  }
+//
+//  state AskImmunosuppression {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("Is Patient Immunosuppressed?");
+//      }
+//    }
+//
+//    on PositiveImmunosuppression do {
+//      isImmunosuppressed = true;
+//      goto AskPseudomonasRisk(true);
+//    }
+//
+//    on NegativeImmunosuppression do {
+//      isImmunosuppressed = false;
+//      goto AskPseudomonasRisk(true);
+//    }
+//
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskImmunosuppression(false);
+//    }
+//  }
+//
+//  state AskPseudomonasRisk {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("Has Pseudomonas Infection Risk?");
+//      }
+//    }
+//    on PositivePseudomonasRisk do {
+//      hasPseudomonasInfection = true;
+//      goto AskPenicillinRisk(true);
+//    }
+//    on NegativePseudomonasRisk do {
+//      hasPseudomonasInfection = false;
+//      goto AskPenicillinRisk(true);
+//    }
+//
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskPseudomonasRisk(false);
+//    }
+//  }
+//
+//  state AskPenicillinRisk {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("Cannot Receive Penicillin?");
+//      }
+//    }
+//    on CanReceivePenicillin do {
+//      cannotReceivePenicillin = false;
+//      goto AskBroadSpectrumAntibioticsRisk(true);
+//    }
+//    on CannotReceivePenicillin do {
+//      cannotReceivePenicillin = true;
+//      goto AskBroadSpectrumAntibioticsRisk(true);
+//    }
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskPenicillinRisk(false);
+//    }
+//  }
+//
+//  state AskBroadSpectrumAntibioticsRisk {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("Received Broad Spectrum Antibiotics?");
+//      }
+//    }
+//    on PositiveBroadSpectrumAntibiotics do {
+//      receivedBroadSpectrumAntibiotics = true;
+//      goto AskFungalInfectionRisk(true);
+//    }
+//    on NegativeBroadSpectrumAntibiotics do {
+//      receivedBroadSpectrumAntibiotics = false;
+//      goto AskFungalInfectionRisk(true);
+//    }
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskBroadSpectrumAntibioticsRisk(false);
+//    }
+//  }
+//
+//  state AskFungalInfectionRisk {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("Increased Risk Of Fungal Infection?");
+//      }
+//    }
+//    on PositiveIncreasedFungalInfectionRisk do {
+//      increasedFungalInfectionRisk = true;
+//      goto AskRickettsialRisk(true);
+//    }
+//    on NegativeIncreasedFungalInfectionRisk do {
+//      increasedFungalInfectionRisk = false;
+//      goto AskRickettsialRisk(true);
+//    }
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskFungalInfectionRisk(false);
+//    }
+//  }
+//
+//  state AskRickettsialRisk {
+//    entry(doAsk) {
+//      if(doAsk) {
+//        send tabletApp, Instruct, ("Increased Rickettsial Risk?");
+//      }
+//    }
+//    on PositiveIncreasedRickettsialRisk do {
+//      increasedRickettsialRisk = true;
+//      goto AskESBLPrevalent(true);
+//    }
+//
+//    on NegativeIncreasedRickettsialRisk do {
+//      increasedRickettsialRisk = false;
+//      goto AskESBLPrevalent(true);
+//    }
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskRickettsialRisk(false);
+//    }
+//  }
+//
+//  state AskESBLPrevalent {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("ESBL Prevalent?");
+//      }
+//    }
+//    on PositiveESBLPrevalent do {
+//      esblPrevalent = true;
+//      goto AskCarbapenemResistance(true);
+//    }
+//    on NegativeESBLPrevalent do {
+//      esblPrevalent = false;
+//      goto AskCarbapenemResistance(true);
+//    }
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskESBLPrevalent(false);
+//    }
+//  }
+//
+//  state AskCarbapenemResistance {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("Is Patient Resistant to carbapenem?");
+//      }
+//    }
+//
+//    on PositiveCarbapenemResistance do {
+//      carbapenemResistant = true;
+//      goto AskStaphylococcusPrevalence(true);
+//    }
+//
+//    on NegativeCarbapenemResistance do {
+//      carbapenemResistant = false;
+//      goto AskStaphylococcusPrevalence(true);
+//    }
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskCarbapenemResistance(false);
+//    }
+//  }
+//
+//  state AskStaphylococcusPrevalence {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("High Prevalence of Staphylococcus aureus?");
+//      }
+//    }
+//    on PositiveStaphylococcusPrevalence do {
+//      staphylococcusPrevalent = true;
+//      goto AskHSVRisk(true);
+//    }
+//
+//    on NegativeStaphylococcusPrevalence do {
+//      staphylococcusPrevalent = false;
+//      goto AskHSVRisk(true);
+//    }
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskStaphylococcusPrevalent(false);
+//    }
+//  }
+//
+//  state AskHSVRisk {
+//    entry(doAsk) {
+//      if (doAsk) {
+//        send tabletApp, Instruct, ("High Risk of HSV Infection?");
+//      }
+//    }
+//    on PositiveHSVInfectionRisk do {
+//      hsvInfectionRisk = true;
+//      goto SuggestAntibiotics;
+//    }
+//
+//    on NegativeHSVInfectionRisk do {
+//      hsvInfectionRisk = false;
+//      goto SuggestAntibiotics;
+//    }
+//
+//    on SepticShockSuspected do {
+//      inSepticShock = true;
+//      goto AskHSVRisk(false);
+//    }
+//  }
+//
+//  state SuggestAntibiotics {
+//    entry {
+//      if (measurementBounds.age > days(28)) {
+//        if (isNormalHost()) {
+//          send tabletApp, SuggestAntibiotic, ( "vancomycin"
+//                                             , measurementBounds.vancomycinDosageUpperBound
+//                                             , "1-2 g");
+//
+//          send tabletApp, SuggestAntibioticOption, ( "cefotaxime"
+//                                                   , measurementBounds.cefotaximeDosageUpperBound
+//                                                   , "2 g" );
+//
+//          send tabletApp, SuggestAntibioticOption, ( "ceftriaxone"
+//                                                   , measurementBounds.ceftriaxoneDosageUpperBound
+//                                                   , "2 g" );
+//
+//          send tabletApp, ConsiderAntibioticOption, ( "gentamicin" );
+//
+//          send tabletApp, ConsiderAntibioticOption, ( "piparacilin" );
+//
+//          send tabletApp, ConsiderAntibioticOption, ( "clindamycin" );
+//
+//          send tabletApp, ConsiderAntibioticOption, ( "metronidazole" );
+//        }
+//
+//        if ((isImmunosuppressed || hasPseudomonasInfection) && canReceivePenicillin()) {
+//          send tabletApp, SuggestAntibiotic, ( "vancomycin"
+//                                             , measurementBounds.vancomycinDosageUpperBound
+//                                             , "1-2 g");
+//
+//          if (carbapenemResistant) {
+//            send tabletApp, SuggestAntibiotic, ( "amninoglycocide (eg. getamicin, amikacin)" );
+//          }
+//
+//          send tabletApp, SuggestAntibioticOption, ( "cefepime"
+//                                                   , measurementBounds.cefepimeDosageUpperBound
+//                                                   , "2 g" );
+//
+//
+//          send tabletApp, SuggestAntibioticOption, ( "cefladizime"
+//                                                   , measurementBounds.cefladizimeDosageUpperBound
+//                                                   , "2 g" );
+//          if (esblPrevalent || receivedBroadSpectrumAntibiotics) {
+//            send tabletApp, SuggestAntibioticOption, ( "carbapenem (eg. imipenem, meropenem)" );
+//          }
+//        }
+//        if (cannotReceivePenicillin && receivedBroadSpectrumAntibiotics) {
+//          send tabletApp, SuggestAntibiotic, ( "vancomycin"
+//                                             , measurementBounds.vancomycinDosageUpperBound
+//                                             , "1-2 g");
+//
+//          send tabletApp, SuggestAntibioticOption, ( "meroprenem"
+//                                                   , measurementBounds.meroprenemDosageUpperBound
+//                                                   , "1-2 g");
+//
+//          send tabletApp, SuggestAntibioticOption, ( "aztreonam" );
+//
+//          send tabletApp, SuggestAntibioticOption, ( "ciprofloxacin PLUS clindamycin" );
+//
+//      }
+//      if (increasedFungalInfectionRisk) {
+//        send tabletApp, SuggestAntibioticOption, ( "liposomal amphotericin B" );
+//
+//        send tabletApp, SuggestAntibioticOption, ( "echinocandin (eg. caspofungin, micafungin)" );
+//      }
+//
+//      if (increasedRickettsialRisk) {
+//        send tablet, SuggestAntibiotic, ( "tetracycline (eg. doxycycline)" );
+//      }
+//    } else {
+//      if (staphylococcusPrevalent) {
+//        send tabletApp, SuggestAntibiotic, ( "vancomycin"
+//                                           , measurementBounds.vancomycinDosageUpperBound
+//                                           , measurementBounds.vancomycinInitialDosage );
+//
+//      } else {
+//        send tabletApp, SuggestAntibiotic, ( "ampicillin"
+//                                           , measurementBounds.ampicillinDosageUpperBound
+//                                           , measurementBounds.ampicillinInitialDosage );
+//      }
+//
+//      send tabletApp, SuggestAntibiotic, ( "cefotaxime"
+//                                         , measurementBounds.cefotaximeDosageUpperBound
+//                                         , measurementBounds.cefotaximeInitialDosage );
+//
+//      send tabletApp, SuggestAntibiotic, ( "gentamicin"
+//                                         , measurementBounds.gentamicinDosageUpperBound
+//                                         , measurementBounds.gentamicinInitialDosage );
+//
+//      if (hsvInfectionRisk) {
+//      send tabletApp, SuggestAntibiotic, ( "acyclovir"
+//                                         , measurementBounds.acyclovirDosageUpperBound );
+//
+//      }
+//    }
+//  }
+//
+//    on SepticShockSuspected do {
+//      if ((measurementBounds.age > days(28)) && isNormalHost()) {
+//        send tabletApp, SuggestAntibiotic, ("Consider combination therapy (using at least two antibioitics of two different antimicrobial classes) due to Septic Shock");
+//      }
+//    }
+//  }
+//}
+
