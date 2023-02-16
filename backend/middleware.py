@@ -9,9 +9,10 @@ import websockets
 import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
 
 base_dir     = Path(__file__).parents[0]
-medik_dir    = base_dir     / 'ext'    / 'medik-semantics'
-kompiled_dir = medik_dir    / '.build' / 'llvm-exec'      / 'medik-llvm-kompiled'
-krelease_dir = medik_dir    / 'ext'    / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
+psepsis_pgm  = base_dir     / 'psepsis.medik'
+medik_dir    = base_dir     / 'ext'          / 'medik-semantics'
+kompiled_dir = medik_dir    / '.build'       / 'llvm-exec'      / 'medik-llvm-kompiled'
+krelease_dir = medik_dir    / 'ext'          / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
 kbin_dir     = krelease_dir / 'bin'
 
 app = Flask(__name__, static_folder="static")
@@ -199,7 +200,7 @@ class AppProcess:
     async def to_app_handler(self, websocket):
         while True:
             from_k = await self.k_process.to_app_queue.get()
-            await websocket.send(from_k)
+            await websocket.send(json.dumps(from_k))
 
 
     async def from_app_handler(self, websocket):
