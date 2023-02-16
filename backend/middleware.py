@@ -9,11 +9,9 @@ import websockets
 import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
 
 base_dir     = Path(__file__).parents[0]
-psepsis_dir  = base_dir     / 'ext'           / 'psepsis-system'
-psepsis_pgm  = psepsis_dir  / 'psepsis.medik'
-medik_dir    = psepsis_dir  / 'ext'           / 'medik-semantics'
-kompiled_dir = medik_dir    / '.build'        / 'llvm-exec'      / 'medik-llvm-kompiled'
-krelease_dir = medik_dir    / 'ext'           / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
+medik_dir    = base_dir     / 'ext'    / 'medik-semantics'
+kompiled_dir = medik_dir    / '.build' / 'llvm-exec'      / 'medik-llvm-kompiled'
+krelease_dir = medik_dir    / 'ext'    / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
 kbin_dir     = krelease_dir / 'bin'
 
 app = Flask(__name__, static_folder="static")
