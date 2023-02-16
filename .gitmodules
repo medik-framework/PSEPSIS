@@ -1,7 +1,3 @@
-[submodule "ext/psepsis-system"]
-	path = backend/src/ext/psepsis-system
-	url = https://github.com/msaxena2/psepsis-system.git
-        branch = js-gui
 [submodule "backend/ext/medik-semantics"]
 	path = backend/ext/medik-semantics
 	url = https://github.com/medik-framework/medik-semantics.git
