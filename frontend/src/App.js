@@ -4,11 +4,8 @@ import { useState } from "react";
 import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
 
-import useRemoteRequest from "./components/Utility/Hooks";
-
 function App() {
   const [started, setStarted] = useState(false);
-  const [send] = useRemoteRequest();
 
   const startSession = () => {
     setStarted(true);
