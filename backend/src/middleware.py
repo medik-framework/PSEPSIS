@@ -195,18 +195,19 @@ class AppProcess:
     def __init__(self, ws_port, k_process):
         self.ws_port = ws_port
         self.k_process = k_process
+        self.interface_id = 'tabletApp'
 
 
     async def to_app_handler(self, websocket):
         while True:
             from_k = await self.k_process.to_app_queue.get()
-            print(from_k)
             await websocket.send(from_k)
 
 
     async def from_app_handler(self, websocket):
         async for message in websocket:
-            print(message)
+            message_json = json.loads(message)
+            await k_process.broadcast(self.interface_id, message_json['args'], [])
 
     async def setup_connections(self, websocket):
         to_app_task = asyncio.create_task(self.to_app_handler(websocket))
@@ -239,17 +240,5 @@ if __name__ == "__main__":
     app_process = AppProcess(args.port, k_process)
     asyncio.run(main(app_process, k_process))
     app.run(host="0.0.0.0",port=4002)
-
-#if __name__ == "__main__":
-#    event_loop = asyncio.new_event_loop()
-#    event_loop.set_debug(True)
-#    k_process = MedikProcess(event_loop)
-#    ws =
-#    medik_thread = threading.Thread(target=k_process.launch_medik)
-#    medik_thread.start()
-#    port = int(os.environ.get('PORT', 4000))
-#    app.run(host="0.0.0.0",port=port)
-#    medik_thread.join()
-
 
 
