@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
 import { FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 

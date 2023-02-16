@@ -46,10 +46,10 @@ const CollapsiblePanel = () => {
         }}
       >
         <div style={{ width: "33vw", height: "100vh" }}>
-          {selectedButton == "history" && <TreatmentLog />}
-          {selectedButton == "flowchart" && <WorkflowTab />}
-          {selectedButton == "checklists" && <CheckList />}
-          {selectedButton == "references" && <Reference />}
+          {selectedButton === "history" && <TreatmentLog />}
+          {selectedButton === "flowchart" && <WorkflowTab />}
+          {selectedButton === "checklists" && <CheckList />}
+          {selectedButton === "references" && <Reference />}
         </div>
       </Popover>
     </div>

@@ -55,7 +55,7 @@ const InputDialog = ({ open, setOpen, info, sendMessage }) => {
         setShouldContinue(true);
       }
     }
-  }, [retDict, storeDict])
+  }, [retDict, storeDict, info])
 
   const handleContinue = () => {
     if(info.id !== undefined){

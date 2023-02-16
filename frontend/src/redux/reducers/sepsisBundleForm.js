@@ -4,7 +4,7 @@ const initialState = {
 };
 
 const sepsisBundleFormReducer = (state = initialState, action) => {
-  if (action.type == "UPDATE_SEPSIS_FORM") {
+  if (action.type === "UPDATE_SEPSIS_FORM") {
     state = {...state, ...action.payload};
   }
 
