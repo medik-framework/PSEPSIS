@@ -22,12 +22,16 @@ const PsepsisTablet = () => {
     }
   );
 
-  sendMessage(JSON.stringify({'args':'StartSystem'}))
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
   const dispatch = useDispatch();
   const dialogs = useSelector((state) => state.dialogs.todo)
+
+  useEffect(() => {
+    console.log("Sending start system");
+    sendMessage(JSON.stringify({'args':'StartScreening'}));
+  }, [])
 
   useEffect(() => {
     console.log("check message")
