@@ -206,7 +206,9 @@ class AppProcess:
     async def from_app_handler(self, websocket):
         async for message in websocket:
             message_json = json.loads(message)
-            await k_process.broadcast(self.interface_id, message_json['args'], [])
+            await k_process.broadcast( self.interface_id
+                                     , message_json['eventName']
+                                     , message_json.get('eventArgs', []))
 
     async def setup_connections(self, websocket):
         to_app_task = asyncio.create_task(self.to_app_handler(websocket))
