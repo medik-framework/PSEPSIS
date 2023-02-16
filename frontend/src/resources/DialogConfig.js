@@ -10,6 +10,7 @@ export const DialogConfig = {
                 unit: ["years", "months", "weeks"],
                 storage: "patientBasic/update_age",
                 processReturn: PatientConfig.Age.getDays,
+                eventName: "AgeEntered"
             },
     },
     getWeight: {

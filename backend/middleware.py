@@ -179,7 +179,6 @@ def app_connect():
 
 @app.route("/app_dialog", websocket=True)
 def app_dialog():
-    print("!!! doing app dialog !!!!")
     print(request.environ)
     ws = simple_websocket.Server(request.environ)
     while True:

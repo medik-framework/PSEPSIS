@@ -59,13 +59,15 @@ const InputDialog = ({ open, setOpen, info, sendMessage }) => {
 
   const handleContinue = () => {
     if(info.id !== undefined){
+      console.log(config)
       const data = {
         'id':counter,
         'source': 1,
-        'args':retDict,
         'response_to':info.id,
         "need_response": false,
-        "timestamp": Date.now()
+        "timestamp": Date.now(),
+        "eventName": config.inputConfig.eventName,
+        "eventArgs": Object.values(retDict),
       }
       sendMessage(JSON.stringify(data));
       dispatch({type: "dialogs/setDone", payload: data});

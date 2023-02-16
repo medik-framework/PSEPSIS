@@ -13,7 +13,6 @@ import InputDialog from "../DialogContent/InputDialog";
 import useRemoteRequest from "../Utility/Hooks";
 
 import { DialogConfig } from "../../resources/DialogConfig";
-import { update_all } from "../../redux/reducers/organDT";
 
 const assessments = ["Age", "Weight"];
 
