@@ -6,8 +6,10 @@ Object.keys(MedicationConfig).map((category) => {
     const medList = MedicationConfig[category]
     medList.map((medConfig) => {
       initialState[medConfig.name] = {'lastts': null, 'count': 0}
+      return null
     })
-});
+    return null
+  });
 
 export const drugSlice = createSlice({
   name: 'drugs',

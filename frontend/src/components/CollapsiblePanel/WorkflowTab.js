@@ -25,7 +25,7 @@ const Diagram = (props) => {
 
   useEffect(() => {
     forceUpdate();
-  }, [value]);
+  }, [value, forceUpdate]);
 
   return (
     <Grid container>

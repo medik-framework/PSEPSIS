@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useInterval } from 'usehooks-ts';
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import useWebSocket from "react-use-websocket";
 
 import { Box } from "@mui/material";
 
-import DigitalTwin from "./components/LeftPanel/DigitalTwin";
 import MiddlePanel from "./components/MiddlePanel/MiddlePanel";
 import RightPanel from "./components/RightPanel/RightPanel";
 import CollapsiblePanel from "./components/CollapsiblePanel";
@@ -15,13 +13,12 @@ import InputDialog from "./components/DialogContent/InputDialog";
 const PsepsisTablet = () => {
   const kwsURL = useSelector((state) => state.misc.kwsURL);
   console.log("Using websocket url: ", kwsURL)
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
+  const { sendMessage, lastMessage } = useWebSocket(
     kwsURL, {
       onOpen: () => console.log('K WebSocket connected'),
       shouldReconnect: (CloseEvent) => true,
     }
   );
-
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
@@ -31,7 +28,7 @@ const PsepsisTablet = () => {
   useEffect(() => {
     console.log("Sending start system");
     sendMessage(JSON.stringify({'args':'StartScreening'}));
-  }, [])
+  }, [sendMessage])
 
   useEffect(() => {
     console.log("check message")
@@ -41,10 +38,10 @@ const PsepsisTablet = () => {
       const d = lastMessage.data.replace(/'/g, '"');
       dispatch({ type: "dialogs/update", payload: d});
     }
-  }, [lastMessage]);
+  }, [lastMessage, dispatch]);
 
   useEffect(() => {
-    if(dialogs.length != 0 && !open) {
+    if(dialogs.length !== 0 && !open) {
       setInfo(JSON.parse(dialogs[0]));
       setOpen(true);
     }

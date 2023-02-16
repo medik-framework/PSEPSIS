@@ -7,7 +7,7 @@ const NumericInput = ({ inputConfig, setStoreDict, setRetDict }) => {
   const [unit, setUnit] = useState(initUnit);
 
   useEffect(() => {
-    if (value != "") {
+    if (value !== "") {
       setRetDict( prev => ({
         ...prev,
         [inputConfig.label]: inputConfig.processReturn ? inputConfig.processReturn(value, unit) : value,
