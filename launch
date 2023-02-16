@@ -12,4 +12,4 @@ export K_BACKEND_URL=ws://172.17.0.2:$FREE_PORT
 (trap 'kill 0' SIGINT; \
   (cd frontend ; yarn && yarn start) & \
   (cd mockpatient ; yarn && yarn start) & \
-  (cd backend ; python3.10 src/middleware.py --port $FREE_PORT))
+  (cd backend ; python3.10 middleware.py --port $FREE_PORT))
