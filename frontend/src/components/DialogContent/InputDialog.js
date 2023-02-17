@@ -119,7 +119,7 @@ const InputDialog = ({ open, setOpen, info }) => {
   }
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} fullScreen={true}>
       <DialogTitle>{config.title}</DialogTitle>
       <DialogContent>
         <InputContent {...{
