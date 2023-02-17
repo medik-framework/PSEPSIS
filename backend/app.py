@@ -6,10 +6,19 @@ from logger import Logger
 import os
 import queue
 import time
+from enum import Enum
+import datetime 
 
 from data import OrganDt, Patient, DrugHist
 from message import SenderList, INVALID_RESPONSE_ID
 from waiting_list import WaitingList
+
+class VITAL_NAMES(Enum):
+    HR = "HR"
+    BP = "BP"
+    URINE = "Urine Output"
+    BP_DIA = "BP Dia"
+    BP_SYS = "BP Sys"
 
 organDT = OrganDt()
 patient = Patient()
@@ -205,6 +214,36 @@ def record_dose():
     drug_hist.record_dose(record["name"], record["time"], record["value"])
     return jsonify({'status': 'success'})
 
+def convert_time(epoch_time):
+    timestamp = datetime.datetime.fromtimestamp(epoch_time/1000)
+    return timestamp.strftime("%H:%M:%S")  
+
+@app.route("/get_vital_data", methods=["POST"])
+def get_vital_data():
+    global organDT
+    global logger
+    logger.log(json.dumps(request.json), "get_vital_data")
+    vital_name = request.json["name"]
+    data = {}
+    if vital_name == VITAL_NAMES.BP.value:
+        bp_dia_series = organDT.get_series(VITAL_NAMES.BP_DIA.value)
+        bp_sys_series = organDT.get_series(VITAL_NAMES.BP_SYS.value)
+        for data_point in bp_dia_series.get_series():
+            bp_sys_series.update(data_point.time, None)
+        for data_point in bp_sys_series.get_series():
+            if data_point.value != None:
+                bp_dia_series.update(data_point.time, None)
+        bp_dia_series = sorted([(data_point.time, data_point.value) for data_point in bp_dia_series.get_series()])
+        bp_sys_series = sorted([(data_point.time, data_point.value) for data_point in bp_sys_series.get_series()])
+        data["timestamp"] = [convert_time(time) for time, value in bp_dia_series]
+        data[VITAL_NAMES.BP_DIA.value] = [value for time, value in bp_dia_series]
+        data[VITAL_NAMES.BP_SYS.value] = [value for time, value in bp_sys_series]
+    else:
+        vital_series = organDT.get_series(vital_name)
+        vital_series = sorted([(data_point.time, data_point.value) for data_point in vital_series.get_series()])
+        data["timestamp"] = [convert_time(time) for time, value in vital_series]
+        data[vital_name] = [value for time, value in vital_series]
+    return jsonify({'data': data, 'status': 'success'})
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 4000))
