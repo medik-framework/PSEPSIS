@@ -13,15 +13,25 @@ import CollapsiblePanel from "./components/CollapsiblePanel";
 import InputDialog from "./components/DialogContent/InputDialog";
 
 const PsepsisTablet = () => {
+  console.log("PSepsis Tablet created");
   const kwsURL = useSelector((state) => state.misc.kwsURL);
   console.log("Using websocket url: ", kwsURL)
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
+
+
+  const wsMsgHandler = (message) => {
+    console.log('got a message from the endpoint', message)
+  }
+
+
+  const kWS = useWebSocket(
     kwsURL, {
       onOpen: () => console.log('K WebSocket connected'),
+      onMessage: wsMsgHandler,
       shouldReconnect: (CloseEvent) => true,
     }
   );
 
+  const [kEndpoint, setKEndpoint] = useState([kWS])
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
@@ -30,20 +40,20 @@ const PsepsisTablet = () => {
 
   useEffect(() => {
     console.log("Sending start system");
-    sendMessage(JSON.stringify({
+    kEndpoint.sendMessage(JSON.stringify({
       'eventName':'StartScreening',
     }));
   }, [])
 
-  useEffect(() => {
-    console.log("check message")
-    if (lastMessage !== null) {
-      console.log("there is some message")
-      console.log(lastMessage);
-      const d = lastMessage.data.replace(/'/g, '"');
-      dispatch({ type: "dialogs/update", payload: d});
-    }
-  }, [lastMessage]);
+  //useEffect(() => {
+  //  console.log("check message")
+  //  if (lastMessage !== null) {
+  //    console.log("there is some message")
+  //    console.log(lastMessage);
+  //    const d = lastMessage.data.replace(/'/g, '"');
+  //    dispatch({ type: "dialogs/update", payload: d});
+  //  }
+  //}, [lastMessage]);
 
   useEffect(() => {
     if(dialogs.length != 0 && !open) {
@@ -55,7 +65,7 @@ const PsepsisTablet = () => {
 
   return (
     <Box width="100vw" height="100vh" overflow="hidden" display="flex">
-      {open && <InputDialog {...{ open, setOpen, info, sendMessage }}/>}
+      {open && <InputDialog {...{ open, setOpen, info, kEndpoint }}/>}
     {/*<Box width="30vw" height="100vh" sx={{display:'inline-flex', paddingRight: '5px'}}>
         <DigitalTwin />
       </Box>*/}

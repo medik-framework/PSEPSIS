@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Box, Typography, TextField } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 
 import { updateURL } from "./redux/reducers/misc";
 
-const WelcomePage = ({ startSession }) => {
+
+const WelcomePage = ({ startSession, isKConnActive }) => {
+    const dispatch = useDispatch();
     const apiURL = useSelector((state) => state.misc['apiURL']);
     const [inputURL, setInputURL] = useState(apiURL);
-    const dispatch = useDispatch();
+
 
     return (
         <Box
@@ -31,6 +33,7 @@ const WelcomePage = ({ startSession }) => {
             <Button
                 variant="contained"
                 size="large"
+                disabled={!isKConnActive}
                 sx={{
                     marginTop: '50px',
                     color: '#FFFAFA',
@@ -38,7 +41,7 @@ const WelcomePage = ({ startSession }) => {
                     fontWeight: 'bold',
                     fontSize: '24px'
                 }}
-                onClick={() => startSession()}
+                onClick={() => isKConnActive && startSession()}
             >
                 Start New Session
             </Button>
