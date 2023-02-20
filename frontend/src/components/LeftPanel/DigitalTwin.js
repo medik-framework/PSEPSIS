@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useInterval } from "react-use";
 
-import { Button, Grid, Typography, Box, Tabs, Tab, TextField } from "@mui/material";
+import { Button, Grid, Typography, Box, Tabs, Tab, TextField,
+  Dialog, DialogTitle, DialogContent, DialogActions
+} from "@mui/material";
 
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
@@ -261,19 +263,59 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   )
 };
 
+const ButtonGroup = () => {
+  const [selceted, setSelected] = useState(0);
+  const [open, setOpen] = useState(false);
+  const apiURL = useSelector((state) => state.misc['apiURL']);
+  const [inputURL, setInputURL] = useState(apiURL);
+  const dispatch = useDispatch();
+
+  return (
+    <Box
+      sx={{
+        display:'flex',
+        flexDirection:'column',
+        bottom:0,
+        position:'absolute'
+      }}
+    >
+      <Button onClick={()=>setOpen(true)}>3 Bucket Tree</Button>
+      <Button>Fluid Response</Button>
+      <Button>Settings</Button>
+      <Dialog open={open}>
+        <DialogTitle>Line Graph</DialogTitle>
+        <DialogContent>
+        </DialogContent>
+        <DialogActions></DialogActions>
+      </Dialog>
+      <TextField
+        label="Set backend server API URL"
+        id="url"
+        variant="outlined"
+        value={inputURL}
+        onChange={(e) => setInputURL(e.target.value)}
+      />
+      <Button
+        onClick={() => dispatch(updateURL(inputURL))}
+      >
+        Confirm
+      </Button>
+    </Box>
+  )
+}
+
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
   const apiURL = useSelector((state) => state.misc['apiURL']);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     `ws://${apiURL}/get_organdt_update`, {
       onOpen: () => console.log('Organ DT connected'),
-      shouldReconnect: (CloseEvent) => true,
+      shouldReconnect: () => true,
     }
   );
   const dispatch = useDispatch();
   const [send] = useRemoteRequest();
   const patientBasic = useSelector((state) => state.patientBasic)
-  const [inputURL, setInputURL] = useState(apiURL)
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -297,22 +339,7 @@ const DigitalTwin = () => {
       <OrganSelection {...{ selectedDT, setSelectedDT }} />
       {/* <OrganAssessmentForm {...{ selectedDT }} /> */}
       <DigitalTwinForm {...{ selectedDT }} />
-      <Box
-        sx={{fontSize:'18px', backgroundColor:'white', width:'40%', bottom: 0, left: 0, position:'absolute'}}
-      >
-          <TextField
-            label="Set backend server API URL"
-            id="url"
-            variant="outlined"
-            value={inputURL}
-            onChange={(e) => setInputURL(e.target.value)}
-          />
-          <Button
-            onClick={() => dispatch(updateURL(inputURL))}
-          >
-            Confirm
-          </Button>
-      </Box>
+      <ButtonGroup />
     </Box>
   );
 };
