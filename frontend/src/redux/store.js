@@ -7,6 +7,7 @@ import treatmentReducer from './reducers/treatment'
 import sepsisBundleForm from './reducers/sepsisBundleForm'
 import logReducer from './reducers/logs'
 import drugReducer from './reducers/drugs'
+import endpointsReducer from './reducers/endpoints'
 
 export default configureStore({
   reducer: {
@@ -18,5 +19,14 @@ export default configureStore({
     SepsisBundleForm: sepsisBundleForm,
     logs: logReducer,
     drug: drugReducer,
+    endpoints: endpointsReducer
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [],
+        ignoredActionPaths: ['payload.kEndpoint'],
+        ignoredPaths: [],
+      },
+    }),
 })
