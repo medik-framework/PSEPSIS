@@ -238,7 +238,8 @@ def app_dialog():
 
 class AppProcess:
 
-    def __init__(self, ws_port, k_process):
+    def __init__(self, ws_host, ws_port, k_process):
+        self.ws_host = ws_host
         self.ws_port = ws_port
         self.k_process = k_process
         self.interface_id = 'tabletApp'
@@ -268,7 +269,7 @@ class AppProcess:
             task.cancel()
 
     async def start(self):
-        async with websockets.serve(self.setup_connections, '172.17.0.2', self.ws_port):
+        async with websockets.serve(self.setup_connections, self.ws_host, self.ws_port):
             await asyncio.Future()
 
 async def main(app_process, k_process):
@@ -282,6 +283,11 @@ if __name__ == "__main__":
                        , type=int
                        , help='Port to run server on'
                        , default=23232)
+    parser.add_argument( '-hs'
+                       , '--host'
+                       , metavar='ADDRESS'
+                       , help='Host address of server'
+                       , default='172.17.0.2')
     parser.add_argument( '-ts'
                        , '--stub'
                        , metavar='STUB_FILE'
@@ -292,7 +298,7 @@ if __name__ == "__main__":
         k_process = StubProcess(args.stub)
     else:
         k_process = MedikProcess()
-    app_process = AppProcess(args.port, k_process)
+    app_process = AppProcess(args.host, args.port, k_process)
     asyncio.run(main(app_process, k_process))
     app.run(host="0.0.0.0",port=4002)
 
