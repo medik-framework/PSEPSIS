@@ -285,8 +285,9 @@ const DigitalTwin = () => {
   useEffect(() => {
     if (lastMessage !== null) {
       const d = JSON.parse(lastMessage.data.replace(/'/g, '"'));
+      if (d.name === "OrganUpdate")
       console.log("received organ update")
-      dispatch(update_all(d));
+      dispatch(update_all(d.args[0]));
     }
   }, [lastMessage]);
 

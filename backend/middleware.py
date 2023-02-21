@@ -274,7 +274,10 @@ class DataPortalProcess:
             self.organ_dt.update(message_json['measurement']
                                , message_json['timeStamp']
                                , message_json['value'])
-            await self.to_app_queue.put(self.organ_dt.get_all())
+            await self.to_app_queue.put({
+                    "name": "OrganUpdate",
+                    "args": [ self.organ_dt.get_all() ],
+                })
 
     async def setup_connections(self, websocket):
         from_portal_task = asyncio.create_task(self.from_portal_handler(websocket))

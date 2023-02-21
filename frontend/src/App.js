@@ -18,7 +18,8 @@ function App() {
       console.log('websocket with K Opened at ', kWsURL)
       setIsKConnActive(true)
     },
-    share: true
+    share: true,
+    shouldReconnect: true
   })
 
 
