@@ -244,6 +244,8 @@ class AppProcess:
         self.k_process = k_process
         self.interface_id = 'tabletApp'
 
+        self.to_app_queue = asyncio.Queue()
+
 
     async def to_app_handler(self, websocket):
         while True:
@@ -272,8 +274,43 @@ class AppProcess:
         async with websockets.serve(self.setup_connections, self.ws_host, self.ws_port):
             await asyncio.Future()
 
-async def main(app_process, k_process):
-    await asyncio.gather(app_process.start(), k_process.launch())
+
+from data import OrganDt
+
+class DataPortalProcess:
+
+    def __init__(self, ws_host, ws_port, k_process, app_process):
+        self.ws_host = ws_host
+        self.we_port = ws_port
+        self.k_process = k_process
+        self.app_process = app_process
+
+        self.organ_dt = OrganDt()
+
+    async def from_portal_handler(self, websocket):
+        async for message in websocket:
+            message_json = json.loads(message)
+            self.organ_dt.update(message_json['measurement']
+                               , message_json['timeStamp']
+                               , message_json['value'])
+            await self.app_process.to_app_queue.put(json.dumps(self.organ_dt.get_all()))
+
+    async def setup_connections(self, websocket):
+        from_portal_task = asyncio.create_task(self.from_portal_handler(websocket))
+        done, pending = await asyncio.wait([from_portal_task]
+                                          , return_when=asyncio.FIRST_COMPLETED,)
+        for task in pending:
+            task.cancel()
+
+    async def start(self):
+        async with websockets.serve(self.setup_connections, self.ws_host, self.we_port):
+            await asyncio.Future()
+
+
+async def main(app_process, k_process, portal_process):
+    await asyncio.gather(app_process.start()
+                       , k_process.launch()
+                       , portal_process.start())
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PSepsis Middleware')
@@ -299,7 +336,8 @@ if __name__ == "__main__":
     else:
         k_process = MedikProcess()
     app_process = AppProcess(args.host, args.port, k_process)
-    asyncio.run(main(app_process, k_process))
+    portal_process = DataPortalProcess('0.0.0.0', 4124, k_process, app_process)
+    asyncio.run(main(app_process, k_process, portal_process))
     app.run(host="0.0.0.0",port=4002)
 
 

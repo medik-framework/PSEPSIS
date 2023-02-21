@@ -53,7 +53,7 @@ class DataSeries:
 
 
 import json
-ORGAN_DT_MAP = json.load(open("organdt.json"))
+ORGAN_DT_MAP = json.load(open("./config/organdt.json"))
 MEAS_MAP = {v: k for k, vs in ORGAN_DT_MAP.items() for v in vs}
 MEASES = list(MEAS_MAP.keys())
 
@@ -97,8 +97,9 @@ class OrganDt:
         print(jsonify(self.data))
         # print(self.data)
 
-DRUG_INFO = json.load(open("drugs.json"))
+DRUG_INFO = json.load(open("./config/drugs.json"))
 DRUG_NAME = {drug["name"] for drug in DRUG_INFO}
+
 
 class DrugHist:
     data: Dict[str, DataSeries]
