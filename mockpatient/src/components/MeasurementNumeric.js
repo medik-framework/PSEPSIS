@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { update, increment } from '../redux/organDataSlice';
 import { useInterval } from 'usehooks-ts';
+import useWebSocket from "react-use-websocket";
 
 import { Button, Grid, Typography, TextField, Box } from "@mui/material";
 
@@ -16,6 +17,15 @@ const MeasurementNumeric = ({ organName, config }) => {
     const value = useSelector((state) => state.OrganDT[organName][config.name]);
     const dispatch = useDispatch();
     const apiURL = useSelector((state) => state.misc['apiURL']);
+
+    const kwsURL = useSelector((state) => state.misc.kwsURL);
+    const { sendMessage } = useWebSocket(
+        kwsURL, {
+            onOpen: () => console.log('Server connected'),
+            shouldReconnect: (CloseEvent) => true,
+            share: true
+        }
+    );
 
     const resetInterval = () => {
         setDelay(null);
@@ -40,21 +50,22 @@ const MeasurementNumeric = ({ organName, config }) => {
                 value: value,
                 timeStamp: new Date().getTime()
             }
-            fetch(method, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            }).catch(error => {
-                console.log('Post error:', error)
-            })
+            // fetch(method, {
+            //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            //     mode: 'cors', // no-cors, *cors, same-origin
+            //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //     credentials: 'same-origin', // include, *same-origin, omit
+            //     headers: {
+            //     'Content-Type': 'application/json'
+            //     // 'Content-Type': 'application/x-www-form-urlencoded',
+            //     },
+            //     redirect: 'follow', // manual, *follow, error
+            //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            //     body: JSON.stringify(data) // body data type must match "Content-Type" header
+            // }).catch(error => {
+            //     console.log('Post error:', error)
+            // })
+            sendMessage(JSON.stringify(data))
         }
     }, [value, apiURL, organName, config])
 
