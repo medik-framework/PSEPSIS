@@ -24,9 +24,9 @@ export default configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [],
-        ignoredActionPaths: ['payload.kEndpoint'],
-        ignoredPaths: [],
+        ignoredActions: ['endpoints/addEndpoint'],
+        ignoredActionPaths: ['endpoints.kEndpoint.sendMessage'],
+        ignoredPaths: ['endpoints.kEndpoint'],
       },
     }),
 })

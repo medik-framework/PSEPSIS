@@ -5,7 +5,7 @@ export const endpointsSlice = createSlice({
   initialState: {},
   reducers: {
     addEndpoint: (state, action) => {
-      state[action.payload.endointId] = action.payload.endpointHandlers
+      state[action.payload.endpointId] = action.payload.endpointHandlers
     }
   }
 });

@@ -29,6 +29,6 @@ if [ ${STUB+x} ]; then
 else
   (trap 'kill 0' SIGINT; \
     (cd frontend ; yarn && yarn start) & \
-    (cd mockpatient ; yarn && yarn start) & \
+    #(cd mockpatient ; yarn && yarn start) & \
     (cd backend ; python3.10 middleware.py --port $FREE_PORT))
 fi

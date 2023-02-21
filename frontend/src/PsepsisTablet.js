@@ -16,26 +16,30 @@ const PsepsisTablet = () => {
   const kwsURL = useSelector((state) => state.misc.kwsURL);
   const dispatch = useDispatch();
 
-  const messageHandler = (msg) => {
-    const cleanedMsg = msg.data.replace(/'/g, '"');
-    const msgJson = JSON.parse(cleanedMsg)
-    if (msgJson.name === "Instruct") {
-      console.log("received instruct")
-      dispatch({ type: "dialogs/update", payload: cleanedMsg});
-    }
-  }
+  //const messageHandler = (msg) => {
+  //  const cleanedMsg = msg.data.replace(/'/g, '"');
+  //  const msgJson = JSON.parse(cleanedMsg)
+  //  if (msgJson.name === "Instruct") {
+  //    console.log("received instruct")
+  //    dispatch({ type: "dialogs/update", payload: cleanedMsg});
+  //  }
+  //}
 
-  const { sendMessage } = useWebSocket(
-    kwsURL, {
-      share: true,
-      onOpen: () => console.log('K WebSocket connected'),
-      shouldReconnect: (CloseEvent) => true,
-      onMessage: messageHandler
-    }
-  );
+  //const { sendMessage } = useWebSocket(
+  //  kwsURL, {
+  //    share: true,
+  //    onOpen: () => console.log('K WebSocket connected'),
+  //    shouldReconnect: (CloseEvent) => true,
+  //    onMessage: messageHandler
+  //  }
+  //);
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
+  //const [kEndpoint, setKEndpoint] = useState(null);
+  const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
+  console.log(kEndpoint)
+
   const dialogs = useSelector((state) => state.dialogs.todo)
 
   useEffect(() => {
@@ -45,12 +49,12 @@ const PsepsisTablet = () => {
     }));
   }, [sendMessage])
 
-  useEffect(() => {
-    if(dialogs.length != 0 && !open) {
-      setInfo(JSON.parse(dialogs[0]));
-      setOpen(true);
-    }
-  }, [dialogs, open, setOpen, setInfo])
+  //useEffect(() => {
+  //  if(dialogs.length != 0 && !open) {
+  //    setInfo(JSON.parse(dialogs[0]));
+  //    setOpen(true);
+  //  }
+  //}, [dialogs, open, setOpen, setInfo])
 
 
   return (
