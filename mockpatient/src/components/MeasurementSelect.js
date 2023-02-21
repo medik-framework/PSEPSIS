@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { update } from '../redux/organDataSlice';
+import useWebSocket from "react-use-websocket";
 
 import { Grid, Typography, Select, MenuItem, Box } from "@mui/material";
 
@@ -9,30 +10,23 @@ const MeasurementSelect = ({ organName, config }) => {
     const dispatch = useDispatch();
     const apiURL = useSelector((state) => state.misc['apiURL']);
 
+    const kwsURL = useSelector((state) => state.misc.kwsURL);
+    const { sendMessage } = useWebSocket(
+        kwsURL, {
+            shouldReconnect: (CloseEvent) => true,
+            share: true
+        }
+    );
+
     useEffect(() => {
         if (value) {
-            const method = apiURL + 'update_data';
             const data = {
                 organ: organName,
                 measurement: config.name,
                 value: value,
                 timeStamp: new Date().getTime()
             }
-            fetch(method, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            }).catch(error => {
-                console.log('Post error:', error)
-            })
+            sendMessage(JSON.stringify(data))
         }
     }, [value, apiURL, organName, config])
 
