@@ -16,7 +16,6 @@ function App() {
   const kWebSocket = useWebSocket(kWsURL, {
     onOpen: () => {
       console.log('websocket with K Opened at ', kWsURL)
-
       setIsKConnActive(true)
     },
     share: true

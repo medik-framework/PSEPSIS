@@ -13,25 +13,16 @@ import CollapsiblePanel from "./components/CollapsiblePanel";
 import InputDialog from "./components/DialogContent/InputDialog";
 
 const PsepsisTablet = () => {
-  console.log("PSepsis Tablet created");
   const kwsURL = useSelector((state) => state.misc.kwsURL);
-  console.log("Using websocket url: ", kwsURL)
 
-
-  const wsMsgHandler = (message) => {
-    console.log('got a message from the endpoint', message)
-  }
-
-
-  const kWS = useWebSocket(
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
     kwsURL, {
+      share: true,
       onOpen: () => console.log('K WebSocket connected'),
-      onMessage: wsMsgHandler,
+      // onMessage: wsMsgHandler,
       shouldReconnect: (CloseEvent) => true,
     }
   );
-
-  const [kEndpoint, setKEndpoint] = useState([kWS])
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
@@ -40,10 +31,10 @@ const PsepsisTablet = () => {
 
   useEffect(() => {
     console.log("Sending start system");
-    kEndpoint.sendMessage(JSON.stringify({
+    sendMessage(JSON.stringify({
       'eventName':'StartScreening',
     }));
-  }, [])
+  }, [sendMessage])
 
   //useEffect(() => {
   //  console.log("check message")
@@ -65,10 +56,10 @@ const PsepsisTablet = () => {
 
   return (
     <Box width="100vw" height="100vh" overflow="hidden" display="flex">
-      {open && <InputDialog {...{ open, setOpen, info, kEndpoint }}/>}
-    {/*<Box width="30vw" height="100vh" sx={{display:'inline-flex', paddingRight: '5px'}}>
+      {open && <InputDialog {...{ open, setOpen, info, sendMessage }}/>}
+    <Box width="30vw" height="100vh" sx={{display:'inline-flex', paddingRight: '5px'}}>
         <DigitalTwin />
-      </Box>*/}
+      </Box>
       <Box width="30vw" height="100vh" sx={{display:'inline-flex', padding:'5px'}}>
         <MiddlePanel />
       </Box>

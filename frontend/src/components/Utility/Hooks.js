@@ -24,4 +24,8 @@ function useRemoteRequest() {
   return [send];
 }
 
+function useKWebSocket() {
+  // implement customized hook for websocket
+}
+
 export default useRemoteRequest;

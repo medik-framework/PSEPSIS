@@ -270,14 +270,15 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
   const apiURL = useSelector((state) => state.misc['apiURL']);
+  const kwsURL = useSelector((state) => state.misc.kwsURL);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `ws://${apiURL}/get_organdt_update`, {
+    kwsURL, {
       onOpen: () => console.log('Organ DT connected'),
       shouldReconnect: (CloseEvent) => true,
     }
   );
   const dispatch = useDispatch();
-  const [send] = useRemoteRequest();
+  // const [send] = useRemoteRequest();
   const patientBasic = useSelector((state) => state.patientBasic)
   const [inputURL, setInputURL] = useState(apiURL)
 
@@ -289,9 +290,9 @@ const DigitalTwin = () => {
     }
   }, [lastMessage]);
 
-  useEffect(() => {
-    send('/update_patient', JSON.stringify(patientBasic));
-  }, [patientBasic])
+  // useEffect(() => {
+  //   send('/update_patient', JSON.stringify(patientBasic));
+  // }, [patientBasic])
 
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>
