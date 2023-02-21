@@ -2,6 +2,8 @@ from pathlib import Path
 from fractions import Fraction
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from data import OrganDt, Patient, DrugHist
+
 import os
 import simple_websocket
 import websockets
@@ -49,6 +51,7 @@ class StubProcess:
             await self.feed_event.wait()
             print('==== putting in to-app queue {}'.format(json.dumps(command, indent=2)))
             await self.to_app_queue.put(command)
+            print('=== Successfully sent ===')
             self.feed_event.clear()
 
     async def read_commands(self):
@@ -62,9 +65,10 @@ class StubProcess:
                                    , 'eventName' : name
                                    , 'eventArgs' : args })
 
-    def __init__(self, stub_file_path):
+
+    def __init__(self, stub_file_path, to_app_queue):
         set_env()
-        self.to_app_queue = asyncio.Queue()
+        self.to_app_queue = to_app_queue
         self.to_k_queue = asyncio.Queue()
         self.stub_file_path = stub_file_path
         self.feed_event = asyncio.Event()
@@ -209,48 +213,27 @@ class MedikProcess:
                                    , 'eventName' : name
                                    , 'eventArgs' : args })
 
-    def __init__(self):
+    def __init__(self, to_app_queue):
         set_env()
-        self.to_app_queue = asyncio.Queue()
+        self.to_app_queue = to_app_queue
         self.to_k_queue = asyncio.Queue()
-
-
-
-@app.route("/app_connect", methods=["POST"])
-def app_connect():
-    future = asyncio.run_coroutine_threadsafe(k_process.broadcast( 'tabletApp'
-                                                                 , 'StartScreening'
-                                                                 , [])
-                                             , event_loop)
-    future.result()
-    return ""
-
-@app.route("/app_dialog", websocket=True)
-def app_dialog():
-    print(request.environ)
-    ws = simple_websocket.Server(request.environ)
-    while True:
-        user_response = ws.receive()
-        future = asyncio.run_coroutine_threadsafe(k_process.to_app_queue.get(), k_process.event_loop)
-        result = future.result()
-        ws.send(result)
 
 
 class AppProcess:
 
-    def __init__(self, ws_host, ws_port, k_process):
+    def __init__(self, ws_host, ws_port, k_process, to_app_queue):
         self.ws_host = ws_host
         self.ws_port = ws_port
         self.k_process = k_process
         self.interface_id = 'tabletApp'
 
-        self.to_app_queue = asyncio.Queue()
+        self.to_app_queue = to_app_queue
 
 
     async def to_app_handler(self, websocket):
         while True:
-            from_k = await self.k_process.to_app_queue.get()
-            await websocket.send(json.dumps(from_k))
+            to_app = await self.to_app_queue.get()
+            await websocket.send(json.dumps(to_app))
 
 
     async def from_app_handler(self, websocket):
@@ -274,26 +257,24 @@ class AppProcess:
         async with websockets.serve(self.setup_connections, self.ws_host, self.ws_port):
             await asyncio.Future()
 
-
-from data import OrganDt
-
 class DataPortalProcess:
 
-    def __init__(self, ws_host, ws_port, k_process, app_process):
+    def __init__(self, ws_host, ws_port, k_process, to_app_queue):
         self.ws_host = ws_host
         self.we_port = ws_port
         self.k_process = k_process
-        self.app_process = app_process
+        self.to_app_queue = to_app_queue
 
         self.organ_dt = OrganDt()
 
     async def from_portal_handler(self, websocket):
         async for message in websocket:
             message_json = json.loads(message)
+            print('Recv from portal: {}'.format(message_json))
             self.organ_dt.update(message_json['measurement']
                                , message_json['timeStamp']
                                , message_json['value'])
-            await self.app_process.to_app_queue.put(json.dumps(self.organ_dt.get_all()))
+            await self.to_app_queue.put(self.organ_dt.get_all())
 
     async def setup_connections(self, websocket):
         from_portal_task = asyncio.create_task(self.from_portal_handler(websocket))
@@ -331,12 +312,13 @@ if __name__ == "__main__":
                        , help='Path to stub containing simulate k messages' )
 
     args = parser.parse_args()
+    to_app_queue = asyncio.Queue()
     if args.stub:
-        k_process = StubProcess(args.stub)
+        k_process = StubProcess(args.stub, to_app_queue)
     else:
-        k_process = MedikProcess()
-    app_process = AppProcess(args.host, args.port, k_process)
-    portal_process = DataPortalProcess('0.0.0.0', 4124, k_process, app_process)
+        k_process = MedikProcess(to_app_queue)
+    app_process = AppProcess(args.host, args.port, k_process, to_app_queue)
+    portal_process = DataPortalProcess('0.0.0.0', 4124, k_process, to_app_queue)
     asyncio.run(main(app_process, k_process, portal_process))
     app.run(host="0.0.0.0",port=4002)
 
