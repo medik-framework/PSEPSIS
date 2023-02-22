@@ -24,5 +24,5 @@ RUN apt-get install -y build-essential m4 openjdk-11-jdk git \
 
 RUN npm install -g yarn && \
     npm install -g create-react-app && \
-    python3.10 -m pip install Flask flask_cors simple_websocket websockets html5lib
+    python3.10 -m pip install websockets
 

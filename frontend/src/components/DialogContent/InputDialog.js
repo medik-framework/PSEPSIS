@@ -26,10 +26,11 @@ const InputContent = (args) => {
   }
 }
 
-const InputDialog = ({ open, setOpen, info, sendMessage }) => {
+const InputDialog = ({ open, setOpen, info }) => {
   const [retDict, setRetDict] = useState({});
   const [storeDict, setStoreDict] = useState({});
   const counter = useSelector((state) => state.dialogs.counter);
+  const kEndpoint = useSelector((state) => state.endpoints.kEndpoint)
   const config = DialogConfig[info['args'][0]];
   const inputConfig = config.inputConfig;
   const [shouldContinue, setShouldContinue] = useState(!config.inputConfig);
@@ -69,7 +70,7 @@ const InputDialog = ({ open, setOpen, info, sendMessage }) => {
         "eventName": config.inputConfig.eventName,
         "eventArgs": Object.values(retDict),
       }
-      sendMessage(JSON.stringify(data));
+      kEndpoint.sendMessage(JSON.stringify(data));
       dispatch({type: "dialogs/setDone", payload: data});
     }
     dispatch({

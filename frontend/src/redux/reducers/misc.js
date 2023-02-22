@@ -7,7 +7,6 @@ const initialState = {
   kwsURL: REACT_APP_USER_URL,
 }
 
-
 export const miscSlice = createSlice({
   name: 'misc',
   initialState: { ...initialState },

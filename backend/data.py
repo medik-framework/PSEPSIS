@@ -1,7 +1,6 @@
 from typing import List, Dict, Tuple, TypeAlias, Optional
 from dataclasses import dataclass, field
 import pickle
-from flask import jsonify
 
 debug = True
 
@@ -94,8 +93,7 @@ class OrganDt:
             pickle.dump(self.data, out)
 
     def print(self):
-        print(jsonify(self.data))
-        # print(self.data)
+        pass
 
 DRUG_INFO = json.load(open("./config/drugs.json"))
 DRUG_NAME = {drug["name"] for drug in DRUG_INFO}

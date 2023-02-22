@@ -9,12 +9,32 @@ import { addEndpoint } from "./redux/reducers/endpoints"
 import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
 
+import { update_all } from "./redux/reducers/organDT";
+
 function App() {
   const [started, setStarted] = useState(false);
   const kWsURL = useSelector((state) => state.misc['kwsURL']);
   const [isKConnActive, setIsKConnActive] = useState(false);
 
   const dispatch = useDispatch()
+
+  const messageHandler = (msg) => {
+   console.log('message received on websocket', msg)
+   const cleanedMsg = msg.data.replace(/'/g, '"');
+   const msgJson = JSON.parse(cleanedMsg)
+   console.log(msgJson.name)
+   switch (msgJson.name) {
+    case "Instruct":
+      dispatch({ type: "dialogs/update", payload: cleanedMsg});
+      break;
+    case "OrganUpdate":
+      dispatch(update_all(msgJson.args[0]));
+      break;
+    default:
+      console.log("Message not recognized: ", msgJson.name)
+   }
+  }
+
 
   const kWebSocket = useWebSocket(kWsURL, {
     onOpen: () => {
@@ -24,7 +44,7 @@ function App() {
     },
     share: true,
     shouldReconnect:() => true,
-    onMessage: (msg) => console.log('got message in app', msg)
+    onMessage: messageHandler
   })
 
 
