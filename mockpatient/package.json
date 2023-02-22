@@ -23,7 +23,7 @@
     "yarn": "^1.22.17"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "REACT_APP_DATA_URL=\"$BACKEND_HOST:$DATA_PORT\" PORT=$DATA_FRONTEND_PORT react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

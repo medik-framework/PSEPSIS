@@ -1,11 +1,8 @@
 from pathlib import Path
 from fractions import Fraction
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 from data import OrganDt, Patient, DrugHist
 
 import os
-import simple_websocket
 import websockets
 
 import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
@@ -16,9 +13,6 @@ medik_dir    = base_dir     / 'ext'          / 'medik-semantics'
 kompiled_dir = medik_dir    / '.build'       / 'llvm-exec'      / 'medik-llvm-kompiled'
 krelease_dir = medik_dir    / 'ext'          / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
 kbin_dir     = krelease_dir / 'bin'
-
-app = Flask(__name__, static_folder="static")
-CORS(app)
 
 def set_env():
     path_entires = [ kbin_dir ]
@@ -221,8 +215,7 @@ class MedikProcess:
 
 class AppProcess:
 
-    def __init__(self, ws_host, ws_port, k_process, to_app_queue):
-        self.ws_host = ws_host
+    def __init__(self, ws_port, k_process, to_app_queue):
         self.ws_port = ws_port
         self.k_process = k_process
         self.interface_id = 'tabletApp'
@@ -254,14 +247,13 @@ class AppProcess:
             task.cancel()
 
     async def start(self):
-        async with websockets.serve(self.setup_connections, self.ws_host, self.ws_port):
+        async with websockets.serve(self.setup_connections, '0.0.0.0', self.ws_port):
             await asyncio.Future()
 
 class DataPortalProcess:
 
-    def __init__(self, ws_host, ws_port, k_process, to_app_queue):
-        self.ws_host = ws_host
-        self.we_port = ws_port
+    def __init__(self, ws_port, k_process, to_app_queue):
+        self.ws_port = ws_port
         self.k_process = k_process
         self.to_app_queue = to_app_queue
 
@@ -287,7 +279,7 @@ class DataPortalProcess:
             task.cancel()
 
     async def start(self):
-        async with websockets.serve(self.setup_connections, self.ws_host, self.we_port):
+        async with websockets.serve(self.setup_connections, '0.0.0.0', self.ws_port):
             await asyncio.Future()
 
 
@@ -298,17 +290,18 @@ async def main(app_process, k_process, portal_process):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PSepsis Middleware')
-    parser.add_argument( '-p'
-                       , '--port'
+    parser.add_argument( '-dp'
+                       , '--data-port'
                        , metavar='PORT'
                        , type=int
-                       , help='Port to run server on'
-                       , default=23232)
-    parser.add_argument( '-hs'
-                       , '--host'
-                       , metavar='ADDRESS'
-                       , help='Host address of server'
-                       , default='172.17.0.2')
+                       , help='Port to accept data portal connections'
+                       , default=4124)
+    parser.add_argument( '-up'
+                       , '--user-port'
+                       , metavar='PORT'
+                       , type=int
+                       , help='Port to accept user app connections'
+                       , default=4123)
     parser.add_argument( '-ts'
                        , '--stub'
                        , metavar='STUB_FILE'
@@ -320,9 +313,6 @@ if __name__ == "__main__":
         k_process = StubProcess(args.stub, to_app_queue)
     else:
         k_process = MedikProcess(to_app_queue)
-    app_process = AppProcess(args.host, args.port, k_process, to_app_queue)
-    portal_process = DataPortalProcess('0.0.0.0', 4124, k_process, to_app_queue)
+    app_process = AppProcess(args.user_port, k_process, to_app_queue)
+    portal_process = DataPortalProcess(args.data_port, k_process, to_app_queue)
     asyncio.run(main(app_process, k_process, portal_process))
-    app.run(host="0.0.0.0",port=4002)
-
-

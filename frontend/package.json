@@ -30,7 +30,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "REACT_APP_K_BACKEND_URL=\"$K_BACKEND_URL\" react-scripts start",
+    "start": "REACT_APP_USER_URL=\"$BACKEND_HOST:$USER_PORT\" PORT=\"$USER_FRONTEND_PORT\" react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

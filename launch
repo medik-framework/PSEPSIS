@@ -1,21 +1,45 @@
 #!/usr/bin/env bash
+set -e
 
-FREE_PORT=`python3.10 <<END
+get_free_port() {
+python3.10 <<END
 import socket
 sock = socket.socket()
-sock.bind(('', 0))
-print(sock.getsockname()[1]);
-END`
+sock.bind(("", 0))
+print(sock.getsockname()[1])
+END
+}
 
-export K_BACKEND_URL=ws://172.17.0.2:$FREE_PORT
+usage() {
+  echo "Usage: $0 [-t <stub_file_Path>] [-a <backend-host>] [-u <user-port>] [-d <data-port>] [-g <user-frondend--port>] [-m <data-frontend-port>]"
+  1>&2; exit 1;
+}
 
-echo ${OPTARG}
-while getopts "t:" flag
+BACKEND_HOST="ws://172.17.0.2"
+USER_PORT=`get_free_port`
+DATA_PORT=`get_free_port`
+
+USER_FRONTEND_PORT=`get_free_port`
+DATA_FRONTEND_PORT=`get_free_port`
+
+while getopts ":t:a:u:d:g:m:" flag
 do
   case "${flag}" in
     t) STUB=${OPTARG};;
+    a) BACKEND_HOST=${OPTARG};;
+    u) USER_PORT=${OPTARG};;
+    d) DATA_PORT=${OPTARG};;
+    g) USER_FRONTEND_PORT=${OPTARG};;
+    m) DATA_FRONTEND_PORT=${OPTARG};;
+    *) usage;;
   esac
 done
+
+export BACKEND_HOST
+export USER_PORT
+export DATA_PORT
+export USER_FRONTEND_PORT
+export DATA_FRONTEND_PORT
 
 if [ ${STUB+x} ]; then
   case $STUB in
@@ -25,10 +49,11 @@ if [ ${STUB+x} ]; then
   (trap 'kill 0' SIGINT; \
     (cd frontend ; yarn && yarn start) & \
     (cd mockpatient ; yarn && yarn start) & \
-    (cd backend ; python3.10 middleware.py --port $FREE_PORT --stub $STUB_PATH))
+    (cd backend ; python3.10 middleware.py --data-port $DATA_PORT --user-port $USER_PORT --stub $STUB_PATH)
+    )
 else
   (trap 'kill 0' SIGINT; \
     (cd frontend ; yarn && yarn start) & \
-    #(cd mockpatient ; yarn && yarn start) & \
-    (cd backend ; python3.10 middleware.py --port $FREE_PORT))
+    (cd mockpatient ; yarn && yarn start) & \
+    (cd backend ; python3.10 middleware.py --data-port $DATA_PORT --user-port $USER_PORT))
 fi
