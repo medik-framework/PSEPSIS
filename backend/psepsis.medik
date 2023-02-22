@@ -44,7 +44,6 @@ machine MeasurementBounds
   var skinColor          = "normal";
   var mentalStatus       = "normal";
   var capillaryRefill    = 1;
-  var highRiskConditions = 0;
   var fluidOverdoseRisks = 0;
   var fluidOverdoseSigns = 0;
 
@@ -325,21 +324,21 @@ machine SepsisScreening
   state ObtainWeight {
     entry {
       if (measurementBounds.weight == undef) {
-        send tabletApp, Instruct, ("Enter patient weight");
+        send tabletApp, Instruct, ("get weight");
       } else {
         goto ObtainHighRiskConditions;
       }
     }
     on ConfirmWeightEntered do {
+      print("Confirm Weight Entered \n");
       goto ObtainHighRiskConditions;
     }
   }
 
   state ObtainHighRiskConditions{
     entry {
-      var highRiskConditions = obtainFrom(datastore, "highRiskConditions");
-      if (highRiskConditions == undef) {
-        send tabletApp, Instruct, ("Enter high risk conditions");
+      if (measurementBounds.highRiskConditions == undef) {
+        send tabletApp, Instruct, ("get high risk conditions");
       } else {
         goto ObtainMeasurements;
       }
@@ -351,7 +350,7 @@ machine SepsisScreening
 
   state ObtainMeasurements {
     entry {
-      send tabletApp, Instruct, ("Obtain Measurements");
+      send tabletApp, Instruct, ("get 3 buckets measurements");
     }
     on ConfirmMeasurementsObtained do {
       goto CalculateScore;

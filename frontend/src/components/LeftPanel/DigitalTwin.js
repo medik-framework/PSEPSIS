@@ -30,7 +30,7 @@ const PaitentBasic = () => {
           fontSize: '16px'
         }}
         onClick={() => {
-          setInfo({"args": ["threeBucket"]})
+          setInfo({"args": ["get age"]})
           setOpen(true);
         }}
       >
@@ -42,7 +42,7 @@ const PaitentBasic = () => {
           fontSize: '16px'
         }}
         onClick={() => {
-          setInfo({"args": ["getWeight"]})
+          setInfo({"args": ["get weight"]})
           setOpen(true);
         }}
       >

@@ -60,7 +60,6 @@ const InputDialog = ({ open, setOpen, info }) => {
 
   const handleContinue = () => {
     if(info.id !== undefined){
-      console.log(config)
       const data = {
         'id':counter,
         'source': 1,
@@ -72,6 +71,15 @@ const InputDialog = ({ open, setOpen, info }) => {
       }
       kEndpoint.sendMessage(JSON.stringify(data));
       dispatch({type: "dialogs/setDone", payload: data});
+    } else {
+      const data = {
+        'source': 1,
+        "need_response": false,
+        "timestamp": Date.now(),
+        "eventName": config.inputConfig.eventName,
+        "eventArgs": Object.values(retDict),
+      }
+      kEndpoint.sendMessage(JSON.stringify(data));
     }
     dispatch({
       type: inputConfig.storage,

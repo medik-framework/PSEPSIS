@@ -13,16 +13,17 @@ export const DialogConfig = {
                 eventName: "AgeEntered"
             },
     },
-    getWeight: {
+    "get weight": {
         title: "Please enter patient weight",
         inputConfig:{
             label: "Weight",
             type: "number",
             unit: "kg",
             storage: "patientBasic/update",
+            eventName: "WeightEntered"
         }
     },
-    getHighRiskConditions: {
+    "get high risk conditions": {
         title: "Please enter patient high risk conditions",
         inputConfig :
             {
@@ -30,15 +31,17 @@ export const DialogConfig = {
                 type: "checklist",
                 options: Object.keys(PatientConfig.HighRisk.options),
                 storage: "patientBasic/update",
+                eventName: "HighRiskConditionsEntered"
             },
     },
-    threeBucket: {
+    "get 3 bucket measurements": {
         title: "OSF 3 Bucket Tree",
         inputConfig:{
             lable:"",
             type: "threebucket",
             unit: "",
-            storage: null
+            storage: null,
+            eventName: "ConfirmMeasurementsObtained"
         }
     },
     oxygen: {
