@@ -19,7 +19,8 @@ function App() {
       setIsKConnActive(true)
     },
     share: true,
-    shouldReconnect: true
+    shouldReconnect:() => true,
+    onMessage: (msg) => console.log('got message in app', msg)
   })
 
 
@@ -42,4 +43,3 @@ function App() {
 }
 
 export default App;
-

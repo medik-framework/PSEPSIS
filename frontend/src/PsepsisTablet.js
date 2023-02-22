@@ -14,19 +14,28 @@ import InputDialog from "./components/DialogContent/InputDialog";
 
 const PsepsisTablet = () => {
   const kwsURL = useSelector((state) => state.misc.kwsURL);
+  const dispatch = useDispatch();
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
+  const messageHandler = (msg) => {
+    const cleanedMsg = msg.data.replace(/'/g, '"');
+    const msgJson = JSON.parse(cleanedMsg)
+    if (msgJson.name === "Instruct") {
+      console.log("received instruct")
+      dispatch({ type: "dialogs/update", payload: cleanedMsg});
+    }
+  }
+
+  const { sendMessage } = useWebSocket(
     kwsURL, {
       share: true,
       onOpen: () => console.log('K WebSocket connected'),
-      // onMessage: wsMsgHandler,
       shouldReconnect: (CloseEvent) => true,
+      onMessage: messageHandler
     }
   );
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
-  const dispatch = useDispatch();
   const dialogs = useSelector((state) => state.dialogs.todo)
 
   useEffect(() => {
@@ -35,16 +44,6 @@ const PsepsisTablet = () => {
       'eventName':'StartScreening',
     }));
   }, [sendMessage])
-
-  //useEffect(() => {
-  //  console.log("check message")
-  //  if (lastMessage !== null) {
-  //    console.log("there is some message")
-  //    console.log(lastMessage);
-  //    const d = lastMessage.data.replace(/'/g, '"');
-  //    dispatch({ type: "dialogs/update", payload: d});
-  //  }
-  //}, [lastMessage]);
 
   useEffect(() => {
     if(dialogs.length != 0 && !open) {
