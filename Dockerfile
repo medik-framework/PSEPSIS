@@ -24,5 +24,5 @@ RUN apt-get update && apt-get install -y build-essential m4 openjdk-11-jdk git \
 
 RUN npm install -g yarn && \
     npm install -g create-react-app && \
-    python3.10 -m pip install websockets
+    python3.10 -m pip install websockets pytest pytest-asyncio
 

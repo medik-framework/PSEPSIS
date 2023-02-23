@@ -15,18 +15,25 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "WeightEntered",
-    "eventArgs": [15]
+    "eventArgs": [15],
+    "waitFor":
+      {
+        "name": "Instruct",
+        "args": ["get weight"]
+      }
   },
   {
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "HighRiskConditionsEntered",
-    "eventArgs": [0]
+    "eventArgs": [0],
+    "waitFor":
+      {
+        "name": "Instruct",
+        "args": ["get high risk conditions"]
+      }
   },
   {
-    "id": "tabletApp",
-    "action": "broadcast",
-    "eventName": "ConfirmMeasurementsObtained",
-    "eventArgs": []
+    "action": "exit"
   }
 ]
