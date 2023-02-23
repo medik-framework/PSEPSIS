@@ -24,5 +24,5 @@ tests/%.psepsis.run: tests/%.psepsis.in tests/%.psepsis.expected psepsis.medik
 	@$(K_BIN)/krun -d $(BUILD_DIR) $(FLAGS) psepsis.medik < $< > $@
 	@./massage-output $@ | jq > $@.processed
 	@$(COMPARE) $@.processed $(word 2, $^)
-	@echo "=== $@: ok \n"
+	@echo "=== $@: passed"
 
