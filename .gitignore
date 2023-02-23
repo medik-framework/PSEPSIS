@@ -3,6 +3,8 @@
 /backend/message_log/
 /backend/__pycache__/
 /backend/static/*
+/backend/tests/*.run
+/backend/tests/*.processed
 
 /**/node_modules
 /**/.pnp

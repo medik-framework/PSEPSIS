@@ -1,0 +1,18 @@
+#!/usr/bin/env python3.10
+
+import sys, json
+
+
+with open(sys.argv[1]) as out_file:
+  out_str = out_file.read()
+  out_str = '[' + out_str + ']'
+  out_str = out_str.replace('}{', '},{')
+  out_json = json.loads(out_str)
+
+processed_json = []
+for out in out_json:
+    if not ('action' in out.keys() and out['action'] == 'print'):
+        out.pop('tid')
+        processed_json += [out]
+
+print(json.dumps(processed_json))

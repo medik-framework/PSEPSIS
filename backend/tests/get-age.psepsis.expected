@@ -1,0 +1,10 @@
+[
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": [
+      "get age"
+    ]
+  }
+]
