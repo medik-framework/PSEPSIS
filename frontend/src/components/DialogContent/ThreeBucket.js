@@ -262,7 +262,7 @@ const ThreeBucket = () => {
         return node;
       })
     );
-  }, []);
+  }, [organDTValue, setNodes]);
 
   useEffect(() => {
     setNodes((nds) =>
@@ -299,8 +299,8 @@ const ThreeBucket = () => {
   return (
     <div
       style={{
-        height: '100%',
-        width: '100%',
+        height: '75vh',
+        width: '75vw',
         margin: 'auto',
       }}
     >
@@ -313,7 +313,7 @@ const ThreeBucket = () => {
         maxZoom={1}
         attributionPosition="bottom-left"
         fitView
-        canUserMoveNodes={false}
+        canusermovenodes={"false"}
         onMove={false}
       >
       </ReactFlow>

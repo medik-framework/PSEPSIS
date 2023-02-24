@@ -119,7 +119,7 @@ const InputDialog = ({ open, setOpen, info }) => {
   }
 
   return (
-    <Dialog open={open} fullScreen={true}>
+    <Dialog open={open} maxWidth={'100vw'}>
       <DialogTitle>{config.title}</DialogTitle>
       <DialogContent>
         <InputContent {...{
