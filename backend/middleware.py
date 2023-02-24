@@ -136,12 +136,12 @@ class MedikProcess:
                         break
                     case _:
                         match out_json.get('name'):
-                            case 'Instruct':
+                            case 'Obtain':
+                                raise RuntimeError('Not Implemented Yet!')
+                            case _:
                                 print('putting to from-k-queue -  {}'.format(json.dumps(out_json)))
                                 await self.to_app_queue.put(out_json)
                                 print('put to from k queue successful')
-                            case 'Obtain':
-                                print('Not implemented yet!')
 
         except asyncio.CancelledError:
             return None
