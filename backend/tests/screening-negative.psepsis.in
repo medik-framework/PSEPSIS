@@ -1,0 +1,54 @@
+[
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartScreening",
+    "eventArgs": []
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "AgeEntered",
+    "eventArgs": [700]
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "WeightEntered",
+    "eventArgs": [15],
+    "waitFor":
+      {
+        "name": "Instruct",
+        "args": ["get weight"]
+      }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "HighRiskConditionsEntered",
+    "eventArgs": [0],
+    "waitFor":
+      {
+        "name": "Instruct",
+        "args": ["get high risk conditions"]
+      }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ConfirmMeasurementsObtained",
+    "eventArgs": [],
+    "waitFor":
+      {
+        "name": "Instruct",
+        "args": ["get 3 buckets measurements"]
+      }
+  },
+  {
+    "action": "exit",
+    "waitFor":
+     {
+       "name": "DisplayDiagnosis",
+       "args": ["false"]
+     }
+  }
