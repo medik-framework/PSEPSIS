@@ -19,7 +19,7 @@ const PaitentBasic = () => {
     <Grid>
       <Button
         sx={{
-          width:'50%',
+          width:'33%',
           textAlign:'left',
           fontSize: '16px'
         }}
@@ -32,7 +32,7 @@ const PaitentBasic = () => {
       </Button>
       <Button
         sx={{
-          width:'50%',
+          width:'33%',
           fontSize: '16px'
         }}
         onClick={() => {
@@ -41,6 +41,18 @@ const PaitentBasic = () => {
         }}
       >
         Weight:{weight.value ? (" "+weight.value+" "+weight.unit) : ''}
+      </Button>
+      <Button
+        sx={{
+          width:'33%',
+          fontSize: '16px'
+        }}
+        onClick={() => {
+          setInfo({"args": ["get 3 bucket measurements"]})
+          setOpen(true);
+        }}
+      >
+        3 Bucket Tree
       </Button>
       {open && <InputDialog {...{ open, setOpen, info }}/>}
     </Grid>
