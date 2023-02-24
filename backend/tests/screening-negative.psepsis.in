@@ -9,7 +9,12 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "AgeEntered",
-    "eventArgs": [700]
+    "eventArgs": [700],
+    "waitFor":
+     {
+       "name": "Instruct",
+       "args": ["get age"]
+     }
   },
   {
     "id": "tabletApp",
@@ -48,7 +53,7 @@
     "action": "exit",
     "waitFor":
      {
-       "name": "DisplayDiagnosis",
-       "args": ["false"]
+       "name": "DisplayDiagnosis"
      }
   }
+]

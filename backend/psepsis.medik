@@ -411,7 +411,6 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 
   init state CreateMachines {
     entry {
-      print("=== Creating Machines \n");
       tabletApp = createFromInterface(TabletApp, "tabletApp");
       datastore = createFromInterface(Datastore, "datastore");
       measurementBounds = new MeasurementBounds();
@@ -427,6 +426,9 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
       //// Supplementary Machines
       //new HighFlowOxygen(tabletApp);
       //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+
+      // Signal Medik Ready
+      send tabletApp,  StartGUI;
     }
   }
 }

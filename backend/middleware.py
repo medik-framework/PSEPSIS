@@ -32,10 +32,10 @@ class StubProcess:
 
             await asyncio.gather(*tasks)
         except Exception as e:
-            print(str(e))
+            #print(str(e))
             for task in tasks:
                 if not task.cancelled():
-                    print('cancelling task {}'.format(str(task.get_name())))
+                    #print('cancelling task {}'.format(str(task.get_name())))
                     task.cancel()
 
 
@@ -43,14 +43,14 @@ class StubProcess:
     async def feed_commands(self):
         for command in self.commands:
             await self.feed_event.wait()
-            print('==== putting in to-app queue {}'.format(json.dumps(command, indent=2)))
+            #print('==== putting in to-app queue {}'.format(json.dumps(command, indent=2)))
             await self.to_app_queue.put(command)
-            print('=== Successfully sent ===')
+            #print('=== Successfully sent ===')
             self.feed_event.clear()
 
     async def read_commands(self):
         to_k = await self.to_k_queue.get()
-        print('==== Got from app {}'.format(to_k))
+        #print('==== Got from app {}'.format(to_k))
         self.feed_event.set()
 
     async def broadcast(self, interface_id, name, args):
@@ -120,14 +120,14 @@ class MedikProcess:
     async def read_stdout(self, k_process):
         try:
             while True:
-                print('awaiting input from json stream')
+                #print('awaiting input from json stream')
                 out_json = await self.parse_json_stream(k_process.stdout)
                 if out_json == None:
                     break;
                 processed_json = self.process_rats(out_json)
                 match out_json.get('action'):
                     case 'print':
-                        print(*out_json['args'], end='', flush=True)
+                        #print(*out_json['args'], end='', flush=True)
                     case 'sleep':
                         sleep_task = asyncio.create_task(self._sleep( k_process
                                                                     , out_json['duration']
@@ -139,9 +139,9 @@ class MedikProcess:
                             case 'Obtain':
                                 raise RuntimeError('Not Implemented Yet!')
                             case _:
-                                print('putting to from-k-queue -  {}'.format(json.dumps(out_json)))
+                                #print('putting to from-k-queue -  {}'.format(json.dumps(out_json)))
                                 await self.to_app_queue.put(out_json)
-                                print('put to from k queue successful')
+                                #print('put to from k queue successful')
 
         except asyncio.CancelledError:
             return None
@@ -150,7 +150,7 @@ class MedikProcess:
     async def read_stderr(self, k_process):
         try:
             while True:
-                print('awaiting for stderr')
+                #print('awaiting for stderr')
                 err = await k_process.stderr.read()
                 if not err:
                     break
@@ -158,19 +158,19 @@ class MedikProcess:
                     sys.stderr.write(err.decode('utf-8'))
                     sys.stderr.flush()
         except asyncio.CancelledError:
-            print('read std_err task cancelled')
+            #print('read std_err task cancelled')
             return None
 
 
     async def write_stdin(self, k_process):
         try:
             while True:
-                print('awaiting for data to send to k')
+                #print('awaiting for data to send to k')
                 in_data = await self.to_k_queue.get()
-                print('sending to k: {}'.format(json.dumps(in_data, indent=2)))
+                #print('sending to k: {}'.format(json.dumps(in_data, indent=2)))
                 k_process.stdin.write(json.dumps(in_data).encode('utf-8'))
                 await k_process.stdin.drain()
-                print('sending to k complete')
+                #print('sending to k complete')
                 if in_data.get('action') == 'exit':
                     break
         except asyncio.CancelledError:
@@ -194,10 +194,10 @@ class MedikProcess:
 
             await asyncio.gather(*tasks)
         except Exception as e:
-            print(str(e))
+            #print(str(e))
             for task in tasks:
                 if not task.cancelled():
-                    print('cancelling task {}'.format(str(task.get_name())))
+                    #print('cancelling task {}'.format(str(task.get_name())))
                     task.cancel()
 
 
@@ -262,7 +262,7 @@ class DataPortalProcess:
     async def from_portal_handler(self, websocket):
         async for message in websocket:
             message_json = json.loads(message)
-            print('Recv from portal: {}'.format(message_json))
+            #print('Recv from portal: {}'.format(message_json))
             self.organ_dt.update(message_json['measurement']
                                , message_json['timeStamp']
                                , message_json['value'])

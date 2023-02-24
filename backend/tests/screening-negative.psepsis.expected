@@ -50,22 +50,6 @@
     ]
   },
   {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": [
-      "get 3 buckets measurements"
-    ]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": [
-      "get 3 buckets measurements"
-    ]
-  },
-  {
     "id": "datastore",
     "interface": "Datastore",
     "name": "Obtain",
@@ -73,5 +57,68 @@
       "hr"
     ]
   },
-
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "bpSys"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "temp"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "pulseQuality"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "mentalStatus"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "capillaryRefill"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "skinColor"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "highRiskConditions"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "DisplayDiagnosis",
+    "args": [
+      false
+    ]
+  }
 ]
