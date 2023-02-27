@@ -25,10 +25,10 @@ class MedikWrapper:
                 return obj
             last_scan_index = len(json_byte_str)
 
-    async def read_stdout(self, k_process):
+    async def read_stdout(self):
         try:
             while True:
-                out_json = await self.parse_json_stream(k_process.stdout)
+                out_json = await self.parse_json_stream(self.k_process.stdout)
                 if out_json == None:
                     break;
                 await self.from_k_queue.put(out_json)
@@ -36,10 +36,10 @@ class MedikWrapper:
             return None
 
 
-    async def read_stderr(self, k_process):
+    async def read_stderr(self):
         try:
             while True:
-                err = await k_process.stderr.read()
+                err = await self.k_process.stderr.read()
                 if len(err) == 0:
                     break
                 else:
@@ -49,16 +49,16 @@ class MedikWrapper:
             return None
 
 
-    async def write_stdin(self, k_process):
+    async def write_stdin(self):
         try:
             while True:
                 in_data = await self.to_k_queue.get()
                 in_data_str = (json.dumps(in_data,separators=(',',':')) + '\n').encode('utf-8')
-                k_process.stdin.write(in_data_str)
-                await k_process.stdin.drain()
+                self.k_process.stdin.write(in_data_str)
+                await self.k_process.stdin.drain()
                 if in_data[0].get('action') == 'exit':
-                    k_process.stdin.close()
-                    await k_process.stdin.wait_closed()
+                    self.k_process.stdin.close()
+                    await self.k_process.stdin.wait_closed()
                     break
         except asyncio.CancelledError:
             return None
@@ -69,15 +69,15 @@ class MedikWrapper:
                               , str(self.psepsis_pgm.resolve()) ])
         tasks = None
         try:
-            k_process = await asyncio.create_subprocess_exec( k_command[0]
-                                                            , *k_command[1]
-                                                            , stdin=asyncio.subprocess.PIPE
-                                                            , stdout=asyncio.subprocess.PIPE
-                                                            , stderr=asyncio.subprocess.PIPE)
+            self.k_process = await asyncio.create_subprocess_exec( k_command[0]
+                                                                 , *k_command[1]
+                                                                 , stdin=asyncio.subprocess.PIPE
+                                                                 , stdout=asyncio.subprocess.PIPE
+                                                                 , stderr=asyncio.subprocess.PIPE)
 
-            tasks = [asyncio.create_task(self.write_stdin(k_process), name='write-stdin')]
-            tasks += [asyncio.create_task(self.read_stdout(k_process), name='read-stdout')]
-            tasks += [asyncio.create_task(self.read_stderr(k_process), name='read-stderr')]
+            tasks = [asyncio.create_task(self.write_stdin(), name='write-stdin')]
+            tasks += [asyncio.create_task(self.read_stdout(), name='read-stdout')]
+            tasks += [asyncio.create_task(self.read_stderr(), name='read-stderr')]
 
             await asyncio.gather(*tasks)
         except Exception as e:
