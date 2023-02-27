@@ -6,10 +6,10 @@ import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
 const myStyle = {
   position: 'absolute',
-  width: 120,
-  height: 120,
+  width: 150,
+  height: 85,
   fontSize: 20,
-  borderRadius: '100%',
+  borderRadius: '50%',
   backgroundColor: 'white',
   display: 'flex',
   justifyContent: 'center',
@@ -18,25 +18,25 @@ const myStyle = {
 };
 
 const initialNodes = [
-  { id: '1', data: { label: 'Heart Rate' }, const_label: 'Heart Rate', key: 'HR', digikey: 'HR', position: { x: 17, y: 109 }, style: (myStyle) },
-  { id: '2', data: { label: 'Systolic BP\n' }, const_label: 'Systolic BP', key: 'BP Sys', digikey: 'BPSys', values: '',position: { x: 161, y: 9 }, style: (myStyle) },
-  { id: '3', data: { label: 'Pulse Quality\n' }, const_label: 'Pulse Quality', key: 'Pulse Quality', digikey: 'PulseQuality', values: '', position: { x: 304, y: 106 }, style: (myStyle) },
-  { id: '15', data: { label: 'OR' }, position: { x: 178, y: 295 }, style: {width:90,height:60,fontSize: 25,backgroundColor: 'grey',color:'cyan', borderColor: '#ADD8E6'} },
-  { id: '4', data: { label: 'Temp\n' }, const_label: 'Temp', key: 'Temp', digikey: 'Temp', position: { x: 497, y: 11 }, style: (myStyle) },
-  { id: '5', data: { label: 'Mental Status\n' }, const_label: 'Mental Status', key: 'HR', digikey: 'Behavior', position: { x: 645, y: 182 }, style: (myStyle) },
-  { id: '8', data: { label: 'Cap Refill' }, const_label: 'Cap Refill', key: 'Capillary Refill', digikey: 'CapillaryRefill', values: '', position: { x: 686, y: 10 }, style: (myStyle) },
-  { id: '9', data: { label: 'Skin Color' }, const_label: 'Skin Color', key: 'Skin Color', digikey: 'SkinColor', values: '', position: { x: 882.5, y: 11 }, style: (myStyle) },
-  { id: '6', data: { label: 'Perfusion' }, const_label: 'Perfusion', key: 'HR', position: { x: 787, y: 262 }, style: (myStyle) },
-  { id: '7', data: { label: 'High Risk Condition' }, const_label: 'High Risk Condition', key: 'High Risk Conditions', position: { x: 944, y: 192 }, style: (myStyle) },
-  { id: '16', data: { label: 'OR' }, position: { x: 803, y: 436 }, style: {width:90,height:60,fontSize: 25,backgroundColor: 'grey', color:'cyan', borderColor: '#ADD8E6'} },
-  { id: '17', data: { label: 'OR' }, position: { x: 802, y: 169 }, style: {width:90,height:60,fontSize: 25,backgroundColor: 'grey',color:'cyan', borderColor: '#ADD8E6'} },
-  { id: '10', data: { label: 'Bucket 1' }, const_label: 'Bucket 1', position: { x: 164, y: 407 }, style: (myStyle) },
-  { id: '11', data: { label: 'Bucket 2' }, const_label: 'Bucket 2', position: { x: 496, y: 192 }, style: (myStyle) },
-  { id: '12', data: { label: 'Bucket 3' }, const_label: 'Bucket 3', position: { x: 788, y: 531 }, style: (myStyle) },
-  { id: '13', data: { label: 'Sepsis' }, position: { x: 495, y: 577 }, style: (myStyle) },
-  { id: '14', data: { label: 'AND' }, position: { x: 510, y: 470 }, style: {
+  { id: '1', data: { label: 'Heart Rate' }, const_label: 'Heart Rate', key: 'HR', digikey: 'HR', position: { x: 5, y:160 }, style: (myStyle) },
+  { id: '2', data: { label: 'Systolic BP\n' }, const_label: 'Systolic BP', key: 'BP Sys', digikey: 'BPSys', values: '',position: { x: 160, y:160 }, style: (myStyle) },
+  { id: '3', data: { label: 'Pulse Quality\n' }, const_label: 'Pulse Quality', key: 'Pulse Quality', digikey: 'PulseQuality', values: '', position: { x: 320, y:160 }, style: (myStyle) },
+  { id: '15', data: { label: 'OR' }, position: { x: 195, y: 270 }, style: {width:80,height:50,fontSize: 25,backgroundColor: 'grey',color:'cyan', borderColor: '#ADD8E6'} },
+  { id: '4', data: { label: 'Temp\n' }, const_label: 'Temp', key: 'Temp', digikey: 'Temp', position: { x: 480, y:160 }, style: (myStyle) },
+  { id: '5', data: { label: 'Mental Status\n' }, const_label: 'Mental Status', key: 'HR', digikey: 'Behavior', position: { x: 640, y:160 }, style: (myStyle) },
+  { id: '8', data: { label: 'Cap Refill' }, const_label: 'Cap Refill', key: 'Capillary Refill', digikey: 'CapillaryRefill', values: '', position: { x: 680, y: 0 }, style: (myStyle) },
+  { id: '9', data: { label: 'Skin Color' }, const_label: 'Skin Color', key: 'Skin Color', digikey: 'SkinColor', values: '', position: { x: 920, y: 0 }, style: (myStyle) },
+  { id: '6', data: { label: 'Perfusion' }, const_label: 'Perfusion', key: 'HR', position: { x: 800, y:160 }, style: (myStyle) },
+  { id: '7', data: { label: 'High Risk Condition' }, const_label: 'High Risk Condition', key: 'High Risk Conditions', position: { x: 960, y:160 }, style: (myStyle) },
+  { id: '16', data: { label: 'OR' }, position: { x: 835, y: 270 }, style: {width:80,height:50,fontSize: 25,backgroundColor: 'grey', color:'cyan', borderColor: '#ADD8E6'} },
+  { id: '17', data: { label: 'OR' }, position: { x: 835, y: 100 }, style: {width:80,height:50,fontSize: 25,backgroundColor: 'grey',color:'cyan', borderColor: '#ADD8E6'} },
+  { id: '10', data: { label: 'Bucket 1' }, const_label: 'Bucket 1', position: { x: 160, y: 340 }, style: (myStyle) },
+  { id: '11', data: { label: 'Bucket 2' }, const_label: 'Bucket 2', position: { x: 480, y: 340 }, style: (myStyle) },
+  { id: '12', data: { label: 'Bucket 3' }, const_label: 'Bucket 3', position: { x: 800, y: 340 }, style: (myStyle) },
+  { id: '13', data: { label: 'Sepsis' }, position: { x: 480, y: 520 }, style: (myStyle) },
+  { id: '14', data: { label: 'AND' }, position: { x: 510, y: 445 }, style: {
     width: '90px',
-    height: '65px',
+    height: '60px',
     fontSize: 23,
     borderRadius: '0 0 12rem 12rem',
     backgroundColor: 'grey',
@@ -80,7 +80,6 @@ const ThreeBucket = () => {
   const organDTValue = useSelector((state) => state.organDT['Cardiovascular']);
   var organDTValueforTemp = '';
   var organDTValueforBehavior = '';
-  console.log("inside threebucket ageobject is "+JSON.stringify(ageObject));
 
   function selectValue(state, key, id, digikey) {
     if (changingNodes.includes(id))
@@ -90,7 +89,6 @@ const ThreeBucket = () => {
     if(tempNode.includes(id))
     {
       organDTValueforTemp = state.organDT['Immune'];
-      //console.log("inside temo  "+JSON.stringify(organDTValueforTemp.Temp.value));
       return JSON.stringify(organDTValueforTemp.Temp.value);
     }
     if(behaviorNode.includes(id))
@@ -112,17 +110,14 @@ const ThreeBucket = () => {
         {
           const isData = `${values[index]}`;
           const name = `${node.const_label}=(${isData})`;
-          //await sleep(1000);
-          console.log("type of data is "+typeof(isData)+" data is "+isData+"is data len is "+isData.length+" node id is"+node.id);
           if(isData != "null" && isData != "NaN")
           {
             //const name = `${node.const_label}=(${values[index]})`;
             node.data = {label : name};
           }
-          console.log("why here "+node.data.label)
           if(typeof isData === 'string' && isData.length>3 && isData != "null")
           {
-            //node.data.label = `${node.const_label}=(${values[index]})`;console.log("going here")
+            //node.data.label = `${node.const_label}=(${values[index]})`;
             node.data = {label : name};
           };
 
@@ -142,21 +137,17 @@ const ThreeBucket = () => {
               {
                 node.style = { ...node.style, backgroundColor: '#33ff33' };
               }
-              console.log("organdtconfig is "+JSON.stringify(OrganDTConfig[0].measurements[`${node.digikey}`].getThres(ageObject))+" node bg is "+node.style.backgroundColor);
             }
             else
             {
               const checkvalue = OrganDTConfig[0].measurements[`${node.digikey}`].options[value];
-              console.log("check value is "+checkvalue+" node id is "+node.id)
               if (checkvalue == 2)
               {
                 node.style = { ...node.style, backgroundColor: '#33ff33' };
-                console.log("control landed here for "+node.id+" bg is "+node.style.backgroundColor);
               }
               if (checkvalue == 0)
               {
                 node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-                console.log("control landed here for else "+node.id+" bg is "+node.style.backgroundColor);
               }
             } }
         }
@@ -166,7 +157,6 @@ const ThreeBucket = () => {
           const range = OrganDTConfig[2].measurements[`${node.digikey}`].getThres? OrganDTConfig[2].measurements[`${node.digikey}`].getThres(ageObject): {low: 0, high: 0};
           const isData = `${values[index]}`;
 
-          //console.log("is data is "+isData+" node id is"+node.id+ "  temp "+organDTValueforTemp.Temp.value);
           if(! isNaN(isData))
           {
             const temp = `${node.const_label}=(${isData})`
@@ -178,7 +168,6 @@ const ThreeBucket = () => {
             if(organDTValueforTemp.Temp.value > range.high || organDTValueforTemp.Temp.value < range.low) {node.style = { ...node.style, backgroundColor: '#ff4c4c' };};
             if(organDTValueforTemp.Temp.value <= range.high && organDTValueforTemp.Temp.value >= range.low) {node.style = { ...node.style, backgroundColor: '#33ff33' };};
           }
-          //console.log("for temp "+JSON.stringify(OrganDTConfig[2].measurements[`${node.digikey}`].getThres(ageObject))+" key value is "+node.digikey);
         }
 
         //Calculations for Bucket 1 we need values of HeatRate, SystolicBP and PulseQuality
@@ -189,17 +178,14 @@ const ThreeBucket = () => {
           const valuePulseQuality = initialNodes[2].style.backgroundColor;
           if(valueHeartRate == '#ff4c4c' || valueSystolicBP == '#ff4c4c' || valuePulseQuality == '#ff4c4c')
           {
-            console.log("here to put red for buck 1")
             node.style = { ...node.style, backgroundColor: '#ff4c4c' };
             var count = getColorCount(valueHeartRate)+getColorCount(valueSystolicBP)+getColorCount(valuePulseQuality);
             const bucket1val = `${node.const_label}=(${count})`;
             node.data = {label : bucket1val};
-            console.log("Count is "+count+"  color count is "+getColorCount(valueSystolicBP));
           }
           // if(valueHeartRate == '#33ff33' && valueSystolicBP == '#33ff33' && valuePulseQuality == '#33ff33'){
           else if(valueHeartRate == '#33ff33' || valueSystolicBP == '#33ff33' || valuePulseQuality == '#33ff33')
           {
-            console.log("inside green");
             node.style = { ...node.style, backgroundColor: '#33ff33' };
             node.data = {label : "Bucket 1"}
           }
@@ -227,18 +213,15 @@ const ThreeBucket = () => {
         {
           const valueCapRefil = initialNodes[6].style.backgroundColor;
           const valueSkinColor = initialNodes[7].style.backgroundColor;
-          console.log("outside capskin "+valueCapRefil+" here "+valueSkinColor)
           if(!(valueCapRefil === "white" || valueSkinColor === "white"))
           {
             if(valueCapRefil == '#ff4c4c' || valueSkinColor == '#ff4c4c')
             {
               node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-              console.log("Inside capskin "+valueCapRefil+" here "+valueSkinColor);
             }
             else if(valueCapRefil == '#33ff33' || valueSkinColor == '#33ff33')
             {
               node.style = { ...node.style, backgroundColor: '#33ff33' };
-              console.log("2nd Inside capskin "+valueCapRefil+" here "+valueSkinColor);
             }
           }
         }
@@ -252,7 +235,6 @@ const ThreeBucket = () => {
             node.data  = {label : ment_bev} ;
           }
           const checkBehavior = OrganDTConfig[6].measurements[`${node.digikey}`].options[organDTValueforBehavior];
-          //console.log("Behavior mental status is "+JSON.stringify(checkBehavior));
           if(ageObject)
           {
             if(checkBehavior == 2)
@@ -305,7 +287,6 @@ const ThreeBucket = () => {
             }
           }
         }
-        //console.log("node id is "+node.id+"  my node positions are chaning x,y is "+JSON.stringify(node.position));
         return node;
       })
     );
@@ -314,8 +295,8 @@ const ThreeBucket = () => {
   return (
     <div
       style={{
-        height: '100vh',
-        width: '150vh',
+        height: '75vh',
+        width: '75vw',
         margin: 'auto',
       }}
     >
