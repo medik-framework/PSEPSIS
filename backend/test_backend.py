@@ -27,15 +27,11 @@ def process_json(out_json, out):
     if 'tid' in out_json.keys():
         out_json.pop('tid')
     out.append(out_json)
-    print('+++++ test_backend: added to actual out {}'.format(json.dumps(out_json)))
 
 async def do_send(to_k_queue, msg):
     if 'waitFor' in msg.keys():
         msg.pop('waitFor')
-    print('++++ adding to queue {}'.format(json.dumps([msg])))
     await to_k_queue.put([msg])
-    print('++++ add to queue successful')
-    #await asyncio.sleep(0.1)
 
 def drain_queue(from_k_queue, out):
     while not from_k_queue.empty():
@@ -43,13 +39,10 @@ def drain_queue(from_k_queue, out):
         process_json(out_json, out)
 
 def create_obtain_response(out_json, data):
-    print('+++++ Creating obtain response')
-    response =  { 'tid'    : out_json['tid']
-                , 'id'     : out_json['id']
-                , 'result' : 'obtainResponse'
-                , 'args'   : data.get_value(out_json['args'][0]) }
-    print('+++++ Obtain response: {}'.format(json.dumps(response)))
-    return response
+    return  { 'tid'    : out_json['tid']
+            , 'id'     : out_json['id']
+            , 'result' : 'obtainResponse'
+            , 'args'   : data.get_value(out_json['args'][0]) }
 
 async def do_exit(medik_process, medik_task, out, exit_msg):
     await do_send(medik_process.to_k_queue, exit_msg)
@@ -65,23 +58,16 @@ async def medik_interact(in_jsons, data=None):
     to_k_queue = asyncio.Queue()
     medik_process = MedikWrapper(to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm)
     medik_task = asyncio.create_task(medik_process.launch())
-    #print('+++= 1st message {}'.format(json.dumps(in_jsons[0])))
-    #await medik_process.to_k_queue.put(in_jsons[0])
-    #print('+++= 1st sent')
     exit_with_msg = functools.partial(do_exit, medik_process, medik_task, out)
     exit_flag = False
     i = 0
     while not medik_task.done():
-        print('+++++ waiting for a message from k')
         out_json = await asyncio.wait_for(from_k_queue.get(), timeout=15)
-        print('+++++ got from k {}'.format(json.dumps(out_json)))
         out_json_copy = copy.deepcopy(out_json)
-        print('+++++ Copy is {}'.format(json.dumps(out_json_copy)))
         process_json(out_json, out)
         if out_json.get('name') == 'Obtain':
             if data == None:
                 raise RuntimeError('Need datastore to run test')
-            print('+++ Got an obtain message')
             await do_send(to_k_queue, create_obtain_response(out_json_copy, data))
             continue
         in_json = in_jsons[i]
@@ -90,28 +76,16 @@ async def medik_interact(in_jsons, data=None):
 
         if 'waitFor' in in_json.keys():
             if in_json['waitFor'].items() <= out_json.items():
-                # the waitFor is satisfied -> send
-                #print('+++= sending {}'.format(json.dumps(in_json)))
-                # If exit_flag set, then send exit
                 if exit_flag:
                     await exit_with_msg(in_json)
                     break
                 else:
-                    print('++++ sending message after wait-for')
                     await do_send(to_k_queue, in_json)
                 i += 1
             continue
 
         # Exit without wait-for
         if exit_flag:
-            #print('+++= sending exit {}'.format(json.dumps(in_json)))
-            #await do_send(medik_process, in_json)
-            #print('+++= sent exit')
-            #print('+++ waiting for medik task to exit')
-            #await asyncio.gather(medik_task)
-            #print('+++++ waiting asyncio gather successful')
-            #drain_queue(from_k_queue, out)
-            #break
             await exit_with_msg(in_json)
             break
 
@@ -159,7 +133,7 @@ async def run_test(test_name):
         assert False
     assert out == get_expected(test_name).json_list
 
-# +++== Tests =====
+# ==== Tests =====
 
 @pytest.mark.asyncio
 async def test_get_age():
