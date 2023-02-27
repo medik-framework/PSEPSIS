@@ -1,21 +1,8 @@
 from wrapper import MedikWrapper
-from pathlib import Path
-
+from backend_env import kompiled_dir, psepsis_pgm, set_env
 
 import asyncio, copy, pytest, json, sys, os
 import functools
-
-base_dir     = Path(__file__).parents[0]
-psepsis_pgm  = base_dir     / 'psepsis.medik'
-medik_dir    = base_dir     / 'ext'          / 'medik-semantics'
-kompiled_dir = medik_dir    / '.build'       / 'llvm-exec'      / 'medik-llvm-kompiled'
-krelease_dir = medik_dir    / 'ext'          / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
-kbin_dir     = krelease_dir / 'bin'
-
-def set_env():
-    path_entires = [ kbin_dir ]
-    os.environ['PATH'] = str(kbin_dir.resolve()) \
-                                + os.pathsep + os.environ['PATH']
 
 ignored_names = ['StartGUI']
 
