@@ -151,3 +151,11 @@ async def test_get_age_weight_hrc():
 @pytest.mark.asyncio
 async def test_screening_negative():
     await run_test('screening-negative')
+
+@pytest.mark.asyncio
+async def test_screening_negative_none():
+    await run_test('screening-negative-none')
+
+@pytest.mark.asyncio
+async def test_screening_negative_all_none():
+    await run_test('screening-negative-all-none')
