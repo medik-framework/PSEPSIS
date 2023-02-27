@@ -17,12 +17,18 @@ def set_env():
     os.environ['PATH'] = str(kbin_dir.resolve()) \
                                 + os.pathsep + os.environ['PATH']
 
+ignored_names = ['StartGUI']
+
 def process_json(out_json, out):
-    if 'action' in out_json.keys() and out_json['action'] == 'print':
-        print(*out_json['args'])
+    if 'action' in out_json.keys():
+        match out_json['action']:
+            case 'print':
+                print(*out_json['args'], end='')
+            case 'sleep':
+                pass
         return
-    if out_json.get('name') == 'StartGUI':
-        print('+++ Medik Ready')
+    event_name = out_json.get('name')
+    if event_name in ignored_names:
         return
     if 'tid' in out_json.keys():
         out_json.pop('tid')
@@ -125,7 +131,6 @@ def get_expected(test_name):
 async def run_test(test_name):
     mock_data = None
     if os.path.exists('tests/' + test_name + '.psepsis.data'):
-        print('+++ Using mock data for {}'.format(test_name))
         mock_data = MockDataStore('tests/' + test_name + '.psepsis.data')
     try:
         out = await medik_interact(get_in(test_name).json_list, mock_data)

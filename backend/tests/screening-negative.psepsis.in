@@ -9,7 +9,7 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "AgeEntered",
-    "eventArgs": [700],
+    "eventArgs": [500],
     "waitFor":
      {
        "name": "Instruct",
@@ -20,7 +20,7 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "WeightEntered",
-    "eventArgs": [15],
+    "eventArgs": [10],
     "waitFor":
       {
         "name": "Instruct",

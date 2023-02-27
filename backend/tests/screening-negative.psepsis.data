@@ -1,10 +1,10 @@
 {
  "hr"                 : 150,
  "bpSys"              : 120,
- "temp"               : 40,
+ "temp"               : 37,
  "pulseQuality"       : "normal",
  "mentalStatus"       : "normal",
- "capillaryRefill"    : 1,
+ "capillaryRefill"    : 2,
  "skinColor"          : "normal",
  "highRiskConditions" : 0
 }

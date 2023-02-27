@@ -394,7 +394,7 @@ machine SepsisScreening
       var perfusion = capillaryRefillAbnormal || skinColorAbnormal;
       var bucket3   = mentalStatusAbnormal    || perfusion || highRiskConditions;
 
-      var sepsisSuspected = bucket1 || bucket2 || bucket3;
+      var sepsisSuspected = bucket1  &&  bucket2  &&  bucket3;
       send tabletApp, DisplayDiagnosis, ( sepsisSuspected );
 
       if (sepsisSuspected) {
