@@ -5,6 +5,7 @@ import { Button, Grid, Popover } from "@mui/material";
 import WorkflowTab from "./WorkflowTab";
 import Checklist from "./Checklist";
 import Reference from "./References";
+import LineGraph from "./LineGraph";
 
 const CollapsiblePanel = () => {
   const [selectedButton, setSelectedButton] = useState();
@@ -52,6 +53,7 @@ const CollapsiblePanel = () => {
           {selectedButton === "flowchart" && <WorkflowTab />}
           {selectedButton === "checklists" && <Checklist />}
           {selectedButton === "references" && <Reference />}
+          {selectedButton === "fluid response" && <LineGraph />}
         </div>
       </Popover>
     </div>
