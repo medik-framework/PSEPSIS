@@ -27,6 +27,9 @@ def _sleep_response(tid):
     return [{ 'action' : 'sleepReponse'
             , 'tid'    : tid }]
 
+def _exit():
+    return [{'action': 'exit'}]
+
 
 class StubProcess:
     async def launch(self):
@@ -40,10 +43,8 @@ class StubProcess:
 
             await asyncio.gather(*tasks)
         except Exception as e:
-            #print(str(e))
             for task in tasks:
                 if not task.cancelled():
-                    #print('cancelling task {}'.format(str(task.get_name())))
                     task.cancel()
 
 
@@ -51,14 +52,11 @@ class StubProcess:
     async def feed_commands(self):
         for command in self.commands:
             await self.feed_event.wait()
-            #print('==== putting in to-app queue {}'.format(json.dumps(command, indent=2)))
             await self.to_app_queue.put(command)
-            #print('=== Successfully sent ===')
             self.feed_event.clear()
 
     async def read_commands(self):
         to_k = await self.to_k_queue.get()
-        #print('==== Got from app {}'.format(to_k))
         self.feed_event.set()
 
     async def broadcast(self, interface_id, name, args):
@@ -80,10 +78,8 @@ class StubProcess:
 class MedikHandler(MedikWrapper):
 
     async def _sleep(self, duration, tid):
-        logging.info('sleeping for duration {} for tid {}'.format(duration, tid))
         await asyncio.sleep(duration)
         await self.to_k_queue.put(_sleep_response(tid))
-        logging.info('sleep complete message sent for tid {}'.format(tid))
 
     def process_rats(self, out_json):
         if out_json.get('args') != None:
@@ -100,15 +96,15 @@ class MedikHandler(MedikWrapper):
         return out_json
 
     async def handle_from_k(self):
-        while True:
+        while not self.wrapper_task.done():
             from_k_json = await self.from_k_queue.get()
-            if from_k_json == None:
+            if from_k_json == 'exit' or from_k_json == None:
                 break
             processed_json = self.process_rats(from_k_json)
             if 'action' in processed_json.keys():
                 match processed_json['action']:
                     case 'print':
-                        print(*out_json['args'], end='', flush=True)
+                        print(*processed_json['args'], end='', flush=True)
                     case 'sleep':
                         asyncio.create_task(self._sleep( processed_json['duration']
                                                        , processed_json['tid']))
@@ -119,6 +115,12 @@ class MedikHandler(MedikWrapper):
                         raise RuntimeError('Obtain not implemented!')
                     case _:
                         await self.to_app_queue.put(processed_json)
+
+    async def launch(self):
+        self.wrapper_task = asyncio.create_task(super().launch())
+        from_k_task = asyncio.create_task(self.handle_from_k())
+
+        await asyncio.gather(self.wrapper_task, from_k_task)
 
     def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_dir, psepsis_pgm):
         super().__init__(to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm)
@@ -133,34 +135,44 @@ class AppProcess:
         self.interface_id = 'tabletApp'
         self.to_app_queue = to_app_queue
 
-
     async def to_app_handler(self, websocket):
-        while True:
-            to_app = await self.to_app_queue.get()
-            await websocket.send(json.dumps(to_app))
+        try:
+            while True:
+                to_app = await self.to_app_queue.get()
+                await websocket.send(json.dumps(to_app))
+        except websockets.exceptions.ConnectionClosedError:
+            await self.to_k_queue.put(_exit())
+            print('Websocket connection from app closed')
 
 
     async def from_app_handler(self, websocket):
-        async for message in websocket:
-            message_json = json.loads(message)
-            await to_k_queue.put(_broadcast( self.interface_id
-                                           , message_json['eventName']
-                                           , message_json.get('eventArgs'
-                                                             , [])))
+        try:
+            async for message in websocket:
+                message_json = json.loads(message)
+                await self.to_k_queue.put(_broadcast( self.interface_id
+                                                    , message_json['eventName']
+                                                    , message_json.get('eventArgs'
+                                                                       , [])))
+        except websockets.exceptions.ConnectionClosedError:
+            await self.to_k_queue.put(_exit())
+            print('Websocket connection from app closed')
 
     async def setup_connections(self, websocket):
-        to_app_task = asyncio.create_task(self.to_app_handler(websocket))
-        from_app_task = asyncio.create_task(self.from_app_handler(websocket))
+        to_app_task = asyncio.create_task(self.to_app_handler(websocket), name='to_app_task')
+        from_app_task = asyncio.create_task(self.from_app_handler(websocket), name='from_app_handler')
         done, pending = await asyncio.wait(
                             [to_app_task, from_app_task],
                             return_when=asyncio.FIRST_COMPLETED,
                         )
+        await self.to_k_queue.put(_exit())
         for task in pending:
             task.cancel()
+
 
     async def start(self):
         async with websockets.serve(self.setup_connections, '0.0.0.0', self.ws_port):
             await asyncio.Future()
+
 
 
 class DataPortalProcess:
@@ -175,7 +187,6 @@ class DataPortalProcess:
     async def from_portal_handler(self, websocket):
         async for message in websocket:
             message_json = json.loads(message)
-            #print('Recv from portal: {}'.format(message_json))
             self.organ_dt.update(message_json['measurement']
                                , message_json['timeStamp']
                                , message_json['value'])
@@ -196,10 +207,16 @@ class DataPortalProcess:
             await asyncio.Future()
 
 
+
 async def main(app_process, k_process, portal_process):
-    await asyncio.gather(app_process.start()
-                       , k_process.launch()
-                       , portal_process.start())
+
+    app_task = asyncio.create_task(app_process.start())
+    medik_task = asyncio.create_task(k_process.launch())
+    portal_task = asyncio.create_task(portal_process.start())
+    done, pending = await asyncio.wait([app_task, medik_task, portal_task]
+                                      , return_when=asyncio.FIRST_COMPLETED)
+    for task in pending:
+        task.cancel()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PSepsis Middleware')
@@ -227,6 +244,7 @@ if __name__ == "__main__":
     to_app_queue = asyncio.Queue()
 
     if args.stub:
+
         k_process = StubProcess(args.stub, to_app_queue)
     else:
         set_env()
@@ -234,3 +252,4 @@ if __name__ == "__main__":
     app_process = AppProcess(args.user_port, to_k_queue, to_app_queue)
     portal_process = DataPortalProcess(args.data_port, to_k_queue, to_app_queue)
     asyncio.run(main(app_process, k_process, portal_process))
+    print('Exited middleware')

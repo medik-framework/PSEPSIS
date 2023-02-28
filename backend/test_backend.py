@@ -29,7 +29,8 @@ async def do_send(to_k_queue, msg):
 def drain_queue(from_k_queue, out):
     while not from_k_queue.empty():
         out_json = from_k_queue.get_nowait()
-        process_json(out_json, out)
+        if out_json != 'exit':
+            process_json(out_json, out)
 
 def create_obtain_response(out_json, data):
     return  { 'tid'    : out_json['tid']
@@ -56,6 +57,8 @@ async def medik_interact(in_jsons, data=None):
     i = 0
     while not medik_task.done():
         out_json = await asyncio.wait_for(from_k_queue.get(), timeout=15)
+        if out_json == 'exit':
+            break
         out_json_copy = copy.deepcopy(out_json)
         process_json(out_json, out)
         if out_json.get('name') == 'Obtain':

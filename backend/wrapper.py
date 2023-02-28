@@ -20,8 +20,6 @@ class MedikWrapper:
                 last_scan_index   = 0
                 open_proce_count  = 0
                 close_brace_count = 0
-                logging.info('read {}'.format(json.dumps(obj, indent=2)))
-                logging.info('json object: ' + str(obj))
                 return obj
             last_scan_index = len(json_byte_str)
 
@@ -66,7 +64,7 @@ class MedikWrapper:
     async def launch(self):
         k_command = ( 'krun' , ['-d' , str(self.kompiled_dir.resolve())
                              , '--output' , 'none'
-                              , str(self.psepsis_pgm.resolve()) ])
+                             , str(self.psepsis_pgm.resolve()) ])
         tasks = None
         try:
             self.k_process = await asyncio.create_subprocess_exec( k_command[0]
@@ -78,12 +76,14 @@ class MedikWrapper:
             tasks = [asyncio.create_task(self.write_stdin(), name='write-stdin')]
             tasks += [asyncio.create_task(self.read_stdout(), name='read-stdout')]
             tasks += [asyncio.create_task(self.read_stderr(), name='read-stderr')]
-
             await asyncio.gather(*tasks)
+
         except Exception as e:
             for task in tasks:
                 if not task.cancelled():
                     task.cancel()
+
+        await self.from_k_queue.put('exit')
 
     def __init__(self, to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm):
         self.from_k_queue = from_k_queue
