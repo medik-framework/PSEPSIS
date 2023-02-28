@@ -36,13 +36,13 @@ class StubProcess:
         tasks = []
         try:
             with open(self.stub_file_path, 'r') as stub_file:
-                self.commands = map(lambda x: json.loads(x), stub_file.readlines())
+                self.commands = json.loads(stub_file.read())
 
             tasks += [asyncio.create_task(self.feed_commands(), name='stub-feed-commands')]
             tasks += [asyncio.create_task(self.read_commands(), name='stub-read-commands')]
 
             await asyncio.gather(*tasks)
-        except Exception as e:
+        except asyncio.CancelledError as e:
             for task in tasks:
                 if not task.cancelled():
                     task.cancel()
@@ -51,25 +51,23 @@ class StubProcess:
 
     async def feed_commands(self):
         for command in self.commands:
+            if command.get('name') != 'Instruct':
+                continue
             await self.feed_event.wait()
             await self.to_app_queue.put(command)
             self.feed_event.clear()
 
     async def read_commands(self):
-        to_k = await self.to_k_queue.get()
-        self.feed_event.set()
+        while True:
+            to_k = await self.to_k_queue.get()
+            if to_k[0].get('action') == 'exit':
+                break
+            self.feed_event.set()
 
-    async def broadcast(self, interface_id, name, args):
-        await self.to_k_queue.put( { 'id'        : interface_id
-                                   , 'action'    : 'broadcast'
-                                   , 'eventName' : name
-                                   , 'eventArgs' : args })
-
-
-    def __init__(self, stub_file_path, to_app_queue):
+    def __init__(self, stub_file_path, to_k_queue, to_app_queue):
         set_env()
+        self.to_k_queue = to_k_queue
         self.to_app_queue = to_app_queue
-        self.to_k_queue = asyncio.Queue()
         self.stub_file_path = stub_file_path
         self.feed_event = asyncio.Event()
         self.feed_event.clear()
@@ -153,9 +151,9 @@ class AppProcess:
                                                     , message_json['eventName']
                                                     , message_json.get('eventArgs'
                                                                        , [])))
+
         except websockets.exceptions.ConnectionClosedError:
             await self.to_k_queue.put(_exit())
-            print('Websocket connection from app closed')
 
     async def setup_connections(self, websocket):
         to_app_task = asyncio.create_task(self.to_app_handler(websocket), name='to_app_task')
@@ -210,11 +208,13 @@ class DataPortalProcess:
 
 async def main(app_process, k_process, portal_process):
 
-    app_task = asyncio.create_task(app_process.start())
-    medik_task = asyncio.create_task(k_process.launch())
-    portal_task = asyncio.create_task(portal_process.start())
+    app_task = asyncio.create_task(app_process.start(), name='app-task')
+    medik_task = asyncio.create_task(k_process.launch(), name='medik-task')
+    portal_task = asyncio.create_task(portal_process.start(), name='portal-task')
     done, pending = await asyncio.wait([app_task, medik_task, portal_task]
                                       , return_when=asyncio.FIRST_COMPLETED)
+    for done_task in done:
+        print('task done is: {}'.format(done_task))
     for task in pending:
         task.cancel()
 
@@ -244,8 +244,7 @@ if __name__ == "__main__":
     to_app_queue = asyncio.Queue()
 
     if args.stub:
-
-        k_process = StubProcess(args.stub, to_app_queue)
+        k_process = StubProcess(args.stub, to_k_queue, to_app_queue)
     else:
         set_env()
         k_process = MedikHandler(to_k_queue, from_k_queue, to_app_queue, kompiled_dir, psepsis_pgm)
