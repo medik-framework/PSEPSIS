@@ -9,6 +9,7 @@ import logReducer from './reducers/logs'
 import drugReducer from './reducers/drugs'
 import endpointsReducer from './reducers/endpoints'
 import checkListReducer from './reducers/checklist'
+import diagnosisReducer from './reducers/diagnosis'
 
 export default configureStore({
   reducer: {
@@ -21,7 +22,8 @@ export default configureStore({
     logs: logReducer,
     drug: drugReducer,
     endpoints: endpointsReducer,
-    checklist: checkListReducer
+    checklist: checkListReducer,
+    diagnosis: diagnosisReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

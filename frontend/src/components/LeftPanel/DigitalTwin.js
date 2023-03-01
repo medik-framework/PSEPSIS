@@ -167,9 +167,13 @@ const DigitalTwinForm = ({ selectedDT }) => {
 };
 
 const SystematicAssessmentForm = ({ selectedDT }) => {
-  const assessments = { Sepsis: '', "Septic shock": '', SIRS: '', PEW: '' };
+  const config = [
+    { displayName: "Sepsis", storeName: "sepsis"},
+    { displayName: "Septic Shock", storeName: "septicShock"}
+  ]
+  const diagnosisValue = useSelector((state) => state.diagnosis)
+
   return (
-    <>
       <Grid container>
         <Grid
           item
@@ -182,26 +186,28 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
         >
           <div>Screening Status: Presume Sepsis</div>
         </Grid>
-        {Object.keys(assessments).map((key) => {
+        {config.map((diagnosis, idx) => {
           return (
             <Grid
               item
-              xs={3}
+              xs={6}
               sx={{
                 height: "50px",
                 backgroundColor: "white",
                 border: '0.5px solid black',
               }}
-              key={key}
+              key={idx}
             >
               <div>
-                {key}: {assessments[key]}
+                { diagnosis.displayName }: {
+                  diagnosisValue[diagnosis.storeName] === null ?
+                  "" : (diagnosisValue[diagnosis.storeName]).toString()
+                }
               </div>
             </Grid>
           );
         })}
       </Grid>
-    </>
   );
 };
 

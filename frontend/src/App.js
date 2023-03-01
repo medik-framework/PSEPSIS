@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
 
 import { addEndpoint } from "./redux/reducers/endpoints"
+import { updateDiagnosis } from "./redux/reducers/diagnosis"
 import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
 
@@ -29,6 +30,13 @@ function App() {
       break;
     case "OrganUpdate":
       dispatch(update_all(msgJson.args[0]));
+      break;
+    case "SepsisDiagnosis":
+       console.log("dispatching diagnosis update")
+      dispatch(updateDiagnosis({
+        "name": "sepsis",
+        "value": msgJson.args[0]
+      }))
       break;
     default:
       console.log("Message not recognized: ", msgJson.name)
