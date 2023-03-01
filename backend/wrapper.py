@@ -128,6 +128,8 @@ class MedikWrapper:
                 if not task.cancelled():
                     task.cancel()
 
+        await self.from_k_queue.put('exit')
+
     def __init__(self, to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm):
         self.from_k_queue = from_k_queue
         self.to_k_queue = to_k_queue

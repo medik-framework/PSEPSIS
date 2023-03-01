@@ -42,6 +42,7 @@ class StubProcess:
             tasks += [asyncio.create_task(self.read_commands(), name='stub-read-commands')]
 
             await asyncio.gather(*tasks)
+
         except asyncio.CancelledError as e:
             for task in tasks:
                 if not task.cancelled():
@@ -194,7 +195,7 @@ class DataPortalProcess:
 class Datastore:
 
     def __init__(self):
-        self.organ_dt = OrganDt
+        self.organ_dt = OrganDt()
 
     def get_value(self, value_name):
         return self.organ_dt.get_value(value_name)
@@ -207,8 +208,6 @@ async def main(app_process, k_process, portal_process):
     portal_task = asyncio.create_task(portal_process.start(), name='portal-task')
     done, pending = await asyncio.wait([app_task, medik_task, portal_task]
                                       , return_when=asyncio.FIRST_COMPLETED)
-    for done_task in done:
-        print('task done is: {}'.format(done_task))
     for task in pending:
         task.cancel()
 
