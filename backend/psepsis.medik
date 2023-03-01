@@ -264,6 +264,7 @@ machine MeasurementBounds
     }
 
     on HighRiskConditionsEntered(highRiskConditions) do {
+      this.highRiskConditions = highRiskConditions;
       broadcast ConfirmHighRiskConditionsEntered;
       goto Running;
     }
@@ -375,6 +376,14 @@ machine SepsisScreening
     }
   }
 
+  fun hasHighRiskConditions() {
+    if (   (measurementBounds.highRiskConditions == undef)
+        || (measurementBounds.highRiskConditions == 0)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   state CalculateScore {
     entry() {
@@ -385,7 +394,7 @@ machine SepsisScreening
       var mentalStatusAbnormal    = !isNormal("Behavior",             measurementBounds.mentalStatus);
       var capillaryRefillAbnormal = !isNormal("Capillary Refill",     measurementBounds.capillaryRefill);
       var skinColorAbnormal       = !isNormal("Skin Color",           measurementBounds.skinColor);
-      var highRiskConditions      = !isNormal("High Risk Conditions", measurementBounds.highRiskConditions);
+      var highRiskConditions      = hasHighRiskConditions();
 
       var bucket1 = hrAbnormal || bpSysAbnormal || pulseQualityAbnormal;
 

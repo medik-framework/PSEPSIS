@@ -106,14 +106,6 @@
     ]
   },
   {
-    "id": "datastore",
-    "interface": "Datastore",
-    "name": "Obtain",
-    "args": [
-      "High Risk Conditions"
-    ]
-  },
-  {
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "DisplayDiagnosis",
