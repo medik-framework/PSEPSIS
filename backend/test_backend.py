@@ -154,3 +154,6 @@ async def test_screening_negative_all_none():
 async def test_screening_positive_1():
     await run_test('screening-positive-1')
 
+@pytest.mark.asyncio
+async def test_screening_positive_2():
+    await run_test('screening-positive-2')
