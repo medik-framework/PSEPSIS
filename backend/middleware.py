@@ -98,7 +98,7 @@ class MedikHandler(MedikWrapper):
                     case 'Obtain':
                         await self.to_k_queue.put(_obtain_response( from_k_json['tid']
                                                                   , 'Datastore'
-                                                                  , self.datastore.get_value(process_json['args'][0])))
+                                                                  , self.datastore.get_value(from_k_json['args'][0])))
                     case _:
                         await self.to_app_queue.put(from_k_json)
 
