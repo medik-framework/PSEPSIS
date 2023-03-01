@@ -1,5 +1,7 @@
 # Simple Wrapper Around the K process running Medik
-import  asyncio, json, logging, sys
+from fractions import Fraction
+
+import  asyncio, json, logging, re, sys
 
 class MedikWrapper:
 
@@ -8,20 +10,37 @@ class MedikWrapper:
         close_brace_count = 0
         last_scan_index   = 0
         json_byte_str     = b''
-        while True:
-            json_byte_str     += await json_stream.readuntil(b'}')
-            open_brace_count  += json_byte_str.count(b'{', last_scan_index)
-            close_brace_count += json_byte_str.count(b'}', last_scan_index)
-            if len(json_byte_str) == 0:
-                return None
-            if open_brace_count == close_brace_count:
-                obj = json.loads(json_byte_str)
-                json_byte_str       = b''
-                last_scan_index   = 0
-                open_proce_count  = 0
-                close_brace_count = 0
-                return obj
-            last_scan_index = len(json_byte_str)
+        try:
+            while True:
+                json_byte_str     += await json_stream.readuntil(b'}')
+                open_brace_count  += json_byte_str.count(b'{', last_scan_index)
+                close_brace_count += json_byte_str.count(b'}', last_scan_index)
+                if len(json_byte_str) == 0:
+                    return None
+                if open_brace_count == close_brace_count:
+                    obj = json.loads(json_byte_str)
+                    json_byte_str       = b''
+                    last_scan_index   = 0
+                    open_proce_count  = 0
+                    close_brace_count = 0
+                    return obj
+                last_scan_index = len(json_byte_str)
+        except asyncio.IncompleteReadError:
+            return
+
+    def process_rats(self, out_json):
+        if out_json.get('args') != None:
+            processed_args = []
+            rat_re = re.compile(r'\<(-?\d+),(\d+)\>Rat')
+            for arg in out_json['args']:
+                if isinstance(arg, str) and rat_re.match(arg) != None:
+                    rat_match = rat_re.match(arg)
+                    processed_args.append(Fraction( int(rat_match.group(1))
+                                                  , int(rat_match.group(2))))
+                else:
+                    processed_args.append(arg)
+            out_json['args'] = processed_args
+        return out_json
 
     async def read_stdout(self):
         try:
@@ -29,7 +48,8 @@ class MedikWrapper:
                 out_json = await self.parse_json_stream(self.k_process.stdout)
                 if out_json == None:
                     break;
-                await self.from_k_queue.put(out_json)
+                processed_json = self.process_rats(out_json)
+                await self.from_k_queue.put(processed_json)
         except asyncio.CancelledError:
             return None
 
@@ -78,12 +98,10 @@ class MedikWrapper:
             tasks += [asyncio.create_task(self.read_stderr(), name='read-stderr')]
             await asyncio.gather(*tasks)
 
-        except Exception as e:
+        except CancelledError as e:
             for task in tasks:
                 if not task.cancelled():
                     task.cancel()
-
-        await self.from_k_queue.put('exit')
 
     def __init__(self, to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm):
         self.from_k_queue = from_k_queue

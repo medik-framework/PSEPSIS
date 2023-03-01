@@ -7,7 +7,7 @@ from wrapper import MedikWrapper
 import os
 import websockets
 
-import argparse, asyncio, concurrent, functools, json, logging, os, re, sys, threading, time
+import argparse, asyncio, concurrent, functools, json, logging, os, sys, threading, time
 
 #==== Common Helpers =====
 
@@ -78,20 +78,6 @@ class MedikHandler(MedikWrapper):
     async def _sleep(self, duration, tid):
         await asyncio.sleep(duration)
         await self.to_k_queue.put(_sleep_response(tid))
-
-    def process_rats(self, out_json):
-        if out_json.get('args') != None:
-            processed_args = []
-            rat_re = re.compile(r'\<(-?\d+),(\d+)\>Rat')
-            for arg in out_json['args']:
-                if isinstance(arg, str) and rat_re.match(arg) != None:
-                    rat_match = rat_re.match(arg)
-                    processed_args.append(Fraction( int(rat_match.group(1))
-                                                  , int(rat_match.group(2))))
-                else:
-                    processed_args.append(arg)
-            out_json['args'] = processed_args
-        return out_json
 
     async def handle_from_k(self):
         while not self.wrapper_task.done():
