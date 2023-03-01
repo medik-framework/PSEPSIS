@@ -404,7 +404,7 @@ machine SepsisScreening
       var bucket3   = mentalStatusAbnormal    || perfusion || highRiskConditions;
 
       var sepsisSuspected = bucket1  &&  bucket2  &&  bucket3;
-      send tabletApp, DisplayDiagnosis, ( sepsisSuspected );
+      send tabletApp, SepsisDiagnosis, ( sepsisSuspected );
 
       if (sepsisSuspected) {
         broadcast SepsisSuspected;

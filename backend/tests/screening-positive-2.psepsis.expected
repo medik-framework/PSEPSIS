@@ -108,7 +108,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "DisplayDiagnosis",
+    "name": "SepsisDiagnosis",
     "args": [
       true
     ]

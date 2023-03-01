@@ -53,7 +53,7 @@
     "action": "exit",
     "waitFor":
      {
-       "name": "DisplayDiagnosis"
+       "name": "SepsisDiagnosis"
      }
   }
 ]
