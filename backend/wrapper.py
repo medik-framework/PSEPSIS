@@ -28,7 +28,7 @@ class MedikWrapper:
         except asyncio.IncompleteReadError:
             return
 
-    def process_rats(self, out_json):
+    def json_rat_strs_to_fractions(self, out_json):
         if out_json.get('args') != None:
             processed_args = []
             rat_re = re.compile(r'\<(-?\d+),(\d+)\>Rat')
@@ -42,13 +42,14 @@ class MedikWrapper:
             out_json['args'] = processed_args
         return out_json
 
+
     async def read_stdout(self):
         try:
             while True:
                 out_json = await self.parse_json_stream(self.k_process.stdout)
                 if out_json == None:
                     break;
-                processed_json = self.process_rats(out_json)
+                processed_json = self.json_rat_strs_to_fractions(out_json)
                 await self.from_k_queue.put(processed_json)
         except asyncio.CancelledError:
             return None
@@ -66,15 +67,39 @@ class MedikWrapper:
         except asyncio.CancelledError:
             return None
 
+    # Needed due to a limitation of the current K's json parsing ability
+    def float_to_rat_str(self, flt):
+        flt_str = str(flt)
+        decimal_index = flt_str.index('.')
+        before_decimal = flt_str[:decimal_index]
+        after_decimal = flt_str[decimal_index + 1:]
+        return '<{},{}>Rat'.format( before_decimal + after_decimal
+                                  , str(pow(10, len(after_decimal))))
+
+
+    def json_floats_to_rat_strs(self, in_json):
+        match in_json:
+            case list():
+                return list(map(self.json_floats_to_rat_strs, in_json))
+            case dict():
+                return { k: self.json_floats_to_rat_strs(v) for k, v in in_json.items() }
+            case float():
+                return self.float_to_rat_str(in_json)
+            case Fraction():
+                return self.float_to_rat_str(float(in_json))
+            case _:
+                return in_json
+
 
     async def write_stdin(self):
         try:
             while True:
                 in_data = await self.to_k_queue.get()
-                in_data_str = (json.dumps(in_data,separators=(',',':')) + '\n').encode('utf-8')
+                processed_data = self.json_floats_to_rat_strs(in_data)
+                in_data_str = (json.dumps(processed_data,separators=(',',':')) + '\n').encode('utf-8')
                 self.k_process.stdin.write(in_data_str)
                 await self.k_process.stdin.drain()
-                if in_data[0].get('action') == 'exit':
+                if processed_data[0].get('action') == 'exit':
                     self.k_process.stdin.close()
                     await self.k_process.stdin.wait_closed()
                     break
@@ -98,7 +123,7 @@ class MedikWrapper:
             tasks += [asyncio.create_task(self.read_stderr(), name='read-stderr')]
             await asyncio.gather(*tasks)
 
-        except CancelledError as e:
+        except asyncio.CancelledError as e:
             for task in tasks:
                 if not task.cancelled():
                     task.cancel()
