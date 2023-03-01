@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useInterval } from "react-use";
 
 import { Button, Grid, Typography, Box, Tabs, Tab, TextField } from "@mui/material";
 
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
-import { update_all } from "../../redux/reducers/organDT";
 import { updateURL } from "../../redux/reducers/misc";
 import InputDialog from "../DialogContent/InputDialog";
-
-import { DialogConfig } from "../../resources/DialogConfig";
-
-const assessments = ["Age", "Weight"];
 
 const PaitentBasic = () => {
   const age = useSelector((state) => state.patientBasic['Age'])
@@ -263,6 +257,7 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
             hight={50}
             width={50}
             src={process.env.PUBLIC_URL + 'organicons/'+organ.name+'.png'}
+            alt={organ.name+'_icon'}
           />}
           value={index}
           key={index}
@@ -275,34 +270,9 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
   const apiURL = useSelector((state) => state.misc['apiURL']);
-  const kwsURL = useSelector((state) => state.misc.kwsURL);
 
-  const { sendMessage } = useWebSocket(
-    kwsURL, {
-      onOpen: () => console.log('Organ DT connected'),
-      shouldReconnect: (CloseEvent) => true,
-      share: true,
-      //onMessage: (
-    }
-  );
   const dispatch = useDispatch();
-  const patientBasic = useSelector((state) => state.patientBasic)
   const [inputURL, setInputURL] = useState(apiURL)
-
-  // useEffect(() => {
-  //   if (lastMessage !== null) {
-  //     const d = JSON.parse(lastMessage.data.replace(/'/g, '"'));
-  //     console.log("In DigitalTwin", d.name)
-  //     if (d.name === "OrganUpdate") {
-  //       console.log("received organ update")
-  //       dispatch(update_all(d.args[0]));
-  //     }
-  //   }
-  // }, [lastMessage]);
-
-  // useEffect(() => {
-  //   send('/update_patient', JSON.stringify(patientBasic));
-  // }, [patientBasic])
 
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>
