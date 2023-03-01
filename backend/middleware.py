@@ -19,7 +19,7 @@ def _broadcast(interface_id, event_name, event_args=[]):
 
 def _obtain_response(tid, interface_id, args):
         return  [{ 'tid'       : tid
-                 , 'id'        : inteface_id
+                 , 'id'        : interface_id
                  , 'result'    : 'obtainResponse'
                  , 'args'      : args }]
 
