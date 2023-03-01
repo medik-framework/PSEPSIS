@@ -350,7 +350,7 @@ machine SepsisScreening
 
   state ObtainMeasurements {
     entry {
-      send tabletApp, Instruct, ("get 3 buckets measurements");
+      send tabletApp, Instruct, ("get 3 bucket measurements");
     }
     on ConfirmMeasurementsObtained do {
       goto CalculateScore;

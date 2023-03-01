@@ -46,7 +46,7 @@
     "interface": "TabletApp",
     "name": "Instruct",
     "args": [
-      "get 3 buckets measurements"
+      "get 3 bucket measurements"
     ]
   },
   {

@@ -46,7 +46,7 @@
     "waitFor":
       {
         "name": "Instruct",
-        "args": ["get 3 buckets measurements"]
+        "args": ["get 3 bucket measurements"]
       }
   },
   {
