@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Button, Grid, Popover } from "@mui/material";
 
-import TreatmentLog from "./TreatmentLog";
+// import TreatmentLog from "./TreatmentLog";
 import WorkflowTab from "./WorkflowTab";
 import Checklist from "./Checklist";
 import Reference from "./References";
@@ -11,7 +11,9 @@ const CollapsiblePanel = () => {
   const [open, setOpen] = useState(false);
   const anchorEl = useRef(null);
 
-  const buttons = ["history", "flowchart", "checklists", "references"];
+  //const buttons = ["history", "flowchart", "checklists", "references"];
+  const buttons = ["flowchart", "checklists", "references"];
+
   return (
     <div style={{ height: "100vh" }} ref={anchorEl}>
       <Grid container sx={{ marginTop: "10px" }}>
@@ -46,7 +48,7 @@ const CollapsiblePanel = () => {
         }}
       >
         <div style={{ width: "33vw", height: "100vh" }}>
-          {selectedButton === "history" && <TreatmentLog />}
+          {/* {selectedButton === "history" && <TreatmentLog />} */}
           {selectedButton === "flowchart" && <WorkflowTab />}
           {selectedButton === "checklists" && <Checklist />}
           {selectedButton === "references" && <Reference />}
