@@ -84,21 +84,22 @@ class MedikHandler(MedikWrapper):
             from_k_json = await self.from_k_queue.get()
             if from_k_json == 'exit' or from_k_json == None:
                 break
-            processed_json = self.process_rats(from_k_json)
-            if 'action' in processed_json.keys():
-                match processed_json['action']:
+            if 'action' in from_k_json.keys():
+                match from_k_json['action']:
                     case 'print':
-                        print(*processed_json['args'], end='', flush=True)
+                        print(*from_k_json['args'], end='', flush=True)
                     case 'sleep':
-                        asyncio.create_task(self._sleep( processed_json['duration']
-                                                       , processed_json['tid']))
+                        asyncio.create_task(self._sleep( from_k_json['duration']
+                                                       , from_k_json['tid']))
 
-            if 'name' in processed_json.keys():
-                match processed_json['name']:
+            if 'name' in from_k_json.keys():
+                match from_k_json['name']:
                     case 'Obtain':
-                        raise RuntimeError('Obtain not implemented!')
+                        await self.to_k_queue.put(_obtain_response( from_k_json['tid']
+                                                                  , 'Datastore'
+                                                                  , self.datastore.get_value(process_json['args'][0])))
                     case _:
-                        await self.to_app_queue.put(processed_json)
+                        await self.to_app_queue.put(from_k_json)
 
     async def launch(self):
         self.wrapper_task = asyncio.create_task(super().launch())
@@ -106,9 +107,10 @@ class MedikHandler(MedikWrapper):
 
         await asyncio.gather(self.wrapper_task, from_k_task)
 
-    def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_dir, psepsis_pgm):
+    def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_dir, psepsis_pgm, datastore):
         super().__init__(to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm)
         self.to_app_queue = to_app_queue
+        self.datastore = datastore
 
 
 class AppProcess:
@@ -161,12 +163,11 @@ class AppProcess:
 
 class DataPortalProcess:
 
-    def __init__(self, ws_port, to_k_queue, to_app_queue):
+    def __init__(self, ws_port, to_k_queue, to_app_queue, datastore):
         self.ws_port = ws_port
         self.to_k_queue = to_k_queue
         self.to_app_queue = to_app_queue
-
-        self.organ_dt = OrganDt()
+        self.organ_dt = datastore.organ_dt
 
     async def from_portal_handler(self, websocket):
         async for message in websocket:
@@ -190,6 +191,13 @@ class DataPortalProcess:
         async with websockets.serve(self.setup_connections, '0.0.0.0', self.ws_port):
             await asyncio.Future()
 
+class Datastore:
+
+    def __init__(self):
+        self.organ_dt = OrganDt
+
+    def get_value(self, value_name):
+        return self.organ_dt.get_value(value_name)
 
 
 async def main(app_process, k_process, portal_process):
@@ -228,13 +236,19 @@ if __name__ == "__main__":
     from_k_queue = asyncio.Queue()
     to_k_queue = asyncio.Queue()
     to_app_queue = asyncio.Queue()
+    datastore = Datastore()
 
     if args.stub:
         k_process = StubProcess(args.stub, to_k_queue, to_app_queue)
     else:
         set_env()
-        k_process = MedikHandler(to_k_queue, from_k_queue, to_app_queue, kompiled_dir, psepsis_pgm)
+        k_process = MedikHandler( to_k_queue
+                                , from_k_queue
+                                , to_app_queue
+                                , kompiled_dir
+                                , psepsis_pgm
+                                , datastore )
     app_process = AppProcess(args.user_port, to_k_queue, to_app_queue)
-    portal_process = DataPortalProcess(args.data_port, to_k_queue, to_app_queue)
+    portal_process = DataPortalProcess(args.data_port, to_k_queue, to_app_queue, datastore)
     asyncio.run(main(app_process, k_process, portal_process))
     print('Exited middleware')
