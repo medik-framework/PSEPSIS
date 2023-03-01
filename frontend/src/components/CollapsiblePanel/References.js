@@ -60,7 +60,7 @@ export default function RichObjectTreeView() {
       <TreeItem key={key} nodeId={key} label={key}>
         {nodes[key].map((reference) => {
           return (
-            <>
+            <div key={reference.name}>
               <TreeItem
                 key={reference.name}
                 nodeId={reference.name}
@@ -83,7 +83,7 @@ export default function RichObjectTreeView() {
                   />
                 </Box>
               </Modal>
-            </>
+            </div>
           );
         })}
       </TreeItem>
