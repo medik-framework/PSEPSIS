@@ -1,11 +1,10 @@
 {
- "hr"                 : 75,
- "bpSys"              : 100,
- "temp"               : 39.5,
- "pulseQuality"       : null,
- "mentalStatus"       : null,
- "capillaryRefill"    : null,
- "skinColor"          : null,
- "highRiskConditions" : 1
+  "HR": 75,
+  "BP Sys": 100,
+  "Temp": 39.5,
+  "Pulse Quality": null,
+  "Behavior": null,
+  "Capillary Refill": null,
+  "Skin Color": null,
+  "High Risk Conditions": 1
 }
-

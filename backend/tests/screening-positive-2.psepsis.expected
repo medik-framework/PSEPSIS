@@ -54,7 +54,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "hr"
+      "HR"
     ]
   },
   {
@@ -62,7 +62,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "bpSys"
+      "BP Sys"
     ]
   },
   {
@@ -70,7 +70,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "temp"
+      "Temp"
     ]
   },
   {
@@ -78,7 +78,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "pulseQuality"
+      "Pulse Quality"
     ]
   },
   {
@@ -86,7 +86,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "mentalStatus"
+      "Behavior"
     ]
   },
   {
@@ -94,7 +94,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "capillaryRefill"
+      "Capillary Refill"
     ]
   },
   {
@@ -102,7 +102,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "skinColor"
+      "Skin Color"
     ]
   },
   {
@@ -110,7 +110,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "highRiskConditions"
+      "High Risk Conditions"
     ]
   },
   {

@@ -1,11 +1,10 @@
 {
- "hr"                 : 150,
- "bpSys"              : 120,
- "temp"               : 37,
- "pulseQuality"       : "normal",
- "mentalStatus"       : "normal",
- "capillaryRefill"    : 2,
- "skinColor"          : "normal",
- "highRiskConditions" : 0
+  "HR": 150,
+  "BP Sys": 120,
+  "Temp": 37,
+  "Pulse Quality": "normal",
+  "Behavior": "normal",
+  "Capillary Refill": 2,
+  "Skin Color": "normal",
+  "High Risk Conditions": 0
 }
-
