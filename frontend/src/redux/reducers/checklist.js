@@ -1,32 +1,29 @@
-const initialState = {};
+import { createSlice } from '@reduxjs/toolkit'
+import { checklists } from "../../resources/ChecklistConfig.js"
 
-const checkListReducer = (state = initialState, action) => {
-  if (action.type == "TOGGLE_CHECKLIST_ITEM") {
-    const checklist = action.payload.checklist;
-    const item = action.payload.item;
+const getInitState = () => {
+  let checklistHolder = {};
+  Object.keys(checklists).map(
+    (checklistName) => checklistHolder[checklistName] = []
+  )
+  return checklistHolder
+}
 
-    if (Object.keys(state).includes(checklist)) {
-      if (state[checklist].includes(item)) {
-        state[checklist].pop(item);
+const checklistsSlice =  createSlice({
+  name: 'checklists',
+  initialState: getInitState(),
+  reducers: {
+    toggle: (state, action) => {
+      const checklistName = action.payload.checklist;
+      const checkitemName = action.payload.item;
+      if (state[checklistName].includes(checkitemName)) {
+        state[checklistName].pop(checkitemName)
       } else {
-        state[checklist] = [...state[checklist], item];
+        state[checklistName].push(checkitemName)
       }
-    } else {
-      state[checklist] = [item];
     }
-
-    if (item === "None" && state[checklist].includes(item)) {
-      state[checklist] = [item];
-    }
-
-    if (item !== "None" && state[checklist].includes("None")) {
-      state[checklist] = [item];
-    }
-
-    state = { ...state };
   }
+});
 
-  return state;
-};
-
-export default checkListReducer;
+export const { toggle } = checklistsSlice.actions
+export default checklistsSlice.reducer
