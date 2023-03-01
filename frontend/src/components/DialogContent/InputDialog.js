@@ -33,24 +33,14 @@ const InputDialog = ({ open, setOpen, info }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(info.id){
-      let r = Object.keys(retDict).length > 0;
-      if (r) {
-        r = Object.keys(retDict).reduce((prev, i) =>
-          prev && !( retDict[i] === null )
-        , r)
-      }
+    let r = Object.keys(retDict).length > 0;
+    if (r) {
+      r = Object.keys(retDict).reduce((prev, i) =>
+        prev && !( retDict[i] === null )
+      , r)
       setShouldContinue(r);
     } else {
-      let r = Object.keys(storeDict).length > 0;
-      if (r) {
-        r = Object.keys(storeDict).reduce((prev, i) =>
-          prev && !( storeDict[i] === null )
-        , r);
-        setShouldContinue(r);
-      } else {
-        setShouldContinue(true);
-      }
+      setShouldContinue(true);
     }
   }, [retDict, storeDict, info])
 
