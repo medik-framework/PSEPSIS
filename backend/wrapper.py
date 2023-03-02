@@ -50,6 +50,7 @@ class MedikWrapper:
                 if out_json == None:
                     break;
                 processed_json = self.json_rat_strs_to_fractions(out_json)
+                logging.info('From Medik: {}'.format(json.dumps(processed_json)))
                 await self.from_k_queue.put(processed_json)
         except asyncio.CancelledError:
             return None
@@ -96,6 +97,7 @@ class MedikWrapper:
             while True:
                 in_data = await self.to_k_queue.get()
                 processed_data = self.json_floats_to_rat_strs(in_data)
+                logging.info('To MediK: {}'.format(json.dumps(processed_data)))
                 in_data_str = (json.dumps(processed_data,separators=(',',':')) + '\n').encode('utf-8')
                 self.k_process.stdin.write(in_data_str)
                 await self.k_process.stdin.drain()
