@@ -4,7 +4,7 @@ import { OrganDTConfig } from "../resources/DigitalTwinConfigReorganized";
 import MeasurementNumeric from "./MeasurementNumeric";
 import MeasurementSelect from "./MeasurementSelect";
 
-const OrganPage = ({ selectedDT }) => {
+const OrganPage = ({ selectedDT, kSendMessage }) => {
     const selectedOrganDTConfig = OrganDTConfig[selectedDT];
     return (
         <Grid container columns={{ xs: 6, sm: 6, md: 12, lg: 18, xl: 24}} spacing={1} p={1} sx={{ alignItems: 'stretch' }}>
@@ -14,8 +14,9 @@ const OrganPage = ({ selectedDT }) => {
             return (
                 <MeasurementNumeric
                 key={`${selectedOrganDTConfig.name}.${config.name}`}
-                { ...{ organName: selectedOrganDTConfig.name, 
-                        config: config
+                { ...{ organName: selectedOrganDTConfig.name,
+                        config: config,
+                        kSendMessage: kSendMessage
                 }}
                 />
             )
@@ -23,8 +24,9 @@ const OrganPage = ({ selectedDT }) => {
             return (
                 <MeasurementSelect
                 key={`${selectedOrganDTConfig.name}.${config.name}`}
-                { ...{ organName: selectedOrganDTConfig.name, 
-                        config: config
+                { ...{ organName: selectedOrganDTConfig.name,
+                        config: config,
+                        kSendMessage: kSendMessage
                 }}
                 />
             )
