@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useInterval } from 'usehooks-ts';
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useSelector } from "react-redux";
 
 import { Box } from "@mui/material";
 
@@ -13,8 +11,6 @@ import CollapsiblePanel from "./components/CollapsiblePanel";
 import InputDialog from "./components/DialogContent/InputDialog";
 
 const PsepsisTablet = () => {
-  const kwsURL = useSelector((state) => state.misc.kwsURL);
-  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
@@ -28,10 +24,10 @@ const PsepsisTablet = () => {
     kEndpoint.sendMessage(JSON.stringify({
       'eventName':'StartScreening',
     }));
-  }, [])
+  }, [kEndpoint])
 
   useEffect(() => {
-   if(dialogs.length != 0 && !open) {
+   if(dialogs.length !== 0 && !open) {
      setInfo(JSON.parse(dialogs[0]));
      setOpen(true);
    }

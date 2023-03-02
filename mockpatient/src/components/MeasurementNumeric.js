@@ -50,7 +50,7 @@ const MeasurementNumeric = ({ organName, config }) => {
             }
             sendMessage(JSON.stringify(data))
         }
-    }, [value, apiURL, organName, config])
+    }, [value, apiURL, organName, config, sendMessage])
 
     useInterval(() => {
         dispatch(increment({
