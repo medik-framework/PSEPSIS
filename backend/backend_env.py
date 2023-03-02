@@ -1,5 +1,5 @@
 from pathlib import Path
-import os
+import logging, os
 
 base_dir     = Path(__file__).parents[0]
 psepsis_pgm  = base_dir     / 'psepsis.medik'
@@ -9,6 +9,11 @@ krelease_dir = medik_dir    / 'ext'          / 'k'              / 'k-distributio
 kbin_dir     = krelease_dir / 'bin'
 
 def set_env():
+    if os.getenv('LOGINFO'):
+        logging.basicConfig(level=logging.INFO)
+    if os.getenv('LOGDEBUG'):
+        logging.basicConfig(level=logging.DEBUG)
+
     path_entires = [ kbin_dir ]
     os.environ['PATH'] = str(kbin_dir.resolve()) \
                                 + os.pathsep + os.environ['PATH']
