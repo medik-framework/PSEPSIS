@@ -1,22 +1,12 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { update } from '../redux/organDataSlice';
-import useWebSocket from "react-use-websocket";
 
 import { Grid, Typography, Select, MenuItem, Box } from "@mui/material";
 
-const MeasurementSelect = ({ organName, config }) => {
+const MeasurementSelect = ({ organName, config, kSendMessage }) => {
     const value = useSelector((state) => state.OrganDT[organName][config.name]);
     const dispatch = useDispatch();
-    const apiURL = useSelector((state) => state.misc['apiURL']);
-
-    const kwsURL = useSelector((state) => state.misc.kwsURL);
-    const { sendMessage } = useWebSocket(
-        kwsURL, {
-            shouldReconnect: (CloseEvent) => true,
-            share: true
-        }
-    );
 
     useEffect(() => {
         if (value) {
@@ -26,9 +16,9 @@ const MeasurementSelect = ({ organName, config }) => {
                 value: value,
                 timeStamp: new Date().getTime()
             }
-            sendMessage(JSON.stringify(data))
+            kSendMessage(JSON.stringify(data))
         }
-    }, [value, apiURL, organName, config, sendMessage])
+    }, [value, organName, config, kSendMessage])
 
     return (
         <Grid item key={config.name} xs={6}>

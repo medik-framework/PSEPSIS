@@ -1,13 +1,13 @@
 import { Button, Box, Typography } from "@mui/material";
 
-const WelcomePage = ({ startSession }) => {
+const WelcomePage = ({ startSession, isKConnActive }) => {
     return (
-        <Box 
+        <Box
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 width: '100vw',
-                height: '100vh', 
+                height: '100vh',
                 backgroundImage: `url(${process.env.PUBLIC_URL + 'bgimg.jpg'})`,
                 position: 'relative',
                 backgroundPosition: 'center',
@@ -23,9 +23,10 @@ const WelcomePage = ({ startSession }) => {
             <Typography fontSize={36} color='white'>
                 Simulation Data Portal
             </Typography>
-            <Button 
+            <Button
                 variant="contained"
                 size="large"
+                disabled={!isKConnActive}
                 sx={{
                     marginTop: '50px',
                     color: '#FFFAFA',

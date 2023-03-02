@@ -3,11 +3,10 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { update, increment } from '../redux/organDataSlice';
 import { useInterval } from 'usehooks-ts';
-import useWebSocket from "react-use-websocket";
 
 import { Button, Grid, Typography, TextField, Box } from "@mui/material";
 
-const MeasurementNumeric = ({ organName, config }) => {
+const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
     const [inputValue, setInputValue] = useState(null);
     const [delay, setDelay] = useState(null);
     const [target, setTarget] = useState(null);
@@ -16,15 +15,6 @@ const MeasurementNumeric = ({ organName, config }) => {
     const [step, setStep] = useState(0);
     const value = useSelector((state) => state.OrganDT[organName][config.name]);
     const dispatch = useDispatch();
-    const apiURL = useSelector((state) => state.misc['apiURL']);
-
-    const kwsURL = useSelector((state) => state.misc.kwsURL);
-    const { sendMessage } = useWebSocket(
-        kwsURL, {
-            shouldReconnect: (CloseEvent) => true,
-            share: true
-        }
-    );
 
     const resetInterval = () => {
         setDelay(null);
@@ -48,9 +38,9 @@ const MeasurementNumeric = ({ organName, config }) => {
                 value: value,
                 timeStamp: new Date().getTime()
             }
-            sendMessage(JSON.stringify(data))
+            kSendMessage(JSON.stringify(data))
         }
-    }, [value, apiURL, organName, config, sendMessage])
+    }, [value,  organName, config, kSendMessage])
 
     useInterval(() => {
         dispatch(increment({

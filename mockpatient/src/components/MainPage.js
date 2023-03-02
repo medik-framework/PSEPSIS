@@ -28,12 +28,13 @@ const ExitConfirmationDialog = ({ open, handleCancel, handleOk }) => {
     )
 }
 
-const MainPage = ({ exitSession }) => {
+const MainPage = ({ exitSession, kWebSocket }) => {
     const dispatch = useDispatch();
     const apiURL = useSelector((state) => state.misc['apiURL']);
     const [selectedDT, setSelectedDT] = useState(0);
     const [open, setOpen] = useState(false);
     const [id, setID] = useState(1);
+    const kSendMessage = kWebSocket.sendMessage;
     return (
         <Box sx={{ display:'flex', flexDirection:'column' }}>
             <Box sx={{ display:'flex', width:'100vw' }}>
@@ -51,7 +52,7 @@ const MainPage = ({ exitSession }) => {
                     </Button>
                 </Box>
                 <Box sx={{ height:'100vh', width:'85vw' }}>
-                    <OrganPage {...{ selectedDT }}/>
+                    <OrganPage {...{ selectedDT, kSendMessage }}/>
                 </Box>
             </Box>
             <Box>
