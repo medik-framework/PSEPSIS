@@ -409,8 +409,8 @@ machine SepsisScreening
       if (sepsisSuspected) {
         broadcast SepsisSuspected;
       } else {
-        sleep(30);
-        goto ObtainMeasurements;
+        sleep(10);
+        goto CalculateScore;
       }
     }
   }
