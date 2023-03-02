@@ -28,7 +28,7 @@ const MeasurementSelect = ({ organName, config }) => {
             }
             sendMessage(JSON.stringify(data))
         }
-    }, [value, apiURL, organName, config])
+    }, [value, apiURL, organName, config, sendMessage])
 
     return (
         <Grid item key={config.name} xs={6}>
