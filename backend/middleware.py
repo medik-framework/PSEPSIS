@@ -24,7 +24,7 @@ def _obtain_response(tid, interface_id, args):
                  , 'args'      : args }]
 
 def _sleep_response(tid):
-    return [{ 'action' : 'sleepReponse'
+    return [{ 'action' : 'sleepResponse'
             , 'tid'    : tid }]
 
 def _exit():
