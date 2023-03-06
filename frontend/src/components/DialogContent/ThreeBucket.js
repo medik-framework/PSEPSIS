@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ReactFlow, { useNodesState, useEdgesState, MarkerType } from 'reactflow';
 import { useSelector } from 'react-redux';
 import 'reactflow/dist/style.css';
@@ -67,224 +67,154 @@ const initialEdges = [
 const ThreeBucket = () => {
 
   const [nodes, setNodes] = useNodesState(initialNodes);
-  const [edges, setEdges] = useEdgesState(initialEdges);
+  const [edges] = useEdgesState(initialEdges);
   const changingNodes = ['1','2','3','8','9'];
   const tempNode = ['4'];
   const behaviorNode = ['5'];
 
-  const [nodeName, setNodeName] = useState(initialNodes);
-  const [nodeBg, setNodeBg] = useState('white');
-  const [nodeHidden, setNodeHidden] = useState(false);
-
   const ageObject = useSelector((state) => state.patientBasic['Age']);
   const organDTValue = useSelector((state) => state.organDT['Cardiovascular']);
-  var organDTValueforTemp = '';
+  const organDTValueforTemp = useSelector((state) =>state.organDT['Immune']);
   var organDTValueforBehavior = '';
 
   function selectValue(state, key, id, digikey) {
-    if (changingNodes.includes(id))
-    {
-     return organDTValue[key].value;
-    }
-    if(tempNode.includes(id))
-    {
-      organDTValueforTemp = state.organDT['Immune'];
-      return JSON.stringify(organDTValueforTemp.Temp.value);
-    }
-    if(behaviorNode.includes(id))
-    {
-      organDTValueforBehavior=(state?.organDT['Neurologic'][`${digikey}`].value);
-    }
+    if(changingNodes.includes(id)){return organDTValue[key].value;}
+    if(tempNode.includes(id)){return JSON.stringify(organDTValueforTemp.Temp.value);}
+    if(behaviorNode.includes(id)){organDTValueforBehavior=(state?.organDT['Neurologic'][`${digikey}`].value);}
   }
 
   function getColorCount(node_color){
-    if(node_color == '#ff4c4c') {return 1;}
+    if(node_color === '#ff4c4c') {return 1;}
     else {return 0;}
+  }
+
+  const get_colorcode = (measurement, value) => {
+    if (!value || !ageObject) return 'white';
+    if(measurement.type === 'choices') {
+      if (measurement.options[value] === 2) return '#33ff33';
+      else return '#ff4c4c';
+    }
+    else {
+      const range = measurement.getThres ? measurement.getThres(ageObject) : {low: 0, high: 0}
+      if(value > range.high || value < range.low) return '#ff4c4c';
+      if(value <= range.high && value >= range.low) return '#33ff33';
+    }
+  }
+
+  function colorCheck(props){
+  var normal = 0;
+  for (const key in props) 
+  {
+    if (Object.hasOwnProperty.call(props, key)) 
+    {
+      if(`${props[key]}` === '#ff4c4c'){return '#ff4c4c'}
+      if(`${props[key]}` === '#33ff33'){normal=normal+1;}
+    }
+  }
+  if(normal>0){return '#33ff33';}
+  else {return 'white';}
   }
 
   const values = useSelector(state => initialNodes.map(item => selectValue(state, item.key, item.id, item.digikey)));
   useEffect(() => {
     setNodes((nds) =>
       nds.map((node, index) => {
-        if (changingNodes.includes(node.id))
+        if (changingNodes.includes(node.id)) 
         {
+          const value = organDTValue[node.key].value;  
           const isData = `${values[index]}`;
           const name = `${node.const_label}=(${isData})`;
-          if(isData != "null" && isData != "NaN")
-          {
-            //const name = `${node.const_label}=(${values[index]})`;
-            node.data = {label : name};
-          }
-          if(typeof isData === 'string' && isData.length>3 && isData != "null")
-          {
-            //node.data.label = `${node.const_label}=(${values[index]})`;
-            node.data = {label : name};
-          };
-
-          const value = organDTValue[node.key].value;
-
-          if(ageObject && value){
-            if(OrganDTConfig[0].measurements[`${node.digikey}`].type !== 'choices')
-            {
-              //Find the range from the AgeObject
-              const range = OrganDTConfig[0].measurements[`${node.digikey}`].getThres ? OrganDTConfig[0].measurements[`${node.digikey}`].getThres(ageObject) : {low: 0, high: 0};
-              if(value > range.high || value < range.low)
-              {
-                node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-              }
-
-              if(value <= range.high && value >= range.low)
-              {
-                node.style = { ...node.style, backgroundColor: '#33ff33' };
-              }
-            }
-            else
-            {
-              const checkvalue = OrganDTConfig[0].measurements[`${node.digikey}`].options[value];
-              if (checkvalue == 2)
-              {
-                node.style = { ...node.style, backgroundColor: '#33ff33' };
-              }
-              if (checkvalue == 0)
-              {
-                node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-              }
-            } }
+          if(isData !== "null" && isData !== "NaN"){ node.data = {label : name};}
+          const colorcode = get_colorcode(OrganDTConfig[0].measurements[`${node.digikey}`], value);
+          node.style = { ...node.style, backgroundColor: colorcode };
         }
 
         if(tempNode.includes(node.id))
-        {
-          const range = OrganDTConfig[2].measurements[`${node.digikey}`].getThres? OrganDTConfig[2].measurements[`${node.digikey}`].getThres(ageObject): {low: 0, high: 0};
+        {   
           const isData = `${values[index]}`;
-
+          const value = organDTValueforTemp.Temp.value;
           if(! isNaN(isData))
           {
             const temp = `${node.const_label}=(${isData})`
             node.data = {label : temp};
-            //node.data.label = `${node.const_label}=(${isData})`;
           }
-          if(ageObject && organDTValueforTemp.Temp.value)
-          {
-            if(organDTValueforTemp.Temp.value > range.high || organDTValueforTemp.Temp.value < range.low) {node.style = { ...node.style, backgroundColor: '#ff4c4c' };};
-            if(organDTValueforTemp.Temp.value <= range.high && organDTValueforTemp.Temp.value >= range.low) {node.style = { ...node.style, backgroundColor: '#33ff33' };};
-          }
+          const colorcode = get_colorcode(OrganDTConfig[2].measurements[`${node.digikey}`], value);
+          node.style = { ...node.style, backgroundColor: colorcode};
         }
 
         //Calculations for Bucket 1 we need values of HeatRate, SystolicBP and PulseQuality
-        if(node.id == 10 && ageObject)
+        if(node.id === '10' && ageObject)
         {
           const valueHeartRate = initialNodes[0].style.backgroundColor;
           const valueSystolicBP = initialNodes[1].style.backgroundColor;
           const valuePulseQuality = initialNodes[2].style.backgroundColor;
-          if(valueHeartRate == '#ff4c4c' || valueSystolicBP == '#ff4c4c' || valuePulseQuality == '#ff4c4c')
-          {
-            node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-            var count = getColorCount(valueHeartRate)+getColorCount(valueSystolicBP)+getColorCount(valuePulseQuality);
-            const bucket1val = `${node.const_label}=(${count})`;
-            node.data = {label : bucket1val};
-          }
-          // if(valueHeartRate == '#33ff33' && valueSystolicBP == '#33ff33' && valuePulseQuality == '#33ff33'){
-          else if(valueHeartRate == '#33ff33' || valueSystolicBP == '#33ff33' || valuePulseQuality == '#33ff33')
-          {
-            node.style = { ...node.style, backgroundColor: '#33ff33' };
-            node.data = {label : "Bucket 1"}
-          }
+          const color = colorCheck({valueHeartRate,valueSystolicBP,valuePulseQuality});
+          node.style = { ...node.style, backgroundColor: color };
+
+          var count = getColorCount(valueHeartRate)+getColorCount(valueSystolicBP)+getColorCount(valuePulseQuality);
+          const bucket1val = count ? `${node.const_label}=(${count})`:"Bucket 1";
+          node.data = {label : bucket1val};
         }
 
         //Calculations for Bucket 2
-        if(node.id == 11 && ageObject)
+        if(node.id === '11' && ageObject)
         {
           const valueTemp = initialNodes[4].style.backgroundColor;
-          if(valueTemp == '#ff4c4c')
-          {
-            node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-            const bucket2val = `${node.const_label}=(${1})`;
-            node.data = {label : bucket2val};
-          }
-          else if(valueTemp == '#33ff33')
-          {
-            node.style = { ...node.style, backgroundColor: '#33ff33' };
-            node.data = {label : "Bucket 2"};
-          }
+          const color = colorCheck({valueTemp});
+          node.style = { ...node.style, backgroundColor: color };
+
+          var count_2 = getColorCount(valueTemp);
+          const bucket1val = count_2 ? `${node.const_label}=(${count_2})`:"Bucket 2";
+          node.data = {label : bucket1val};
         }
 
         //Calculations for Perfusion from CapRefill and SkinColor
-        if(node.id == 6 && ageObject)
+        if(node.id === '6' && ageObject)
         {
           const valueCapRefil = initialNodes[6].style.backgroundColor;
           const valueSkinColor = initialNodes[7].style.backgroundColor;
           if(!(valueCapRefil === "white" || valueSkinColor === "white"))
           {
-            if(valueCapRefil == '#ff4c4c' || valueSkinColor == '#ff4c4c')
-            {
-              node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-            }
-            else if(valueCapRefil == '#33ff33' || valueSkinColor == '#33ff33')
-            {
-              node.style = { ...node.style, backgroundColor: '#33ff33' };
-            }
+            const color = colorCheck({valueCapRefil,valueSkinColor});
+            node.style = { ...node.style, backgroundColor: color };
           }
         }
 
         //Calculations for Mental Status (Behavior)
-        if(node.id == 5)
+        if(node.id === '5')
         {
-          if(organDTValueforBehavior)
-          {
+          if(organDTValueforBehavior){
             const ment_bev = `${node.const_label}=(${organDTValueforBehavior})`
-            node.data  = {label : ment_bev} ;
+            node.data  = {label : ment_bev};
           }
-          const checkBehavior = OrganDTConfig[6].measurements[`${node.digikey}`].options[organDTValueforBehavior];
-          if(ageObject)
-          {
-            if(checkBehavior == 2)
-            {
-              node.style = { ...node.style, backgroundColor: '#33ff33' };
-            }
-            if(checkBehavior == 1 || checkBehavior == 0)
-            {
-              node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-            }
-          }
+          const colorcode = get_colorcode(OrganDTConfig[6].measurements[`${node.digikey}`], organDTValueforBehavior);
+          node.style = { ...node.style, backgroundColor: colorcode};
         }
 
         //Calculations for Bucket 3 using Perfusion and MentalStatus
-        if(node.id == 12 && ageObject)
+        if(node.id === '12' && ageObject)
         {
           const valueBehavior = initialNodes[5].style.backgroundColor;
           const valuePerfusion = initialNodes[8].style.backgroundColor;
-          if(valueBehavior == '#ff4c4c' || valuePerfusion == '#ff4c4c')
-          {
-            node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-            var count = getColorCount(valueBehavior)+getColorCount(valuePerfusion);
-            const bucket3 = `${node.const_label}=(${count})`
-            node.data = {label : bucket3} ;
-          }
-          else if(valueBehavior == '#33ff33' || valuePerfusion == '#33ff33')
-          {
-            node.style = { ...node.style, backgroundColor: '#33ff33' };
-            const bucket3 = node.const_label
-            node.data = {label : bucket3} ;
-          }
+          const color = colorCheck({valueBehavior,valuePerfusion});
+          node.style = { ...node.style, backgroundColor: color };
 
+          var count_3 = getColorCount(valueBehavior)+getColorCount(valuePerfusion);
+          const bucket1val = count_3 ? `${node.const_label}=(${count_3})`:"Bucket 3";
+          node.data = {label : bucket1val};
         }
-
+        
         //Calculations for Sepsis Detection
-        if(node.id == 13 && ageObject)
+        if(node.id === '13' && ageObject)
         {
           const valueBucket1 = initialNodes[12].style.backgroundColor;
           const valueBucket2 = initialNodes[13].style.backgroundColor;
           const valueBucket3 = initialNodes[14].style.backgroundColor;
-          if(!(valueBucket1 === "white" || valueBucket2 === "white" || valueBucket3 === "white"))
-          {
-            if(valueBucket1 == '#ff4c4c' && valueBucket2 == '#ff4c4c' && valueBucket3 == '#ff4c4c')
-            {
-              node.style = { ...node.style, backgroundColor: '#ff4c4c' };
-            }
-            else if(valueBucket1 == '#33ff33' || valueBucket2 == '#33ff33' || valueBucket3 == '#33ff33')
-            {
-              node.style = { ...node.style, backgroundColor: '#33ff33' };
-            }
+          if(!(valueBucket1 === "white" || valueBucket2 === "white" || valueBucket3 === "white")){
+            if(valueBucket1 === '#ff4c4c' && valueBucket2 === '#ff4c4c' && valueBucket3 === '#ff4c4c'){
+              node.style = { ...node.style, backgroundColor: '#ff4c4c' };}
+            else if(valueBucket1 === '#33ff33' || valueBucket2 === '#33ff33' || valueBucket3 === '#33ff33'){
+              node.style = { ...node.style, backgroundColor: '#33ff33' };}
           }
         }
         return node;
@@ -293,23 +223,14 @@ const ThreeBucket = () => {
   }, [organDTValue, ageObject]);
 
   return (
-    <div
-      style={{
-        height: '75vh',
-        width: '75vw',
-        margin: 'auto',
-      }}
-    >
+    <div style={{height: '75vh',width: '75vw',margin: 'auto',}} >
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        //onNodesChange={onNodesChange}
-        //onEdgesChange={onEdgesChange}
         minZoom={1}
         maxZoom={1}
         attributionPosition="bottom-left"
         fitView
-        //canUserMoveNodes={true}
         onMove={false}
       >
       </ReactFlow>
