@@ -1,0 +1,70 @@
+[
+  { "id": "datastore",
+    "interface": "Datastore",
+    "name":"Obtain",
+    "args":["fluidOverdoseRisks"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get fluid overdose risks"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmFluidOverdoseRisksEntered",
+    "args": []
+  },
+  { "id": "datastore",
+    "interface": "Datastore",
+    "name":"Obtain",
+    "args":["fluidOverdoseRisks"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["administer 20 ml/kg normal saline"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get responsiveness to fluids"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get fluid overdose signs"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["normalSaline"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Recommend",
+    "args": [
+      "get fluid next step",
+      "Responsiveness to fluid therapy: false",
+      "Fluid overdose: false",
+      "Recommendation: repeat fluid bolus"
+    ]
+  },
+  { "id": "datastore",
+    "interface": "Datastore",
+    "name":"Obtain",
+    "args":["fluidOverdoseRisks"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["administer 20 ml/kg normal saline"]
+  }
+]

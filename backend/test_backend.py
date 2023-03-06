@@ -157,3 +157,7 @@ async def test_screening_positive_1():
 @pytest.mark.asyncio
 async def test_screening_positive_2():
     await run_test('screening-positive-2')
+
+@pytest.mark.asyncio
+async def test_fluid_therapy_no_risk_overdose_responsiveness():
+    await run_test('fluid-therapy-no-risk-overdose-responsiveness')
