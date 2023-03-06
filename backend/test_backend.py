@@ -1,7 +1,7 @@
 from wrapper import MedikWrapper
 from backend_env import kompiled_dir, psepsis_pgm, set_env
 
-import asyncio, copy, pytest, json, sys, os
+import asyncio, copy, pytest, json, logging, sys, os
 import functools
 
 ignored_names = ['StartGUI']
@@ -80,6 +80,7 @@ async def medik_interact(in_jsons, data=None):
             exit_flag = True
 
         if 'waitFor' in in_json.keys():
+            logging.info('Waiting to send {}'.format(json.dumps(in_json)))
             if in_json['waitFor'].items() <= out_json.items():
                 if exit_flag:
                     await exit_with_msg(in_json)

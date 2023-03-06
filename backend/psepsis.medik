@@ -16,7 +16,7 @@ machine MeasurementBounds
      , urineOutputUpperBound     , urineOutputLowerBound
      , arterialLactateUpperBound , arterialLactateLowerBound;
 
-  var salineDosageUpperBound         = 5;
+  var salineDosageUpperBound         = 40;
   var epinephrineDosageUpperBound    = 5;
   var norepinephrineDosageUpperBound = 5;
   var dopamineDosageUpperBound       = 5;
@@ -429,7 +429,7 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
       //new SepticShockScreening(tabletApp, datastore, measurementBounds);
 
       //// Treatment Machines
-      //new FluidTherapy(tabletApp, datastore, measurementBounds);
+      new FluidTherapy(tabletApp, datastore, measurementBounds);
       //new IonotropicSupportTherapy(tabletApp, datastore, measurementBounds);
 
       //// Supplementary Machines
@@ -441,6 +441,8 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
     }
   }
 }
+
+
 //
 //machine SepticShockScreening
 //  receives SepsisSuspected
@@ -596,156 +598,148 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 //  }
 //}
 //
-//machine FluidTherapy
-//  receives StartFluidTherapy
-//         , ConfirmFluidOverdoseRisksEntered
-//         , ConfirmFluidOverdoseSignsEntered
-//         , ConfirmFluidAdministered
-//         , PositiveResponsiveness
-//         , NegativeResponsiveness
-//         , PositiveFluidTherapyRestart
-//         , NegativeFluidTherapyRestart
-//         , ContinueWithFluidOverdose {
-//
-//  vars tabletApp, datastore, measurementBounds;
-//  var isResponsiveToFluids;
-//
-//  fun isNormal(parameter, normalMeasurement) {
-//    var storedMeasurement = obtainFrom(datastore, parameter);
-//    if (!(storedMeasurement == undef)) {
-//      return storedMeasurement == normalMeasurement;
-//    } else {
-//      return true;
-//    }
-//  }
-//
-//  init state Start {
-//    entry(tabletApp, datastore, measurementBounds) {
-//      this.tabletApp            = tabletApp;
-//      this.datastore            = datastore;
-//      this.measurementBounds    = measurementBounds;
-//      this.isResponsiveToFluids = false;
-//    }
-//
-//    on StartFluidTherapy do {
-//      goto ObtainRisks;
-//    }
-//  }
-//
-//  state ObtainRisks {
-//    entry {
-//      if (obtainFrom(datastore, "fluidOverdoseRisks") == undef) {
-//        send tabletApp, Instruct, ("Obtain Fluid Overdose Risks");
-//      }
-//    }
-//    on ConfirmFluidOverdoseRisksEntered do {
-//      print("confirmed fluid overdose risks entered");
-//      goto SuggestFluidDosage;
-//    }
-//  }
-//
-//  state SuggestFluidDosage {
-//    entry {
-//      if( !isNormal("fluidOverdoseRisks", measurementBounds.fluidOverdoseRisks) ) {
-//        send tabletApp, Instruct, ("Administer 5-10 ml/kg Normal Saline");
-//        goto WaitForAdministerFluidConfirmation;
-//      } else {
-//        send tabletApp, Instruct, ("Administer 20 ml/kg Normal Saline");
-//        goto WaitForAdministerFluidConfirmation;
-//      }
-//    }
-//  }
-//
-//  state WaitForAdministerFluidConfirmation {
-//    on ConfirmFluidAdministered do {
-//      // Wait for fluid responsiveness
-//      send tabletApp, ShowSleepTimer, ("FluidTherapy", 10);
-//      sleep(10);
-//      goto EvaluateResponsiveness;
-//    }
-//  }
-//
-//  state EvaluateResponsiveness {
-//    entry {
-//      send tabletApp, Instruct, ("Check Responsiveness to Fluids");
-//    }
-//
-//    on PositiveResponsiveness do {
-//      this.isResponsiveToFluids = true;
-//      goto AskNextStep;
-//    }
-//
-//    on NegativeResponsiveness do {
-//      this.isResponsiveToFluids = false;
-//      goto CheckOverdoseSigns;
-//    }
-//  }
-//
-//  state AskNextStep {
-//    entry {
-//      send tabletApp, Instruct, ("Restart Fluid Therapy?");
-//    }
-//
-//    on PositiveFluidTherapyRestart do {
-//      goto SuggestFluidDosage;
-//    }
-//
-//    on NegativeFluidTherapyRestart do {
-//      goto MaintainIVFluid;
-//    }
-//  }
-//
-//  state MaintainIVFluid {
-//    entry {
-//      send tabletApp, Instruct, ("Maintain IV-Fluid Levels");
-//    }
-//  }
-//
-//  state CheckOverdoseSigns {
-//    entry {
-//      if (obtainFrom(datastore, "fluidOverdoseSigns") == undef) {
-//        goto ObtainOverdoseSigns;
-//      }
-//
-//      print("Evaluating fluid overdose signs \n");
-//      if (! isNormal("fluidOverdoseSigns", measurementBounds.fluidOverdoseSigns)) {
-//        goto HandleFluidOverdose;
-//      } else {
-//        goto EvaluateInotropicSupport;
-//      }
-//    }
-//  }
-//
-//  state HandleFluidOverdose {
-//    entry {
-//      send tabletApp, Instruct, ("Handle Fluid Overdose");
-//    }
-//    on ContinueWithFluidOverdose do {
-//      goto SuggestFluidDosage;
-//    }
-//  }
-//
-//  state ObtainOverdoseSigns {
-//    entry {
-//      send tabletApp, Instruct, ("Obtain Fluid Overdose Signs");
-//    }
-//    on ConfirmFluidOverdoseSignsEntered do {
-//      goto CheckOverdoseSigns;
-//    }
-//  }
-//
-//  state EvaluateInotropicSupport {
-//    entry {
-//      var totalSalineDose = obtainFrom(datastore, "normalSaline");
-//      print("Evaluating Ionotropic Support. Administered " + totalSalineDose + "\n");
-//      if ((totalSalineDose > measurementBounds.salineDosageUpperBound) && !(isResponsiveToFluids)) {
-//        broadcast ConsiderIonotropicSupport;
-//      } else {
-//        goto AskNextStep;
-//      }
-//    }
-//  }
-//}
+machine FluidTherapy
+  receives StartFluidTherapy
+         , ConfirmFluidOverdoseRisksEntered
+         , ConfirmFluidOverdoseSignsEntered
+         , ConfirmFluidAdministered
+         , PositiveResponsiveness
+         , NegativeResponsiveness
+         , ConfirmMaintainFluid
+         , ConfirmRepeatFluidBolus {
+
+  vars tabletApp, datastore, measurementBounds;
+  vars isResponsiveToFluids, fluidOverdose;
+
+  fun isNormal(parameter, normalMeasurement) {
+    var storedMeasurement = obtainFrom(datastore, parameter);
+    if (!(storedMeasurement == undef)) {
+      return storedMeasurement == normalMeasurement;
+    } else {
+      return true;
+    }
+  }
+
+  init state Start {
+    entry(tabletApp, datastore, measurementBounds) {
+      this.tabletApp            = tabletApp;
+      this.datastore            = datastore;
+      this.measurementBounds    = measurementBounds;
+      this.isResponsiveToFluids = false;
+    }
+
+    on StartFluidTherapy do {
+      goto ObtainRisks;
+    }
+  }
+
+  state ObtainRisks {
+    entry {
+      if (obtainFrom(datastore, "fluidOverdoseRisks") == undef) {
+        send tabletApp, Instruct, ("get fluid overdose risks");
+      } else {
+        goto SuggestFluidDosage;
+      }
+    }
+    on ConfirmFluidOverdoseRisksEntered do {
+      print("confirmed fluid overdose risks entered");
+      goto SuggestFluidDosage;
+    }
+  }
+
+  state SuggestFluidDosage {
+    entry {
+      if( !isNormal("fluidOverdoseRisks", measurementBounds.fluidOverdoseRisks) ) {
+        send tabletApp, Instruct, ("administer 5-10 ml/kg normal saline");
+        goto WaitForAdministerFluidConfirmation;
+      } else {
+        send tabletApp, Instruct, ("administer 20 ml/kg normal saline");
+        goto WaitForAdministerFluidConfirmation;
+      }
+    }
+  }
+
+  state WaitForAdministerFluidConfirmation {
+    entry {
+      print("Waiting for fluid administered");
+    }
+    on ConfirmFluidAdministered do {
+      // Wait for fluid responsiveness
+      sleep(30);
+      goto EvaluateResponsiveness;
+    }
+  }
+
+  state EvaluateResponsiveness {
+    entry {
+      send tabletApp, Instruct, ("get responsiveness to fluids");
+    }
+
+    on PositiveResponsiveness do {
+      this.isResponsiveToFluids = true;
+      goto ObtainFluidOverdoseSigns;
+    }
+
+    on NegativeResponsiveness do {
+      this.isResponsiveToFluids = false;
+      goto ObtainFluidOverdoseSigns;
+    }
+  }
+
+  state ObtainFluidOverdoseSigns {
+    entry {
+      send tabletApp, Instruct, ("get fluid overdose signs");
+    }
+
+    on ConfirmFluidOverdoseSignsEntered(overdoseSigns) do {
+      if (!(overdoseSigns == measurementBounds.fluidOverdoseSigns)) {
+        this.fluidOverdose = true;
+      } else {
+        this.fluidOverdose = false;
+      }
+      goto AskNextStep;
+    }
+  }
+
+  state AskNextStep {
+    entry {
+      var recommendation;
+      if (this.fluidOverdose) {
+        recommendation = "handle fluid overdose";
+      } else {
+        var totalSalineDose = obtainFrom(datastore, "normalSaline");
+        if ((totalSalineDose > measurementBounds.salineDosageUpperBound)
+          && !(isResponsiveToFluids)) {
+          recommendation = "consider inotropic support";
+          broadcast ConsiderInotropicSupport;
+        } else {
+          recommendation = "repeat fluid bolus";
+        }
+      }
+
+      send  tabletApp
+          , Recommend
+          , ( "get fluid next step"
+            , "Responsiveness to fluid therapy: " + this.isResponsiveToFluids
+            , "Fluid overdose: "                  + this.fluidOverdose
+            , "Recommendation: "                  + recommendation );
+    }
+
+    on ConfirmRepeatFluidBolus do {
+      goto SuggestFluidDosage;
+    }
+
+    on ConfirmMaintainFluid do {
+      goto MaintainIVFluid;
+    }
+  }
+
+  state MaintainIVFluid {
+    on StartFluidTherapy do {
+      goto SuggestFluidDosage;
+    }
+  }
+}
 //
 //machine IonotropicSupportTherapy
 //  receives SepsisSuspected
