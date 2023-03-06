@@ -21,9 +21,13 @@ def process_json(out_json, out):
         out_json.pop('tid')
     out.append(out_json)
 
-async def do_send(to_k_queue, msg):
+async def do_send(to_k_queue, data, msg):
     if 'waitFor' in msg.keys():
         msg.pop('waitFor')
+    if 'updateData' in msg.keys():
+        data.set_value(msg['updateData']['name'], msg['updateData']['args'])
+        msg.pop('updateData')
+
     await to_k_queue.put([msg])
 
 def drain_queue(from_k_queue, out):
@@ -38,8 +42,8 @@ def create_obtain_response(out_json, data):
             , 'result' : 'obtainResponse'
             , 'args'   : data.get_value(out_json['args'][0]) }
 
-async def do_exit(medik_process, medik_task, out, exit_msg):
-    await do_send(medik_process.to_k_queue, exit_msg)
+async def do_exit(medik_process, medik_task, out, data, exit_msg):
+    await do_send(medik_process.to_k_queue, data, exit_msg)
     await asyncio.gather(medik_task)
     drain_queue(medik_process.from_k_queue, out)
 
@@ -52,7 +56,8 @@ async def medik_interact(in_jsons, data=None):
     to_k_queue = asyncio.Queue()
     medik_process = MedikWrapper(to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm)
     medik_task = asyncio.create_task(medik_process.launch())
-    exit_with_msg = functools.partial(do_exit, medik_process, medik_task, out)
+    exit_with_msg = functools.partial(do_exit, medik_process, medik_task, out, data)
+    send_msg = functools.partial(do_send, to_k_queue, data)
     exit_flag = False
     i = 0
     while not medik_task.done():
@@ -64,8 +69,12 @@ async def medik_interact(in_jsons, data=None):
         if out_json.get('name') == 'Obtain':
             if data == None:
                 raise RuntimeError('Need datastore to run test')
-            await do_send(to_k_queue, create_obtain_response(out_json_copy, data))
+            await send_msg(create_obtain_response(out_json_copy, data))
             continue
+        if out_json.get('action') == 'sleep':
+            await send_msg({'action':'sleepResponse', 'tid':out_json['tid']})
+            continue
+
         in_json = in_jsons[i]
         if 'action' in in_json.keys() and in_json['action'] == 'exit':
             exit_flag = True
@@ -76,7 +85,7 @@ async def medik_interact(in_jsons, data=None):
                     await exit_with_msg(in_json)
                     break
                 else:
-                    await do_send(to_k_queue, in_json)
+                    await send_msg(in_json)
                 i += 1
             continue
 
@@ -85,7 +94,7 @@ async def medik_interact(in_jsons, data=None):
             await exit_with_msg(in_json)
             break
 
-        await do_send(to_k_queue, in_json)
+        await send_msg(in_json)
         i += 1
 
     return out
@@ -111,6 +120,9 @@ class MockDataStore:
             return self.data[measurement_name]
         else:
             return None
+
+    def set_value(self, measurement_name, measurement_val):
+        self.data[measurement_name] = measurement_val
 
 def get_in(test_name):
     return MockUser('tests/' + test_name + '.psepsis.in')
