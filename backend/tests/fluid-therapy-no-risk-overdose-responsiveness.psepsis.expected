@@ -1,9 +1,4 @@
 [
-  { "id": "datastore",
-    "interface": "Datastore",
-    "name":"Obtain",
-    "args":["fluidOverloadRisks"]
-  },
   {
     "id": "tabletApp",
     "interface": "TabletApp",
@@ -15,11 +10,6 @@
     "interface": "TabletApp",
     "name": "ConfirmFluidOverloadRisksEntered",
     "args": []
-  },
-  { "id": "datastore",
-    "interface": "Datastore",
-    "name":"Obtain",
-    "args":["fluidOverloadRisks"]
   },
   {
     "id": "tabletApp",
@@ -55,11 +45,6 @@
       "Fluid overload: false",
       "Recommendation: repeat fluid bolus"
     ]
-  },
-  { "id": "datastore",
-    "interface": "Datastore",
-    "name":"Obtain",
-    "args":["fluidOverloadRisks"]
   },
   {
     "id": "tabletApp",
