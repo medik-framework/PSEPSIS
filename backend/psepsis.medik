@@ -2,9 +2,9 @@ machine MeasurementBounds
   receives AgeEntered
          , WeightEntered
          , HighRiskConditionsEntered
-         , FluidOverdoseRisksEntered {
+         , FluidOverloadRisksEntered {
 
-  vars age, weight, highRiskConditions, fluidOverdoseRisks;
+  vars age, weight, highRiskConditions, fluidOverloadRisks;
 
   vars hrUpperBound              , hrLowerBound
      , bpSysUpperBound           , bpSysLowerBound
@@ -44,8 +44,7 @@ machine MeasurementBounds
   var skinColor          = "normal";
   var mentalStatus       = "normal";
   var capillaryRefill    = 1;
-  var fluidOverdoseRisks = 0;
-  var fluidOverdoseSigns = 0;
+  var fluidOverloadSigns = 0;
 
   fun days(age) {
     return age;
@@ -269,8 +268,9 @@ machine MeasurementBounds
       goto Running;
     }
 
-    on FluidOverdoseRisksEntered(fluidOverdoseRisks) do {
-      broadcast ConfirmFluidOverdoseRisksEntered;
+    on FluidOverloadRisksEntered(fluidOverloadRisks) do {
+      this.fluidOverloadRisks = fluidOverloadRisks;
+      broadcast ConfirmFluidOverloadRisksEntered;
       goto Running;
     }
   }
@@ -280,7 +280,7 @@ interface TabletApp
   receives  ConfirmAgeEntered
           , ConfirmWeightEntered
           , ConfirmHighRiskConditionsEntered
-          , ConfirmFluidOverdoseRisksEntered { }
+          , ConfirmFluidOverloadRisksEntered { }
 
 interface Datastore {  }
 
@@ -600,15 +600,15 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 //
 machine FluidTherapy
   receives StartFluidTherapy
-         , ConfirmFluidOverdoseRisksEntered
-         , ConfirmFluidOverdoseSignsEntered
+         , ConfirmFluidOverloadRisksEntered
+         , ConfirmFluidOverloadSignsEntered
          , ConfirmFluidAdministered
          , FluidResponsivenessEntered
          , ConfirmMaintainFluid
          , ConfirmRepeatFluidBolus {
 
   vars tabletApp, datastore, measurementBounds;
-  vars isResponsiveToFluids, fluidOverdose;
+  vars isResponsiveToFluids, fluidOverload;
 
   fun isNormal(parameter, normalMeasurement) {
     var storedMeasurement = obtainFrom(datastore, parameter);
@@ -634,13 +634,13 @@ machine FluidTherapy
 
   state ObtainRisks {
     entry {
-      if (obtainFrom(datastore, "fluidOverdoseRisks") == undef) {
-        send tabletApp, Instruct, ("get fluid overdose risks");
+      if (obtainFrom(datastore, "fluidOverloadRisks") == undef) {
+        send tabletApp, Instruct, ("get fluid overload risks");
       } else {
         goto SuggestFluidDosage;
       }
     }
-    on ConfirmFluidOverdoseRisksEntered do {
+    on ConfirmFluidOverloadRisksEntered do {
       print("confirmed fluid overdose risks entered");
       goto SuggestFluidDosage;
     }
@@ -648,7 +648,7 @@ machine FluidTherapy
 
   state SuggestFluidDosage {
     entry {
-      if( !isNormal("fluidOverdoseRisks", measurementBounds.fluidOverdoseRisks) ) {
+      if( !isNormal("fluidOverloadRisks", measurementBounds.fluidOverloadRisks) ) {
         send tabletApp, Instruct, ("administer 5-10 ml/kg normal saline");
         goto WaitForAdministerFluidConfirmation;
       } else {
@@ -680,20 +680,20 @@ machine FluidTherapy
       } else {
         this.isResponsiveToFluids = false;
       }
-      goto ObtainFluidOverdoseSigns;
+      goto ObtainFluidOverloadSigns;
     }
   }
 
-  state ObtainFluidOverdoseSigns {
+  state ObtainFluidOverloadSigns {
     entry {
-      send tabletApp, Instruct, ("get fluid overdose signs");
+      send tabletApp, Instruct, ("get fluid overload signs");
     }
 
-    on ConfirmFluidOverdoseSignsEntered(overdoseSigns) do {
-      if (!(overdoseSigns == measurementBounds.fluidOverdoseSigns)) {
-        this.fluidOverdose = true;
+    on ConfirmFluidOverloadSignsEntered(overloadSigns) do {
+      if (!(overloadSigns == measurementBounds.fluidOverloadSigns)) {
+        this.fluidOverload = true;
       } else {
-        this.fluidOverdose = false;
+        this.fluidOverload = false;
       }
       goto AskNextStep;
     }
@@ -702,8 +702,8 @@ machine FluidTherapy
   state AskNextStep {
     entry {
       var recommendation;
-      if (this.fluidOverdose) {
-        recommendation = "handle fluid overdose";
+      if (this.fluidOverload) {
+        recommendation = "handle fluid overload";
       } else {
         var totalSalineDose = obtainFrom(datastore, "normalSaline");
         if ((totalSalineDose > measurementBounds.salineDosageUpperBound)
@@ -719,7 +719,7 @@ machine FluidTherapy
           , Recommend
           , ( "get fluid next step"
             , "Responsiveness to fluid therapy: " + this.isResponsiveToFluids
-            , "Fluid overdose: "                  + this.fluidOverdose
+            , "Fluid overload: "                  + this.fluidOverload
             , "Recommendation: "                  + recommendation );
     }
 
