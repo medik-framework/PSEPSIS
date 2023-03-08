@@ -634,7 +634,7 @@ machine FluidTherapy
 
   state ObtainRisks {
     entry {
-      if (obtainFrom(datastore, "fluidOverloadRisks") == undef) {
+      if (measurementBounds.fluidOverloadRisks == undef) {
         send tabletApp, Instruct, ("get fluid overload risks");
       } else {
         goto SuggestFluidDosage;
@@ -648,7 +648,7 @@ machine FluidTherapy
 
   state SuggestFluidDosage {
     entry {
-      if( !isNormal("fluidOverloadRisks", measurementBounds.fluidOverloadRisks) ) {
+      if (!(measurementBounds.fluidOverloadRisks == 0)) {
         send tabletApp, Instruct, ("administer 5-10 ml/kg normal saline");
         goto WaitForAdministerFluidConfirmation;
       } else {
