@@ -603,8 +603,7 @@ machine FluidTherapy
          , ConfirmFluidOverdoseRisksEntered
          , ConfirmFluidOverdoseSignsEntered
          , ConfirmFluidAdministered
-         , PositiveResponsiveness
-         , NegativeResponsiveness
+         , FluidResponsivenessEntered
          , ConfirmMaintainFluid
          , ConfirmRepeatFluidBolus {
 
@@ -675,13 +674,12 @@ machine FluidTherapy
       send tabletApp, Instruct, ("get responsiveness to fluids");
     }
 
-    on PositiveResponsiveness do {
-      this.isResponsiveToFluids = true;
-      goto ObtainFluidOverdoseSigns;
-    }
-
-    on NegativeResponsiveness do {
-      this.isResponsiveToFluids = false;
+    on FluidResponsivenessEntered(responsiveness) do {
+      if (responsiveness > 0) {
+        this.isResponsiveToFluids = true;
+      } else {
+        this.isResponsiveToFluids = false;
+      }
       goto ObtainFluidOverdoseSigns;
     }
   }
