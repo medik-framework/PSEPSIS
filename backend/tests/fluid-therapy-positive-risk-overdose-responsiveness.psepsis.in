@@ -1,0 +1,72 @@
+[
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartFluidTherapy",
+    "eventArgs": []
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "FluidOverloadRisksEntered",
+    "eventArgs": [1],
+    "waitFor" : {
+      "name": "Instruct",
+      "args": ["get fluid overload risks"]
+    },
+    "updateData": {
+      "name": "fluidOverloadRisks",
+      "args": 0
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ConfirmFluidAdministered",
+    "eventArgs": [],
+    "waitFor" : {
+      "name": "Instruct",
+      "args": ["administer 5-10 ml/kg normal saline"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "FluidResponsivenessEntered",
+    "eventArgs": [1],
+    "waitFor" : {
+      "name": "Instruct",
+      "args": ["get responsiveness to fluids"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ConfirmFluidOverloadSignsEntered",
+    "eventArgs": [1],
+    "waitFor" : {
+      "name": "Instruct",
+      "args": ["get fluid overload signs"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ConfirmRepeatFluidBolus",
+    "eventArgs": [],
+    "waitFor" : {
+      "name": "Recommend",
+      "args": ["get fluid next step"
+              , "Responsiveness to fluid therapy: true"
+              , "Fluid overload: true"
+              , "Recommendation: handle fluid overload"]
+    }
+  },
+  {
+    "action": "exit",
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["administer 5-10 ml/kg normal saline"]
+    }
+  }
+]
