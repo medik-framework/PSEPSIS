@@ -14,7 +14,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "Instruct",
+    "name": "RecommendDrug",
     "args": ["administer 20 ml/kg normal saline"]
   },
   {
@@ -49,7 +49,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "Instruct",
+    "name": "RecommendDrug",
     "args": ["administer 20 ml/kg normal saline"]
   }
 ]

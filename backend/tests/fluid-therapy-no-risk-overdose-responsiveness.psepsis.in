@@ -25,7 +25,7 @@
     "eventName": "ConfirmFluidAdministered",
     "eventArgs": [],
     "waitFor" : {
-      "name": "Instruct",
+      "name": "RecommendDrug",
       "args": ["administer 20 ml/kg normal saline"]
     }
   },
@@ -65,7 +65,7 @@
   {
     "action": "exit",
     "waitFor": {
-      "name": "Instruct",
+      "name": "RecommendDrug",
       "args": ["administer 20 ml/kg normal saline"]
     }
   }
