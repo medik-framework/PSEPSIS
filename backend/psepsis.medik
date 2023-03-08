@@ -649,10 +649,10 @@ machine FluidTherapy
   state SuggestFluidDosage {
     entry {
       if (!(measurementBounds.fluidOverloadRisks == 0)) {
-        send tabletApp, Instruct, ("administer 5-10 ml/kg normal saline");
+        send tabletApp, RecommendDrug, ("administer 5-10 ml/kg normal saline");
         goto WaitForAdministerFluidConfirmation;
       } else {
-        send tabletApp, Instruct, ("administer 20 ml/kg normal saline");
+        send tabletApp, RecommendDrug, ("administer 20 ml/kg normal saline");
         goto WaitForAdministerFluidConfirmation;
       }
     }
