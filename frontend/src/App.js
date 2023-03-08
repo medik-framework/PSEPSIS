@@ -32,11 +32,18 @@ function App() {
       dispatch(update_all(msgJson.args[0]));
       break;
     case "SepsisDiagnosis":
-       console.log("dispatching diagnosis update")
+      console.log("dispatching diagnosis update")
       dispatch(updateDiagnosis({
         "name": "sepsis",
         "value": msgJson.args[0]
       }))
+      break;
+    case "RecommendDrug":
+      const msgInfo = {
+        args: ['recommend', msgJson.args[0]],
+        id: msgJson.id
+      }
+      dispatch({ type: "dialogs/update", payload: JSON.stringify(msgInfo)});
       break;
     default:
       console.log("Message not recognized: ", msgJson.name)

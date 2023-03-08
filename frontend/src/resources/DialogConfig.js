@@ -87,8 +87,8 @@ export const DialogConfig = {
             storage: "logs/add"
         }
     },
-    fluid: {
-        title: "Fluid",
+    "get fluid overload risks": {
+        title: "Fluid Overload Risks",
         inputConfig: {
             label: "fluid",
             type:  "checklist",
@@ -96,9 +96,9 @@ export const DialogConfig = {
                 "Pulmonary Edema",
                 "Renal Insufficiency",
                 "History of Congenital Heart Disease",
-                "None"
             ],
-            storage: "logs/add"
+            storage: "logs/add",
+            eventName: "FluidOverloadRisksEntered"
         }
     },
     history_and_general: {
@@ -115,16 +115,17 @@ export const DialogConfig = {
             storage: "logs/add"
         }
     },
-    fluid_overload: {
-        title: "Fluid Overload",
+    "get fluid overload signs": {
+        title: "Fluid Overload Signs",
         inputConfig: {
             label: "fluid_overload",
             type:  "checklist",
             options: [
                 "Pulmonary Rales",
                 "Hepatomegaly",
-                "None"
-            ]
+            ],
+            storage: "logs/add",
+            eventName: "FluidOverloadRisksEntered"
         }
     },
     showSepsisWarning: {
@@ -132,5 +133,11 @@ export const DialogConfig = {
     },
     showSepsisClearance: {
         title: "Sepsis not suspected, please keep monitoring"
+    },
+    "recommend": {
+      title: "Recommendation",
+      inputConfig: {
+        type: "plain"
+      }
     }
 }

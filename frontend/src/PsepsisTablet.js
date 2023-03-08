@@ -15,7 +15,6 @@ const PsepsisTablet = () => {
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({});
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
-  console.log(kEndpoint)
 
   const dialogs = useSelector((state) => state.dialogs.todo)
 
