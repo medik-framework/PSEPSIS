@@ -32,8 +32,8 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
-    "eventName": "NegativeResponsiveness",
-    "eventArgs": [],
+    "eventName": "FluidResponsivenessEntered",
+    "eventArgs": [0],
     "waitFor" : {
       "name": "Instruct",
       "args": ["get responsiveness to fluids"]
