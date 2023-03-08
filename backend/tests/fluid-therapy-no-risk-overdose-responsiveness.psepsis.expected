@@ -2,24 +2,24 @@
   { "id": "datastore",
     "interface": "Datastore",
     "name":"Obtain",
-    "args":["fluidOverdoseRisks"]
+    "args":["fluidOverloadRisks"]
   },
   {
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "Instruct",
-    "args": ["get fluid overdose risks"]
+    "args": ["get fluid overload risks"]
   },
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "ConfirmFluidOverdoseRisksEntered",
+    "name": "ConfirmFluidOverloadRisksEntered",
     "args": []
   },
   { "id": "datastore",
     "interface": "Datastore",
     "name":"Obtain",
-    "args":["fluidOverdoseRisks"]
+    "args":["fluidOverloadRisks"]
   },
   {
     "id": "tabletApp",
@@ -37,7 +37,7 @@
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "Instruct",
-    "args": ["get fluid overdose signs"]
+    "args": ["get fluid overload signs"]
   },
   {
     "id": "datastore",
@@ -52,14 +52,14 @@
     "args": [
       "get fluid next step",
       "Responsiveness to fluid therapy: false",
-      "Fluid overdose: false",
+      "Fluid overload: false",
       "Recommendation: repeat fluid bolus"
     ]
   },
   { "id": "datastore",
     "interface": "Datastore",
     "name":"Obtain",
-    "args":["fluidOverdoseRisks"]
+    "args":["fluidOverloadRisks"]
   },
   {
     "id": "tabletApp",

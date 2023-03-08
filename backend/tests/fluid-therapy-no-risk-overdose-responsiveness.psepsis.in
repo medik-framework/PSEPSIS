@@ -8,14 +8,14 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
-    "eventName": "FluidOverdoseRisksEntered",
+    "eventName": "FluidOverloadRisksEntered",
     "eventArgs": [0],
     "waitFor" : {
       "name": "Instruct",
-      "args": ["get fluid overdose risks"]
+      "args": ["get fluid overload risks"]
     },
     "updateData": {
-      "name": "fluidOverdoseRisks",
+      "name": "fluidOverloadRisks",
       "args": 0
     }
   },
@@ -42,11 +42,11 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
-    "eventName": "ConfirmFluidOverdoseSignsEntered",
+    "eventName": "ConfirmFluidOverloadSignsEntered",
     "eventArgs": [0],
     "waitFor" : {
       "name": "Instruct",
-      "args": ["get fluid overdose signs"]
+      "args": ["get fluid overload signs"]
     }
   },
   {
@@ -58,7 +58,7 @@
       "name": "Recommend",
       "args": ["get fluid next step"
               , "Responsiveness to fluid therapy: false"
-              , "Fluid overdose: false"
+              , "Fluid overload: false"
               , "Recommendation: repeat fluid bolus"]
     }
   },
