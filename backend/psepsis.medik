@@ -691,11 +691,7 @@ machine FluidTherapy
     }
 
     on FluidResponsivenessEntered(responsiveness) do {
-      if (responsiveness > 0) {
-        this.isResponsiveToFluids = true;
-      } else {
-        this.isResponsiveToFluids = false;
-      }
+      this.isResponsiveToFluids = responsiveness;
       goto ObtainFluidOverloadSigns;
     }
   }
