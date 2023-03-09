@@ -1,14 +1,19 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {  Button, Grid, Typography } from "@mui/material";
 
 import MedicationTable, { AntibioticsSetTable } from "./MedicationTable";
+
+import { setMedicationTab } from "./../../redux/reducers/highlight";
 
 import {
   MedicationCategories,
 } from "../../resources/MedicationConfig";
 
 const MiddlePanel = () => {
-  const [selectedCategory, setSelectedCategory] = useState(0);
+  // const [selectedCategory, setSelectedCategory] = useState(0);
+  const selectedCategory = useSelector((state) => state.highlight.selectedMedicationTab);
+  const dispatch = useDispatch();
 
   return (
     <div>
@@ -27,7 +32,7 @@ const MiddlePanel = () => {
                   backgroundColor:
                     selectedCategory === idx ? "#191970" : "#1E90FF",
                 }}
-                onClick={() => setSelectedCategory(idx)}
+                onClick={() => dispatch(setMedicationTab({tab: idx}))}
               >
                 {value}
               </Button>

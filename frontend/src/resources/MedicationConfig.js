@@ -1,9 +1,16 @@
 export const MedicationCategories = [
   "Antibiotics-all",
-  "Fluid therapy",
+  "Fluid Therapy",
   "Inotropes",
   "OSF Antibiotics Set"
 ];
+
+export const MedicationTabMapping = {
+  "Antibiotics-all":0,
+  "Fluid Therapy":1,
+  "Inotropes":2,
+  "OSF Antibiotics Set":3
+};
 
 export const MedicationConfig = {
   "Antibiotics-all": [
@@ -142,18 +149,18 @@ export const MedicationConfig = {
       "dosage": ['2', '5', '10', '15', '20']
     }
   ],
-  "Fluid therapy": [
+  "Fluid Therapy": [
     {
       "name": "Lactated Ringer",
       "includeDisplay": true,
       "unit": "mL/kg",
-      "dosage": ['20']
+      "dosage": ['20','5','10','15']
     },
     {
       "name": "Normal Saline",
       "includeDisplay": true,
       "unit": "mL/kg",
-      "dosage": ['20']
+      "dosage": ['20', '5','10','15']
     }
   ],
 }

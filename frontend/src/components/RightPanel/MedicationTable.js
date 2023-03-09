@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Grid, Button, Box, Typography } from "@mui/material";
 import { BsFillArrowLeftSquareFill, BsFillArrowRightSquareFill } from 'react-icons/bs';
 
@@ -44,9 +45,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MedicationTable({selectedCategory}) {
+export default function MedicationTable() {
   const classes = useStyles();
-  const medList = MedicationConfig[MedicationCategories[[selectedCategory]]];
+  const selectedCategory = useSelector((state) => state.highlight.selectedMedicationTab);
+  const medList = MedicationConfig[MedicationCategories[selectedCategory]];
 
   return (
     <Grid container

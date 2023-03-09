@@ -8,7 +8,8 @@ import {
 } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { unsetHighlight } from "../../redux/reducers/highlight";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   card:{
-    background: "lightcyan",
     borderRight: "solid 1px",
     borderBottom: "solid 1px",
     borderColor: "black",
@@ -57,6 +57,17 @@ const MedicationCard = (config) => {
   const lastts = useSelector((state) => state.drug[config.name].lastts);
   const dispatch = useDispatch();
   const [send] = useRemoteRequest();
+  const [isHighlighted, setIsHighlighted] = useState(false);
+  const highlight = useSelector((state) => state.highlight);
+
+  useEffect(() => {
+    if(highlight.highlightedMedication === config.name) {
+      setIsHighlighted(true);
+      setInputDose(highlight.suggestedDosage);
+    } else {
+      setIsHighlighted(false);
+    }
+  }, [config, setIsHighlighted, setInputDose, highlight])
 
   const msecondToString = (msec) => {
     let min = Math.floor(Math.round(msec/1000)/60);
@@ -73,7 +84,11 @@ const MedicationCard = (config) => {
   }, 1000);
 
   return (
-    <Grid item xs={6} className={classes.card} key={config.name}>
+    <Grid item xs={6}
+      sx={{ background: isHighlighted ? "yellow":"lightcyan" }}
+      className={classes.card}
+      key={config.name}
+    >
       <Typography className={classes.title}>{config.name}</Typography>
       <Box display={'flex'} marginTop={"10px"}>
         <Box width={'60%'} className={classes.box}>
@@ -108,6 +123,9 @@ const MedicationCard = (config) => {
                   'timestamp': new Date().getTime(),
                   'name'     : config.name
                 }));
+                if(isHighlighted){
+                  dispatch(unsetHighlight());
+                }
                 send('/record_dose', JSON.stringify({
                   "name" : config.name,
                   "time" : new Date().getTime(),
