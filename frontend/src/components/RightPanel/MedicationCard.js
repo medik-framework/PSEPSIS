@@ -1,7 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { add } from "../../redux/reducers/drugs";
 import { useInterval } from "react-use";
-import useRemoteRequest from "../Utility/Hooks";
 
 import {
   TextField, Button, Grid, Autocomplete, Typography, Box
@@ -56,9 +55,9 @@ const MedicationCard = (config) => {
   const count = useSelector((state) => state.drug[config.name].count);
   const lastts = useSelector((state) => state.drug[config.name].lastts);
   const dispatch = useDispatch();
-  const [send] = useRemoteRequest();
   const [isHighlighted, setIsHighlighted] = useState(false);
   const highlight = useSelector((state) => state.highlight);
+  const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
 
   useEffect(() => {
     if(highlight.highlightedMedication === config.name) {
@@ -126,11 +125,10 @@ const MedicationCard = (config) => {
                 if(isHighlighted){
                   dispatch(unsetHighlight());
                 }
-                send('/record_dose', JSON.stringify({
-                  "name" : config.name,
-                  "time" : new Date().getTime(),
-                  "value": dose
-                }));
+                kEndpoint.sendMessage(JSON.stringify({
+                  "eventName": "Confirm" + config.name.replace(/\s/g,'') + "Administered",
+                  "eventArgs": [dose]
+                }))
             }}
           >
             Give
