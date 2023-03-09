@@ -601,7 +601,7 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 machine FluidTherapy
   receives StartFluidTherapy
          , ConfirmFluidOverloadRisksEntered
-         , ConfirmFluidOverloadSignsEntered
+         , FluidOverloadSignsEntered
          , ConfirmNormalSalineAdministered
          , ConfirmLactatedRingerAdministered
          , FluidResponsivenessEntered
@@ -701,7 +701,7 @@ machine FluidTherapy
       send tabletApp, Instruct, ("get fluid overload signs");
     }
 
-    on ConfirmFluidOverloadSignsEntered(overloadSigns) do {
+    on FluidOverloadSignsEntered(overloadSigns) do {
       if (!(overloadSigns == measurementBounds.fluidOverloadSigns)) {
         this.fluidOverload = true;
       } else {

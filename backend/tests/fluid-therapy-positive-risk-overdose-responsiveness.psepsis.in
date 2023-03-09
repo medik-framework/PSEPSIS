@@ -47,7 +47,7 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
-    "eventName": "ConfirmFluidOverloadSignsEntered",
+    "eventName": "FluidOverloadSignsEntered",
     "eventArgs": [1],
     "waitFor" : {
       "name": "Instruct",
