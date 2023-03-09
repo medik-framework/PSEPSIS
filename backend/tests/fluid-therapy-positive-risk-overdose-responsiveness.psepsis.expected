@@ -15,7 +15,12 @@
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "RecommendDrug",
-    "args": ["administer 5-10 ml/kg normal saline"]
+    "args": [
+      "Normal Saline",
+      "Fluid Therapy",
+      "5",
+      "administer 5-10 ml/kg Normal Saline"
+    ]
   },
   {
     "id": "tabletApp",
@@ -44,6 +49,11 @@
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "RecommendDrug",
-    "args": ["administer 5-10 ml/kg normal saline"]
+    "args": [
+      "Normal Saline",
+      "Fluid Therapy",
+      "5",
+      "administer 5-10 ml/kg Normal Saline"
+    ]
   }
 ]
