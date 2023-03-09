@@ -142,5 +142,35 @@
       "includeDisplay": true,
       "unit": "mL/kg",
       "dosage": [20]
+    },
+    {
+      "name": "Lactated Ringer",
+      "includeDisplay": true,
+      "unit": "mL/kg"
+    },
+    {
+      "name": "Normal Saline",
+      "includeDisplay": true,
+      "unit": "mL/kg"
+    },
+    {
+      "name": "Epinephrine",
+      "includeDisplay": true,
+      "unit": "mcg/kg/min IV"
+    },
+    {
+      "name": "Norepinephrine",
+      "includeDisplay": true,
+      "unit": "mcg/min"
+    },
+    {
+      "name": "Dopamine",
+      "includeDisplay": true,
+      "unit": "mcg/kg/min IV"
+    },
+    {
+      "name": "Dobutamine",
+      "includeDisplay": true,
+      "unit": "mcg/kg/min IV"
     }
 ]

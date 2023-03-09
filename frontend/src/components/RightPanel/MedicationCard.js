@@ -118,8 +118,9 @@ const MedicationCard = (config) => {
           <Button
             className={classes.button}
             onClick={() => {
+                const ts = new Date().getTime();
                 dispatch(add({
-                  'timestamp': new Date().getTime(),
+                  'timestamp': ts,
                   'name'     : config.name
                 }));
                 if(isHighlighted){
@@ -127,7 +128,12 @@ const MedicationCard = (config) => {
                 }
                 kEndpoint.sendMessage(JSON.stringify({
                   "eventName": "Confirm" + config.name.replace(/\s/g,'') + "Administered",
-                  "eventArgs": [dose]
+                  "eventArgs": []
+                }))
+                kEndpoint.sendMessage(JSON.stringify({
+                  "destination": "datastore",
+                  "eventName": "record_dose",
+                  "eventArgs": [config.name, ts, dose]
                 }))
             }}
           >

@@ -116,11 +116,12 @@ class MedikHandler(MedikWrapper):
 
 class AppProcess:
 
-    def __init__(self, ws_port, to_k_queue, to_app_queue):
+    def __init__(self, ws_port, to_k_queue, to_app_queue, datastore):
         self.ws_port = ws_port
         self.to_k_queue = to_k_queue
         self.interface_id = 'tabletApp'
         self.to_app_queue = to_app_queue
+        self.datastore = datastore
 
     async def to_app_handler(self, websocket):
         try:
@@ -136,10 +137,15 @@ class AppProcess:
         try:
             async for message in websocket:
                 message_json = json.loads(message)
-                await self.to_k_queue.put(_broadcast( self.interface_id
-                                                    , message_json['eventName']
-                                                    , message_json.get('eventArgs'
-                                                                       , [])))
+                match message_json.get('destination'):
+                    case 'datastore':
+                        ds_fun = getattr(self.datastore, message_json['eventName'])
+                        ds_fun(*message_json['eventArgs'])
+                    case _ :
+                        await self.to_k_queue.put(_broadcast( self.interface_id
+                                                            , message_json['eventName']
+                                                            , message_json.get('eventArgs'
+                                                                               , [])))
 
         except websockets.exceptions.ConnectionClosedError:
             await self.to_k_queue.put(_exit())
@@ -196,9 +202,13 @@ class Datastore:
 
     def __init__(self):
         self.organ_dt = OrganDt()
+        self.drug_hist = DrugHist()
 
     def get_value(self, value_name):
         return self.organ_dt.get_value(value_name)
+
+    def record_dose(self, drug_name, timestamp, dose):
+        return self.drug_hist.record_dose(drug_name, timestamp, dose)
 
 
 async def main(app_process, k_process, portal_process):
@@ -247,7 +257,7 @@ if __name__ == "__main__":
                                 , kompiled_dir
                                 , psepsis_pgm
                                 , datastore )
-    app_process = AppProcess(args.user_port, to_k_queue, to_app_queue)
+    app_process = AppProcess(args.user_port, to_k_queue, to_app_queue, datastore)
     portal_process = DataPortalProcess(args.data_port, to_k_queue, to_app_queue, datastore)
     asyncio.run(main(app_process, k_process, portal_process))
     print('Exited middleware')
