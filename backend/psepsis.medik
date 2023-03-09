@@ -717,7 +717,7 @@ machine FluidTherapy
       if (this.fluidOverload) {
         recommendation = "handle fluid overload";
       } else {
-        var totalSalineDose = obtainFrom(datastore, "normalSaline");
+        var totalSalineDose = obtainFrom(datastore, "Normal Saline");
         if ((totalSalineDose > measurementBounds.salineDosageUpperBound)
           && !(isResponsiveToFluids)) {
           recommendation = "consider inotropic support";
