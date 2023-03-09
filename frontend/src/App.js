@@ -11,6 +11,9 @@ import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
 
 import { update_all } from "./redux/reducers/organDT";
+import { setHighlight } from "./redux/reducers/highlight";
+
+import { MedicationTabMapping } from "./resources/MedicationConfig";
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -40,10 +43,15 @@ function App() {
       break;
     case "RecommendDrug":
       const msgInfo = {
-        args: ['recommend', msgJson.args[0]],
+        args: ['recommend', msgJson.args[3]],
         id: msgJson.id
       }
       dispatch({ type: "dialogs/update", payload: JSON.stringify(msgInfo)});
+      dispatch(setHighlight({
+        tab: MedicationTabMapping[msgJson.args[1]],
+        medication: msgJson.args[0],
+        dose:msgJson.args[2]
+      }))
       break;
     default:
       console.log("Message not recognized: ", msgJson.name)
