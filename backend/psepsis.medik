@@ -602,7 +602,8 @@ machine FluidTherapy
   receives StartFluidTherapy
          , ConfirmFluidOverloadRisksEntered
          , ConfirmFluidOverloadSignsEntered
-         , ConfirmFluidAdministered
+         , ConfirmNormalSalineAdministered
+         , ConfirmLactatedRingerAdministered
          , FluidResponsivenessEntered
          , ConfirmMaintainFluid
          , ConfirmRepeatFluidBolus {
@@ -672,7 +673,12 @@ machine FluidTherapy
     entry {
       print("Waiting for fluid administered");
     }
-    on ConfirmFluidAdministered do {
+    on ConfirmNormalSalineAdministered do {
+      // Wait for fluid responsiveness
+      sleep(30);
+      goto EvaluateResponsiveness;
+    }
+    on ConfirmLactatedRingerAdministered do {
       // Wait for fluid responsiveness
       sleep(30);
       goto EvaluateResponsiveness;
