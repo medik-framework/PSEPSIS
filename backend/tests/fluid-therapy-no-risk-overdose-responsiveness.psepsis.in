@@ -26,7 +26,12 @@
     "eventArgs": [],
     "waitFor" : {
       "name": "RecommendDrug",
-      "args": ["administer 20 ml/kg normal saline"]
+      "args": [
+        "Normal Saline",
+        "Fluid Therapy",
+        "20",
+        "administer 20 ml/kg Normal Saline"
+      ]
     }
   },
   {
@@ -66,7 +71,12 @@
     "action": "exit",
     "waitFor": {
       "name": "RecommendDrug",
-      "args": ["administer 20 ml/kg normal saline"]
+      "args": [
+        "Normal Saline",
+        "Fluid Therapy",
+        "20",
+        "administer 20 ml/kg Normal Saline"
+      ]
     }
   }
 ]
