@@ -22,7 +22,7 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
-    "eventName": "ConfirmFluidAdministered",
+    "eventName": "ConfirmNormalSalineAdministered",
     "eventArgs": [],
     "waitFor" : {
       "name": "RecommendDrug",
