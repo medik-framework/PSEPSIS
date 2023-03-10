@@ -53,6 +53,9 @@ function App() {
         dose:msgJson.args[2]
       }))
       break;
+    case "Recommend":
+      dispatch({ type: "dialogs/update", payload: cleanedMsg});
+      break;
     default:
       console.log("Message not recognized: ", msgJson.name)
    }

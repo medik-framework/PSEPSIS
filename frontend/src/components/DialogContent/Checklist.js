@@ -9,7 +9,7 @@ const Checklist = ({ inputConfig, setStoreDict, setRetDict }) => {
     const v = Object.keys(state).reduce((p, v) => state[v]===true ? p+1 : p, 0);
     setRetDict( prev => ({
       ...prev,
-      [inputConfig.label]: v
+      eventArgs: [v]
     }));
     setStoreDict( prev => ({
       ...prev,

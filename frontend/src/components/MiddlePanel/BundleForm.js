@@ -45,15 +45,11 @@ const BundleForm = () => {
   const checkedIdx = useSelector((state) => state.SepsisBundleForm.checkedIdx);
   const ventilationChecked = useSelector((state) => state.SepsisBundleForm.ventilationChecked);
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint)
-  console.log('using k endpoint: ', kEndpoint);
   const [fluidTherapyStarted, setFluidTherapyStarted] = useState(false);
 
   const updateCheckedIdx = (newCheckedIdx) => {
     dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: newCheckedIdx} })
-    console.log('new Checked Idx', newCheckedIdx)
-    console.log('fluidTherapyStarted? ', fluidTherapyStarted)
     if ((newCheckedIdx === 256) && (!fluidTherapyStarted)){
-      console.log('send start fluid therapy')
       kEndpoint.sendMessage(JSON.stringify({
         eventName: 'StartFluidTherapy'
       }));
