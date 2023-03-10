@@ -7,6 +7,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import Box from "@mui/material/Box";
 
 import NumericInput from "./NumericInput";
 import Checklist from "./Checklist";
@@ -32,24 +33,26 @@ const ButtonGroup = ({ config, setRetDict }) => {
   const [selected, setSelected] = useState(null);
 
   return(
-    <>
-      <Typography>{config.question}</Typography>
-      {Object.keys(config.buttons).map((key, idx) =>
-        <Button
-          key={idx}
-          variant={idx === selected ? "contained":"outlined"}
-          onClick={() => {
-            setRetDict(prev => ({
-              ...prev,
-              ...config.buttons[key]
-            }))
-            setSelected(idx)
-          }}
-        >
-          {key}
-        </Button>
-      )}
-    </>
+    <Box display={"block"} margin={"10px"}>
+      <Typography width={"100%"} marginBottom={"10px"}>{config.question}</Typography>
+      <Box width={"100%"} display={"flex"} justifyContent={"space-between"}>
+        {Object.keys(config.buttons).map((key, idx) =>
+          <Button
+            key={idx}
+            variant={idx === selected ? "contained":"outlined"}
+            onClick={() => {
+              setRetDict(prev => ({
+                ...prev,
+                ...config.buttons[key]
+              }))
+              setSelected(idx)
+            }}
+          >
+            {key}
+          </Button>
+        )}
+      </Box>
+    </Box>
   )
 }
 
