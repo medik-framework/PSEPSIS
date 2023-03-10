@@ -26,3 +26,10 @@ RUN npm install -g yarn && \
     npm install -g create-react-app && \
     python3.10 -m pip install websockets pytest pytest-asyncio
 
+ARG UNAME
+ARG UID
+ARG GID
+
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
+USER $UNAME
