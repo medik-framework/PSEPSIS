@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y build-essential m4 openjdk-11-jdk git \
   maven python3 python3-dev cmake gcc clang-12 lld-12 llvm-12-tools \
   zlib1g-dev libboost-test-dev libyaml-dev libjemalloc-dev tmux tmate neovim
 
+RUN curl -sSL https://get.haskellstack.org/ | sh
 
 RUN npm install -g yarn && \
     npm install -g create-react-app && \
