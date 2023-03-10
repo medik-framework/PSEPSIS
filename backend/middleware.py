@@ -203,9 +203,18 @@ class Datastore:
     def __init__(self):
         self.organ_dt = OrganDt()
         self.drug_hist = DrugHist()
+        self.measurements = self.organ_dt.data.keys()
+        self.drugs = self.drug_hist.data.keys()
 
     def get_value(self, value_name):
-        return self.organ_dt.get_value(value_name)
+        if not ((value_name in self.measurements)
+                or (value_name in self.drugs)):
+            raise KeyError(value_name)
+
+        if value_name in self.measurements:
+            return self.organ_dt.get_value(value_name)
+
+        return self.drug_hist.get_total_dose(value_name)
 
     def record_dose(self, drug_name, timestamp, dose):
         return self.drug_hist.record_dose(drug_name, timestamp, dose)
