@@ -1,0 +1,134 @@
+[
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "AgeEntered",
+    "eventArgs": [500]
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "WeightEntered",
+    "eventArgs": [14],
+    "waitFor": {
+      "name": "ConfirmAgeEntered",
+      "args": []
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartAntibioticTherapy",
+    "eventArgs": [],
+    "waitFor": {
+      "name": "ConfirmWeightEntered",
+      "args": []
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ImmunosuppressionEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get immunosuppression state"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "PseudomonasRiskEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get pseudomonas risk"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "CanReceivePenicillinEntered",
+    "eventArgs": [true],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get penicillin tolerance"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "RecentBroadSpectrumAntibioticsEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get recent broad spectrum antibiotics history"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "FungalInfectionRiskEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get fungal infection risk"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "RickettsialRiskEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get rickettsial risk"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ESBLPrevalentEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get ESBL prevalence"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "CefepimeCeftadizimeCarbapenamResistanceEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get Cefepime/Ceftadizime/Carbapenam resistance"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StaphylococcusPrevalenceEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get Staphylococcus prevalence"]
+      }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "HSVRiskEntered",
+    "eventArgs": [false],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get HSV risk"]
+    }
+  },
+  {
+    "action":"exit",
+    "waitFor": {
+      "name": "Recommend"
+    }
+  }
+]
