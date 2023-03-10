@@ -76,8 +76,11 @@
     "interface": "TabletApp",
     "name": "RecommendDrug",
     "args": [
-      "OSF Antibiotics Set",
-      "Children > 28 days who are normal hosts"
+        "Children > 28 days who are normal hosts",
+        "OSF Antibiotics Set",
+        "drug combination",
+        "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)",
+        "PLUS cefotaxime (100 mg/kg, maximum 2 g, for the inital dose) OR ceftriaxone (75 mg/kg, maximum 2 g, for the initial dose)"
     ]
   },
   {
@@ -85,9 +88,9 @@
     "interface": "TabletApp",
     "name": "Recommend",
     "args": [
-      "consider additional antibiotics",
-      "Add aminoglycide for possible GU source",
-      "Add Piperacillin with Tazobactam, Clindamycin, or Metronidazole for possible GI sources"
+        "consider additional antibiotics",
+        "Add aminoglycide (e.g. gentamycin) for possible GU source and/or piperacillin with tazobactam, clindamycin or metronidazole for possible GI source",
+        "Consider combination therapy (using at least two antibiotics of different antimicrobial classes) aimed at covering resistant organisms, if prevalent or patient at risk, in presence of septic shock"
     ]
   }
 ]
