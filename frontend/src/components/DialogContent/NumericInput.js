@@ -10,7 +10,7 @@ const NumericInput = ({ inputConfig, setStoreDict, setRetDict }) => {
     if (value !== "") {
       setRetDict( prev => ({
         ...prev,
-        [inputConfig.label]: inputConfig.processReturn ? inputConfig.processReturn(value, unit) : value,
+        eventArgs: [inputConfig.processReturn ? inputConfig.processReturn(value, unit) : value],
       }));
       setStoreDict( prev => ({
         ...prev,

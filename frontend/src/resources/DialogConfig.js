@@ -125,7 +125,7 @@ export const DialogConfig = {
                 "Hepatomegaly",
             ],
             storage: "logs/add",
-            eventName: "FluidOverloadRisksEntered"
+            eventName: "FluidOverloadSignsEntered"
         }
     },
     showSepsisWarning: {
@@ -138,6 +138,37 @@ export const DialogConfig = {
       title: "Recommendation",
       inputConfig: {
         type: "plain"
+      }
+    },
+    "get responsiveness to fluids": {
+      title: "Fluid Responsiveness",
+      inputConfig: {
+        label: "fluid_responsiveness",
+        type: "linegraph",
+        storage: "logs/add",
+        eventName: "FluidResponsivenessEntered",
+        actions: {
+          question: "Is patient hemodynamics improving?",
+          buttons: {
+            Yes: {eventArgs:  [true]},
+            No:  {eventArgs:  [false]}
+          }
+        }
+      }
+    },
+    "get fluid next step": {
+      title: "Fluid Therapy",
+      inputConfig: {
+        label: "fluid_next_step",
+        type: "plain",
+        storage: "logs/add",
+        actions: {
+          question: "Next step for fluid therapy?",
+          buttons: {
+            "Repeat fluid bolus"   : {eventName: "ConfirmRepeatFluidBolus"},
+            "Maintenance IV fluid" : {eventName: "ConfirmMaintainFluid"}
+          }
+        }
       }
     }
 }
