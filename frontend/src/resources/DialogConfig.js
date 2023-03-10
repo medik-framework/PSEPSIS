@@ -3,15 +3,17 @@ import { PatientConfig } from "./PatientConfig"
 export const DialogConfig = {
     "get age": {
         title: "Please enter patient age",
-        inputConfig:
-            {
-                label: "Age",
-                type: "number",
-                unit: ["years", "months", "weeks"],
-                storage: "patientBasic/update_age",
-                processReturn: PatientConfig.Age.getDays,
-                eventName: "AgeEntered"
-            },
+        inputConfig:{
+            label: "Age",
+            type: "number",
+            unit: ["years", "months", "weeks"],
+            storage: "patientBasic/update_age",
+            processReturn: PatientConfig.Age.getDays,
+            eventName: "AgeEntered"
+        },
+        shouldSend: true,
+        withArgs: true,
+        shouldStore: true
     },
     "get weight": {
         title: "Please enter patient weight",
@@ -21,18 +23,23 @@ export const DialogConfig = {
             unit: "kg",
             storage: "patientBasic/update",
             eventName: "WeightEntered"
-        }
+        },
+        shouldSend: true,
+        withArgs: true,
+        shouldStore: true
     },
     "get high risk conditions": {
         title: "Please enter patient high risk conditions",
-        inputConfig :
-            {
-                label: "HighRiskConditions",
-                type: "checklist",
-                options: Object.keys(PatientConfig.HighRisk.options),
-                storage: "patientBasic/update",
-                eventName: "HighRiskConditionsEntered"
-            },
+        inputConfig :{
+            label: "HighRiskConditions",
+            type: "checklist",
+            options: Object.keys(PatientConfig.HighRisk.options),
+            storage: "patientBasic/update",
+            eventName: "HighRiskConditionsEntered"
+        },
+        shouldSend: true,
+        withArgs: true,
+        shouldStore: true
     },
     "get 3 bucket measurements": {
         title: "OSF 3 Bucket Tree",
@@ -42,7 +49,10 @@ export const DialogConfig = {
             unit: "",
             storage: null,
             eventName: "ConfirmMeasurementsObtained"
-        }
+        },
+        shouldSend: true,
+        withArgs: false,
+        shouldStore: false
     },
     oxygen: {
         title: "Respiratory interventions. Administer oxygen to maintain SpO2 of at least 94%",
@@ -99,7 +109,10 @@ export const DialogConfig = {
             ],
             storage: "logs/add",
             eventName: "FluidOverloadRisksEntered"
-        }
+        },
+        shouldSend: true,
+        withArgs: true,
+        shouldStore: true
     },
     history_and_general: {
         title: "History & General Condition",
@@ -126,7 +139,10 @@ export const DialogConfig = {
             ],
             storage: "logs/add",
             eventName: "FluidOverloadSignsEntered"
-        }
+        },
+        shouldSend: true,
+        withArgs: true,
+        shouldStore: false
     },
     showSepsisWarning: {
         title: "Sepsis suspected, please start treatment bundle"
@@ -135,40 +151,49 @@ export const DialogConfig = {
         title: "Sepsis not suspected, please keep monitoring"
     },
     "recommend": {
-      title: "Recommendation",
-      inputConfig: {
-        type: "plain"
-      }
+        title: "Recommendation",
+        inputConfig: {
+            type: "plain"
+        },
+        shouldSend: false,
+        withArgs: false,
+        shouldStore: false
     },
     "get responsiveness to fluids": {
-      title: "Fluid Responsiveness",
-      inputConfig: {
-        label: "fluid_responsiveness",
-        type: "linegraph",
-        storage: "logs/add",
-        eventName: "FluidResponsivenessEntered",
-        actions: {
-          question: "Is patient hemodynamics improving?",
-          buttons: {
-            Yes: {eventArgs:  [true]},
-            No:  {eventArgs:  [false]}
-          }
-        }
-      }
+        title: "Fluid Responsiveness",
+        inputConfig: {
+            label: "fluid_responsiveness",
+            type: "linegraph",
+            storage: "logs/add",
+            eventName: "FluidResponsivenessEntered",
+            actions: {
+                question: "Is patient hemodynamics improving?",
+                buttons: {
+                    Yes: {eventArgs:  [true]},
+                    No:  {eventArgs:  [false]}
+                }
+            }
+        },
+        shouldSend: true,
+        withArgs: true,
+        shouldStore: false
     },
     "get fluid next step": {
-      title: "Fluid Therapy",
-      inputConfig: {
-        label: "fluid_next_step",
-        type: "plain",
-        storage: "logs/add",
-        actions: {
-          question: "Next step for fluid therapy?",
-          buttons: {
-            "Repeat fluid bolus"   : {eventName: "ConfirmRepeatFluidBolus"},
-            "Maintenance IV fluid" : {eventName: "ConfirmMaintainFluid"}
-          }
-        }
-      }
+        title: "Fluid Therapy",
+        inputConfig: {
+            label: "fluid_next_step",
+            type: "plain",
+            storage: "logs/add",
+            actions: {
+                question: "Next step for fluid therapy?",
+                buttons: {
+                    "Repeat fluid bolus"   : {eventName: "ConfirmRepeatFluidBolus"},
+                    "Maintenance IV fluid" : {eventName: "ConfirmMaintainFluid"}
+                }
+            }
+        },
+        shouldSend: true,
+        withArgs: true,
+        shouldStore: false
     }
 }

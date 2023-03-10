@@ -67,16 +67,21 @@ const InputDialog = ({ open, setOpen, info }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let r = Object.keys(retDict).length > 0;
-    if (r) {
-      r = Object.keys(retDict).reduce((prev, i) =>
-        prev && !( retDict[i] === null )
-      , r)
-      setShouldContinue(r);
-    } else {
-      setShouldContinue(true);
+    let canContinue = true;
+    if (config.shouldStore) {
+      canContinue = Object.keys(storeDict).length > 0;
+      canContinue = Object.keys(storeDict).reduce((prev, i) =>
+        prev && !( storeDict[i] === null )
+      , canContinue)
     }
-  }, [retDict, storeDict, info])
+    if (config.withArgs) {
+      canContinue = canContinue && Object.keys(retDict).length > 0;
+      canContinue = Object.keys(retDict).reduce((prev, i) =>
+        prev && !( retDict[i] === null )
+      , canContinue)
+    }
+    setShouldContinue(canContinue)
+  }, [retDict, storeDict, config])
 
   const makeKMessage = (inputConfig, retDict) => {
     let data = {
@@ -97,13 +102,13 @@ const InputDialog = ({ open, setOpen, info }) => {
 
   const handleContinue = () => {
     const data = makeKMessage(inputConfig, retDict);
-    if (Object.keys(data).includes('eventName')){
+    if (config.shouldSend){
       kEndpoint.sendMessage(JSON.stringify(data));
     }
     if(info.id) {
       dispatch({type: "dialogs/setDone", payload: data});
     }
-    if(inputConfig.storage) {
+    if(config.shouldStore) {
       dispatch({
         type: inputConfig.storage,
         payload: storeDict
