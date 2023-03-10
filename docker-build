@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docker build -t frontend-with-k:latest \
+  --build-arg UNAME=`whoami` \
+  --build-arg UID=`id -u` \
+  --build-arg GID=`id -g` . \
