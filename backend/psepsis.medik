@@ -434,7 +434,7 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 
       //// Supplementary Machines
       //new HighFlowOxygen(tabletApp);
-      //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+      new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
 
       // Signal Medik Ready
       send tabletApp,  StartGUI;
@@ -900,398 +900,255 @@ machine FluidTherapy
 //  }
 //}
 //
-//machine AntibioticsTherapy
-//  receives SepsisSuspected
-//         , StartAntibioticsTherapy
-//         , PositiveImmunosuppression
-//         , NegativeImmunosuppression
-//         , PositivePseudomonasRisk
-//         , NegativePseudomonasRisk
-//         , CanReceivePenicillin
-//         , CannotReceivePenicillin
-//         , PositiveBroadSpectrumAntibiotics
-//         , NegativeBroadSpectrumAntibiotics
-//         , PositiveIncreasedFungalInfectionRisk
-//         , NegativeIncreasedFungalInfectionRisk
-//         , PositiveIncreasedRickettsialRisk
-//         , NegativeIncreasedRickettsialRisk
-//         , PositiveESBLPrevalent
-//         , NegativeESBLPrevalent
-//         , PositiveCarbapenemResistance
-//         , NegativeCarbapenemResistance
-//         , PositiveStaphylococcusPrevalence
-//         , NegativeStaphylococcusPrevalence
-//         , PositiveHSVInfectionRisk
-//         , NegativeHSVInfectionRisk
-//         , SepticShockSuspected {
-//
-//  vars tabletApp, datastore, measurementBounds;
-//
-//  vars isImmunosuppressed       , hasPseudomonasInfection
-//     , cannotReceivePenicillin  , increasedFungalInfectionRisk
-//     , increasedRickettsialRisk , receivedBroadSpectrumAntibiotics
-//     , esblPrevalent            , carbapenemResistant
-//     , staphylococcusPrevalent  , hsvInfectionRisk
-//     , inSepticShock;
-//
-//  fun isNormalHost() {
-//    return ((! (isImmunosuppressed))
-//        && (! (hasPseudomonasInfection))
-//        && (! (increasedRickettsialRisk))
-//        && (! (receivedBroadSpectrumAntibiotics))
-//        && (! (carbapenemResistant))
-//        && (! (hsvInfectionRisk)));
-//  }
-//
-//  fun days(count) {
-//    return count;
-//  }
-//
-//  fun canReceivePenicillin() {
-//    return (!(cannotReceivePenicillin));
-//  }
-//
-//  init state Start {
-//    entry(tabletApp, datastore, measurementBounds) {
-//      this.tabletApp = tabletApp;
-//      this.datastore = datastore;
-//      this.measurementBounds = measurementBounds;
-//      this.inSepticShock = false;
-//    }
-//
-//    on SepsisSuspected do {
-//      goto WaitForStartAntibioticTherapy;
-//    }
-//
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto WaitForStartAntibioticTherapy;
-//    }
-//  }
-//
-//  state WaitForStartAntibioticTherapy {
-//    on StartAntibioticsTherapy do {
-//      goto AskImmunosuppression(true);
-//    }
-//
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto WaitForStartAntibioticTherapy;
-//    }
-//  }
-//
-//  state AskImmunosuppression {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("Is Patient Immunosuppressed?");
-//      }
-//    }
-//
-//    on PositiveImmunosuppression do {
-//      isImmunosuppressed = true;
-//      goto AskPseudomonasRisk(true);
-//    }
-//
-//    on NegativeImmunosuppression do {
-//      isImmunosuppressed = false;
-//      goto AskPseudomonasRisk(true);
-//    }
-//
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskImmunosuppression(false);
-//    }
-//  }
-//
-//  state AskPseudomonasRisk {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("Has Pseudomonas Infection Risk?");
-//      }
-//    }
-//    on PositivePseudomonasRisk do {
-//      hasPseudomonasInfection = true;
-//      goto AskPenicillinRisk(true);
-//    }
-//    on NegativePseudomonasRisk do {
-//      hasPseudomonasInfection = false;
-//      goto AskPenicillinRisk(true);
-//    }
-//
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskPseudomonasRisk(false);
-//    }
-//  }
-//
-//  state AskPenicillinRisk {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("Cannot Receive Penicillin?");
-//      }
-//    }
-//    on CanReceivePenicillin do {
-//      cannotReceivePenicillin = false;
-//      goto AskBroadSpectrumAntibioticsRisk(true);
-//    }
-//    on CannotReceivePenicillin do {
-//      cannotReceivePenicillin = true;
-//      goto AskBroadSpectrumAntibioticsRisk(true);
-//    }
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskPenicillinRisk(false);
-//    }
-//  }
-//
-//  state AskBroadSpectrumAntibioticsRisk {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("Received Broad Spectrum Antibiotics?");
-//      }
-//    }
-//    on PositiveBroadSpectrumAntibiotics do {
-//      receivedBroadSpectrumAntibiotics = true;
-//      goto AskFungalInfectionRisk(true);
-//    }
-//    on NegativeBroadSpectrumAntibiotics do {
-//      receivedBroadSpectrumAntibiotics = false;
-//      goto AskFungalInfectionRisk(true);
-//    }
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskBroadSpectrumAntibioticsRisk(false);
-//    }
-//  }
-//
-//  state AskFungalInfectionRisk {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("Increased Risk Of Fungal Infection?");
-//      }
-//    }
-//    on PositiveIncreasedFungalInfectionRisk do {
-//      increasedFungalInfectionRisk = true;
-//      goto AskRickettsialRisk(true);
-//    }
-//    on NegativeIncreasedFungalInfectionRisk do {
-//      increasedFungalInfectionRisk = false;
-//      goto AskRickettsialRisk(true);
-//    }
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskFungalInfectionRisk(false);
-//    }
-//  }
-//
-//  state AskRickettsialRisk {
-//    entry(doAsk) {
-//      if(doAsk) {
-//        send tabletApp, Instruct, ("Increased Rickettsial Risk?");
-//      }
-//    }
-//    on PositiveIncreasedRickettsialRisk do {
-//      increasedRickettsialRisk = true;
-//      goto AskESBLPrevalent(true);
-//    }
-//
-//    on NegativeIncreasedRickettsialRisk do {
-//      increasedRickettsialRisk = false;
-//      goto AskESBLPrevalent(true);
-//    }
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskRickettsialRisk(false);
-//    }
-//  }
-//
-//  state AskESBLPrevalent {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("ESBL Prevalent?");
-//      }
-//    }
-//    on PositiveESBLPrevalent do {
-//      esblPrevalent = true;
-//      goto AskCarbapenemResistance(true);
-//    }
-//    on NegativeESBLPrevalent do {
-//      esblPrevalent = false;
-//      goto AskCarbapenemResistance(true);
-//    }
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskESBLPrevalent(false);
-//    }
-//  }
-//
-//  state AskCarbapenemResistance {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("Is Patient Resistant to carbapenem?");
-//      }
-//    }
-//
-//    on PositiveCarbapenemResistance do {
-//      carbapenemResistant = true;
-//      goto AskStaphylococcusPrevalence(true);
-//    }
-//
-//    on NegativeCarbapenemResistance do {
-//      carbapenemResistant = false;
-//      goto AskStaphylococcusPrevalence(true);
-//    }
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskCarbapenemResistance(false);
-//    }
-//  }
-//
-//  state AskStaphylococcusPrevalence {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("High Prevalence of Staphylococcus aureus?");
-//      }
-//    }
-//    on PositiveStaphylococcusPrevalence do {
-//      staphylococcusPrevalent = true;
-//      goto AskHSVRisk(true);
-//    }
-//
-//    on NegativeStaphylococcusPrevalence do {
-//      staphylococcusPrevalent = false;
-//      goto AskHSVRisk(true);
-//    }
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskStaphylococcusPrevalent(false);
-//    }
-//  }
-//
-//  state AskHSVRisk {
-//    entry(doAsk) {
-//      if (doAsk) {
-//        send tabletApp, Instruct, ("High Risk of HSV Infection?");
-//      }
-//    }
-//    on PositiveHSVInfectionRisk do {
-//      hsvInfectionRisk = true;
-//      goto SuggestAntibiotics;
-//    }
-//
-//    on NegativeHSVInfectionRisk do {
-//      hsvInfectionRisk = false;
-//      goto SuggestAntibiotics;
-//    }
-//
-//    on SepticShockSuspected do {
-//      inSepticShock = true;
-//      goto AskHSVRisk(false);
-//    }
-//  }
-//
-//  state SuggestAntibiotics {
-//    entry {
-//      if (measurementBounds.age > days(28)) {
-//        if (isNormalHost()) {
-//          send tabletApp, SuggestAntibiotic, ( "vancomycin"
-//                                             , measurementBounds.vancomycinDosageUpperBound
-//                                             , "1-2 g");
-//
-//          send tabletApp, SuggestAntibioticOption, ( "cefotaxime"
-//                                                   , measurementBounds.cefotaximeDosageUpperBound
-//                                                   , "2 g" );
-//
-//          send tabletApp, SuggestAntibioticOption, ( "ceftriaxone"
-//                                                   , measurementBounds.ceftriaxoneDosageUpperBound
-//                                                   , "2 g" );
-//
-//          send tabletApp, ConsiderAntibioticOption, ( "gentamicin" );
-//
-//          send tabletApp, ConsiderAntibioticOption, ( "piparacilin" );
-//
-//          send tabletApp, ConsiderAntibioticOption, ( "clindamycin" );
-//
-//          send tabletApp, ConsiderAntibioticOption, ( "metronidazole" );
-//        }
-//
-//        if ((isImmunosuppressed || hasPseudomonasInfection) && canReceivePenicillin()) {
-//          send tabletApp, SuggestAntibiotic, ( "vancomycin"
-//                                             , measurementBounds.vancomycinDosageUpperBound
-//                                             , "1-2 g");
-//
-//          if (carbapenemResistant) {
-//            send tabletApp, SuggestAntibiotic, ( "amninoglycocide (eg. getamicin, amikacin)" );
-//          }
-//
-//          send tabletApp, SuggestAntibioticOption, ( "cefepime"
-//                                                   , measurementBounds.cefepimeDosageUpperBound
-//                                                   , "2 g" );
-//
-//
-//          send tabletApp, SuggestAntibioticOption, ( "cefladizime"
-//                                                   , measurementBounds.cefladizimeDosageUpperBound
-//                                                   , "2 g" );
-//          if (esblPrevalent || receivedBroadSpectrumAntibiotics) {
-//            send tabletApp, SuggestAntibioticOption, ( "carbapenem (eg. imipenem, meropenem)" );
-//          }
-//        }
-//        if (cannotReceivePenicillin && receivedBroadSpectrumAntibiotics) {
-//          send tabletApp, SuggestAntibiotic, ( "vancomycin"
-//                                             , measurementBounds.vancomycinDosageUpperBound
-//                                             , "1-2 g");
-//
-//          send tabletApp, SuggestAntibioticOption, ( "meroprenem"
-//                                                   , measurementBounds.meroprenemDosageUpperBound
-//                                                   , "1-2 g");
-//
-//          send tabletApp, SuggestAntibioticOption, ( "aztreonam" );
-//
-//          send tabletApp, SuggestAntibioticOption, ( "ciprofloxacin PLUS clindamycin" );
-//
-//      }
-//      if (increasedFungalInfectionRisk) {
-//        send tabletApp, SuggestAntibioticOption, ( "liposomal amphotericin B" );
-//
-//        send tabletApp, SuggestAntibioticOption, ( "echinocandin (eg. caspofungin, micafungin)" );
-//      }
-//
-//      if (increasedRickettsialRisk) {
-//        send tablet, SuggestAntibiotic, ( "tetracycline (eg. doxycycline)" );
-//      }
-//    } else {
-//      if (staphylococcusPrevalent) {
-//        send tabletApp, SuggestAntibiotic, ( "vancomycin"
-//                                           , measurementBounds.vancomycinDosageUpperBound
-//                                           , measurementBounds.vancomycinInitialDosage );
-//
-//      } else {
-//        send tabletApp, SuggestAntibiotic, ( "ampicillin"
-//                                           , measurementBounds.ampicillinDosageUpperBound
-//                                           , measurementBounds.ampicillinInitialDosage );
-//      }
-//
-//      send tabletApp, SuggestAntibiotic, ( "cefotaxime"
-//                                         , measurementBounds.cefotaximeDosageUpperBound
-//                                         , measurementBounds.cefotaximeInitialDosage );
-//
-//      send tabletApp, SuggestAntibiotic, ( "gentamicin"
-//                                         , measurementBounds.gentamicinDosageUpperBound
-//                                         , measurementBounds.gentamicinInitialDosage );
-//
-//      if (hsvInfectionRisk) {
-//      send tabletApp, SuggestAntibiotic, ( "acyclovir"
-//                                         , measurementBounds.acyclovirDosageUpperBound );
-//
-//      }
-//    }
-//  }
-//
-//    on SepticShockSuspected do {
-//      if ((measurementBounds.age > days(28)) && isNormalHost()) {
-//        send tabletApp, SuggestAntibiotic, ("Consider combination therapy (using at least two antibioitics of two different antimicrobial classes) due to Septic Shock");
-//      }
-//    }
-//  }
-//}
+machine AntibioticsTherapy
+  receives StartAntibioticTherapy
+         , ImmunosuppressionEntered
+         , PseudomonasRiskEntered
+         , CanReceivePenicillinEntered
+         , RecentBroadSpectrumAntibioticsEntered
+         , FungalInfectionRiskEntered
+         , RickettsialRiskEntered
+         , ESBLPrevalentEntered
+         , CefepimeCeftadizimeCarbapenamResistanceEntered
+         , StaphylococcusPrevalenceEntered
+         , HSVRiskEntered {
+
+  vars tabletApp, datastore, measurementBounds;
+
+  vars isImmunosuppressed       , hasPseudomonasInfection
+     , cannotReceivePenicillin  , increasedFungalInfectionRisk
+     , increasedRickettsialRisk , receivedBroadSpectrumAntibiotics
+     , esblPrevalent            , carbapenemResistant
+     , staphylococcusPrevalent  , hsvInfectionRisk
+     , inSepticShock;
+
+  fun isNormalHost() {
+    print("Immunosuppressed " + isImmunosuppressed + "\n");
+    return ((! (isImmunosuppressed))
+        && (! (hasPseudomonasInfection))
+        && (! (increasedRickettsialRisk))
+        && (! (receivedBroadSpectrumAntibiotics))
+        && (! (carbapenemResistant))
+        && (! (hsvInfectionRisk)));
+  }
+
+  fun days(count) {
+    return count;
+  }
+
+  fun canReceivePenicillin() {
+    return (!(cannotReceivePenicillin));
+  }
+
+  init state Start {
+    entry(tabletApp, datastore, measurementBounds) {
+      this.tabletApp = tabletApp;
+      this.datastore = datastore;
+      this.measurementBounds = measurementBounds;
+    }
+
+    on StartAntibioticTherapy do {
+      goto AskImmunosuppression;
+    }
+  }
+
+  state AskImmunosuppression {
+    entry {
+      send tabletApp, Instruct, ("get immunosuppression state");
+    }
+
+    on ImmunosuppressionEntered(immunosuppressionState) do {
+      isImmunosuppressed = immunosuppressionState;
+      goto AskPseudomonasRisk;
+    }
+  }
+
+  state AskPseudomonasRisk {
+    entry {
+      send tabletApp, Instruct, ("get pseudomonas risk");
+    }
+
+    on PseudomonasRiskEntered(pseudomonasRisk) do {
+      hasPseudomonasInfection = pseudomonasRisk;
+      goto AskPenicillinRisk;
+    }
+  }
+
+  state AskPenicillinRisk {
+    entry {
+      send tabletApp, Instruct, ("get penicillin tolerance");
+    }
+    on CanReceivePenicillinEntered(penicillinRisk) do {
+      cannotReceivePenicillin = !penicillinRisk;
+      goto AskRecentBroadSpectrumAntibiotics;
+    }
+  }
+
+  state AskRecentBroadSpectrumAntibiotics {
+    entry {
+      send tabletApp, Instruct, ("get recent broad spectrum antibiotics history");
+    }
+    on RecentBroadSpectrumAntibioticsEntered(broadSpectrumAntibiotics) do {
+      receivedBroadSpectrumAntibiotics = broadSpectrumAntibiotics;
+      goto AskFungalInfectionRisk;
+    }
+  }
+
+  state AskFungalInfectionRisk {
+    entry {
+      send tabletApp, Instruct, ("get fungal infection risk");
+    }
+    on FungalInfectionRiskEntered(fungalInfectionRisk) do {
+      increasedFungalInfectionRisk = fungalInfectionRisk;
+      goto AskRickettsialRisk;
+    }
+  }
+
+  state AskRickettsialRisk {
+    entry {
+      send tabletApp, Instruct, ("get rickettsial risk");
+    }
+    on RickettsialRiskEntered(rickettsialRisk) do {
+      increasedRickettsialRisk = rickettsialRisk;
+      goto AskESBLPrevalent;
+    }
+  }
+
+  state AskESBLPrevalent {
+    entry {
+      send tabletApp, Instruct, ("get ESBL prevalence");
+    }
+    on ESBLPrevalentEntered(esblPrevalent) do {
+      this.esblPrevalent = esblPrevalent;
+      goto AskCarbapenemResistance;
+    }
+  }
+
+  state AskCarbapenemResistance {
+    entry {
+      send tabletApp, Instruct, ("get Cefepime/Ceftadizime/Carbapenam resistance");
+    }
+
+    on CefepimeCeftadizimeCarbapenamResistanceEntered(resistance) do {
+      carbapenemResistant = resistance;
+      goto AskStaphylococcusPrevalence;
+    }
+  }
+
+  state AskStaphylococcusPrevalence {
+    entry {
+      send tabletApp, Instruct, ("get Staphylococcus prevalence");
+    }
+    on StaphylococcusPrevalenceEntered(prevalence) do {
+      staphylococcusPrevalent = prevalence;
+      goto AskHSVRisk;
+    }
+  }
+
+  state AskHSVRisk {
+    entry {
+      send tabletApp, Instruct, ("get HSV risk");
+    }
+    on HSVRiskEntered(risk) do {
+      hsvInfectionRisk = risk;
+      goto SuggestAntibiotics;
+    }
+  }
+
+  state SuggestAntibiotics {
+    entry {
+      if (measurementBounds.age > days(28)) {
+        if (isNormalHost()) {
+          send tabletApp
+              , RecommendDrug
+              , ( "Children > 28 days who are normal hosts"
+                , "OSF Antibiotics Set"
+                , "drug combination"
+                , "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)"
+                , "PLUS cefotaxime (100 mg/kg, maximum 2 g, for the inital dose) OR ceftriaxone (75 mg/kg, maximum 2 g, for the initial dose)" );
+
+          send tabletApp
+             , Recommend
+             , ( "consider additional antibiotics"
+               , "Add aminoglycide (e.g. gentamycin) for possible GU source and/or piperacillin with tazobactam, clindamycin or metronidazole for possible GI source"
+               , "Consider combination therapy (using at least two antibiotics of different antimicrobial classes) aimed at covering resistant organisms, if prevalent or patient at risk, in presence of septic shock" );
+
+        }
+
+        if ((isImmunosuppressed || hasPseudomonasInfection) && canReceivePenicillin()) {
+          send tabletApp, SuggestAntibiotic, ( "vancomycin"
+                                             , measurementBounds.vancomycinDosageUpperBound
+                                             , "1-2 g");
+
+          if (carbapenemResistant) {
+            send tabletApp, SuggestAntibiotic, ( "amninoglycocide (eg. getamicin, amikacin)" );
+          }
+
+          send tabletApp, SuggestAntibioticOption, ( "cefepime"
+                                                   , measurementBounds.cefepimeDosageUpperBound
+                                                   , "2 g" );
+
+
+          send tabletApp, SuggestAntibioticOption, ( "cefladizime"
+                                                   , measurementBounds.cefladizimeDosageUpperBound
+                                                   , "2 g" );
+          if (esblPrevalent || receivedBroadSpectrumAntibiotics) {
+            send tabletApp, SuggestAntibioticOption, ( "carbapenem (eg. imipenem, meropenem)" );
+          }
+        }
+
+        if (cannotReceivePenicillin && receivedBroadSpectrumAntibiotics) {
+          send tabletApp, SuggestAntibiotic, ( "vancomycin"
+                                             , measurementBounds.vancomycinDosageUpperBound
+                                             , "1-2 g");
+
+          send tabletApp, SuggestAntibioticOption, ( "meroprenem"
+                                                   , measurementBounds.meroprenemDosageUpperBound
+                                                   , "1-2 g");
+
+          send tabletApp, SuggestAntibioticOption, ( "aztreonam" );
+
+          send tabletApp, SuggestAntibioticOption, ( "ciprofloxacin PLUS clindamycin" );
+
+        }
+
+        if (increasedFungalInfectionRisk) {
+          send tabletApp, SuggestAntibioticOption, ( "liposomal amphotericin B" );
+
+          send tabletApp, SuggestAntibioticOption, ( "echinocandin (eg. caspofungin, micafungin)" );
+        }
+
+        if (increasedRickettsialRisk) {
+          send tablet, SuggestAntibiotic, ( "tetracycline (eg. doxycycline)" );
+        }
+      } else {
+
+        if (staphylococcusPrevalent) {
+          send tabletApp, SuggestAntibiotic, ( "vancomycin"
+                                             , measurementBounds.vancomycinDosageUpperBound
+                                             , measurementBounds.vancomycinInitialDosage );
+
+        } else {
+          send tabletApp, SuggestAntibiotic, ( "ampicillin"
+                                             , measurementBounds.ampicillinDosageUpperBound
+                                             , measurementBounds.ampicillinInitialDosage );
+        }
+
+        send tabletApp, SuggestAntibiotic, ( "cefotaxime"
+                                           , measurementBounds.cefotaximeDosageUpperBound
+                                           , measurementBounds.cefotaximeInitialDosage );
+
+        send tabletApp, SuggestAntibiotic, ( "gentamicin"
+                                           , measurementBounds.gentamicinDosageUpperBound
+                                           , measurementBounds.gentamicinInitialDosage );
+
+        if (hsvInfectionRisk) {
+        send tabletApp, SuggestAntibiotic, ( "acyclovir"
+                                           , measurementBounds.acyclovirDosageUpperBound );
+        }
+
+      }
+    }
+  }
+}
 
