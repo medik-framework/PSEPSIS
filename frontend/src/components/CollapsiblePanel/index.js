@@ -13,7 +13,7 @@ const CollapsiblePanel = () => {
   const anchorEl = useRef(null);
 
   //const buttons = ["history", "flowchart", "checklists", "references"];
-  const buttons = ["flowchart", "checklists", "references"];
+  const buttons = ["flowchart", "checklists", "references", "fluid response"];
 
   return (
     <div style={{ height: "100vh" }} ref={anchorEl}>
