@@ -128,7 +128,7 @@ const InputDialog = ({ open, setOpen, info }) => {
           originalArgs: info.args
         }}/>
       </DialogContent>
-      {inputConfig.actions && <DialogActions>
+      { Object.keys(inputConfig).includes('actions') && <DialogActions>
         <ButtonGroup {...{
           config: inputConfig.actions,
           setRetDict: setRetDict

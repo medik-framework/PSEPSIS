@@ -166,7 +166,7 @@ export const MedicationConfig = {
 }
 
 export const AntibioticsSetConfig = {
-  "Children > 28 days normal host":[
+  "Children > 28 days who are normal hosts":[
     {
       "title": "Vancomycin + Cefotaxime",
       "drugs": [
