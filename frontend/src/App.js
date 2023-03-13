@@ -43,7 +43,7 @@ function App() {
       break;
     case "RecommendDrug":
       const msgInfo = {
-        args: ['recommend', msgJson.args[3]],
+        args: ['recommend', msgJson.args.slice(3)],
         id: msgJson.id
       }
       dispatch({ type: "dialogs/update", payload: JSON.stringify(msgInfo)});

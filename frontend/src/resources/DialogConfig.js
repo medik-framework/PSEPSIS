@@ -3,7 +3,7 @@ import { PatientConfig } from "./PatientConfig"
 export const DialogConfig = {
     "get age": {
         title: "Please enter patient age",
-        inputConfig:{
+        inputConfig: {
             label: "Age",
             type: "number",
             unit: ["years", "months", "weeks"],
@@ -17,7 +17,7 @@ export const DialogConfig = {
     },
     "get weight": {
         title: "Please enter patient weight",
-        inputConfig:{
+        inputConfig: {
             label: "Weight",
             type: "number",
             unit: "kg",
@@ -30,7 +30,7 @@ export const DialogConfig = {
     },
     "get high risk conditions": {
         title: "Please enter patient high risk conditions",
-        inputConfig :{
+        inputConfig : {
             label: "HighRiskConditions",
             type: "checklist",
             options: Object.keys(PatientConfig.HighRisk.options),
@@ -43,7 +43,7 @@ export const DialogConfig = {
     },
     "get 3 bucket measurements": {
         title: "OSF 3 Bucket Tree",
-        inputConfig:{
+        inputConfig: {
             lable:"",
             type: "threebucket",
             unit: "",
@@ -195,5 +195,184 @@ export const DialogConfig = {
         shouldSend: true,
         withArgs: true,
         shouldStore: false
-    }
+    },
+    "get immunosuppression state": {
+        title: "Immunosuppression",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Is the patient inmmunosuppressed?",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "ImmunosuppressionEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get pseudomonas risk": {
+        title:"Pseudomonas risk",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Is there risk of pseudomonas infection?",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "PseudomonasRiskEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get penicillin tolerance": {
+        title:"Penicillin tolerance",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Can patient receive Penicillin?",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "CanReceivePenicillinEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get recent broad spectrum antibiotics history": {
+        title:"Broad spectrum antibiotics history",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Did patient recently receive braod spectrum antibiotics?",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "RecentBroadSpectrumAntibioticsEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get fungal infection risk": {
+        title:"Fungal infection risk",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Is there risk of fungal infection",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "FungalInfectionRiskEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get rickettsial risk": {
+        title:"Rickettsial infection risk",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Is there risk of rickettsial infection",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "RickettsialRiskEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get ESBL prevalence": {
+        title:"ESBL infection risk",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Are ESBL infections prevalent",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "ESBLPrevalentEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get HSV risk": {
+        title:"get HSV risk",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Is there suspicion of HSV?",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "HSVRiskEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get Cefepime/Ceftadizime/Carbapenam resistance": {
+        title:"Cefepime/Ceftadizime/Carbapenam resistance",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Is patient resistant to Cefepime or Ceftadizime or Carbapenam?",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "CefepimeCeftadizimeCarbapenamResistanceEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "get Staphylococcus prevalence": {
+        title:"Staphylococcus Prevalence",
+        inputConfig: {
+            type: "plain",
+            actions: {
+              question: "Is Staphylococcus Prevalent?",
+              buttons: {
+                  "Yes": {eventArgs: [true]},
+                  "No":  {eventArgs: [false]}
+              }
+            },
+            eventName: "StaphylococcusPrevalenceEntered"
+        },
+        shouldSend:  true,
+        withArgs:    true,
+        shouldStore: false
+    },
+    "consider additional antibiotics": {
+      title:"Consider additional antibiotics",
+      inputConfig: {
+          type:"plain"
+      },
+      shouldSend: false,
+      withArgs: false,
+      shouldStore: false
+  }
 }

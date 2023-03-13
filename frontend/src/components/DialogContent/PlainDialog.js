@@ -1,8 +1,8 @@
 const PlainDialog = ({ text }) => {
   return (
-    <>{
-      text.map((msg, idx) => <div key={idx}>{msg}</div>)
-    }</>
+    <div display={'flex'}>{
+      text.map((msg, idx) => <div width={'100%'} key={idx}>{msg}</div>)
+    }</div>
   )
 }
 

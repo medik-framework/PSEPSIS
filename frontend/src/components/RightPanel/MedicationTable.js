@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Grid, Button, Box, Typography } from "@mui/material";
 import { BsFillArrowLeftSquareFill, BsFillArrowRightSquareFill } from 'react-icons/bs';
 
@@ -11,6 +11,7 @@ import {
   AntibioticsSetConfig
 } from "../../resources/MedicationConfig";
 import MedicationCard, { ComboCard } from "./MedicationCard";
+import { unsetHighlight } from "../../redux/reducers/highlight";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
     alignContent: "flex-start"
   },
   card: {
-    background: "lightcyan",
     borderRight: "solid 1px",
     borderBottom: "solid 1px",
     borderColor: "black",
@@ -66,23 +66,29 @@ export default function MedicationTable() {
 export const AntibioticsSetTable = () => {
   const classes = useStyles();
   const [selected, setSelected] = useState(-1);
+  const highlighted = useSelector((state) => state.highlight.highlightedMedication);
+  const dispatch = useDispatch();
 
   return(
     <>
       {selected < 0 && <Grid container className={classes.root}>
         {Object.keys(AntibioticsSetConfig).map((name, idx) =>
-          <Button
-            key={String("AS"+idx)}
-            className={classes.card}
-            onClick={() => setSelected(idx)}
-          >
-            <Box height={"100%"} width={"80%"}>
-              <Typography>{name}</Typography>
-            </Box>
-            <Box height={"100%"} width={"20%"}>
-              <BsFillArrowRightSquareFill size={50}/>
-            </Box>
-          </Button>
+            <Button
+              key={String("AS"+idx)}
+              className={classes.card}
+              onClick={() => {
+                dispatch(unsetHighlight());
+                setSelected(idx);
+              }}
+              sx = {{background: name === highlighted ? "yellow":"lightcyan"}}
+            >
+              <Box height={"100%"} width={"80%"}>
+                <Typography>{name}</Typography>
+              </Box>
+              <Box height={"100%"} width={"20%"}>
+                <BsFillArrowRightSquareFill size={50}/>
+              </Box>
+            </Button>
         )}
       </Grid>}
       {selected >= 0 &&
