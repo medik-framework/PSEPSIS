@@ -12,6 +12,7 @@ import WelcomePage from "./WelcomePage";
 
 import { update_all } from "./redux/reducers/organDT";
 import { setHighlight } from "./redux/reducers/highlight";
+import { updateTreatmentResponse } from "./redux/reducers/treatmentResponse";
 
 import { MedicationTabMapping } from "./resources/MedicationConfig";
 
@@ -55,6 +56,12 @@ function App() {
       break;
     case "Recommend":
       dispatch({ type: "dialogs/update", payload: cleanedMsg});
+      break;
+    case "TreatmentResponse":
+      dispatch(updateTreatmentResponse({
+        name: msgJson.args[0],
+        data: msgJson.args[1]
+      }));
       break;
     default:
       console.log("Message not recognized: ", msgJson.name)

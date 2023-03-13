@@ -11,6 +11,7 @@ import endpointsReducer from './reducers/endpoints'
 import checkListReducer from './reducers/checklist'
 import diagnosisReducer from './reducers/diagnosis'
 import highlightReducer from './reducers/highlight'
+import treatmentResponseReducer from './reducers/treatmentResponse'
 
 export default configureStore({
   reducer: {
@@ -25,7 +26,8 @@ export default configureStore({
     endpoints: endpointsReducer,
     checklist: checkListReducer,
     diagnosis: diagnosisReducer,
-    highlight: highlightReducer
+    highlight: highlightReducer,
+    treatmentResponse: treatmentResponseReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
