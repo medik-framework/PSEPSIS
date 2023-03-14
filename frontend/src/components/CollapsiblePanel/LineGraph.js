@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import {
@@ -14,6 +14,7 @@ import {
 
 import 'chartjs-adapter-date-fns';
 import { Line } from 'react-chartjs-2';
+import annotationPlugin from "chartjs-plugin-annotation";
 
 ChartJS.register(
   LinearScale,
@@ -22,10 +23,11 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin
 );
 
-function makeOptions(title) {
+function makeOptions(title, annotations) {
   const options = {
     plugins: {
       legend: {
@@ -35,6 +37,9 @@ function makeOptions(title) {
         display: true,
         text: title
       },
+      annotation: {
+        annotations: annotations
+      }
     },
     spanGaps: true,
     scales: {
@@ -53,6 +58,32 @@ function makeOptions(title) {
     }
   };
   return options;
+}
+
+function makeAnnotation(fluids) {
+  let annotations = {};
+  Object.keys(fluids).map((key) => {
+    const dosages = fluids[key]['data'];
+    dosages.map((point, id) => {
+      annotations['line'+String(id)] = {
+        type: 'line',
+        xMin: point.time,
+        xMax: point.time,
+        borderColor: 'green',
+        borderWidth: 2,
+        label: {
+          backgroundColor: 'green',
+          content: key,
+          display: true,
+          enabled: true,
+          position: "end"
+        }
+      };
+      return null;
+    });
+    return null;
+  });
+  return annotations;
 }
 
 const colorMap = {
@@ -78,21 +109,26 @@ function makeData(result) {
         xAxisKey: 'time',
         yAxisKey: 'value',
         yAxisID: 'y-axis'
-      })
+      });
+      return null;
     })
   }
   const data = {datasets: datasets}
-  console.log(data)
   return data;
 }
 
-
-
+const DrawLine = ({graphData, treatmentData, title}) => {
+  const annotations = makeAnnotation(treatmentData);
+  const options = makeOptions(title, annotations);
+  const data = makeData(graphData);
+  return(
+    <Line options={options} data={data}/>
+  )
+}
 
 const LineGraph = ({ treatmentName }) => {
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
   const responseData = useSelector((state) => state.treatmentResponse[treatmentName]);
-  const [graphData, setGraphData] = useState(makeData(responseData));
 
   useEffect(() => {
     const data = {
@@ -103,39 +139,41 @@ const LineGraph = ({ treatmentName }) => {
       'eventArgs': []
     };
     kEndpoint.sendMessage(JSON.stringify(data));
-  }, [ treatmentName ])
-
-  useEffect(() => {
-    if (responseData !== null) {
-      setGraphData(responseData);
-    }
-  }, [ responseData, setGraphData ])
+  }, [ treatmentName, kEndpoint ])
 
   return (
     <div>
-      <label>Fluid Response</label>
-      <Line options={makeOptions('Blood Pressure')}
-        data={makeData({
+      <DrawLine {...{
+        title:'Blood Pressure',
+        graphData:{
           'BP Sys': responseData['BP Sys'],
           'BP Dia': responseData['BP Dia'],
+        },
+        treatmentData: {
           'Normal Saline' : responseData['Normal Saline'],
           'Lactated Ringer' : responseData['Lactated Ringer']
-        })}
-      />
-      <Line options={makeOptions('Heart Rate')}
-        data={makeData({
-          'HR': responseData['HR'],
+        }
+      }}/>
+      <DrawLine {...{
+        title:'Heart Rate',
+        graphData:{
+          'HR': responseData['HR']
+        },
+        treatmentData: {
           'Normal Saline' : responseData['Normal Saline'],
           'Lactated Ringer' : responseData['Lactated Ringer']
-        })}
-      />
-      <Line options={makeOptions('Urine Output')}
-        data={makeData({
-          'Urine Output': responseData['Urine Output'],
+        }
+      }}/>
+      <DrawLine {...{
+        title:'Urine Output',
+        graphData:{
+          'Urine Output': responseData['Urine Output']
+        },
+        treatmentData: {
           'Normal Saline' : responseData['Normal Saline'],
           'Lactated Ringer' : responseData['Lactated Ringer']
-        })}
-      />
+        }
+      }}/>
     </div>
   )
 }
