@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+pkill node; ./launch -g 2323 -m 2324 -u 23233 -d 23234 -a "ws://130.126.138.122"
