@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   selectedMedicationTab: 0,
   highlightedMedication: [],
-  suggestedDosage: null
+  suggestedDosage: []
 }
 
 export const highlightSlice = createSlice({
@@ -11,14 +11,14 @@ export const highlightSlice = createSlice({
   initialState: initialState,
   reducers: {
     setHighlight: (state, action) => {
-      console.log(action.payload)
       state.selectedMedicationTab = action.payload.tab;
       state.highlightedMedication.push(action.payload.medication);
-      state.suggestedDosage = action.payload.dose;
+      state.suggestedDosage.push(action.payload.dose);
     },
     unsetHighlight: (state, action) => {
-      state.highlightedMedication.pop(action.payload)
-      state.suggestedDosage = null;
+      const idx = state.highlightedMedication.indexOf(action.payload);
+      state.highlightedMedication.splice(idx,1);
+      state.suggestedDosage.splice(idx,1);
     },
     setMedicationTab: (state, action) => {
       state.selectedMedicationTab = action.payload.tab;
