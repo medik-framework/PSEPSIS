@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import {
@@ -45,91 +46,98 @@ function makeOptions(title) {
           }
         },
       },
+    },
+    parsing :{
+      xAxisKey: 'time',
+      yAxisKey: 'value'
     }
   };
   return options;
 }
 
-function makeDate() {
-  const data = {
-    datasets: [
-      {
+const colorMap = {
+  'BP Sys': 'red',
+  'BP Dia': 'blue',
+  'HR': 'red',
+  'Urine Output': 'orange',
+  'Normal Saline': 'green',
+  'Lactated Ringer': 'green'
+}
+
+function makeData(result) {
+  let datasets = [];
+  if (result) {
+    Object.keys(result).map((key) => {
+      datasets.push({
         type: "line",
-        label: "BP Sys",
-        borderColor: "red",
+        label: key,
+        borderColor: colorMap[key],
         borderWidth: 1,
         fill: false,
-        data: [
-          {x:1678653506662, y:1.9},
-          {x:1678654144662, y:0.6},
-          {x:1678654390662, y:2.2},
-          {x:1678655100662, y:0.8},
-          {x:1678655300662, y:1.2}
-        ],
-        yAxisID: "y-axis",
-      },
-      {
-        type: "line",
-        label: "BP Dia",
-        borderColor: "blue",
-        borderWidth: 1,
-        fill: false,
-        data: [
-          {x:1678653696662, y:2.1},
-          {x:1678653944662, y:1},
-          {x:1678653990662, y:3},
-          {x:1678654500662, y:1.5},
-          {x:1678655600662, y:2.8}
-        ],
-        yAxisID: "y-axis",
-      },
-      {
-        type: "line",
-        label: "Bolus 1",
-        borderColor: "green",
-        borderWidth: 1,
-        fill: false,
-        data: [
-          {x:1678654144662, y:3},
-          {x:1678654144662, y:0},
-        ],
-        yAxisID: "y-axis",
-      },
-      {
-        type: "line",
-        label: "Bolus 2",
-        borderColor: "green",
-        borderWidth: 1,
-        fill: false,
-        data: [
-          {x:1678655044662, y:3},
-          {x:1678655044662, y:0},
-        ],
-        yAxisID: "y-axis",
-      },
-    ]
-  };
+        data: result[key]['data'],
+        xAxisKey: 'time',
+        yAxisKey: 'value',
+        yAxisID: 'y-axis'
+      })
+    })
+  }
+  const data = {datasets: datasets}
+  console.log(data)
+  return data;
 }
 
 
 
 
-export default LineGraph = ({ treatmentName }) => {
+const LineGraph = ({ treatmentName }) => {
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
-  const data = {
-    'source': 1,
-    'destination':'datastore',
-    'timestamp': Date.now(),
-    'eventName': 'get_treatment_response',
-    'eventArgs': ['fluid']
-  };
-  kEndpoint.sendMessage(JSON.stringify(data));
   const responseData = useSelector((state) => state.treatmentResponse[treatmentName]);
+  const [graphData, setGraphData] = useState(makeData(responseData));
 
-  
+  useEffect(() => {
+    const data = {
+      'source': 1,
+      'destination':'datastore',
+      'timestamp': Date.now(),
+      'eventName': 'get_'+treatmentName+'_response',
+      'eventArgs': []
+    };
+    kEndpoint.sendMessage(JSON.stringify(data));
+  }, [ treatmentName ])
 
-  return
+  useEffect(() => {
+    if (responseData !== null) {
+      setGraphData(responseData);
+    }
+  }, [ responseData, setGraphData ])
+
+  return (
     <div>
-      <Line options={options} data={data} />;
+      <label>Fluid Response</label>
+      <Line options={makeOptions('Blood Pressure')}
+        data={makeData({
+          'BP Sys': responseData['BP Sys'],
+          'BP Dia': responseData['BP Dia'],
+          'Normal Saline' : responseData['Normal Saline'],
+          'Lactated Ringer' : responseData['Lactated Ringer']
+        })}
+      />
+      <Line options={makeOptions('Heart Rate')}
+        data={makeData({
+          'HR': responseData['HR'],
+          'Normal Saline' : responseData['Normal Saline'],
+          'Lactated Ringer' : responseData['Lactated Ringer']
+        })}
+      />
+      <Line options={makeOptions('Urine Output')}
+        data={makeData({
+          'Urine Output': responseData['Urine Output'],
+          'Normal Saline' : responseData['Normal Saline'],
+          'Lactated Ringer' : responseData['Lactated Ringer']
+        })}
+      />
     </div>
+  )
 }
+
+export default LineGraph;

@@ -63,6 +63,13 @@ function App() {
         data: msgJson.args[1]
       }));
       break;
+    case "get_fluid_response_result":
+      delete msgJson.name;
+      dispatch(updateTreatmentResponse({
+        name: 'fluid',
+        data: msgJson
+      }))
+      break;
     default:
       console.log("Message not recognized: ", msgJson.name)
    }

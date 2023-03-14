@@ -3,8 +3,15 @@ import { createSlice } from '@reduxjs/toolkit'
 export const treatmentResponseSlice = createSlice({
   name: 'treatmentResponse',
   initialState: {
-    fluidResponse: null,
-    inotropeResponse: null
+    fluid: {
+      'BP Sys': {'data': []},
+      'BP Dia': {'data': []},
+      'HR': {'data': []},
+      'Urine Output': {'data': []},
+      'Normal Saline': {'data': []},
+      'Lactated Ringer': {'data': []}
+    },
+    inotrope: null
   },
   reducers: {
     updateTreatmentResponse: (state, action) => {
