@@ -153,7 +153,7 @@ export const ComboCard = ({ config }) => {
   return(
     <Grid item xs={12} className={classes.card} key={config.title}>
       <Typography className={classes.title}>{config.title}</Typography>
-      {config.drugs.map((drug) =>
+      {config.drugs && config.drugs.map((drug) =>
         <Box key={drug.name}>
           <Typography width={"30%"} display={"inline-flex"}>{drug.name}</Typography>
           <Autocomplete
@@ -169,11 +169,11 @@ export const ComboCard = ({ config }) => {
           {drug.unit}
         </Box>
       )}
-      <Button
+      {config.drugs && <Button
         className={classes.button}
       >
         Give
-      </Button>
+      </Button>}
     </Grid>
   )
 }

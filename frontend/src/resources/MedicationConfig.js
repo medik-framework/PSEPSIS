@@ -248,13 +248,13 @@ export const AntibioticsSetConfig = {
     }
   ],
   "Patients at increased risk of fungal infection":
-  {
+  [{
     "title": "Add liposomal Amphotericin B or an echinocandin (eg, caspofungin, micafungin) to the antimicrobial regimen"
-  },
+  }],
   "Patients with risk factors for rickettsial infection":
-  {
+  [{
     "title": "Add a tetracycline antibiotic (eg, doxycycline) to the antimicrobial regimen"
-  },
+  }],
   "Infants 0 to 28 days of age" :
   [
     {
