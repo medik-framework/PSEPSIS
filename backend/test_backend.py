@@ -183,3 +183,6 @@ async def test_fluid_therapy_positive_risk_overdose_responsiveness():
 async def test_antibiotic_therapy_normal_host():
     await run_test('antibiotic-therapy-normal-host')
 
+@pytest.mark.asyncio
+async def test_antibiotic_therapy_immunosuppressed_esbl_cccresistant():
+    await run_test('antibiotic-therapy-immunosuppressed-esbl-cccresistant')
