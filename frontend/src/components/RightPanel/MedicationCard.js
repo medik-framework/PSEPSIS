@@ -62,7 +62,8 @@ const MedicationCard = (config) => {
   useEffect(() => {
     if(highlight.highlightedMedication.includes(config.name)) {
       setIsHighlighted(true);
-      setInputDose(highlight.suggestedDosage);
+      const idx = highlight.highlightedMedication.indexOf(config.name);
+      setInputDose(highlight.suggestedDosage[idx]);
     } else {
       setIsHighlighted(false);
     }

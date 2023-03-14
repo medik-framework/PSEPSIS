@@ -77,7 +77,7 @@ export const AntibioticsSetTable = () => {
               key={String("AS"+idx)}
               className={classes.card}
               onClick={() => {
-                dispatch(unsetHighlight());
+                dispatch(unsetHighlight(name));
                 setSelected(idx);
               }}
               sx = {{background: highlighted.includes(name)? "yellow":"lightcyan"}}
