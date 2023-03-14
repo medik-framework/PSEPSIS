@@ -1102,55 +1102,62 @@ machine AntibioticsTherapy
         }
 
         if (cannotReceivePenicillin && receivedBroadSpectrumAntibiotics) {
-          send tabletApp, SuggestAntibiotic, ( "vancomycin"
-                                             , measurementBounds.vancomycinDosageUpperBound
-                                             , "1-2 g");
-
-          send tabletApp, SuggestAntibioticOption, ( "meroprenem"
-                                                   , measurementBounds.meroprenemDosageUpperBound
-                                                   , "1-2 g");
-
-          send tabletApp, SuggestAntibioticOption, ( "aztreonam" );
-
-          send tabletApp, SuggestAntibioticOption, ( "ciprofloxacin PLUS clindamycin" );
-
+          send tabletApp
+              , RecommendDrug
+              , ( "Children who cannot receive penicillin or who have received broad-specturm antibiotics"
+                , "OSF Antibiotics Set"
+                , "drug combination"
+                , "vancomycin (age appropriate dose)"
+                , "PLUS meropenem (20 mg/kg, mzximum 2g, for the initial dose)"
+                , "Aztreonam OR ciprofloxacin PLUS clindamycin may be used instead of meropenem" );
         }
 
         if (increasedFungalInfectionRisk) {
-          send tabletApp, SuggestAntibioticOption, ( "liposomal amphotericin B" );
-
-          send tabletApp, SuggestAntibioticOption, ( "echinocandin (eg. caspofungin, micafungin)" );
+          send tabletApp
+             , RecommendDrug
+             , ( "Patients at increased risk of fungal infection"
+               , "OSF Antibiotics Set"
+               , "drug combination"
+               , "Add liposomal amphotericin B or an echinocandin (e.g., caspofungin, micafungin) to the antimicrobial regimen");
         }
 
         if (increasedRickettsialRisk) {
-          send tablet, SuggestAntibiotic, ( "tetracycline (eg. doxycycline)" );
+          send tabletApp
+             , RecommendDrug
+             , ( "Patients with risk factors for rickettsial infection"
+               , "OSF Antibiotics Set"
+               , "drug combination"
+               , "Add a tetracycline antibiotic (e.g. doxycycline) to the antimicrobial regimen" );
         }
       } else {
-
         if (staphylococcusPrevalent) {
-          send tabletApp, SuggestAntibiotic, ( "vancomycin"
-                                             , measurementBounds.vancomycinDosageUpperBound
-                                             , measurementBounds.vancomycinInitialDosage );
+            send tabletApp
+               , RecommendDrug
+               , ( "Infants 0 to 28 days of age"
+                 , "OSF Antibiotics Set"
+                 , "drug combination"
+                 , "vancomycin (50 mg/kg for the initial dose)"
+                 , "cefotaxime (50 mg/kg for the initial dose)"
+                 , "gentamycin (2.5 mg/kg for the initial dose)");
 
         } else {
-          send tabletApp, SuggestAntibiotic, ( "ampicillin"
-                                             , measurementBounds.ampicillinDosageUpperBound
-                                             , measurementBounds.ampicillinInitialDosage );
+          send tabletApp
+             , RecommendDrug
+             , ( "Infants 0 to 28 days of age"
+               , "OSF Antibiotics Set"
+               , "drug combination"
+               , "ampicillin (50 mg/kg for the initial dose)"
+               , "cefotaxime (50 mg/kg for the initial dose)"
+               , "gentamycin (2.5 mg/kg for the initial dose)");
+
         }
-
-        send tabletApp, SuggestAntibiotic, ( "cefotaxime"
-                                           , measurementBounds.cefotaximeDosageUpperBound
-                                           , measurementBounds.cefotaximeInitialDosage );
-
-        send tabletApp, SuggestAntibiotic, ( "gentamicin"
-                                           , measurementBounds.gentamicinDosageUpperBound
-                                           , measurementBounds.gentamicinInitialDosage );
 
         if (hsvInfectionRisk) {
-        send tabletApp, SuggestAntibiotic, ( "acyclovir"
-                                           , measurementBounds.acyclovirDosageUpperBound );
+            send tabletApp
+               , Recommend
+               , ( "consider additional antibiotics"
+                 , "ADD acyclovir (20 mg/kg per dose) for suspicion of HSV infection" );
         }
-
       }
     }
   }
