@@ -1,6 +1,7 @@
 from pathlib import Path
 from fractions import Fraction
 from data import OrganDt, Patient, DrugHist
+from dataclasses import asdict
 from backend_env import kompiled_dir, psepsis_pgm, set_env
 from wrapper import MedikWrapper
 
@@ -140,7 +141,10 @@ class AppProcess:
                 match message_json.get('destination'):
                     case 'datastore':
                         ds_fun = getattr(self.datastore, message_json['eventName'])
-                        ds_fun(*message_json['eventArgs'])
+                        data = ds_fun(*message_json['eventArgs'])
+                        if data:
+                            data['name'] = message_json['eventName']+'_result'
+                            await self.to_app_queue.put(data)
                     case _ :
                         await self.to_k_queue.put(_broadcast( self.interface_id
                                                             , message_json['eventName']
@@ -218,6 +222,14 @@ class Datastore:
 
     def record_dose(self, drug_name, timestamp, dose):
         return self.drug_hist.record_dose(drug_name, timestamp, dose)
+
+    def get_fluid_response(self):
+        measurements = ['BP Sys', 'BP Dia', 'HR', 'Urine Output']
+        data = {key:asdict(self.organ_dt.get_series(key)) for key in measurements}
+        drugs = ['Normal Saline', 'Lactated Ringer']
+        data.update({key:asdict(self.drug_hist.get_series(key)) for key in drugs})
+        print(data)
+        return data
 
 
 async def main(app_process, k_process, portal_process):

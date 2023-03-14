@@ -116,6 +116,9 @@ class DrugHist:
     def record_dose(self, drug_name, timestamp, value):
         self.data[drug_name].update(timestamp, value)
 
+    def get_series(self, drug_name):
+        return self.data[drug_name]
+
 class Patient:
     def __init__(self) -> None:
         self.data = {}
