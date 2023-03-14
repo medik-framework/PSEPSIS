@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import NumericInput from "./NumericInput";
 import Checklist from "./Checklist";
 import PlainDialog from "./PlainDialog";
+import LineGraph from "../CollapsiblePanel/LineGraph";
 import { DialogConfig } from "../../resources/DialogConfig";
 
 const InputContent = (args) => {
@@ -23,7 +24,7 @@ const InputContent = (args) => {
     case "plain":
       return <PlainDialog { ...{ text:args.originalArgs.slice(1) }}/>
     case "linegraph":
-      return <></>
+      return <LineGraph {...{treatmentName:'fluid'}}/>
     default:
       return <></>
   }
