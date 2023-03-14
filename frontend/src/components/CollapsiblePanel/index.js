@@ -53,7 +53,7 @@ const CollapsiblePanel = () => {
           {selectedButton === "flowchart" && <WorkflowTab />}
           {selectedButton === "checklists" && <Checklist />}
           {selectedButton === "references" && <Reference />}
-          {selectedButton === "fluid response" && <LineGraph />}
+          {selectedButton === "fluid response" && <LineGraph {...{treatmentName:'fluid'}}/>}
         </div>
       </Popover>
     </div>
