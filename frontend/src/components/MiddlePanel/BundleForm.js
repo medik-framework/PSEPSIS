@@ -41,6 +41,8 @@ const bundleList = [
 const BundleForm = () => {
   const dispatch = useDispatch();
 
+  const isChecked = (checkedIndices, idx) => Boolean((checkedIndices >> idx) & 1)
+
   const started = useSelector((state) => state.treatment.started);
   const checkedIdx = useSelector((state) => state.SepsisBundleForm.checkedIdx);
   const ventilationChecked = useSelector((state) => state.SepsisBundleForm.ventilationChecked);
@@ -50,13 +52,15 @@ const BundleForm = () => {
 
   const updateCheckedIdx = (newCheckedIdx) => {
     dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: newCheckedIdx} })
-    if ((newCheckedIdx === 256) && (!fluidTherapyStarted)){
+    if (isChecked(newCheckedIdx, 8) && (!fluidTherapyStarted)){
+      console.log('Send StartFluidTherapy');
       kEndpoint.sendMessage(JSON.stringify({
         eventName: 'StartFluidTherapy'
       }));
       setFluidTherapyStarted(true);
     }
-    if ((newCheckedIdx === 128) && (!antibioticTherapyStarted)){
+    if (isChecked(newCheckedIdx, 7) && (!antibioticTherapyStarted)){
+      console.log('Send StartAntibioticTherapy');
       kEndpoint.sendMessage(JSON.stringify({
         eventName: 'StartAntibioticTherapy'
       }));
