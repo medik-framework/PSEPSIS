@@ -196,10 +196,9 @@ export const AntibioticsSetConfig = {
           "unit": "mg/kg"
         }
       ]
-    },
+    }
   ],
-  "Children > 28 days immunosuppressed/at risk for infection Pseudomonas species":
-  [
+  "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species": [
     {
       "title": "Vancomycin + Cefepime",
       "drugs": [
@@ -231,8 +230,7 @@ export const AntibioticsSetConfig = {
       ]
     },
   ],
-  "Children > 28 cannot recieve penicillin or have recently received broad-spectrum antibiotics":
-  [
+  "Children who cannot receive penicillin or who have received broad-specturm antibiotics": [
     {
       "title": "Vancomycin + Meropenem",
       "drugs": [
@@ -249,15 +247,15 @@ export const AntibioticsSetConfig = {
       ]
     }
   ],
-  "Patient at increased risk of fungal infection":
+  "Patients at increased risk of fungal infection":
   {
     "title": "Add liposomal Amphotericin B or an echinocandin (eg, caspofungin, micafungin) to the antimicrobial regimen"
   },
-  "Patient with risk for rickettsial infection":
+  "Patients with risk factors for rickettsial infection":
   {
     "title": "Add a tetracycline antibiotic (eg, doxycycline) to the antimicrobial regimen"
   },
-  "Infants 0-28 days":
+  "Infants 0 to 28 days of age" :
   [
     {
       "title": "Ampicillin + Cefotaxime + Gentamicin",
