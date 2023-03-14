@@ -1076,24 +1076,28 @@ machine AntibioticsTherapy
         }
 
         if ((isImmunosuppressed || hasPseudomonasInfection) && canReceivePenicillin()) {
-          send tabletApp, SuggestAntibiotic, ( "vancomycin"
-                                             , measurementBounds.vancomycinDosageUpperBound
-                                             , "1-2 g");
 
-          if (carbapenemResistant) {
-            send tabletApp, SuggestAntibiotic, ( "amninoglycocide (eg. getamicin, amikacin)" );
-          }
-
-          send tabletApp, SuggestAntibioticOption, ( "cefepime"
-                                                   , measurementBounds.cefepimeDosageUpperBound
-                                                   , "2 g" );
+          send tabletApp
+              , RecommendDrug
+              , ( "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species"
+                , "OSF Antibiotics Set"
+                , "drug combination"
+                , "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)" );
 
 
-          send tabletApp, SuggestAntibioticOption, ( "cefladizime"
-                                                   , measurementBounds.cefladizimeDosageUpperBound
-                                                   , "2 g" );
           if (esblPrevalent || receivedBroadSpectrumAntibiotics) {
-            send tabletApp, SuggestAntibioticOption, ( "carbapenem (eg. imipenem, meropenem)" );
+            send tabletApp
+               , Recommend
+               , ( "consider additional antibiotics"
+                 , "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftadizime (50 mg/kg, maximium 2 g, for the initial dose) OR carbapenam (eg, imipenem, meroenem) in settings where bacterial organisms with extended-specturm beta-lactamase (ESBL) resistance are prevalent or for patients who have been recently (within two weeks) treated with broad-spectrum antibiotics (eg, third-generation celphalosporin, or fluoroquinolone)" );
+
+
+            if (carbapenemResistant) {
+            send tabletApp
+               , Recommend
+               , ( "consider additional antibiotics"
+                 , "ADD an Aminoglycoside (e.g. gentamicin, amikacin) for cefepime/ceftadizime/carbapenam resistance" );
+            }
           }
         }
 
