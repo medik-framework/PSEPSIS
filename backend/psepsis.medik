@@ -43,7 +43,7 @@ machine MeasurementBounds
   var pulseQuality       = "normal";
   var skinColor          = "normal";
   var mentalStatus       = "normal";
-  var capillaryRefill    = 1;
+  var capillaryRefill    = "1";
   var fluidOverloadSigns = 0;
 
   fun days(age) {
