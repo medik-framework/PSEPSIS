@@ -186,3 +186,15 @@ async def test_antibiotic_therapy_normal_host():
 @pytest.mark.asyncio
 async def test_antibiotic_therapy_immunosuppressed_esbl_cccresistant():
     await run_test('antibiotic-therapy-immunosuppressed-esbl-cccresistant')
+
+@pytest.mark.asyncio
+async def test_antibiotic_therapy_no_penicillin_recent_antibiotics():
+    await run_test('antibiotic-therapy-no-penicillin-recent-antibiotics')
+
+@pytest.mark.asyncio
+async def test_antibiotic_therapy_immunosuppressed_no_penicillin_recent_antibiotics_fungal_risk():
+    await run_test('antibiotic-therapy-immunosuppressed-no-penicillin-recent-antibiotics-fungal-risk')
+
+@pytest.mark.asyncio
+async def test_antibiotic_therapy_infant_staph_risk():
+    await run_test('antibiotic-therapy-infant-staph-risk')
