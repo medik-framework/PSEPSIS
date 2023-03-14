@@ -60,7 +60,7 @@ const MedicationCard = (config) => {
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
 
   useEffect(() => {
-    if(highlight.highlightedMedication === config.name) {
+    if(highlight.highlightedMedication.includes(config.name)) {
       setIsHighlighted(true);
       setInputDose(highlight.suggestedDosage);
     } else {
@@ -124,7 +124,7 @@ const MedicationCard = (config) => {
                   'name'     : config.name
                 }));
                 if(isHighlighted){
-                  dispatch(unsetHighlight());
+                  dispatch(unsetHighlight(config.name));
                 }
                 kEndpoint.sendMessage(JSON.stringify({
                   "eventName": "Confirm" + config.name.replace(/\s/g,'') + "Administered",

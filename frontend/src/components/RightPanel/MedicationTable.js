@@ -80,7 +80,7 @@ export const AntibioticsSetTable = () => {
                 dispatch(unsetHighlight());
                 setSelected(idx);
               }}
-              sx = {{background: name === highlighted ? "yellow":"lightcyan"}}
+              sx = {{background: highlighted.includes(name)? "yellow":"lightcyan"}}
             >
               <Box height={"100%"} width={"80%"}>
                 <Typography>{name}</Typography>
