@@ -258,6 +258,26 @@ export const AntibioticsSetConfig = {
   "Infants 0 to 28 days of age" :
   [
     {
+      "title": "Vancomycin + Cefotaxime + Gentamicin",
+      "drugs": [
+        {
+          "name": "Vancomycin",
+          "dosage": ["15","60"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Cefotaxime",
+          "dosage": ["50","100","150"],
+          "unit": "mg/kg"
+        },
+        {
+          "name": "Gentamicin",
+          "dosage": ["2.5","7.5"],
+          "unit": "mg/kg"
+        }
+      ]
+    },
+    {
       "title": "Ampicillin + Cefotaxime + Gentamicin",
       "drugs": [
         {
