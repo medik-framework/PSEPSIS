@@ -169,7 +169,7 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
 
   return (
       <Grid container>
-        <Grid
+       {/* <Grid
           item
           xs={12}
           sx={{
@@ -179,7 +179,7 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
           }}
         >
           <div>Screening Status: Presume Sepsis</div>
-        </Grid>
+        </Grid> */}
         {config.map((diagnosis, idx) => {
           return (
             <Grid
