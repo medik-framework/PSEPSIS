@@ -65,3 +65,54 @@ Obs: Suggest Treat Fluid Overdose.
 ---
 
 6. Goto Maintainance IV-Fluid
+
+
+Scenario 2
+==========
+
+age                  - 2 weeks
+Weight               - 4 kg
+High Risk Conditions - CSF Shunt
+
+Cardiovascular
+--------------
+
+HR            - 210
+Pulse Quality - Normal
+BPSys         - 55
+Cap refill    - 5+
+
+Immune
+------
+Temp       - 37
+Behavior   - sleeping
+
+Evaluation: Negative
+
+After monitoring, change:
+
+1. temp - 39
+
+Remedial Steps:
+---------------
+
+1. Fluid Therapy:
+    * Fluid Overdose Risks: Some risk, For demo 40 ml/kg
+    * System will recommend dosage (5-10 ml/kg for no risks)
+    * We assume that 3 minutes later should assess responsiveness
+
+2. Antibiotics:
+    * Staph possible. HSV positive
+    * System suggest Vancomycin instead of ampicillin (due to presence of
+      staphyloccocus
+
+Obs
+===
+
+ - No Improvement. Suggest Inotropic support
+
+
+
+
+
+
