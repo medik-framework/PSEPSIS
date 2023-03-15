@@ -103,9 +103,9 @@ const ThreeBucket = () => {
 
   function colorCheck(props){
   var normal = 0;
-  for (const key in props) 
+  for (const key in props)
   {
-    if (Object.hasOwnProperty.call(props, key)) 
+    if (Object.hasOwnProperty.call(props, key))
     {
       if(`${props[key]}` === '#ff4c4c'){return '#ff4c4c'}
       if(`${props[key]}` === '#33ff33'){normal=normal+1;}
@@ -119,9 +119,9 @@ const ThreeBucket = () => {
   useEffect(() => {
     setNodes((nds) =>
       nds.map((node, index) => {
-        if (changingNodes.includes(node.id)) 
+        if (changingNodes.includes(node.id))
         {
-          const value = organDTValue[node.key].value;  
+          const value = organDTValue[node.key].value;
           const isData = `${values[index]}`;
           const name = `${node.const_label}=(${isData})`;
           if(isData !== "null" && isData !== "NaN"){ node.data = {label : name};}
@@ -130,7 +130,7 @@ const ThreeBucket = () => {
         }
 
         if(tempNode.includes(node.id))
-        {   
+        {
           const isData = `${values[index]}`;
           const value = organDTValueforTemp.Temp.value;
           if(! isNaN(isData))
@@ -173,7 +173,7 @@ const ThreeBucket = () => {
         {
           const valueCapRefil = initialNodes[6].style.backgroundColor;
           const valueSkinColor = initialNodes[7].style.backgroundColor;
-          if(!(valueCapRefil === "white" || valueSkinColor === "white"))
+          if(!(valueCapRefil === "white" && valueSkinColor === "white"))
           {
             const color = colorCheck({valueCapRefil,valueSkinColor});
             node.style = { ...node.style, backgroundColor: color };
@@ -203,7 +203,7 @@ const ThreeBucket = () => {
           const bucket1val = count_3 ? `${node.const_label}=(${count_3})`:"Bucket 3";
           node.data = {label : bucket1val};
         }
-        
+
         //Calculations for Sepsis Detection
         if(node.id === '13' && ageObject)
         {
