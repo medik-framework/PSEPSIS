@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run --name=frontend -it -v `pwd`:"/home/$(whoami)/PSEPSIS" -w "/home/$(whoami)/PSEPSIS" frontend-with-k:latest
+docker run --name=frontend -it -p 2323:2323 -p 2324:2324 -p 23233:23233 -p 23234:23234 -v `pwd`:"/home/$(whoami)/PSEPSIS" -w "/home/$(whoami)/PSEPSIS" frontend-with-k:latest
