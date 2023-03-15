@@ -1,9 +1,11 @@
+import { useSelector } from "react-redux";
 import { Typography, Box } from "@mui/material";
 
 import SepsisTimeline from "./SepsisTimer";
 import BundleForm from "./BundleForm";
 
 export default function OneHourBundle() {
+  const sepsisDiagnosis = useSelector((state) => state.diagnosis.sepsis);
 
   return (
     <div style={{ flexGrow: 1, width: "100%" }}>
@@ -23,7 +25,9 @@ export default function OneHourBundle() {
         >
           Start
         </Button> */}
-        <Typography variant="h4" gutterBottom component="div">
+        <Typography variant="h4" gutterBottom component="div"
+          sx={{background: sepsisDiagnosis ? 'yellow':'white'}}
+        >
           OSF PSepsis Bundle
         </Typography>
       </Box>
