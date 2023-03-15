@@ -201,7 +201,7 @@ export const DialogConfig = {
         inputConfig: {
             type: "plain",
             actions: {
-              question: "Is the patient inmmunosuppressed?",
+              question: "Is the patient immunosuppressed?",
               buttons: {
                   "Yes": {eventArgs: [true]},
                   "No":  {eventArgs: [false]}
@@ -316,7 +316,7 @@ export const DialogConfig = {
         shouldStore: false
     },
     "get HSV risk": {
-        title:"get HSV risk",
+        title:"HSV risk",
         inputConfig: {
             type: "plain",
             actions: {
