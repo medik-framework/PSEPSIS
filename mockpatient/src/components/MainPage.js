@@ -55,46 +55,6 @@ const MainPage = ({ exitSession, kWebSocket }) => {
                     <OrganPage {...{ selectedDT, kSendMessage }}/>
                 </Box>
             </Box>
-            <Box>
-                <TextField
-                    label="Set backend server API URL"
-                    id="url"
-                    sx={{fontSize:'18px', backgroundColor:'white', width:'40%', bottom: 0, right: 0, position:'absolute'}}
-                    variant="outlined"
-                    value={apiURL}
-                    onChange={(e) => dispatch(updateURL(e.target.value))}
-                />
-            </Box>
-            <Button
-                onClick={() => {
-                    const data ={
-                        "id": id,
-                        "source": 0,
-                        "args": [ "getAge" ],
-                        "response_to": -1,
-                        "need_response": true,
-                        "timestamp": 4008
-                    }
-                    fetch(apiURL+'add_to_q', {
-                        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                        mode: 'cors', // no-cors, *cors, same-origin
-                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                        credentials: 'same-origin', // include, *same-origin, omit
-                        headers: {
-                        'Content-Type': 'application/json'
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        redirect: 'follow', // manual, *follow, error
-                        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                        body: JSON.stringify(data) // body data type must match "Content-Type" header
-                    }).catch(error => {
-                        console.log('Post error:', error)
-                    })
-                    setID(id + 1);
-                }}
-            >
-                Test Q
-            </Button>
             {open && <ExitConfirmationDialog open={open} handleCancel={()=>setOpen(false)} handleOk={exitSession}/>}
         </Box>
     );

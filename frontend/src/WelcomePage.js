@@ -45,23 +45,6 @@ const WelcomePage = ({ startSession, isKConnActive }) => {
             >
                 Start New Session
             </Button>
-
-            <Box
-                sx={{fontSize:'18px', backgroundColor:'white', marginTop:"20px"}}
-            >
-                <TextField
-                    label="Set backend server API URL"
-                    id="url"
-                    variant="outlined"
-                    value={inputURL}
-                    onChange={(e) => setInputURL(e.target.value)}
-                />
-                <Button
-                    onClick={() => dispatch(updateURL(inputURL))}
-                >
-                    Confirm
-                </Button>
-            </Box>
         </Box>
     )
 };
