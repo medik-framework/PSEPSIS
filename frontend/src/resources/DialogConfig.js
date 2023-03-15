@@ -252,7 +252,7 @@ export const DialogConfig = {
         inputConfig: {
             type: "plain",
             actions: {
-              question: "Did patient recently receive braod spectrum antibiotics?",
+              question: "Did patient recently receive broad spectrum antibiotics?",
               buttons: {
                   "Yes": {eventArgs: [true]},
                   "No":  {eventArgs: [false]}
