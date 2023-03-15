@@ -21,9 +21,12 @@ const checklistsSlice =  createSlice({
       } else {
         state[checklistName].push(checkitemName)
       }
+    },
+    update: (state, action) => {
+      state[action.payload.checklistName] = action.payload.checkedItems;
     }
   }
 });
 
-export const { toggle } = checklistsSlice.actions
+export const { toggle, update } = checklistsSlice.actions
 export default checklistsSlice.reducer
