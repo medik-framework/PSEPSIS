@@ -675,12 +675,12 @@ machine FluidTherapy
     }
     on ConfirmNormalSalineAdministered do {
       // Wait for fluid responsiveness
-      sleep(10);
+      sleep(300);
       goto EvaluateResponsiveness;
     }
     on ConfirmLactatedRingerAdministered do {
       // Wait for fluid responsiveness
-      sleep(30);
+      sleep(300);
       goto EvaluateResponsiveness;
     }
   }
