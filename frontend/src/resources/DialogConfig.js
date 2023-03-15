@@ -34,7 +34,7 @@ export const DialogConfig = {
             label: "HighRiskConditions",
             type: "checklist",
             options: Object.keys(PatientConfig.HighRisk.options),
-            storage: "patientBasic/update",
+            storage: "patientBasic/update_hrc",
             eventName: "HighRiskConditionsEntered"
         },
         shouldSend: true,
