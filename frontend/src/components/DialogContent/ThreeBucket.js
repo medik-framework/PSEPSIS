@@ -75,6 +75,7 @@ const ThreeBucket = () => {
   const ageObject = useSelector((state) => state.patientBasic['Age']);
   const organDTValue = useSelector((state) => state.organDT['Cardiovascular']);
   const organDTValueforTemp = useSelector((state) =>state.organDT['Immune']);
+  const hrcValue = useSelector((state) => state.patientBasic['HighRiskConditions']);
   var organDTValueforBehavior = '';
 
   function selectValue(state, key, id, digikey) {
@@ -188,6 +189,21 @@ const ThreeBucket = () => {
             node.data  = {label : ment_bev};
           }
           const colorcode = get_colorcode(OrganDTConfig[6].measurements[`${node.digikey}`], organDTValueforBehavior);
+          node.style = { ...node.style, backgroundColor: colorcode};
+        }
+
+        //Calculations for High Risk Conditions
+        if(node.id === '7')
+        {
+          const hrcTrueCount = Object.values(hrcValue).reduce(
+            (acc, current) => acc = acc + (current ? 1 : 0),
+            0
+          );
+          if(hrcValue){
+            const ment_bev = `${node.const_label}=(${hrcTrueCount})`
+            node.data  = {label : ment_bev};
+          }
+          const colorcode = hrcTrueCount ? '#ff4c4c' : '33ff33';
           node.style = { ...node.style, backgroundColor: colorcode};
         }
 
