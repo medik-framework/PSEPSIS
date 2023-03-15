@@ -13,7 +13,7 @@ const CollapsiblePanel = () => {
   const anchorEl = useRef(null);
 
   //const buttons = ["history", "flowchart", "checklists", "references"];
-  const buttons = ["flowchart", "checklists", "references", "fluid response"];
+  const buttons = ["references", "fluid response"];
 
   return (
     <div style={{ height: "100vh" }} ref={anchorEl}>
@@ -50,8 +50,8 @@ const CollapsiblePanel = () => {
       >
         <div style={{ width: "33vw", height: "100vh" }}>
           {/* {selectedButton === "history" && <TreatmentLog />} */}
-          {selectedButton === "flowchart" && <WorkflowTab />}
-          {selectedButton === "checklists" && <Checklist />}
+          {/*{selectedButton === "flowchart" && <WorkflowTab />}
+          {selectedButton === "checklists" && <Checklist />} */}
           {selectedButton === "references" && <Reference />}
           {selectedButton === "fluid response" && <LineGraph {...{treatmentName:'fluid'}}/>}
         </div>
