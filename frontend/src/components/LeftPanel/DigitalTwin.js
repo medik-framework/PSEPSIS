@@ -168,17 +168,6 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
 
   return (
       <Grid container>
-       {/* <Grid
-          item
-          xs={12}
-          sx={{
-            height: "30px",
-            border: '1px solid black',
-            backgroundColor: "white",
-          }}
-        >
-          <div>Screening Status: Presume Sepsis</div>
-        </Grid> */}
         {config.map((diagnosis, idx) => {
           return (
             <Grid
@@ -203,40 +192,6 @@ const SystematicAssessmentForm = ({ selectedDT }) => {
       </Grid>
   );
 };
-
-// const OrganAssessmentForm = ({ selectedDT }) => {
-//   const assessments = OrganDTConfig[selectedDT].assessments;
-//   if (!assessments) {
-//     return null;
-//   }
-//   const count = Object.keys(assessments).length;
-//   return (
-//     <>
-//       <Grid container>
-//         {Object.keys(assessments).map((key) => {
-//           return (
-//             <Grid
-//               item
-//               xs={12 / count}
-//               sx={{
-//                 height: "80px",
-//                 boxShadow:
-//                   "2px 0 0 0 #888, 0 2px 0 0 #888, 2px 2px 0 0 #888,2px 0 0 0 #888 inset, 0 2px 0 0 #888 inset",
-//                 backgroundColor: "lightyellow",
-//               }}
-//             >
-//               <div>
-//                 {assessments[key].name}{": "}
-//                 {assessments[key].value ? assessments[key].value : null}
-//               </div>
-//               {/* <div>Last updated time:</div> */}
-//             </Grid>
-//           );
-//         })}
-//       </Grid>
-//     </>
-//   );
-// };
 
 const OrganSelection = ({ selectedDT, setSelectedDT }) => {
   return (
@@ -271,13 +226,9 @@ const DigitalTwin = () => {
 
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>
-      {/* <Typography variant="h4" gutterBottom component="div">
-        Patient Data
-      </Typography> */}
       <PaitentBasic />
       <SystematicAssessmentForm {...{ selectedDT }} />
       <OrganSelection {...{ selectedDT, setSelectedDT }} />
-      {/* <OrganAssessmentForm {...{ selectedDT }} /> */}
       <DigitalTwinForm {...{ selectedDT }} />
     </Box>
   );
