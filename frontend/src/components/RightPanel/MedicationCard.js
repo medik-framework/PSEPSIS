@@ -218,12 +218,14 @@ const ComboEntry = ({ drug, order, setOrder }) => {
 export const ComboCard = ({ config }) => {
   const classes = useStyles();
   let initOrder = {};
-  config.drugs.map((drug) => {
+
+  for (const drug of config.drugs) {
     initOrder[drug.name] = {
       dose: drug.dosage[0],
       inputDose: drug.dosage[0]
     }
-  })
+  }
+
   const [order, setOrder] = useState(initOrder);
   const dispatch = useDispatch();
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
@@ -239,8 +241,7 @@ export const ComboCard = ({ config }) => {
         sx ={{marginRight: "10px", marginBottom:"10px"}}
         onClick={() => {
           const ts = new Date().getTime();
-          config.drugs.map((drug) => {
-            console.log("record ordering drug: ", drug.name)
+          for (const drug of config.drugs) {
             dispatch(add({
               'timestamp': ts,
               'name'     : drug.name
@@ -250,7 +251,7 @@ export const ComboCard = ({ config }) => {
               "eventName": "record_dose",
               "eventArgs": [drug.name, ts,  order[drug.name].dose]
             }));
-          })
+          }
         }}
       >
         Give

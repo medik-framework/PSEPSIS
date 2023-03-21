@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useInterval } from "react-use";
 
-import { Button, Grid, Typography, Box, Tabs, Tab, TextField } from "@mui/material";
+import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
 
 import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
-import { updateURL } from "../../redux/reducers/misc";
 import InputDialog from "../DialogContent/InputDialog";
 
 const PaitentBasic = () => {
@@ -269,10 +268,6 @@ const OrganSelection = ({ selectedDT, setSelectedDT }) => {
 
 const DigitalTwin = () => {
   const [selectedDT, setSelectedDT] = useState(0);
-  const apiURL = useSelector((state) => state.misc['apiURL']);
-
-  const dispatch = useDispatch();
-  const [inputURL, setInputURL] = useState(apiURL)
 
   return (
     <Box width='100%' height='100%' display='flex' flexDirection='column'>
