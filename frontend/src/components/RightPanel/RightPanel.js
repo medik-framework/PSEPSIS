@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {  Button, Grid, Typography } from "@mui/material";
 
@@ -11,7 +10,6 @@ import {
 } from "../../resources/MedicationConfig";
 
 const MiddlePanel = () => {
-  // const [selectedCategory, setSelectedCategory] = useState(0);
   const selectedCategory = useSelector((state) => state.highlight.selectedMedicationTab);
   const dispatch = useDispatch();
 

@@ -1,16 +1,6 @@
-import { useState } from "react";
-import { Button, Box, Typography, TextField } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-
-import { updateURL } from "./redux/reducers/misc";
-
+import { Button, Box, Typography } from "@mui/material";
 
 const WelcomePage = ({ startSession, isKConnActive }) => {
-    const dispatch = useDispatch();
-    const apiURL = useSelector((state) => state.misc['apiURL']);
-    const [inputURL, setInputURL] = useState(apiURL);
-
-
     return (
         <Box
             sx={{
