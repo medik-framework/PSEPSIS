@@ -148,37 +148,6 @@ const MedicationCard = (config) => {
 
 export default MedicationCard;
 
-//export const ComboCard = ({ config }) => {
-//  const classes = useStyles();
-//
-//  return(
-//    <Grid item xs={12} className={classes.card} key={config.title}>
-//      <Typography className={classes.title}>{config.title}</Typography>
-//      {config.drugs && config.drugs.map((drug) =>
-//        <Box key={drug.name}>
-//          <Typography width={"30%"} display={"inline-flex"}>{drug.name}</Typography>
-//          <Autocomplete
-//            freeSolo
-//            sx={{
-//              width: "40%",
-//              display: "inline-flex"
-//            }}
-//            key={drug.name}
-//            options={drug.dosage}
-//            renderInput={(params) => <TextField {...params} label="dosage"/>}
-//          />
-//          {drug.unit}
-//        </Box>
-//      )}
-//      {config.drugs && <Button
-//        className={classes.button}
-//      >
-//        Give
-//      </Button>}
-//    </Grid>
-//  )
-//}
-
 const ComboEntry = ({ drug, order, setOrder }) => {
   const classes = useStyles();
   return (
