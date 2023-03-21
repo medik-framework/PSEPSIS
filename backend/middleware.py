@@ -228,7 +228,6 @@ class Datastore:
         data = {key:asdict(self.organ_dt.get_series(key)) for key in measurements}
         drugs = ['Normal Saline', 'Lactated Ringer']
         data.update({key:asdict(self.drug_hist.get_series(key)) for key in drugs})
-        print(data)
         return data
 
 
