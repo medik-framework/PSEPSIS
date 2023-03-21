@@ -100,9 +100,10 @@ export const AntibioticsSetTable = () => {
             <BsFillArrowLeftSquareFill /> Return to Antibiotics sets selection
           </Button>
           <Grid container className={classes.root}>
-            {AntibioticsSetConfig[Object.keys(AntibioticsSetConfig)[selected]].map((config, idx) =>
-              <ComboCard key={"Combo"+selected+idx} {...{config}} />
-            )}
+            {AntibioticsSetConfig[Object.keys(AntibioticsSetConfig)[selected]].map((config, idx) => {
+              if (config.drugs) return <ComboCard key={"Combo"+selected+idx} {...{config}} />
+              else return <Typography className={classes.card}>{config.title}</Typography>
+            })}
           </Grid>
         </>
       }
