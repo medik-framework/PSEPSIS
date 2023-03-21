@@ -4,6 +4,6 @@
   "Temp": 37,
   "Pulse Quality": null,
   "Behavior": "normal",
-  "Capillary Refill": 2,
+  "Capillary Refill": "2",
   "Skin Color": "normal"
 }
