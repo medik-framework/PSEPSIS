@@ -1,5 +1,5 @@
 from wrapper import MedikWrapper
-from backend_env import kompiled_dir, guidelines_pgm, driver_pgm, set_env
+from backend_env import kompiled_dir, guidelines_pgm, driver_pgm, screening_only_driver_pgm, set_env
 
 import asyncio, copy, pytest, json, logging, sys, os
 import functools
@@ -11,6 +11,8 @@ ignored_names = ['StartGUI']
 
 
 def combined_temp_file(tmp_path, filepaths, combined_file_name):
+    for filepath in filepaths:
+        print('combining: {}'.format(str(filepath)))
     combined_pgm_path = tmp_path / combined_file_name
     combined_pgm = ''
     for filepath in filepaths:
@@ -18,6 +20,15 @@ def combined_temp_file(tmp_path, filepaths, combined_file_name):
             combined_pgm += handler.read()
     combined_pgm_path.write_text(combined_pgm)
     return combined_pgm_path
+
+@pytest.fixture
+def screening_only_exec_pgm(tmp_path):
+    tmp_path.mkdir(exist_ok=True)
+    screening_only_pgm_path = combined_temp_file( tmp_path
+                                                , [ guidelines_pgm
+                                                  , screening_only_driver_pgm ]
+                                                , 'screening-only-exec-combined.medik')
+    return screening_only_pgm_path
 
 @pytest.fixture
 def psepsis_exec_pgm(tmp_path):
@@ -178,32 +189,32 @@ async def run_exec_test(test_name, psepsis_exec_pgm):
 # ==== Tests =====
 
 @pytest.mark.asyncio
-async def test_get_age(psepsis_exec_pgm):
-    await run_exec_test('get-age', psepsis_exec_pgm)
+async def test_get_age(screening_only_exec_pgm):
+    await run_exec_test('get-age', screening_only_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_get_age_weight_hrc(psepsis_exec_pgm):
-    await run_exec_test('get-age-weight-hrc', psepsis_exec_pgm)
+async def test_get_age_weight_hrc(screening_only_exec_pgm):
+    await run_exec_test('get-age-weight-hrc', screening_only_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_negative(psepsis_exec_pgm):
-    await run_exec_test('screening-negative', psepsis_exec_pgm)
+async def test_screening_negative(screening_only_exec_pgm):
+    await run_exec_test('screening-negative', screening_only_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_negative_none(psepsis_exec_pgm):
-    await run_exec_test('screening-negative-none', psepsis_exec_pgm)
+async def test_screening_negative_none(screening_only_exec_pgm):
+    await run_exec_test('screening-negative-none', screening_only_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_negative_all_none(psepsis_exec_pgm):
-    await run_exec_test('screening-negative-all-none', psepsis_exec_pgm)
+async def test_screening_negative_all_none(screening_only_exec_pgm):
+    await run_exec_test('screening-negative-all-none', screening_only_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_positive_1(psepsis_exec_pgm):
-    await run_exec_test('screening-positive-1', psepsis_exec_pgm)
+async def test_screening_positive_1(screening_only_exec_pgm):
+    await run_exec_test('screening-positive-1', screening_only_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_positive_2(psepsis_exec_pgm):
-    await run_exec_test('screening-positive-2', psepsis_exec_pgm)
+async def test_screening_positive_2(screening_only_exec_pgm):
+    await run_exec_test('screening-positive-2', screening_only_exec_pgm)
 
 @pytest.mark.asyncio
 async def test_fluid_therapy_no_risk_overdose_responsiveness(psepsis_exec_pgm):
@@ -239,3 +250,22 @@ async def test_antibiotic_therapy_immunosuppressed_no_penicillin_recent_antibiot
 async def test_antibiotic_therapy_infant_staph_risk(psepsis_exec_pgm):
     await run_exec_test( 'antibiotic-therapy-infant-staph-risk'
                        , psepsis_exec_pgm)
+@pytest.mark.asyncio
+async def test_shock_screening_negative(psepsis_exec_pgm):
+    await run_exec_test( 'shock-screening-negative'
+                       , psepsis_exec_pgm)
+
+@pytest.mark.asyncio
+async def test_shock_screening_map_positive(psepsis_exec_pgm):
+    await run_exec_test( 'shock-screening-map-positive'
+                       , psepsis_exec_pgm )
+
+@pytest.mark.asyncio
+async def test_shock_screening_excess_epi_positive(psepsis_exec_pgm):
+    await run_exec_test( 'shock-screening-excess-epi-positive'
+                       , psepsis_exec_pgm )
+
+@pytest.mark.asyncio
+async def test_shock_screening_perfusion_positive(psepsis_exec_pgm):
+    await run_exec_test( 'shock-screening-perfusion-positive'
+                       , psepsis_exec_pgm )

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartScreening",
+    "eventArgs": []
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "AgeEntered",
+    "eventArgs": [300],
+    "waitFor":
+     {
+       "name": "Instruct",
+       "args": ["get age"]
+     }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "SepsisSuspected",
+    "eventArgs": [],
+    "waitFor": {
+      "name": "Instruct",
+      "args": ["get weight"]
+    }
+  },
+  {
+    "action":"exit",
+    "waitFor": {
+      "id": "tabletApp",
+      "interface": "TabletApp",
+      "name": "ShockDiagnosis"
+    }
+  }
+]
