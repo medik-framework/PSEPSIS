@@ -1168,7 +1168,15 @@ class Drug {
   name
 }
 
-machine Antibiotics {
+machine patientStats {
+  state getStats {
+    obtain age, weight, highRiskConditions from healthcareProvider;
+    monitor hr, bySys, bpDia, ....;
+    goto screening;
+  }
+}
+
+machine AntibioticsTherapy {
 
   state ObtainPrimaryConditions {
     obtain age
@@ -1221,6 +1229,23 @@ machine Antibiotics {
 
 
 
+state Recommendations {
+  if (age > days(28)) {
+      if (immunosuppressed || pseudomonasConcern) {
 
+        if (esblPrevalent || recentBroadSpectrumAntibioticsHistory || contraIndicationToPenicllins) {
+          recommendDrugs( Or( DrugClass( "Carbapenam")
+            , Drug("Aztreonam")
+            , And( Drug("Ciprofloxacin"), Drug("Clindamycin"))))
+        } else {
+          recommendDrugs( Or( Drug( "Cefepime", mgPerKg(50), maximum(2))
+                            , Drug( "Ceftazidime", mgPerKg(50), maximum(2))));
+        }
+      } else {
+        recommendDrugs(Or( Drug("Cefotaxime", mgPerKg(100), maximum(g(2)))
+                         , Drug("Ceftriaxone", mgPerKg(75), maximum(g(2))))) to app;
+      }
+    }
+}
 
 
