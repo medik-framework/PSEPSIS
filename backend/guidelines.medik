@@ -416,162 +416,152 @@ machine SepsisScreening
   }
 }
 
+machine SepticShockScreening
+  receives SepsisSuspected
+         , StartShockScreening
+         , ConfirmSepticShockMeasurementsObtained {
 
-//
-//machine SepticShockScreening
-//  receives SepsisSuspected
-//         , StartShockScreening
-//         , ConfirmSepticShockMeasurementsObtained {
-//
-//  vars tabletApp, datastore, measurementBounds;
-//
-//  fun isBelowNormalLowerBound(paramter, normalLowerBound) {
-//    var storedMeasurement = obtainFrom(datastore, parameter);
-//
-//    if (!(storedMeasurement == undef)) {
-//      return (storedMeasurement < normalLowerBound);
-//    } else {
-//      return false;
-//    }
-//  }
-//
-//  fun needsAbnormalVasoactive(drugName, safeDose) {
-//    var administeredDose = obtainFrom(datastore, drugName);
-//
-//    if (!(administeredDose == undef)) {
-//      return (administeredDose > safeDose);
-//    } else {
-//      return false;
-//    }
-//  }
-//
-//  fun isBelowIfPresent(parameter, bound) {
-//    var storedMeasurement = obtainFrom(datastore, parameter);
-//
-//    if (!(storedMeasurement == undef)) {
-//      return (storedMeasurement < bound);
-//    } else {
-//      return false;
-//    }
-//  }
-//  fun isAboveIfPresent(parameter, bound) {
-//    var storedMeasurement = obtainFrom(datastore, parameter);
-//
-//    if (!(storedMeasurement == undef)) {
-//      return (storedMeasurement > bound);
-//    } else {
-//      return false;
-//    }
-//  }
-//
-//  init state Start {
-//    entry(tabletApp, datastore, measurementBounds) {
-//      this.tabletApp         = tabletApp;
-//      this.datastore         = datastore;
-//      this.measurementBounds = measurementBounds;
-//    }
-//
-//    on SepsisSuspected do {
-//      goto WaitForStart;
-//    }
-//  }
-//
-//  state WaitForStart {
-//    on StartShockScreening do {
-//      goto CheckFluidBolus;
-//    }
-//  }
-//
-//  state CheckFluidBolus {
-//    entry {
-//      var fluidDose = obtainFrom(datastore, "normalSaline");
-//
-//      if ((fluidDose == undef) || (fluidDose < 40)) {
-//        send tabletApp, Instruct, ("Continue Fluid Therapy");
-//        send tabletApp, ShowSleepTimer, ("SepticShockScreening", 10);
-//        sleep(10);
-//        goto CheckFluidBolus;
-//      } else {
-//        goto ObtainMeasurements;
-//      }
-//    }
-//  }
-//
-//  state ObtainMeasurements {
-//    entry {
-//      send tabletApp, Instruct, ("Obtain Septic Shock Measurements");
-//    }
-//
-//    on ConfirmSepticShockMeasurementsObtained do {
-//      print("Confirm Measurements Obtained \n");
-//      goto CalculateSepticShockScore;
-//    }
-//  }
-//
-//  state CalculateSepticShockScore {
-//    entry {
-//     var mapAbnormal = isBelowIfPresent("map", measurementBounds.mapLowerBound);
-//
-//     if (mapAbnormal) {
-//       send tabletApp, Instruct, ("Septic Shock Suspected");
-//       broadcast SepticShockSuspected;
-//
-//       goto CheckShockType;
-//     }
-//
-//     var needsExcessEpinephrine     = needsAbnormalVasoactive("epinephrine"   , measurementBounds.epinephrineDosageUpperBound);
-//     var needsExcessNorepinephrine  = needsAbnormalVasoactive("norepinephrine", measurementBounds.norepinephrineDosageUpperBound);
-//     var needsExcessDopamine        = needsAbnormalVasoactive("dopamine"      , measurementBounds.dopamineDosageUpperBound);
-//     var needsExcessDobutamine      = needsAbnormalVasoactive("dobutamine"    , measurementBounds.dobutamineDosageUpperBound);
-//
-//     if (    (needsExcessEpinephrine)
-//          || (needsExcessNorepinephrine)
-//          || (needsExcessDopamine)
-//          || (needsExcessDobutamine) ) {
-//
-//       send tabletApp, Instruct, ("Septic Shock Suspected");
-//       broadcast SepticShockSuspected;
-//       goto CheckShockType;
-//     }
-//
-//
-//      var perfusion = 0;
-//      if ( isAboveIfPresent("baseDeficit", 5)) {
-//        perfusion = perfusion + 1;
-//      }
-//
-//      if ( isAboveIfPresent("arterialLactate", 2 * measurementBounds.arterialLactateUpperBound)) {
-//        perfusion = perfusion + 1;
-//      }
-//
-//      if ( isBelowIfPresent("urineOutput", 1)) {
-//        perfusion = perfusion + 1;
-//      }
-//
-//      if ( isAboveIfPresent("capillaryRefill", 5)) {
-//        perfusion = perfusion + 1;
-//      }
-//
-//      if (perfusion > 2) {
-//        send tabletApp, Instruct, ("Septic Shock Suspected");
-//        broadcast SepticShockSuspected;
-//        goto CheckShockType;
-//      } else {
-//        send tabletApp, Instruct, ("Septic Shock Not Suspected");
-//        send tabletApp, ShowSleepTimer, ("SepticShockScreening", 10);
-//        sleep(10);
-//        goto CheckFluidBolus;
-//      }
-//    }
-//  }
-//
-//  state CheckShockType {
-//    entry {
-//      print("Check shock type");
-//    }
-//  }
-//}
-//
+  vars tabletApp, datastore, measurementBounds;
+
+  fun isBelowNormalLowerBound(paramter, normalLowerBound) {
+    var storedMeasurement = obtainFrom(datastore, parameter);
+
+    if (!(storedMeasurement == undef)) {
+      return (storedMeasurement < normalLowerBound);
+    } else {
+      return false;
+    }
+  }
+
+  fun needsExcessVasoactive(drugName, upperDoseBound) {
+    var administeredDose = obtainFrom(datastore, drugName);
+
+    if (!(administeredDose == undef)) {
+      return (administeredDose > upperDoseBound);
+    } else {
+      return false;
+    }
+  }
+
+  fun isBelowIfPresent(parameter, bound) {
+    var storedMeasurement = obtainFrom(datastore, parameter);
+
+    if (!(storedMeasurement == undef)) {
+      return (storedMeasurement < bound);
+    } else {
+      return false;
+    }
+  }
+  fun isAboveIfPresent(parameter, bound) {
+    var storedMeasurement = obtainFrom(datastore, parameter);
+
+    if (!(storedMeasurement == undef)) {
+      return (storedMeasurement > bound);
+    } else {
+      return false;
+    }
+  }
+  fun isEqualToIfPresent(parameter, expected) {
+    var storedMeasurement = obtainFrom(datastore, parameter);
+
+    if (!(storedMeasurement == undef)) {
+      return (storedMeasurement == expected);
+    } else {
+      return false;
+    }
+  }
+
+
+  init state Start {
+    entry(tabletApp, datastore, measurementBounds) {
+      this.tabletApp         = tabletApp;
+      this.datastore         = datastore;
+      this.measurementBounds = measurementBounds;
+    }
+
+    on SepsisSuspected do {
+      goto CheckFluidBolus;
+    }
+  }
+
+  state CheckFluidBolus {
+    entry {
+
+      var fluidDose = obtainFrom(datastore, "Normal Saline");
+
+      if ((fluidDose == undef) || (fluidDose < 40)) {
+        sleep(10);
+        goto CheckFluidBolus;
+      } else {
+        goto CalculateSepticShockScore;
+      }
+    }
+  }
+
+  state CalculateSepticShockScore {
+    entry {
+     var bpAbnormal = isBelowIfPresent("MAP", measurementBounds.mapLowerBound)
+                      || isBelowIfPresent("BP Sys", measurementBounds.bpSysLowerBound);
+
+     if (bpAbnormal) {
+       send tabletApp, ShockDiagnosis, (true);
+       broadcast SepticShockSuspected;
+
+       goto CheckShockType;
+     }
+
+     var needsExcessEpinephrine     = needsExcessVasoactive("Epinephrine"   , measurementBounds.epinephrineDosageUpperBound);
+     var needsExcessNorepinephrine  = needsExcessVasoactive("Norepinephrine", measurementBounds.norepinephrineDosageUpperBound);
+     var needsExcessDopamine        = needsExcessVasoactive("Dopamine"      , measurementBounds.dopamineDosageUpperBound);
+
+     if (    (needsExcessEpinephrine)
+          || (needsExcessNorepinephrine)
+          || (needsExcessDopamine) ) {
+
+       send tabletApp, ShockDiagnosis, (true);
+       broadcast SepticShockSuspected;
+       goto CheckShockType;
+     }
+
+
+      var perfusion = 0;
+      if ( isBelowIfPresent("Base Excess", -5)) {
+        perfusion = perfusion + 1;
+      }
+
+      if ( isAboveIfPresent("Arterial Lactate", 2 * measurementBounds.arterialLactateUpperBound)) {
+        perfusion = perfusion + 1;
+      }
+
+      if ( isBelowIfPresent("Urine Output", 0.5)) {
+        perfusion = perfusion + 1;
+      }
+
+      if ( isEqualToIfPresent("Capillary Refill", "5+")) {
+        perfusion = perfusion + 1;
+      }
+
+      var temp = obtainFrom(datastore, "Temp");
+      var coreTemp = obtainFrom(datastore, "Core Temp");
+
+      if (!((temp == undef) && (coreTemp == undef))) {
+        if ((coreTemp - temp) > 3) {
+          perfusion = perfusion + 1;
+        }
+      }
+
+      if (perfusion >= 2) {
+        send tabletApp, ShockDiagnosis, (true);
+        broadcast SepticShockSuspected;
+      } else {
+        send tabletApp, ShockDiagnosis, (false);
+        sleep(60);
+        goto CheckFluidBolus;
+      }
+    }
+  }
+}
+
 machine FluidTherapy
   receives StartFluidTherapy
          , ConfirmFluidOverloadRisksEntered

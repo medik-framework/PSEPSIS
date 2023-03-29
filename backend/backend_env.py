@@ -1,14 +1,15 @@
 from pathlib import Path
 import logging, os
 
-base_dir        = Path(__file__).parents[0]
-guidelines_pgm  = base_dir     / 'guidelines.medik'
-driver_pgm      = base_dir     / 'driver.medik'
-ghosts_pgm      = base_dir     / 'ghosts.medik'
-medik_dir       = base_dir     / 'ext'          / 'medik-semantics'
-kompiled_dir    = medik_dir    / '.build'       / 'llvm-exec'      / 'medik-llvm-kompiled'
-krelease_dir    = medik_dir    / 'ext'          / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
-kbin_dir        = krelease_dir / 'bin'
+base_dir                  = Path(__file__).parents[0]
+guidelines_pgm            = base_dir     / 'guidelines.medik'
+driver_pgm                = base_dir     / 'driver.medik'
+screening_only_driver_pgm = base_dir     / 'screening_only_driver.medik'
+ghosts_pgm                = base_dir     / 'ghosts.medik'
+medik_dir                 = base_dir     / 'ext'          / 'medik-semantics'
+kompiled_dir              = medik_dir    / '.build'       / 'llvm-exec'      / 'medik-llvm-kompiled'
+krelease_dir              = medik_dir    / 'ext'          / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
+kbin_dir                  = krelease_dir / 'bin'
 
 def set_env():
     if os.getenv('LOGINFO'):

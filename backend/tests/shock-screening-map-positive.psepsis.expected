@@ -1,0 +1,54 @@
+[
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": [
+      "get age"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmAgeEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": [
+      "get weight"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "Normal Saline"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "MAP"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "BP Sys"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ShockDiagnosis",
+    "args": [true]
+  }
+]

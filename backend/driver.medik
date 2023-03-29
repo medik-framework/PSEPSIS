@@ -9,7 +9,7 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 
       // Screening Machines
       new SepsisScreening(tabletApp, datastore, measurementBounds);
-      //new SepticShockScreening(tabletApp, datastore, measurementBounds);
+      new SepticShockScreening(tabletApp, datastore, measurementBounds);
 
       //// Treatment Machines
       new FluidTherapy(tabletApp, datastore, measurementBounds);
