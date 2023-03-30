@@ -470,7 +470,15 @@ machine SepticShockScreening
       return false;
     }
   }
-
+  fun shockPositiveSteps(tabetApp) {
+      send tabletApp, ShockDiagnosis, (true);
+      send tabletApp, Instruct, ( "manage shock"
+                                , "Call PICU if not already done"
+                                , "Switch to 1-hour bundle"
+                                , "Urgently consider Fluid Therapy"
+                                , "Urgently consider Antibiotic Therapy" );
+      broadcast SepticShockSuspected;
+  }
 
   init state Start {
     entry(tabletApp, datastore, measurementBounds) {
@@ -504,9 +512,7 @@ machine SepticShockScreening
                       || isBelowIfPresent("BP Sys", measurementBounds.bpSysLowerBound);
 
      if (bpAbnormal) {
-       send tabletApp, ShockDiagnosis, (true);
-       broadcast SepticShockSuspected;
-
+       shockPositiveSteps(tabletApp);
        goto CheckShockType;
      }
 
@@ -518,8 +524,7 @@ machine SepticShockScreening
           || (needsExcessNorepinephrine)
           || (needsExcessDopamine) ) {
 
-       send tabletApp, ShockDiagnosis, (true);
-       broadcast SepticShockSuspected;
+       shockPositiveSteps(tabletApp);
        goto CheckShockType;
      }
 
@@ -551,8 +556,7 @@ machine SepticShockScreening
       }
 
       if (perfusion >= 2) {
-        send tabletApp, ShockDiagnosis, (true);
-        broadcast SepticShockSuspected;
+        shockPositiveSteps(tabletApp);
       } else {
         send tabletApp, ShockDiagnosis, (false);
         sleep(60);
