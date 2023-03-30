@@ -1,0 +1,65 @@
+[
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get fluid overload risks"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmFluidOverloadRisksEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "RecommendDrug",
+    "args": [
+      "Normal Saline",
+      "Fluid Therapy",
+      "20",
+      "administer 20 ml/kg Normal Saline"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get responsiveness to fluids"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get fluid overload signs"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Normal Saline"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Recommend",
+    "args": [
+      "get fluid next step",
+      "Responsiveness to fluid therapy: false",
+      "Fluid overload: false",
+      "Recommendation: repeat fluid bolus"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "RecommendDrug",
+    "args": [
+      "Normal Saline",
+      "Fluid Therapy",
+      "20",
+      "administer 20 ml/kg Normal Saline"
+    ]
+  }
+]
