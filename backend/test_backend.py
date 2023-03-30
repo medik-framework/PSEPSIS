@@ -11,8 +11,6 @@ ignored_names = ['StartGUI']
 
 
 def combined_temp_file(tmp_path, filepaths, combined_file_name):
-    for filepath in filepaths:
-        print('combining: {}'.format(str(filepath)))
     combined_pgm_path = tmp_path / combined_file_name
     combined_pgm = ''
     for filepath in filepaths:

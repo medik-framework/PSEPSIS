@@ -70,57 +70,21 @@
     ]
   },
   {
-    "id": "datastore",
-    "interface": "Datastore",
-    "name": "Obtain",
-    "args": [
-      "Base Excess"
-    ]
-  },
-  {
-    "id": "datastore",
-    "interface": "Datastore",
-    "name": "Obtain",
-    "args": [
-      "Arterial Lactate"
-    ]
-  },
-  {
-    "id": "datastore",
-    "interface": "Datastore",
-    "name": "Obtain",
-    "args": [
-      "Urine Output"
-    ]
-  },
-  {
-    "id": "datastore",
-    "interface": "Datastore",
-    "name": "Obtain",
-    "args": [
-      "Capillary Refill"
-    ]
-  },
-  {
-    "id": "datastore",
-    "interface": "Datastore",
-    "name": "Obtain",
-    "args": [
-      "Temp"
-    ]
-  },
-  {
-    "id": "datastore",
-    "interface": "Datastore",
-    "name": "Obtain",
-    "args": [
-      "Core Temp"
-    ]
-  },
-  {
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "ShockDiagnosis",
     "args": [true]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": [
+      "manage shock",
+      "Call PICU if not already done",
+      "Switch to 1-hour bundle",
+      "Urgently consider Fluid Therapy",
+      "Urgently consider Antibiotic Therapy"
+    ]
   }
 ]
