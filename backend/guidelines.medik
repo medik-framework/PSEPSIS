@@ -718,156 +718,235 @@ machine FluidTherapy
     }
   }
 }
-//
-//machine IonotropicSupportTherapy
-//  receives SepsisSuspected
-//         , ConsiderIonotropicSupport
-//         , ConfirmBPSysEntered
-//         , StartIonotropicTherapy
-//         , IonotropicMedicationsAdministered
-//         , ContinueIonotropicTherapy
-//         , StopIonotropicTherapy {
-//
-//  vars tabletApp, datastore, measurementBounds;
-//
-//  fun isHypotensive(bpSys) {
-//    return (bpSys < measurementBounds.bpSysLowerBound);
-//  }
-//
-//  init state Start {
-//    entry(tabletApp, datastore, measurementBounds) {
-//      this.tabletApp         = tabletApp;
-//      this.datastore         = datastore;
-//      this.measurementBounds = measurementBounds;
-//    }
-//
-//    on SepsisSuspected do {
-//      goto WaitForFluidTherapy;
-//    }
-//  }
-//
-//  state WaitForFluidTherapy {
-//    on ConsiderIonotropicSupport do {
-//      goto EvaluateHypotension;
-//    }
-//  }
-//
-//  state EvaluateHypotension {
-//    entry {
-//      var bpSys = obtainFrom(datastore, "bpSys");
-//
-//      if (bpSys == undef) {
-//        goto ObtainBpSys;
-//      }
-//
-//      if (isHypotensive(bpSys)) {
-//        goto SuggestIonotropicTherapy;
-//      } else {
-//        goto PatientNotHypotensive;
-//      }
-//    }
-//  }
-//
-//  state PatientNotHypotensive {
-//    entry {
-//      send tabletApp, Instruct, ("Handle Non Hypotensive Ionotropic Therapy");
-//      send tabletApp, ShowSleepTimer, ("FluidTherapy", 10);
-//      sleep(10);
-//      goto EvaluateHypotension;
-//    }
-//  }
-//
-//  state ObtainBpSys {
-//    entry {
-//      send tabletApp, Instruct, ("Obtain Systolic Blood Pressure");
-//    }
-//
-//    on ConfirmBpSysEntered do {
-//      goto EvaluateHypotension;
-//    }
-//  }
-//
-//  state SuggestIonotropicTherapy {
-//    entry {
-//      send tabletApp, Instruct, ("Consider Ionotropic Support");
-//    }
-//
-//    on StartIonotropicTherapy do {
-//      goto ShowIonotropicTreatment;
-//    }
-//  }
-//
-//  state ShowIonotropicTreatment {
-//    entry {
-//      send tabletApp, Instruct, ("Show Ionotropic Medications");
-//      goto WaitForAdministration;
-//    }
-//  }
-//
-//  state WaitForAdministration {
-//    on IonotropicMedicationsAdministered do {
-//      send tabletApp, ShowSleepTimer, ("IonotropicTherapy", 10);
-//      sleep(10);
-//      goto EvaluateResponsivenessToIonotropicMedications;
-//    }
-//  }
-//
-//  state EvaluateResponsivenessToIonotropicMedications {
-//    entry {
-//      var bpSys = obtainFrom(datastore, "bpSys");
-//
-//      if (bpSys < measurementBounds.bpSysLowerBound) {
-//        goto WaitForInstruction;
-//      } else {
-//        send tabletApp, Instruct, ("Handle Positive Ionotropic Response");
-//        goto TransferToHigherCare;
-//      }
-//    }
-//  }
-//
-//  state WaitForInstruction {
-//    entry {
-//      send tabletApp, Instruct, ("Handle Negative Ionotropic Response");
-//    }
-//
-//    on ContinueIonotropicTherapy do {
-//      goto ShowIonotropicTreatment;
-//    }
-//
-//    on StopIonotropicTherapy do {
-//      send tabletApp, Instruct, ("Ionotropic Therapy Completed");
-//    }
-//  }
-//
-//  state TransferToHigherCare {
-//    entry {
-//      send tabletApp, Instruct, ("Transfer To Higher Level Care");
-//    }
-//  }
-//}
-//
-//machine HighFlowOxygen
-//  receives SepsisSuspected
-//         , ConfirmHighFlowOxygenAttached {
-//
-//  var tabletApp;
-//
-//  init state WaitForSepsisDiagnosis {
-//    entry(tabletApp) {
-//      this.tabletApp = tabletApp;
-//    }
-//    on SepsisSuspected do {
-//      goto WaitForOxygenAttachedConfirmation;
-//    }
-//  }
-//
-//  state WaitForOxygenAttachedConfirmation {
-//    on ConfirmHighFlowOxygenAttached do {
-//      send tabletApp, Instruct, ("Acknowledge Oxygen Attached");
-//    }
-//  }
-//}
-//
+
+machine InotropicSupportTherapy
+  receives SepsisSuspected
+         , StartInotropicTherapy
+         , ConfirmBPObtained
+         , ConfirmShockTypeMeasurementsObtained
+         , ConfirmShockType
+         , ConfirmEpinephrineAdministered
+         , ConfirmNorepinephrineAdministered
+         , ConfirmDopamineAdministered
+         , InotropeResponsivenessEntered
+         , ConfirmRepeatInotrope
+         , ConfirmTransferToHigherCare {
+
+
+  vars tabletApp, datastore, measurementBounds;
+
+  fun checkHypotensive() {
+    var bpSys = obtainFrom(datastore, "BP Sys");
+    var map = obtainFrom(datastore, "MAP");
+    var isHypotensive = false;
+
+    if (!(bySys == undef)) {
+      if (bpSys < measurementBounds.bpSysLowerBound) {
+        isHypotensive = true;
+      }
+    }
+
+    if (!(map == undef)) {
+      if (map < measurementBounds.mapLowerBound) {
+        isHypotensive = true;
+      }
+    }
+    return isHypotensive;
+  }
+
+  init state Start {
+    entry(tabletApp, datastore, measurementBounds) {
+      this.tabletApp         = tabletApp;
+      this.datastore         = datastore;
+      this.measurementBounds = measurementBounds;
+    }
+
+    on StartInotropicTherapy do {
+      goto EvaluateShockType;
+    }
+  }
+
+  state ObtainBPSys {
+    entry {
+      send tabletApp, Instruct, ("get BP");
+    }
+    on ConfirmBPObtained do {
+      goto EvaluateHypotensive;
+    }
+  }
+
+  state EvaluateHypotensive {
+    // Assume at-least one BP reading type is available
+    var isHypotensive = checkHypotensive();
+
+    if (!(isHypotensive)) {
+      goto SuggestInotrope("Normotensive");
+    }
+    goto ObtainShockTypeMeasurements;
+  }
+
+  state ObtainShockTypeMeasurements {
+    entry {
+      send tabletApp, Instruct, ("get shock type measurements");
+    }
+    on ConfirmShockTypeMeasurementsObtained do {
+      goto EvaluateShockType;
+    }
+  }
+
+  state EvaluateShockType {
+    entry {
+      vars coldShockScore, warmShockScore;
+
+      var fluidOverloadSigns = obtainFrom(datastore, "Fluid Overload Signs");
+
+      if (   (!(fluidOverloadSigns == undef))
+          && (fluidOverloadSigns != measurementBounds.fluidOverloadSigns)) {
+
+        send tabletApp, Info, (  "Fluid overload signs indicate decreased cardiac ability"
+                               + " to deal with increased venous pressure."
+                               + " Consider using epinephrine to improve cadiac contractility." )"
+
+        goto SuggestInotrope("Cold Shock");
+      }
+
+      var pulseQuality = obtainFrom(datastore, "Pulse Quality");
+      var capillaryRefill = obtainFrom(datastore, "Capillary Refill");
+      var skinColor = obtainFrom(datastore, "Skin Color");
+
+      if (!(pulseQuality == undef)) {
+        if (pulseQuality == "Thready") {
+          coldShockScore = coldShockScore + 1;
+        }
+        if (pulseQuality == "Bounding") {
+          warmShockScore = warmShockScore + 1;
+        }
+      }
+      if (!(capillaryRefill == undef)) {
+        if (   (capillaryRefill == "3")
+            || (capillaryRefill == "4")
+            || (capillaryRefill == "5+")) {
+
+          coldShockScore = coldShockScore + 1;
+        }
+        if (capillaryRefill == "Flash") {
+          warmShockScore = warmShockScore + 1;
+        }
+      }
+      if (!(skinColor == undef)) {
+        if (   (skinColor == "Gray and Mottled")
+            || (skinColor == "Gray")
+            || (skinColor == "Pale")) {
+          coldShockScore = coldShockScore + 1;
+        }
+        if (skinColor == "Flushed") {
+          warmShockScore = warmShockScore + 1;
+        }
+      }
+
+      if (coldShockScore >= 3) {
+        goto SuggestIntorope("Cold Shock");
+      }
+      if (warmShockScore >= 3) {
+        goto SuggestInotrope("Warm Shock"):
+      }
+    }
+  }
+
+  state SuggestInotrope {
+    entry(shockType) {
+      send tablet
+         , Recommend
+         , ( "get shock type"
+           , "Recommendation: " + shockType + " management" );
+
+    }
+    on ConfirmShockType(shockType) {
+      if (shockType == "Cold Shock") {
+        send tabletApp, RecommendDrug, ( "Epinephrine"
+                                       , "Inotropic Support"
+                                       , 0.1
+                                       , "administer 0.1-1 mcg/kg/min IV/IO infusion" );
+      } else {
+        if (shockType == "Warm Shock") {
+          send tabletApp, RecommendDrug, ( "Norepinephrine"
+                                         , "Inotropic Support"
+                                         , 0.1
+                                         , "administer 0.1-2 mcg/kg/min IV/IO infusion" );
+        } else {
+          send tabletApp, RecommendDrug, ( "Dopamine"
+                                         , "Inotropic Support"
+                                         , 2
+                                         , "administer 2-20 mcg/kg/min IV/IO infusion" );
+        }
+      }
+      goto WaitForAdministerInotrope;
+    }
+  }
+
+  state WaitForAdministerInotrope {
+    on ConfirmEpinephrineAdministered do {
+      sleep(300);
+      goto EvaluateInotropeResponsiveness;
+    }
+
+    on ConfirmNorepinephrineAdministered do {
+      sleep(300);
+      goto EvaluateInotropeResponsiveness;
+    }
+    on ConfirmDopamineAdministered do {
+      sleep(300);
+      goto EvaluateInotropeResponsiveness;
+    }
+  }
+
+  state EvaluateInotropeResponsiveness {
+    entry {
+      send tabletApp, Instruct, ("get inotrope responsiveness");
+    }
+    on InotropeResponsivenessEntered(inotropeResponsiveness) do {
+      send  tabletApp
+          , Recommend
+          , ( "get inotropic therapy next step"
+            , "Responsiveness to inotropic therapy: " + inotropeRespsonsiveness
+            , "Recommendation: titrate to desired effect"
+            );
+      goto WaitForIntropicNextStep;
+    }
+  }
+
+  state WaitForIntropicNextStep {
+    on ConfirmRepeatInotrope {
+      goto WaitForAdministerInotrope;
+    }
+    on ConfirmTransferToHigherCare do {
+      goto Start(tabletApp, datastore, measurementBounds);
+    }
+  }
+}
+
+machine HighFlowOxygen
+  receives SepsisSuspected
+         , ConfirmHighFlowOxygenAttached {
+
+  var tabletApp;
+
+  init state WaitForSepsisDiagnosis {
+    entry(tabletApp) {
+      this.tabletApp = tabletApp;
+    }
+    on SepsisSuspected do {
+      goto WaitForOxygenAttachedConfirmation;
+    }
+  }
+
+  state WaitForOxygenAttachedConfirmation {
+    on ConfirmHighFlowOxygenAttached do {
+      send tabletApp, Instruct, ("Acknowledge Oxygen Attached");
+    }
+  }
+}
+
 machine AntibioticsTherapy
   receives StartAntibioticTherapy
          , ImmunosuppressionEntered
