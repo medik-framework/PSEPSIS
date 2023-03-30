@@ -1,10 +1,42 @@
 from wrapper import MedikWrapper
-from backend_env import kompiled_dir, psepsis_pgm, set_env
+from backend_env import kompiled_dir, guidelines_pgm, driver_pgm, set_env
 
 import asyncio, copy, pytest, json, logging, sys, os
 import functools
 
 ignored_names = ['StartGUI']
+
+# Fixtures
+# ========
+
+
+def combined_temp_file(tmp_path, filepaths, combined_file_name):
+    combined_pgm_path = tmp_path / combined_file_name
+    combined_pgm = ''
+    for filepath in filepaths:
+        with filepath.open() as handler:
+            combined_pgm += handler.read()
+    combined_pgm_path.write_text(combined_pgm)
+    return combined_pgm_path
+
+@pytest.fixture
+def psepsis_exec_pgm(tmp_path):
+    tmp_path.mkdir(exist_ok=True)
+    psepsis_exec_pgm_path = combined_temp_file( tmp_path
+                                              , [ guidelines_pgm
+                                                , driver_pgm ]
+                                              , 'exec-combined.medik')
+    return psepsis_exec_pgm_path
+
+@pytest.fixture
+def psepsis_mcheck_pgm(tmp_path):
+    tmp_path.mkdir(exist_ok=True)
+    if psepsis_mcheck_pgm_path == None:
+        psepsis_mcheck_pgm_path = combined_temp_file( tmp_path
+                                                    , [ guidelines_pgm
+                                                      , ghosts_pgm ]
+                                                    , 'mcheck-combined.medik')
+    return psepsis_mcheck_pgm_path
 
 def process_json(out_json, out):
     if 'action' in out_json.keys():
@@ -47,7 +79,7 @@ async def do_exit(medik_process, medik_task, out, data, exit_msg):
     await asyncio.gather(medik_task)
     drain_queue(medik_process.from_k_queue, out)
 
-async def medik_interact(in_jsons, data=None):
+async def medik_interact(in_jsons, psepsis_pgm, data=None):
     set_env()
     out = []
 
@@ -131,12 +163,14 @@ def get_in(test_name):
 def get_expected(test_name):
     return Expected('tests/' + test_name + '.psepsis.expected')
 
-async def run_test(test_name):
+async def run_exec_test(test_name, psepsis_exec_pgm):
     mock_data = None
     if os.path.exists('tests/' + test_name + '.psepsis.data'):
         mock_data = MockDataStore('tests/' + test_name + '.psepsis.data')
     try:
-        out = await medik_interact(get_in(test_name).json_list, mock_data)
+        out = await medik_interact( get_in(test_name).json_list
+                                  , psepsis_exec_pgm
+                                  , mock_data)
     except TimeoutError:
         assert False
     assert out == get_expected(test_name).json_list
@@ -144,57 +178,64 @@ async def run_test(test_name):
 # ==== Tests =====
 
 @pytest.mark.asyncio
-async def test_get_age():
-    await run_test('get-age')
+async def test_get_age(psepsis_exec_pgm):
+    await run_exec_test('get-age', psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_get_age_weight_hrc():
-    await run_test('get-age-weight-hrc')
+async def test_get_age_weight_hrc(psepsis_exec_pgm):
+    await run_exec_test('get-age-weight-hrc', psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_negative():
-    await run_test('screening-negative')
+async def test_screening_negative(psepsis_exec_pgm):
+    await run_exec_test('screening-negative', psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_negative_none():
-    await run_test('screening-negative-none')
+async def test_screening_negative_none(psepsis_exec_pgm):
+    await run_exec_test('screening-negative-none', psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_negative_all_none():
-    await run_test('screening-negative-all-none')
+async def test_screening_negative_all_none(psepsis_exec_pgm):
+    await run_exec_test('screening-negative-all-none', psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_positive_1():
-    await run_test('screening-positive-1')
+async def test_screening_positive_1(psepsis_exec_pgm):
+    await run_exec_test('screening-positive-1', psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_screening_positive_2():
-    await run_test('screening-positive-2')
+async def test_screening_positive_2(psepsis_exec_pgm):
+    await run_exec_test('screening-positive-2', psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_fluid_therapy_no_risk_overdose_responsiveness():
-    await run_test('fluid-therapy-no-risk-overdose-responsiveness')
+async def test_fluid_therapy_no_risk_overdose_responsiveness(psepsis_exec_pgm):
+    await run_exec_test( 'fluid-therapy-no-risk-overdose-responsiveness'
+                       , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_fluid_therapy_positive_risk_overdose_responsiveness():
-    await run_test('fluid-therapy-positive-risk-overdose-responsiveness')
+async def test_fluid_therapy_positive_risk_overdose_responsiveness(psepsis_exec_pgm):
+    await run_exec_test( 'fluid-therapy-positive-risk-overdose-responsiveness'
+                       , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_antibiotic_therapy_normal_host():
-    await run_test('antibiotic-therapy-normal-host')
+async def test_antibiotic_therapy_normal_host(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-normal-host'
+                      , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_antibiotic_therapy_immunosuppressed_esbl_cccresistant():
-    await run_test('antibiotic-therapy-immunosuppressed-esbl-cccresistant')
+async def test_antibiotic_therapy_immunosuppressed_esbl_cccresistant(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-immunosuppressed-esbl-cccresistant'
+                       , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_antibiotic_therapy_no_penicillin_recent_antibiotics():
-    await run_test('antibiotic-therapy-no-penicillin-recent-antibiotics')
+async def test_antibiotic_therapy_no_penicillin_recent_antibiotics(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-no-penicillin-recent-antibiotics'
+                       , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_antibiotic_therapy_immunosuppressed_no_penicillin_recent_antibiotics_fungal_risk():
-    await run_test('antibiotic-therapy-immunosuppressed-no-penicillin-recent-antibiotics-fungal-risk')
+async def test_antibiotic_therapy_immunosuppressed_no_penicillin_recent_antibiotics_fungal_risk(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-immunosuppressed-no-penicillin-recent-antibiotics-fungal-risk'
+                       , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_antibiotic_therapy_infant_staph_risk():
-    await run_test('antibiotic-therapy-infant-staph-risk')
+async def test_antibiotic_therapy_infant_staph_risk(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-infant-staph-risk'
+                       , psepsis_exec_pgm)

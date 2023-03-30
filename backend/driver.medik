@@ -1,0 +1,26 @@
+init machine PSepsisGuidanceSystem receives StopGuidance {
+  vars tabletApp, datastore, measurementBounds;
+
+  init state CreateMachines {
+    entry {
+      tabletApp = createFromInterface(TabletApp, "tabletApp");
+      datastore = createFromInterface(Datastore, "datastore");
+      measurementBounds = new MeasurementBounds();
+
+      // Screening Machines
+      new SepsisScreening(tabletApp, datastore, measurementBounds);
+      //new SepticShockScreening(tabletApp, datastore, measurementBounds);
+
+      //// Treatment Machines
+      new FluidTherapy(tabletApp, datastore, measurementBounds);
+      //new IonotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+
+      //// Supplementary Machines
+      //new HighFlowOxygen(tabletApp);
+      new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+
+      // Signal Medik Ready
+      send tabletApp,  StartGUI;
+    }
+  }
+}

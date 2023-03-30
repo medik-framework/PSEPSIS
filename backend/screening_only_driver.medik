@@ -1,0 +1,15 @@
+init machine PSepsisGuidanceSystem receives StopGuidance {
+  vars tabletApp, datastore, measurementBounds;
+
+  init state CreateMachines {
+    entry {
+      tabletApp = createFromInterface(TabletApp, "tabletApp");
+      datastore = createFromInterface(Datastore, "datastore");
+      measurementBounds = new MeasurementBounds();
+
+      // Screening Machines
+      new SepsisScreening(tabletApp, datastore, measurementBounds);
+      send tabletApp,  StartGUI;
+    }
+  }
+}
