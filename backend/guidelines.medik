@@ -719,14 +719,19 @@ machine FluidTherapy
   }
 }
 
-machine IonotropicSupportTherapy
+machine InotropicSupportTherapy
   receives SepsisSuspected
-         , ConsiderIonotropicSupport
-         , ConfirmBPSysEntered
-         , StartIonotropicTherapy
-         , IonotropicMedicationsAdministered
-         , ContinueIonotropicTherapy
-         , StopIonotropicTherapy {
+         , StartInotropicTherapy
+         , ConfirmBPObtained
+         , ConfirmShockTypeMeasurementsObtained
+         , ConfirmShockType
+         , ConfirmEpinephrineAdministered
+         , ConfirmNorepinephrineAdministered
+         , ConfirmDopamineAdministered
+         , InotropeResponsivenessEntered
+         , ConfirmRepeatInotrope
+         , ConfirmTransferToHigherCare {
+
 
   vars tabletApp, datastore, measurementBounds;
 
@@ -875,11 +880,11 @@ machine IonotropicSupportTherapy
                                          , "administer 2-20 mcg/kg/min IV/IO infusion" );
         }
       }
-      goto WaitForAdministerInotropeConfirmation;
+      goto WaitForAdministerInotrope;
     }
   }
 
-  state WaitForAdministerInotropeConfirmation {
+  state WaitForAdministerInotrope {
     on ConfirmEpinephrineAdministered do {
       sleep(300);
       goto EvaluateInotropeResponsiveness;
@@ -900,90 +905,22 @@ machine IonotropicSupportTherapy
       send tabletApp, Instruct, ("get inotrope responsiveness");
     }
     on InotropeResponsivenessEntered(inotropeResponsiveness) do {
-      if (inotropeResponsiveness) {
-        send tabletApp, Recommend, ("suggest inotrope"
-                                   ,"titrate to desired effect");
-        goto WaitForAdministerInotropeConfirmation;
-      } else {
-        send tabletApp, Instruct, ("Transfer to higher care");
-      }
+      send  tabletApp
+          , Recommend
+          , ( "get inotropic therapy next step"
+            , "Responsiveness to inotropic therapy: " + inotropeRespsonsiveness
+            , "Recommendation: titrate to desired effect"
+            );
+      goto WaitForIntropicNextStep;
     }
   }
 
-  state PatientNotHypotensive {
-    entry {
-      send tabletApp, Instruct, ("Handle Non Hypotensive Ionotropic Therapy");
-      send tabletApp, ShowSleepTimer, ("FluidTherapy", 10);
-      sleep(10);
-      goto EvaluateHypotension;
+  state WaitForIntropicNextStep {
+    on ConfirmRepeatInotrope {
+      goto WaitForAdministerInotrope;
     }
-  }
-
-  state ObtainBpSys {
-    entry {
-      send tabletApp, Instruct, ("Obtain Systolic Blood Pressure");
-    }
-
-    on ConfirmBpSysEntered do {
-      goto EvaluateHypotension;
-    }
-  }
-
-  state SuggestIonotropicTherapy {
-    entry {
-      send tabletApp, Instruct, ("Consider Ionotropic Support");
-    }
-
-    on StartIonotropicTherapy do {
-      goto ShowIonotropicTreatment;
-    }
-  }
-
-  state ShowIonotropicTreatment {
-    entry {
-      send tabletApp, Instruct, ("Show Ionotropic Medications");
-      goto WaitForAdministration;
-    }
-  }
-
-  state WaitForAdministration {
-    on IonotropicMedicationsAdministered do {
-      send tabletApp, ShowSleepTimer, ("IonotropicTherapy", 10);
-      sleep(10);
-      goto EvaluateResponsivenessToIonotropicMedications;
-    }
-  }
-
-  state EvaluateResponsivenessToIonotropicMedications {
-    entry {
-      var bpSys = obtainFrom(datastore, "bpSys");
-
-      if (bpSys < measurementBounds.bpSysLowerBound) {
-        goto WaitForInstruction;
-      } else {
-        send tabletApp, Instruct, ("Handle Positive Ionotropic Response");
-        goto TransferToHigherCare;
-      }
-    }
-  }
-
-  state WaitForInstruction {
-    entry {
-      send tabletApp, Instruct, ("Handle Negative Ionotropic Response");
-    }
-
-    on ContinueIonotropicTherapy do {
-      goto ShowIonotropicTreatment;
-    }
-
-    on StopIonotropicTherapy do {
-      send tabletApp, Instruct, ("Ionotropic Therapy Completed");
-    }
-  }
-
-  state TransferToHigherCare {
-    entry {
-      send tabletApp, Instruct, ("Transfer To Higher Level Care");
+    on ConfirmTransferToHigherCare do {
+      goto Start(tabletApp, datastore, measurementBounds);
     }
   }
 }
