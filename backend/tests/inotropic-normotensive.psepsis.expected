@@ -1,0 +1,50 @@
+[
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmAgeEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get BP"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "BP Sys"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "MAP"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Recommend",
+    "args": [
+      "get shock type",
+      "Recommendation: Normotensive management"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "RecommendDrug",
+    "args": [
+      "Dopamine",
+      "Inotropic Support",
+      2,
+      "administer 2-20 mcg/kg/min IV/IO infusion"
+    ]
+  }
+]

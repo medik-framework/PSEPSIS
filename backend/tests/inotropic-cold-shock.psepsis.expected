@@ -1,0 +1,88 @@
+[
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmAgeEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get BP"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "BP Sys"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "MAP"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get shock type measurements"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "Fluid Overload Signs"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "Pulse Quality"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "Capillary Refill"
+    ]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "Skin Color"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Recommend",
+    "args": [
+      "get shock type",
+      "Recommendation: Cold Shock management"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "RecommendDrug",
+    "args": [
+      "Epinephrine",
+      "Inotropic Support",
+      "<1,10>Rat",
+      "administer 0.1-1 mcg/kg/min IV/IO infusion"
+    ]
+  }
+]
