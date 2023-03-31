@@ -1,0 +1,50 @@
+[
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "AgeEntered",
+    "eventArgs": [60],
+    "waitFor":
+     {
+       "name": "StartGUI"
+     }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartInotropicTherapy",
+    "eventArgs": [],
+    "waitFor" : {
+      "name": "ConfirmAgeEntered"
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ConfirmBPObtained",
+    "eventArgs": [],
+    "waitFor" : {
+      "name": "Instruct",
+      "args": ["get BP"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "ConfirmShockType",
+    "eventArgs": ["Normotensive"],
+    "waitFor" : {
+      "name": "Recommend",
+      "args": [
+        "get shock type",
+        "Recommendation: Normotensive management"
+      ]
+    }
+  },
+  {
+    "action": "exit",
+    "waitFor" : {
+      "name": "RecommendDrug"
+    }
+  }
+]

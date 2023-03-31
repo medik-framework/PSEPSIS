@@ -738,20 +738,18 @@ machine InotropicSupportTherapy
   fun checkHypotensive() {
     var bpSys = obtainFrom(datastore, "BP Sys");
     var map = obtainFrom(datastore, "MAP");
-    var isHypotensive = false;
 
-    if (!(bySys == undef)) {
+    if (!(bpSys == undef)) {
       if (bpSys < measurementBounds.bpSysLowerBound) {
-        isHypotensive = true;
+        return true;
       }
     }
-
     if (!(map == undef)) {
       if (map < measurementBounds.mapLowerBound) {
-        isHypotensive = true;
+        return true;
       }
     }
-    return isHypotensive;
+    return false;
   }
 
   init state Start {
@@ -762,7 +760,7 @@ machine InotropicSupportTherapy
     }
 
     on StartInotropicTherapy do {
-      goto EvaluateShockType;
+      goto ObtainBPSys;
     }
   }
 
@@ -776,13 +774,13 @@ machine InotropicSupportTherapy
   }
 
   state EvaluateHypotensive {
-    // Assume at-least one BP reading type is available
-    var isHypotensive = checkHypotensive();
-
-    if (!(isHypotensive)) {
-      goto SuggestInotrope("Normotensive");
+    entry {
+      var isHypotensive = checkHypotensive();
+      if (!(isHypotensive)) {
+        goto SuggestInotrope("Normotensive");
+      }
+      goto ObtainShockTypeMeasurements;
     }
-    goto ObtainShockTypeMeasurements;
   }
 
   state ObtainShockTypeMeasurements {
@@ -796,16 +794,17 @@ machine InotropicSupportTherapy
 
   state EvaluateShockType {
     entry {
-      vars coldShockScore, warmShockScore;
+      var coldShockScore = 0;
+      var warmShockScore = 0;
 
       var fluidOverloadSigns = obtainFrom(datastore, "Fluid Overload Signs");
 
       if (   (!(fluidOverloadSigns == undef))
-          && (fluidOverloadSigns != measurementBounds.fluidOverloadSigns)) {
+          && !(fluidOverloadSigns == measurementBounds.fluidOverloadSigns)) {
 
         send tabletApp, Info, (  "Fluid overload signs indicate decreased cardiac ability"
                                + " to deal with increased venous pressure."
-                               + " Consider using epinephrine to improve cadiac contractility." )"
+                               + " Consider using epinephrine to improve cadiac contractility." );
 
         goto SuggestInotrope("Cold Shock");
       }
@@ -843,25 +842,25 @@ machine InotropicSupportTherapy
           warmShockScore = warmShockScore + 1;
         }
       }
-
       if (coldShockScore >= 3) {
-        goto SuggestIntorope("Cold Shock");
+        goto SuggestInotrope("Cold Shock");
       }
       if (warmShockScore >= 3) {
-        goto SuggestInotrope("Warm Shock"):
+        goto SuggestInotrope("Warm Shock");
       }
     }
   }
 
   state SuggestInotrope {
     entry(shockType) {
-      send tablet
+      send tabletApp
          , Recommend
          , ( "get shock type"
            , "Recommendation: " + shockType + " management" );
 
     }
-    on ConfirmShockType(shockType) {
+    on ConfirmShockType(shockType) do {
+      print("Got shock type: " + shockType);
       if (shockType == "Cold Shock") {
         send tabletApp, RecommendDrug, ( "Epinephrine"
                                        , "Inotropic Support"
@@ -916,7 +915,7 @@ machine InotropicSupportTherapy
   }
 
   state WaitForIntropicNextStep {
-    on ConfirmRepeatInotrope {
+    on ConfirmRepeatInotrope do {
       goto WaitForAdministerInotrope;
     }
     on ConfirmTransferToHigherCare do {

@@ -267,3 +267,13 @@ async def test_shock_screening_excess_epi_positive(psepsis_exec_pgm):
 async def test_shock_screening_perfusion_positive(psepsis_exec_pgm):
     await run_exec_test( 'shock-screening-perfusion-positive'
                        , psepsis_exec_pgm )
+
+@pytest.mark.asyncio
+async def test_inotropic_normotensive(psepsis_exec_pgm):
+    await run_exec_test( 'inotropic-normotensive'
+                       , psepsis_exec_pgm )
+
+@pytest.mark.asyncio
+async def test_inotropic_cold_shock(psepsis_exec_pgm):
+    await run_exec_test( 'inotropic-cold-shock'
+                       , psepsis_exec_pgm )

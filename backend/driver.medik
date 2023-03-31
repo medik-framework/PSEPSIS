@@ -13,7 +13,7 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 
       //// Treatment Machines
       new FluidTherapy(tabletApp, datastore, measurementBounds);
-      //new IonotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+      new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
 
       //// Supplementary Machines
       //new HighFlowOxygen(tabletApp);
