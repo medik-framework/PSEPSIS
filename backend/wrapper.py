@@ -1,9 +1,9 @@
 # Simple Wrapper Around the K process running Medik
 from fractions import Fraction
 
-import  asyncio, functools, json, logging, sys, utils
+import  asyncio, subprocess, functools, json, logging, sys, utils
 
-class MedikWrapper:
+class ExecutionWrapper:
 
     async def parse_json_stream(self, json_stream):
         open_brace_count  = 0
@@ -72,7 +72,7 @@ class MedikWrapper:
             return None
 
     async def launch(self):
-        k_command = ( 'krun' , ['-d' , str(self.kompiled_dir.resolve())
+        k_command = ( 'krun' , ['-d' , str(self.kompiled_exec_dir.resolve())
                              , '--output' , 'none'
                              , str(self.psepsis_pgm.resolve()) ])
         tasks = None
@@ -95,10 +95,26 @@ class MedikWrapper:
 
         await self.from_k_queue.put('exit')
 
-    def __init__(self, to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm):
+    def __init__(self, to_k_queue, from_k_queue, kompiled_exec_dir, psepsis_pgm):
         self.from_k_queue = from_k_queue
         self.to_k_queue = to_k_queue
-        self.kompiled_dir = kompiled_dir
+        self.kompiled_exec_dir = kompiled_exec_dir
         self.psepsis_pgm = psepsis_pgm
         self.rat_fmt = '<{},{}>Rat'
 
+
+class MCheckWrapper:
+
+    def launch(self):
+        k_command = [ 'krun' , '-d' , str(self.kompiled_mcheck_dir.resolve())
+                             , '--search'
+                             , '--pattern', self.search_pattern
+                             , str(self.psepsis_pgm.resolve()) ]
+
+        search_result = subprocess.run(k_command, capture_output=True)
+        return search_result
+
+    def __init__(self, kompiled_mcheck_dir, psepsis_pgm, search_pattern):
+        self.kompiled_mcheck_dir = kompiled_mcheck_dir
+        self.psepsis_pgm         = psepsis_pgm
+        self.search_pattern      = search_pattern
