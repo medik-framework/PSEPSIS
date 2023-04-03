@@ -1,7 +1,7 @@
 # Simple Wrapper Around the K process running Medik
 from fractions import Fraction
 
-import  asyncio, json, logging, re, sys
+import  asyncio, functools, json, logging, sys, utils
 
 class MedikWrapper:
 
@@ -18,8 +18,8 @@ class MedikWrapper:
                 if len(json_byte_str) == 0:
                     return None
                 if open_brace_count == close_brace_count:
-                    obj = json.loads(json_byte_str)
-                    json_byte_str       = b''
+                    obj = utils.json_rat_strs_to_fractions(json.loads(json_byte_str))
+                    json_byte_str     = b''
                     last_scan_index   = 0
                     open_proce_count  = 0
                     close_brace_count = 0
@@ -28,20 +28,6 @@ class MedikWrapper:
         except asyncio.IncompleteReadError:
             return
 
-    def json_rat_strs_to_fractions(self, out_json):
-        if out_json.get('args') != None:
-            processed_args = []
-            rat_re = re.compile(r'\<(-?\d+),(\d+)\>Rat')
-            for arg in out_json['args']:
-                if isinstance(arg, str) and rat_re.match(arg) != None:
-                    rat_match = rat_re.match(arg)
-                    processed_args.append(Fraction( int(rat_match.group(1))
-                                                  , int(rat_match.group(2))))
-                else:
-                    processed_args.append(arg)
-            out_json['args'] = processed_args
-        return out_json
-
 
     async def read_stdout(self):
         try:
@@ -49,12 +35,12 @@ class MedikWrapper:
                 out_json = await self.parse_json_stream(self.k_process.stdout)
                 if out_json == None:
                     break;
-                processed_json = self.json_rat_strs_to_fractions(out_json)
-                logging.info('From Medik: {}'.format(json.dumps(processed_json)))
-                await self.from_k_queue.put(processed_json)
+                logging.info('From Medik: {}'.format(json.dumps( out_json
+                                                               , cls=functools.partial( utils.FractionEncoder
+                                                                                      , self.rat_fmt))))
+                await self.from_k_queue.put(out_json)
         except asyncio.CancelledError:
             return None
-
 
     async def read_stderr(self):
         try:
@@ -68,40 +54,17 @@ class MedikWrapper:
         except asyncio.CancelledError:
             return None
 
-    # Needed due to a limitation of the current K's json parsing ability
-    def float_to_rat_str(self, flt):
-        flt_str = str(flt)
-        decimal_index = flt_str.index('.')
-        before_decimal = flt_str[:decimal_index]
-        after_decimal = flt_str[decimal_index + 1:]
-        return '<{},{}>Rat'.format( before_decimal + after_decimal
-                                  , str(pow(10, len(after_decimal))))
-
-
-    def json_floats_to_rat_strs(self, in_json):
-        match in_json:
-            case list():
-                return list(map(self.json_floats_to_rat_strs, in_json))
-            case dict():
-                return { k: self.json_floats_to_rat_strs(v) for k, v in in_json.items() }
-            case float():
-                return self.float_to_rat_str(in_json)
-            case Fraction():
-                return self.float_to_rat_str(float(in_json))
-            case _:
-                return in_json
-
 
     async def write_stdin(self):
         try:
             while True:
                 in_data = await self.to_k_queue.get()
-                processed_data = self.json_floats_to_rat_strs(in_data)
-                logging.info('To MediK: {}'.format(json.dumps(processed_data)))
-                in_data_str = (json.dumps(processed_data,separators=(',',':')) + '\n').encode('utf-8')
-                self.k_process.stdin.write(in_data_str)
+                in_data_str = json.dumps( in_data,separators=(',',':')
+                                        , cls=functools.partial(utils.FractionEncoder, self.rat_fmt))
+                logging.info('To MediK: {}'.format(in_data_str))
+                self.k_process.stdin.write((in_data_str + '\n').encode('utf-8'))
                 await self.k_process.stdin.drain()
-                if processed_data[0].get('action') == 'exit':
+                if in_data[0].get('action') == 'exit':
                     self.k_process.stdin.close()
                     await self.k_process.stdin.wait_closed()
                     break
@@ -137,4 +100,5 @@ class MedikWrapper:
         self.to_k_queue = to_k_queue
         self.kompiled_dir = kompiled_dir
         self.psepsis_pgm = psepsis_pgm
+        self.rat_fmt = '<{},{}>Rat'
 

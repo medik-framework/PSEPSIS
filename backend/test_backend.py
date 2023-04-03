@@ -1,7 +1,7 @@
 from wrapper import MedikWrapper
 from backend_env import kompiled_dir, guidelines_pgm, driver_pgm, screening_only_driver_pgm, set_env
 
-import asyncio, copy, pytest, json, logging, sys, os
+import asyncio, copy, pytest, json, logging, sys, os, utils
 import functools
 
 ignored_names = ['StartGUI']
@@ -141,16 +141,15 @@ async def medik_interact(in_jsons, psepsis_pgm, data=None):
 
     return out
 
-
 class MockUser:
     def __init__(self, input_file_path):
         with open(input_file_path) as input_file:
-            self.json_list = json.loads(input_file.read())
+            self.json_list = utils.json_rat_strs_to_fractions(json.loads(input_file.read()))
 
 class Expected:
     def __init__(self, expected_file_path):
         with open(expected_file_path) as expected_file:
-            self.json_list = json.loads(expected_file.read())
+            self.json_list = utils.json_rat_strs_to_fractions(json.loads(expected_file.read()))
 
 class MockDataStore:
     def __init__(self, data_file_path):
