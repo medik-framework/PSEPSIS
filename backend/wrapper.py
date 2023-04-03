@@ -111,7 +111,7 @@ class MCheckWrapper:
                              , '--pattern', self.search_pattern
                              , str(self.psepsis_pgm.resolve()) ]
 
-        search_result = subprocess.run(k_command, capture_output=True)
+        search_result = subprocess.run(k_command, capture_output=True, timeout=200)
         return search_result
 
     def __init__(self, kompiled_mcheck_dir, psepsis_pgm, search_pattern):
