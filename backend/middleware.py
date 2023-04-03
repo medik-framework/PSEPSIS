@@ -2,8 +2,8 @@ from pathlib import Path
 from fractions import Fraction
 from data import OrganDt, Patient, DrugHist
 from dataclasses import asdict
-from backend_env import kompiled_dir, psepsis_pgm, set_env
-from wrapper import MedikWrapper
+from backend_env import kompiled_exec_dir, psepsis_pgm, set_env
+from wrapper import ExecutionWrapper
 
 import os
 import websockets
@@ -75,7 +75,7 @@ class StubProcess:
         self.feed_event.clear()
 
 
-class MedikHandler(MedikWrapper):
+class MedikHandler(ExecutionWrapper):
 
     async def _sleep(self, duration, tid):
         await asyncio.sleep(duration)
@@ -109,8 +109,8 @@ class MedikHandler(MedikWrapper):
 
         await asyncio.gather(self.wrapper_task, from_k_task)
 
-    def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_dir, psepsis_pgm, datastore):
-        super().__init__(to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm)
+    def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_exec_dir, psepsis_pgm, datastore):
+        super().__init__(to_k_queue, from_k_queue, kompiled_exec_dir, psepsis_pgm)
         self.to_app_queue = to_app_queue
         self.datastore = datastore
 
@@ -274,7 +274,7 @@ if __name__ == "__main__":
         k_process = MedikHandler( to_k_queue
                                 , from_k_queue
                                 , to_app_queue
-                                , kompiled_dir
+                                , kompiled_exec_dir
                                 , psepsis_pgm
                                 , datastore )
     app_process = AppProcess(args.user_port, to_k_queue, to_app_queue, datastore)

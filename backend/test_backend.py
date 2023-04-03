@@ -1,5 +1,8 @@
-from wrapper import MedikWrapper
-from backend_env import kompiled_dir, guidelines_pgm, driver_pgm, screening_only_driver_pgm, set_env
+from wrapper import ExecutionWrapper, MCheckWrapper
+from backend_env import  kompiled_exec_dir, kompiled_mcheck_dir \
+                       , guidelines_pgm   , driver_pgm \
+                       , ghosts_pgm       , screening_only_driver_pgm \
+                       , set_env
 
 import asyncio, copy, pytest, json, logging, sys, os, utils
 import functools
@@ -40,11 +43,10 @@ def psepsis_exec_pgm(tmp_path):
 @pytest.fixture
 def psepsis_mcheck_pgm(tmp_path):
     tmp_path.mkdir(exist_ok=True)
-    if psepsis_mcheck_pgm_path == None:
-        psepsis_mcheck_pgm_path = combined_temp_file( tmp_path
-                                                    , [ guidelines_pgm
-                                                      , ghosts_pgm ]
-                                                    , 'mcheck-combined.medik')
+    psepsis_mcheck_pgm_path = combined_temp_file( tmp_path
+                                                , [ guidelines_pgm
+                                                  , ghosts_pgm ]
+                                                , 'mcheck-combined.medik')
     return psepsis_mcheck_pgm_path
 
 def process_json(out_json, out):
@@ -95,7 +97,7 @@ async def medik_interact(in_jsons, psepsis_pgm, data=None):
 
     from_k_queue = asyncio.Queue()
     to_k_queue = asyncio.Queue()
-    medik_process = MedikWrapper(to_k_queue, from_k_queue, kompiled_dir, psepsis_pgm)
+    medik_process = ExecutionWrapper(to_k_queue, from_k_queue, kompiled_exec_dir, psepsis_pgm)
     medik_task = asyncio.create_task(medik_process.launch())
     exit_with_msg = functools.partial(do_exit, medik_process, medik_task, out, data)
     send_msg = functools.partial(do_send, to_k_queue, data)
@@ -182,6 +184,23 @@ async def run_exec_test(test_name, psepsis_exec_pgm):
     except TimeoutError:
         assert False
     assert out == get_expected(test_name).json_list
+
+def run_mcheck_test(psepsis_mcheck_pgm, search_pattern, should_reach=False):
+    set_env()
+    mcheck_wrapper = MCheckWrapper( kompiled_mcheck_dir
+                                  , psepsis_mcheck_pgm
+                                  , search_pattern )
+    result = mcheck_wrapper.launch()
+
+    if result.returncode != 0:
+        print(result.stderr.decode('utf-8'), file=sys.stderr)
+        pytest.fail('Search returned non-zero exit code {}'.format(result.returncode))
+
+    output = result.stdout.decode('utf-8').strip()
+    if should_reach:
+        assert output == '#Top'
+    else:
+        assert output == '#Bottom'
 
 # ==== Tests =====
 
@@ -276,3 +295,6 @@ async def test_inotropic_normotensive(psepsis_exec_pgm):
 async def test_inotropic_cold_shock(psepsis_exec_pgm):
     await run_exec_test( 'inotropic-cold-shock'
                        , psepsis_exec_pgm )
+
+def test_model_check(psepsis_mcheck_pgm):
+    run_mcheck_test(psepsis_mcheck_pgm, '<stuck>true</stuck>')
