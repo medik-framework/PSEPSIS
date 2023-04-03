@@ -297,4 +297,4 @@ async def test_inotropic_cold_shock(psepsis_exec_pgm):
                        , psepsis_exec_pgm )
 
 def test_model_check(psepsis_mcheck_pgm):
-    run_mcheck_test(psepsis_mcheck_pgm, '<stuck>true</stuck>')
+    run_mcheck_test(psepsis_mcheck_pgm, '"<stuck>true</stuck>"')
