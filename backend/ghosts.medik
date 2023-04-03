@@ -1,2 +1,78 @@
-machine Ghost {
+machine TabletAppGhost receives
+    ConfirmAgeEntered
+  , ConfirmWeightEntered
+  , ConfirmHighRiskConditionsEntered {
+
+  init state Start {
+    on StartGUI do {
+      broadcast StartScreening;
+      goto Main;
+    }
+  }
+
+  state Main {
+    on Instruct(instruction) do {
+      if (instruction == "get age") {
+        broadcast AgeEntered, (100);
+        goto WaitForConfirmation;
+      }
+      if (instruction == "get weight") {
+        broadcast WeightEntered, (30);
+        goto WaitForConfirmation;
+      }
+      if (instruction == "get high risk conditions") {
+        broadcast HighRiskConditionsEntered, (0);
+        goto WaitForConfirmation;
+      }
+    }
+  }
+
+  state WaitForConfirmation {
+    on ConfirmAgeEntered do {
+      goto Main;
+    }
+    on ConfirmWeightEntered do {
+      goto Main;
+    }
+    on ConfirmHighRiskConditionsEntered do {
+      goto Main;
+    }
+  }
 }
+
+machine DatastoreGhost {
+  init state Start {
+    entry {
+      print("datstore created");
+     }
+  }
+}
+
+
+init machine PSepsisGuidanceSystem receives StopGuidance {
+  vars tabletApp, datastore, measurementBounds;
+
+  init state CreateMachines {
+    entry {
+      tabletApp = new TabletAppGhost();
+      datastore = new DatastoreGhost();
+      measurementBounds = new MeasurementBounds();
+
+      // Screening Machines
+      new SepsisScreening(tabletApp, datastore, measurementBounds);
+      new SepticShockScreening(tabletApp, datastore, measurementBounds);
+
+      //// Treatment Machines
+      new FluidTherapy(tabletApp, datastore, measurementBounds);
+      new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+
+      //// Supplementary Machines
+      //new HighFlowOxygen(tabletApp);
+      new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+
+      // Signal Medik Ready
+      send tabletApp,  StartGUI;
+    }
+  }
+}
+
