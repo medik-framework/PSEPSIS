@@ -1,2 +1,72 @@
-machine Ghost {
+machine HCP {
+  var tabletApp;
+  init state Start {
+    entry(tabletApp) {
+      this.tabletApp = tabletApp;
+      send tabletApp, StartScreeningClick;
+    }
+  }
 }
+
+
+machine TabletApp {
+  var hcp;
+  init state Start {
+    on StartGUI do {
+      print("Starting GUI. Creating HCP instance");
+      hcp = new HCP(this);
+      goto WaitForHCPClick;
+    }
+  }
+
+  state WaitForHCPClick {
+    on StartScreeningClick do {
+      broadcast StartScreening;
+      goto Main;
+    }
+  }
+
+  state Main {
+    on Instruct(instruction) do {
+      if (instruction == "get age") {
+        print("Got a get age command");
+      }
+    }
+  }
+}
+machine Datastore {
+  init state Start {
+    entry {
+      print("datstore created");
+     }
+  }
+}
+
+
+init machine PSepsisGuidanceSystem receives StopGuidance {
+  vars tabletApp, datastore, measurementBounds;
+
+  init state CreateMachines {
+    entry {
+      tabletApp = new TabletApp();
+      datastore = new Datastore();
+      measurementBounds = new MeasurementBounds();
+
+      // Screening Machines
+      new SepsisScreening(tabletApp, datastore, measurementBounds);
+      new SepticShockScreening(tabletApp, datastore, measurementBounds);
+
+      //// Treatment Machines
+      new FluidTherapy(tabletApp, datastore, measurementBounds);
+      new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+
+      //// Supplementary Machines
+      //new HighFlowOxygen(tabletApp);
+      new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+
+      // Signal Medik Ready
+      send tabletApp,  StartGUI;
+    }
+  }
+}
+
