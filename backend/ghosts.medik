@@ -1,26 +1,11 @@
-machine HCP {
-  var tabletApp;
-  init state A {
-    entry (tabletApp) {
-      this.tabletApp = tabletApp;
-      send tabletApp, StartScreeningClick;
-      goto Main;
-    }
-  }
-  state Main {
-    on GetAgeDialog do {
-      send tabletApp, GetAgeResponse, (100);
-    }
-  }
-}
+machine TabletAppGhost receives
+    ConfirmAgeEntered
+  , ConfirmWeightEntered
+  , ConfirmHighRiskConditionsEntered {
 
-
-machine TabletAppGhost {
-  var hcp;
   init state Start {
     on StartGUI do {
-      print("Starting GUI. Creating HCP instance");
-      hcp = new HCP(this);
+      broadcast StartScreening;
       goto Main;
     }
   }
@@ -28,19 +13,28 @@ machine TabletAppGhost {
   state Main {
     on Instruct(instruction) do {
       if (instruction == "get age") {
-        send hcp, GetAgeDialog;
-        goto WaitForGetAgeResponse;
+        broadcast AgeEntered, (100);
+        goto WaitForConfirmation;
       }
-    }
-    on StartScreeningClick do {
-      broadcast StartScreening;
-      goto Main;
+      if (instruction == "get weight") {
+        broadcast WeightEntered, (30);
+        goto WaitForConfirmation;
+      }
+      if (instruction == "get high risk conditions") {
+        broadcast HighRiskConditionsEntered, (0);
+        goto WaitForConfirmation;
+      }
     }
   }
 
-  state WaitForGetAgeResponse {
-    on GetAgeResponse(response) do {
-      broadcast AgeEntered, (response);
+  state WaitForConfirmation {
+    on ConfirmAgeEntered do {
+      goto Main;
+    }
+    on ConfirmWeightEntered do {
+      goto Main;
+    }
+    on ConfirmHighRiskConditionsEntered do {
       goto Main;
     }
   }
