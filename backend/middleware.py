@@ -2,14 +2,13 @@ from pathlib import Path
 from fractions import Fraction
 from data import OrganDt, Patient, DrugHist
 from dataclasses import asdict
-from backend_env import kompiled_exec_dir, psepsis_pgm, set_env
-from wrapper import ExecutionWrapper
+from backend_env import kompiled_dir, guidelines_pgm, set_env
+from wrapper import MedikWrapper
 
 import os
 import websockets
 
 import argparse, asyncio, concurrent, functools, json, logging, os, sys, threading, time
-
 #==== Common Helpers =====
 
 def _broadcast(interface_id, event_name, event_args=[]):
@@ -53,7 +52,7 @@ class StubProcess:
 
     async def feed_commands(self):
         for command in self.commands:
-            if command.get('name') != 'Instruct':
+            if command.get('name') not in ['Instruct', 'RecommendDrug', 'Recommend']:
                 continue
             await self.feed_event.wait()
             await self.to_app_queue.put(command)
@@ -109,8 +108,8 @@ class MedikHandler(ExecutionWrapper):
 
         await asyncio.gather(self.wrapper_task, from_k_task)
 
-    def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_exec_dir, psepsis_pgm, datastore):
-        super().__init__(to_k_queue, from_k_queue, kompiled_exec_dir, psepsis_pgm)
+    def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_exec_dir, guidelines_pgm, datastore):
+        super().__init__(to_k_queue, from_k_queue, kompiled_exec_dir, guidelines_pgm)
         self.to_app_queue = to_app_queue
         self.datastore = datastore
 
@@ -275,7 +274,7 @@ if __name__ == "__main__":
                                 , from_k_queue
                                 , to_app_queue
                                 , kompiled_exec_dir
-                                , psepsis_pgm
+                                , guidelines_pgm
                                 , datastore )
     app_process = AppProcess(args.user_port, to_k_queue, to_app_queue, datastore)
     portal_process = DataPortalProcess(args.data_port, to_k_queue, to_app_queue, datastore)
