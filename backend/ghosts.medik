@@ -4,6 +4,13 @@ machine TabletAppGhost receives
   , ConfirmHighRiskConditionsEntered {
 
   init state Start {
+    entry(src) {
+      send src, eTabletAppCreated;
+      goto WaitForGUIStart;
+    }
+  }
+
+  state WaitForGUIStart {
     on StartGUI do {
       broadcast StartScreening;
       goto Main;
@@ -42,9 +49,16 @@ machine TabletAppGhost receives
 
 machine DatastoreGhost {
   init state Start {
-    entry {
-      print("datstore created");
+    entry(src) {
+      send src, eDatastoreCreated;
+      goto DatastoreMain;
      }
+  }
+
+  state DatastoreMain {
+    entry {
+      print("Datastore main loop");
+    }
   }
 }
 
@@ -52,23 +66,47 @@ machine DatastoreGhost {
 init machine PSepsisGuidanceSystem receives StopGuidance {
   vars tabletApp, datastore, measurementBounds;
 
-  init state CreateMachines {
+  init state CreateTabletApp {
     entry {
-      tabletApp = new TabletAppGhost();
-      datastore = new DatastoreGhost();
-      measurementBounds = new MeasurementBounds();
+      tabletApp = new TabletAppGhost(this);
+    }
+    on eTabletAppCreated do {
+      goto CreateDatastore;
+    }
+  }
+
+  state CreateDatastore {
+    entry {
+      datastore = new DatastoreGhost(this);
+    }
+    on eDatastoreCreated do {
+      goto CreateScreeningMachines;
+    }
+  }
+
+  state CreateMeasurementBounds {
+    entry {
+      measurementBounds = new MeasurementBounds(this);
+    }
+    on eMeasurementBoundsCreated do {
+      goto CreateScreeningMachines;
+    }
+  }
+
+  state CreateScreeningMachines {
+    entry {
 
       // Screening Machines
       new SepsisScreening(tabletApp, datastore, measurementBounds);
       new SepticShockScreening(tabletApp, datastore, measurementBounds);
 
       //// Treatment Machines
-      new FluidTherapy(tabletApp, datastore, measurementBounds);
-      new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+      //new FluidTherapy(tabletApp, datastore, measurementBounds);
+      //new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
 
       //// Supplementary Machines
       //new HighFlowOxygen(tabletApp);
-      new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+      //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
 
       // Signal Medik Ready
       send tabletApp,  StartGUI;

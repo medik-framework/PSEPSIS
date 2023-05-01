@@ -215,7 +215,14 @@ machine MeasurementBounds
   }
 
 
-  init state Running {
+  init state Start {
+    entry(src) {
+      send src, eMeasurementBoundsCreated;
+      goto Running;
+    }
+  }
+
+  state Running {
     on AgeEntered(age) do {
       this.age = age;
 
