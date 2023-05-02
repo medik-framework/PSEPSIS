@@ -1,7 +1,8 @@
 machine TabletAppGhost receives
     ConfirmAgeEntered
   , ConfirmWeightEntered
-  , ConfirmHighRiskConditionsEntered {
+  , ConfirmHighRiskConditionsEntered
+  , WaitForGhostMeasurements {
 
   init state Start {
     entry(src) {
@@ -20,17 +21,29 @@ machine TabletAppGhost receives
   state Main {
     on Instruct(instruction) do {
       if (instruction == "get age") {
-        broadcast AgeEntered, (100);
+        broadcast AgeEntered, (#nondet);
         goto WaitForConfirmation;
       }
       if (instruction == "get weight") {
-        broadcast WeightEntered, (30);
+        broadcast WeightEntered, (#nondet);
         goto WaitForConfirmation;
       }
       if (instruction == "get high risk conditions") {
-        broadcast HighRiskConditionsEntered, (0);
+        broadcast HighRiskConditionsEntered, (#nondet);
         goto WaitForConfirmation;
       }
+
+      if (instruction == "get 3 bucket measurements") {
+        stop;
+        broadcast ObtainGhostMeasurements;
+        goto WaitForGhostMeasurements;
+      }
+    }
+  }
+
+  state WaitForGhostMeasurements {
+    on ConfirmGhostMeasurementsObtained do {
+      print("Ghost Measurements obtained");
     }
   }
 
@@ -47,7 +60,8 @@ machine TabletAppGhost receives
   }
 }
 
-machine DatastoreGhost {
+machine DatastoreGhost
+  receives ObtainGhostMeasurements {
   init state Start {
     entry(src) {
       send src, eDatastoreCreated;
@@ -56,8 +70,9 @@ machine DatastoreGhost {
   }
 
   state DatastoreMain {
-    entry {
-      print("Datastore main loop");
+      on ObtainGhostMeasurements do {
+        broadcast ConfirmGhostMeasurementsObtained;
+        goto DatastoreMain;
     }
   }
 }
@@ -80,7 +95,7 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
       datastore = new DatastoreGhost(this);
     }
     on eDatastoreCreated do {
-      goto CreateScreeningMachines;
+      goto CreateMeasurementBounds;
     }
   }
 
@@ -101,12 +116,12 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
       new SepticShockScreening(tabletApp, datastore, measurementBounds);
 
       //// Treatment Machines
-      //new FluidTherapy(tabletApp, datastore, measurementBounds);
-      //new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+      new FluidTherapy(tabletApp, datastore, measurementBounds);
+      new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
 
       //// Supplementary Machines
       //new HighFlowOxygen(tabletApp);
-      //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+      new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
 
       // Signal Medik Ready
       send tabletApp,  StartGUI;

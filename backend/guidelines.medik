@@ -367,6 +367,7 @@ machine SepsisScreening
 
   fun isInNormalRange(parameter, normalLowerBound, normalUpperBound) {
     var storedMeasurement = obtainFrom(datastore, parameter);
+    stop;
     if (!(storedMeasurement == undef)) {
       return ((storedMeasurement >= normalLowerBound) && (storedMeasurement <= normalUpperBound));
     } else {
