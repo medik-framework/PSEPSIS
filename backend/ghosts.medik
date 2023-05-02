@@ -5,12 +5,12 @@ machine TabletAppGhost receives
   , WaitForGhostMeasurements {
 
   var src;
-  var startButttonClicked;
+  var startButtonClicked;
   init state Start {
     entry(src) {
       this.src = src;
-      goto WaitForGUIStart;
       startButtonClicked = false;
+      goto WaitForGUIStart;
     }
   }
 
@@ -27,7 +27,7 @@ machine TabletAppGhost receives
     entry {
       if (!(startButtonClicked)) {
         broadcast StartScreening;
-        startButtonClick = true;
+        startButtonClicked = true;
       }
     }
 
@@ -46,7 +46,6 @@ machine TabletAppGhost receives
       }
 
       if (instruction == "get 3 bucket measurements") {
-        stop;
         broadcast ObtainGhostMeasurements;
         goto WaitForGhostMeasurements;
       }
@@ -74,17 +73,21 @@ machine TabletAppGhost receives
 
 machine DatastoreGhost
   receives ObtainGhostMeasurements {
-  var src;
+  vars src, initialized;
   init state Start {
     entry(src) {
       this.src = src;
+      this.initialized = false;
       goto DatastoreMain;
      }
   }
 
   state DatastoreMain {
     entry {
-      send this.src, eDatastoreCreated;
+      if (!(initialized)) {
+        send this.src, eDatastoreCreated;
+        initialized = true;
+      }
     }
     on ObtainGhostMeasurements do {
       broadcast ConfirmGhostMeasurementsObtained;
@@ -140,7 +143,7 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
       //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
 
       // Signal Medik Ready
-      //send tabletApp,  StartGUI;
+      send tabletApp,  StartGUI;
     }
   }
 }

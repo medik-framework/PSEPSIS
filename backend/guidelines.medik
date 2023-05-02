@@ -4,7 +4,7 @@ machine MeasurementBounds
          , HighRiskConditionsEntered
          , FluidOverloadRisksEntered {
 
-  vars age, weight, highRiskConditions, fluidOverloadRisks;
+  vars src, age, weight, highRiskConditions, fluidOverloadRisks, initialized;
 
   vars hrUpperBound              , hrLowerBound
      , bpSysUpperBound           , bpSysLowerBound
@@ -217,12 +217,19 @@ machine MeasurementBounds
 
   init state Start {
     entry(src) {
-      send src, eMeasurementBoundsCreated;
+      initialized = false;
+      this.src = src;
       goto Running;
     }
   }
 
   state Running {
+    entry {
+      if (!(initialized)) {
+        send src, eMeasurementBoundsCreated;
+        initialized = true;
+      }
+    }
     on AgeEntered(age) do {
       this.age = age;
 
@@ -305,10 +312,10 @@ machine SepsisScreening
       this.tabletApp           = tabletApp;
       this.datastore           = datastore;
       this.measurementBounds   = measurementBounds;
-      print("In state Start of SepsisScreening\n");
+      //print("In state Start of SepsisScreening\n");
     }
     on StartScreening do {
-      print("Recv StartScreening\n");
+      //print("Recv StartScreening\n");
       goto ObtainAge;
     }
     on ConfirmAgeEntered do {
@@ -319,6 +326,7 @@ machine SepsisScreening
   state ObtainAge {
     entry {
       if (measurementBounds.age == undef) {
+        stop;
         send tabletApp, Instruct, ("get age");
       } else {
         goto ObtainWeight;
@@ -338,7 +346,7 @@ machine SepsisScreening
       }
     }
     on ConfirmWeightEntered do {
-      print("Confirm Weight Entered \n");
+      //print("Confirm Weight Entered \n");
       goto ObtainHighRiskConditions;
     }
   }
@@ -367,7 +375,6 @@ machine SepsisScreening
 
   fun isInNormalRange(parameter, normalLowerBound, normalUpperBound) {
     var storedMeasurement = obtainFrom(datastore, parameter);
-    stop;
     if (!(storedMeasurement == undef)) {
       return ((storedMeasurement >= normalLowerBound) && (storedMeasurement <= normalUpperBound));
     } else {
@@ -618,7 +625,7 @@ machine FluidTherapy
       }
     }
     on ConfirmFluidOverloadRisksEntered do {
-      print("confirmed fluid overdose risks entered");
+      //print("confirmed fluid overdose risks entered");
       goto SuggestFluidDosage;
     }
   }
@@ -647,7 +654,7 @@ machine FluidTherapy
 
   state WaitForAdministerFluidConfirmation {
     entry {
-      print("Waiting for fluid administered");
+      //print("Waiting for fluid administered");
     }
     on ConfirmNormalSalineAdministered do {
       // Wait for fluid responsiveness
@@ -868,7 +875,7 @@ machine InotropicSupportTherapy
 
     }
     on ConfirmShockType(shockType) do {
-      print("Got shock type: " + shockType);
+      //print("Got shock type: " + shockType);
       if (shockType == "Cold Shock") {
         send tabletApp, RecommendDrug, ( "Epinephrine"
                                        , "Inotropic Support"
@@ -977,7 +984,7 @@ machine AntibioticsTherapy
      , inSepticShock;
 
   fun isNormalHost() {
-    print("Immunosuppressed " + isImmunosuppressed + "\n");
+    //print("Immunosuppressed " + isImmunosuppressed + "\n");
     return ((! (isImmunosuppressed))
         && (! (hasPseudomonasInfection))
         && (! (increasedRickettsialRisk))
