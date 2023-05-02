@@ -4,21 +4,33 @@ machine TabletAppGhost receives
   , ConfirmHighRiskConditionsEntered
   , WaitForGhostMeasurements {
 
+  var src;
+  var startButttonClicked;
   init state Start {
     entry(src) {
-      send src, eTabletAppCreated;
+      this.src = src;
       goto WaitForGUIStart;
+      startButtonClicked = false;
     }
   }
 
   state WaitForGUIStart {
+    entry {
+      send src, eTabletAppCreated;
+    }
     on StartGUI do {
-      broadcast StartScreening;
       goto Main;
     }
   }
 
   state Main {
+    entry {
+      if (!(startButtonClicked)) {
+        broadcast StartScreening;
+        startButtonClick = true;
+      }
+    }
+
     on Instruct(instruction) do {
       if (instruction == "get age") {
         broadcast AgeEntered, (#nondet);
@@ -62,17 +74,21 @@ machine TabletAppGhost receives
 
 machine DatastoreGhost
   receives ObtainGhostMeasurements {
+  var src;
   init state Start {
     entry(src) {
-      send src, eDatastoreCreated;
+      this.src = src;
       goto DatastoreMain;
      }
   }
 
   state DatastoreMain {
-      on ObtainGhostMeasurements do {
-        broadcast ConfirmGhostMeasurementsObtained;
-        goto DatastoreMain;
+    entry {
+      send this.src, eDatastoreCreated;
+    }
+    on ObtainGhostMeasurements do {
+      broadcast ConfirmGhostMeasurementsObtained;
+      goto DatastoreMain;
     }
   }
 }
@@ -113,18 +129,18 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 
       // Screening Machines
       new SepsisScreening(tabletApp, datastore, measurementBounds);
-      new SepticShockScreening(tabletApp, datastore, measurementBounds);
+      //new SepticShockScreening(tabletApp, datastore, measurementBounds);
 
-      //// Treatment Machines
-      new FluidTherapy(tabletApp, datastore, measurementBounds);
-      new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+      ////// Treatment Machines
+      //new FluidTherapy(tabletApp, datastore, measurementBounds);
+      //new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
 
       //// Supplementary Machines
       //new HighFlowOxygen(tabletApp);
-      new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
+      //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
 
       // Signal Medik Ready
-      send tabletApp,  StartGUI;
+      //send tabletApp,  StartGUI;
     }
   }
 }
