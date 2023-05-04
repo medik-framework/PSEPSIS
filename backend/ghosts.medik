@@ -123,29 +123,52 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
       measurementBounds = new MeasurementBounds(this);
     }
     on eMeasurementBoundsCreated do {
-      goto CreateScreeningMachines;
+      goto CreateScreeningMachine;
     }
   }
 
   state CreateScreeningMachine {
     entry {
-
-      // Screening Machines
-      new SepsisScreening(src, tabletApp, datastore, measurementBounds);
-      //new SepticShockScreening(tabletApp, datastore, measurementBounds);
-
-      ////// Treatment Machines
-      //new FluidTherapy(tabletApp, datastore, measurementBounds);
-      //new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
-
-      //// Supplementary Machines
-      //new HighFlowOxygen(tabletApp);
-      //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
-
-      // Signal Medik Ready
+      new SepsisScreening(this, tabletApp, datastore, measurementBounds);
     }
-    on eScreeningMachineReady do {
-      send tabletApp,  StartGUI;
+    on ScreeningMachineCreated do {
+      goto CreateFluidTherapyMachine;
+    }
+  }
+
+  state CreateShockScreeningMachine {
+    entry {
+      new SepticShockScreening(this, tabletApp, datastore, measurementBounds);
+    }
+    on ShockScreeningMachineCreated do {
+      goto CreateFluidTherapyMachine;
+    }
+  }
+
+  state CreateFluidTherapyMachine {
+    entry {
+      new FluidTherapy(this, tabletApp, datastore, measurementBounds);
+    }
+    on FluidTherapyMachineCreated do {
+      goto CreateInotropicSupportTherapyMachine;
+    }
+  }
+
+  state CreateInotropicSupportTherapyMachine {
+    entry {
+      new InotropicSupportTherapy(this, tabletApp, datastore, measurementBounds);
+    }
+    on InotropicSupportTherapyMachineCreated do {
+      goto CreateAntibioticsTherapyMachine;
+    }
+  }
+
+  state CreateAntibioticsTherapyMachine {
+    entry {
+      new AntibioticsTherapy(this, tabletApp, datastore, measurementBounds);
+    }
+    on AntibioticsTherapyMachineCreated do {
+      send tabletApp, StartGUI;
     }
   }
 }

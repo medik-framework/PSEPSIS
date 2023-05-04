@@ -305,22 +305,24 @@ machine SepsisScreening
           , ConfirmHighRiskConditionsEntered
           , ConfirmMeasurementsObtained {
 
-  vars tabletApp, datastore, measurementBounds;
+  vars src, tabletApp, datastore, measurementBounds;
 
   init state Start {
     entry (src, tabletApp, datastore, measurementBounds) {
       this.tabletApp           = tabletApp;
       this.datastore           = datastore;
       this.measurementBounds   = measurementBounds;
-      //print("In state Start of SepsisScreening\n");
-      send src, eScreeningMachineReady;
+      this.src = src;
+      goto WaitForStart;
+    }
+  }
+
+  state WaitForStart {
+    entry {
+      send src, ScreeningMachineCreated;
     }
     on StartScreening do {
-      //print("Recv StartScreening\n");
       goto ObtainAge;
-    }
-    on ConfirmAgeEntered do {
-      goto Start(this.tabletApp, this.datastore, this.measurementBounds);
     }
   }
 
@@ -437,7 +439,7 @@ machine SepticShockScreening
          , StartShockScreening
          , ConfirmSepticShockMeasurementsObtained {
 
-  vars tabletApp, datastore, measurementBounds;
+  vars src, tabletApp, datastore, measurementBounds;
 
   fun isBelowNormalLowerBound(paramter, normalLowerBound) {
     var storedMeasurement = obtainFrom(datastore, parameter);
@@ -497,10 +499,18 @@ machine SepticShockScreening
   }
 
   init state Start {
-    entry(tabletApp, datastore, measurementBounds) {
+    entry(src, tabletApp, datastore, measurementBounds) {
+      this.src               = src;
       this.tabletApp         = tabletApp;
       this.datastore         = datastore;
       this.measurementBounds = measurementBounds;
+      goto WaitForSepsisDiagnosis;
+    }
+  }
+
+  state WaitForSepsisDiagnosis {
+    entry {
+      send src, ShockScreeningMachineCreated;
     }
 
     on SepsisSuspected do {
@@ -592,7 +602,7 @@ machine FluidTherapy
          , ConfirmMaintainFluid
          , ConfirmRepeatFluidBolus {
 
-  vars tabletApp, datastore, measurementBounds;
+  vars src, tabletApp, datastore, measurementBounds;
   vars isResponsiveToFluids, fluidOverload;
 
   fun isNormal(parameter, normalMeasurement) {
@@ -605,13 +615,20 @@ machine FluidTherapy
   }
 
   init state Start {
-    entry(tabletApp, datastore, measurementBounds) {
+    entry(src, tabletApp, datastore, measurementBounds) {
       this.tabletApp            = tabletApp;
       this.datastore            = datastore;
       this.measurementBounds    = measurementBounds;
       this.isResponsiveToFluids = false;
+      this.src = src;
+      goto WaitForStartFluidTherapy;
     }
 
+  }
+  state WaitForStartFluidTherapy {
+    entry {
+      send src, FluidTherapyMachineCreated;
+    }
     on StartFluidTherapy do {
       goto ObtainRisks;
     }
@@ -749,7 +766,7 @@ machine InotropicSupportTherapy
          , ConfirmTransferToHigherCare {
 
 
-  vars tabletApp, datastore, measurementBounds;
+  vars src, tabletApp, datastore, measurementBounds;
 
   fun checkHypotensive() {
     var bpSys = obtainFrom(datastore, "BP Sys");
@@ -769,10 +786,18 @@ machine InotropicSupportTherapy
   }
 
   init state Start {
-    entry(tabletApp, datastore, measurementBounds) {
+    entry(src, tabletApp, datastore, measurementBounds) {
       this.tabletApp         = tabletApp;
       this.datastore         = datastore;
       this.measurementBounds = measurementBounds;
+      this.src               = src;
+      goto WaitForStartInotropicTherapy;
+    }
+  }
+
+  state WaitForStartInotropicTherapy {
+    entry {
+      send src, InotropicSupportTherapyMachineCreated;
     }
 
     on StartInotropicTherapy do {
@@ -975,7 +1000,7 @@ machine AntibioticsTherapy
          , StaphylococcusPrevalenceEntered
          , HSVRiskEntered {
 
-  vars tabletApp, datastore, measurementBounds;
+  vars src, tabletApp, datastore, measurementBounds;
 
   vars isImmunosuppressed       , hasPseudomonasInfection
      , cannotReceivePenicillin  , increasedFungalInfectionRisk
@@ -1003,10 +1028,18 @@ machine AntibioticsTherapy
   }
 
   init state Start {
-    entry(tabletApp, datastore, measurementBounds) {
+    entry(src, tabletApp, datastore, measurementBounds) {
       this.tabletApp = tabletApp;
       this.datastore = datastore;
       this.measurementBounds = measurementBounds;
+      this.src = src;
+      goto WaitForStartAntibioticsTherapy;
+    }
+  }
+
+  state WaitForStartAntibioticsTherapy {
+    entry {
+      send src, AntibioticsTherapyMachineCreated;
     }
 
     on StartAntibioticTherapy do {
