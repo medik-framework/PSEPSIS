@@ -34,9 +34,10 @@ machine TabletAppGhost receives
     on Instruct(instruction) do {
       if (instruction == "get age") {
         broadcast AgeEntered, (#nondet);
-        goto WaitForConfirmation;
+        goto Main;
       }
       if (instruction == "get weight") {
+        stop;
         broadcast WeightEntered, (#nondet);
         goto WaitForConfirmation;
       }
@@ -52,11 +53,6 @@ machine TabletAppGhost receives
     }
   }
 
-  state WaitForGhostMeasurements {
-    on ConfirmGhostMeasurementsObtained do {
-      print("Ghost Measurements obtained");
-    }
-  }
 
   state WaitForConfirmation {
     on ConfirmAgeEntered do {
