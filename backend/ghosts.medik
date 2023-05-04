@@ -127,11 +127,11 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
     }
   }
 
-  state CreateScreeningMachines {
+  state CreateScreeningMachine {
     entry {
 
       // Screening Machines
-      new SepsisScreening(tabletApp, datastore, measurementBounds);
+      new SepsisScreening(src, tabletApp, datastore, measurementBounds);
       //new SepticShockScreening(tabletApp, datastore, measurementBounds);
 
       ////// Treatment Machines
@@ -143,6 +143,8 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
       //new AntibioticsTherapy(tabletApp, datastore, measurementBounds);
 
       // Signal Medik Ready
+    }
+    on eScreeningMachineReady do {
       send tabletApp,  StartGUI;
     }
   }

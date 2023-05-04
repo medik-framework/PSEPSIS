@@ -308,11 +308,12 @@ machine SepsisScreening
   vars tabletApp, datastore, measurementBounds;
 
   init state Start {
-    entry (tabletApp, datastore, measurementBounds) {
+    entry (src, tabletApp, datastore, measurementBounds) {
       this.tabletApp           = tabletApp;
       this.datastore           = datastore;
       this.measurementBounds   = measurementBounds;
       //print("In state Start of SepsisScreening\n");
+      send src, eScreeningMachineReady;
     }
     on StartScreening do {
       //print("Recv StartScreening\n");
@@ -326,7 +327,6 @@ machine SepsisScreening
   state ObtainAge {
     entry {
       if (measurementBounds.age == undef) {
-        stop;
         send tabletApp, Instruct, ("get age");
       } else {
         goto ObtainWeight;
@@ -366,6 +366,7 @@ machine SepsisScreening
 
   state ObtainMeasurements {
     entry {
+      stop;
       send tabletApp, Instruct, ("get 3 bucket measurements");
     }
     on ConfirmMeasurementsObtained do {
