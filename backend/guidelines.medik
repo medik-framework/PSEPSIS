@@ -233,22 +233,22 @@ machine MeasurementBounds
     on AgeEntered(age) do {
       this.age = age;
 
-      this.hrLowerBound              = safeHRLowerBound(age);
-      this.hrUpperBound              = safeHRUpperBound(age);
+      this.hrLowerBound              = #nondet;
+      this.hrUpperBound              = #nondet;
 
-      this.bpSysLowerBound           = safeBpSysLowerBound(age);
-      this.bpSysUpperBound           = safeBpSysUpperBound(age);
+      this.bpSysLowerBound           = #nondet;
+      this.bpSysUpperBound           = #nondet;
 
-      this.tempLowerBound            = safeTempLowerBound(age);
-      this.tempUpperBound            = safeTempUpperBound(age);
+      this.tempLowerBound            = #nondet;
+      this.tempUpperBound            = #nondet;
 
-      this.mapLowerBound             = safeMapLowerBound(age);
+      this.mapLowerBound             = #nondet;
 
-      this.arterialLactateLowerBound = safeArterialLactateLowerBound(age);
-      this.arterialLactateUpperBound = safeArterialLactateUpperBound(age);
+      this.arterialLactateLowerBound = #nondet;
+      this.arterialLactateUpperBound = #nondet;
 
-      this.urineOutputLowerBound     = safeUrineOutputLowerBound(age);
-      this.urineOutputUpperBound     = safeUrineOutputUpperBound(age);
+      this.urineOutputLowerBound     = #nondet;
+      this.urineOutputUpperBound     = #nondet;
 
       broadcast ConfirmAgeEntered;
       goto Running;
@@ -368,7 +368,6 @@ machine SepsisScreening
 
   state ObtainMeasurements {
     entry {
-      stop;
       send tabletApp, Instruct, ("get 3 bucket measurements");
     }
     on ConfirmMeasurementsObtained do {

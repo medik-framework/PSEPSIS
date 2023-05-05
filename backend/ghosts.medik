@@ -2,7 +2,7 @@ machine TabletAppGhost receives
     ConfirmAgeEntered
   , ConfirmWeightEntered
   , ConfirmHighRiskConditionsEntered
-  , WaitForGhostMeasurements {
+  , ConfirmGhostMeasurementsObtained {
 
   var src;
   var startButtonClicked;
@@ -34,10 +34,9 @@ machine TabletAppGhost receives
     on Instruct(instruction) do {
       if (instruction == "get age") {
         broadcast AgeEntered, (#nondet);
-        goto Main;
+        goto WaitForConfirmation;
       }
       if (instruction == "get weight") {
-        stop;
         broadcast WeightEntered, (#nondet);
         goto WaitForConfirmation;
       }
@@ -48,7 +47,7 @@ machine TabletAppGhost receives
 
       if (instruction == "get 3 bucket measurements") {
         broadcast ObtainGhostMeasurements;
-        goto WaitForGhostMeasurements;
+        goto WaitForConfirmation;
       }
     }
   }
@@ -62,6 +61,10 @@ machine TabletAppGhost receives
       goto Main;
     }
     on ConfirmHighRiskConditionsEntered do {
+      goto Main;
+    }
+    on ConfirmGhostMeasurementsObtained do {
+      broadcast ConfirmMeasurementsObtained;
       goto Main;
     }
   }
