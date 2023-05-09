@@ -219,22 +219,22 @@ machine MeasurementBounds
     on AgeEntered(age) do {
       this.age = age;
 
-      this.hrLowerBound              = safeHRLowerBound(age);
-      this.hrUpperBound              = safeHRUpperBound(age);
+      this.hrLowerBound              = #nondet;
+      this.hrUpperBound              = #nondet;
 
-      this.bpSysLowerBound           = safeBpSysLowerBound(age);
-      this.bpSysUpperBound           = safeBpSysUpperBound(age);
+      this.bpSysLowerBound           = #nondet;
+      this.bpSysUpperBound           = #nondet;
 
-      this.tempLowerBound            = safeTempLowerBound(age);
-      this.tempUpperBound            = safeTempUpperBound(age);
+      this.tempLowerBound            = #nondet;
+      this.tempUpperBound            = #nondet;
 
-      this.mapLowerBound             = safeMapLowerBound(age);
+      this.mapLowerBound             = #nondet;
 
-      this.arterialLactateLowerBound = safeArterialLactateLowerBound(age);
-      this.arterialLactateUpperBound = safeArterialLactateUpperBound(age);
+      this.arterialLactateLowerBound = #nondet;
+      this.arterialLactateUpperBound = #nondet;
 
-      this.urineOutputLowerBound     = safeUrineOutputLowerBound(age);
-      this.urineOutputUpperBound     = safeUrineOutputUpperBound(age);
+      this.urineOutputLowerBound     = #nondet;
+      this.urineOutputUpperBound     = #nondet;
 
       broadcast ConfirmAgeEntered;
       goto Running;
@@ -298,10 +298,10 @@ machine SepsisScreening
       this.tabletApp           = tabletApp;
       this.datastore           = datastore;
       this.measurementBounds   = measurementBounds;
-      print("In state Start of SepsisScreening\n");
+      //print("In state Start of SepsisScreening\n");
     }
     on StartScreening do {
-      print("Recv StartScreening\n");
+      //print("Recv StartScreening\n");
       goto ObtainAge;
     }
     on ConfirmAgeEntered do {
@@ -331,7 +331,7 @@ machine SepsisScreening
       }
     }
     on ConfirmWeightEntered do {
-      print("Confirm Weight Entered \n");
+      //print("Confirm Weight Entered \n");
       goto ObtainHighRiskConditions;
     }
   }
@@ -610,7 +610,7 @@ machine FluidTherapy
       }
     }
     on ConfirmFluidOverloadRisksEntered do {
-      print("confirmed fluid overdose risks entered");
+      //print("confirmed fluid overdose risks entered");
       goto SuggestFluidDosage;
     }
   }
@@ -639,7 +639,7 @@ machine FluidTherapy
 
   state WaitForAdministerFluidConfirmation {
     entry {
-      print("Waiting for fluid administered");
+      //print("Waiting for fluid administered");
     }
     on ConfirmNormalSalineAdministered do {
       // Wait for fluid responsiveness
@@ -860,7 +860,7 @@ machine InotropicSupportTherapy
 
     }
     on ConfirmShockType(shockType) do {
-      print("Got shock type: " + shockType);
+      //print("Got shock type: " + shockType);
       if (shockType == "Cold Shock") {
         send tabletApp, RecommendDrug, ( "Epinephrine"
                                        , "Inotropic Support"
@@ -969,7 +969,7 @@ machine AntibioticsTherapy
      , inSepticShock;
 
   fun isNormalHost() {
-    print("Immunosuppressed " + isImmunosuppressed + "\n");
+    //print("Immunosuppressed " + isImmunosuppressed + "\n");
     return ((! (isImmunosuppressed))
         && (! (hasPseudomonasInfection))
         && (! (increasedRickettsialRisk))

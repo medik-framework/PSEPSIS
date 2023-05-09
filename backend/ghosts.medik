@@ -1,7 +1,4 @@
-machine TabletAppGhost receives
-    ConfirmAgeEntered
-  , ConfirmWeightEntered
-  , ConfirmHighRiskConditionsEntered {
+machine TabletAppGhost {
 
   init state Start {
     on StartGUI do {
@@ -13,38 +10,31 @@ machine TabletAppGhost receives
   state Main {
     on Instruct(instruction) do {
       if (instruction == "get age") {
-        broadcast AgeEntered, (100);
-        goto WaitForConfirmation;
+        broadcast AgeEntered, (#nondet);
+        goto Main;
       }
       if (instruction == "get weight") {
-        broadcast WeightEntered, (30);
-        goto WaitForConfirmation;
+        broadcast WeightEntered, (#nondet);
+        goto Main;
       }
       if (instruction == "get high risk conditions") {
-        broadcast HighRiskConditionsEntered, (0);
-        goto WaitForConfirmation;
+        broadcast HighRiskConditionsEntered, (#nondet);
+        goto Main;
       }
-    }
-  }
-
-  state WaitForConfirmation {
-    on ConfirmAgeEntered do {
-      goto Main;
-    }
-    on ConfirmWeightEntered do {
-      goto Main;
-    }
-    on ConfirmHighRiskConditionsEntered do {
-      goto Main;
+      if (instruction == "get 3 bucket measurements") {
+        broadcast ConfirmMeasurementsObtained;
+        goto Main;
+      }
     }
   }
 }
 
 machine DatastoreGhost {
-  init state Start {
-    entry {
-      print("datstore created");
-     }
+  init state ProvideMeasurements {
+    on $ObtainRequest(src, tid, parameter) do {
+      send src, $ObtainResponse, (tid, #nondet);
+      goto ProvideMeasurements;
+    }
   }
 }
 
