@@ -387,14 +387,14 @@ machine SepsisScreening
 
   state CalculateScore {
     entry() {
-      var hrAbnormal              = !isInNormalRange("HR",            measurementBounds.hrLowerBound,    measurementBounds.hrUpperBound);
-      var bpSysAbnormal           = !isInNormalRange("BP Sys",        measurementBounds.bpSysLowerBound, measurementBounds.bpSysUpperBound);
-      var tempAbnormal            = !isInNormalRange("Temp",          measurementBounds.tempLowerBound,  measurementBounds.tempUpperBound);
-      var pulseQualityAbnormal    = !isNormal("Pulse Quality",        measurementBounds.pulseQuality);
-      var mentalStatusAbnormal    = !isNormal("Behavior",             measurementBounds.mentalStatus);
-      var capillaryRefillAbnormal = !isNormal("Capillary Refill",     measurementBounds.capillaryRefill);
-      var skinColorAbnormal       = !isNormal("Skin Color",           measurementBounds.skinColor);
-      var highRiskConditions      = hasHighRiskConditions();
+      var hrAbnormal              = #nondet;
+      var bpSysAbnormal           = #nondet;
+      var tempAbnormal            = #nondet;
+      var pulseQualityAbnormal    = #nondet;
+      var mentalStatusAbnormal    = #nondet;
+      var capillaryRefillAbnormal = #nondet;
+      var skinColorAbnormal       = #nondet;
+      var highRiskConditions      = #nondet;
 
       var bucket1 = hrAbnormal || bpSysAbnormal || pulseQualityAbnormal;
 
@@ -404,7 +404,7 @@ machine SepsisScreening
       var bucket3   = mentalStatusAbnormal    || perfusion || highRiskConditions;
 
       var sepsisSuspected = bucket1  &&  bucket2  &&  bucket3;
-      send tabletApp, SepsisDiagnosis, ( sepsisSuspected );
+      //send tabletApp, SepsisDiagnosis, ( sepsisSuspected );
 
       if (sepsisSuspected) {
         broadcast SepsisSuspected;
@@ -508,17 +508,17 @@ machine SepticShockScreening
 
   state CalculateSepticShockScore {
     entry {
-     var bpAbnormal = isBelowIfPresent("MAP", measurementBounds.mapLowerBound)
-                      || isBelowIfPresent("BP Sys", measurementBounds.bpSysLowerBound);
+
+     var bpAbnormal = #nondet;
 
      if (bpAbnormal) {
        shockPositiveSteps(tabletApp);
        goto CheckShockType;
      }
 
-     var needsExcessEpinephrine     = needsExcessVasoactive("Epinephrine"   , measurementBounds.epinephrineDosageUpperBound);
-     var needsExcessNorepinephrine  = needsExcessVasoactive("Norepinephrine", measurementBounds.norepinephrineDosageUpperBound);
-     var needsExcessDopamine        = needsExcessVasoactive("Dopamine"      , measurementBounds.dopamineDosageUpperBound);
+     var needsExcessEpinephrine     = #nondet;
+     var needsExcessNorepinephrine  = #nondet;
+     var needsExcessDopamine        = #nondet;
 
      if (    (needsExcessEpinephrine)
           || (needsExcessNorepinephrine)
@@ -720,8 +720,7 @@ machine FluidTherapy
 }
 
 machine InotropicSupportTherapy
-  receives SepsisSuspected
-         , StartInotropicTherapy
+  receives StartInotropicTherapy
          , ConfirmBPObtained
          , ConfirmShockTypeMeasurementsObtained
          , ConfirmShockType

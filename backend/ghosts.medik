@@ -26,7 +26,38 @@ machine TabletAppGhost {
         goto Main;
       }
     }
+
+    on SepsisDiagnosis(diagnosis) do {
+      if (diagnosis == true) {
+        goto HandleSepsis;
+      } else {
+        goto Main;
+      }
+    }
   }
+
+  state HandleSepsis {
+    entry {
+      either {
+        broadcast StartFluidTherapy;
+        goto HandleTreatment;
+      } or {
+        broadcast StartAntibioticsTherapy;
+        goto HandleTreatment;
+      }
+    }
+  }
+
+  state HandleTreatment {
+    on Instruct(instruction) do {
+      stop;
+      if (instruction == "get fluid overdose risks") {
+        broadcast FluidOverdoseRisksEntered;
+      }
+    }
+  }
+
+
 }
 
 machine DatastoreGhost {
