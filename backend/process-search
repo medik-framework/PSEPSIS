@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+
+import sys, re
+
+with open(sys.argv[1], 'r') as out_file:
+  search_results = out_file.read().split('#Or')
+  for i in range(0, len(search_results)):
+      search_result = search_results[i]
+      with open(sys.argv[2] + '.{}.out'.format(i + 1), 'w')  as out_file:
+          start_index = search_result.find('#Equals') + len('#Equals')
+          end_index = search_result.find('</generatedTop>') + len('</generatedTop>')
+          out_file.write(search_result[start_index:end_index])
+
