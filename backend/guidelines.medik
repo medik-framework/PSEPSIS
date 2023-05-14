@@ -404,7 +404,7 @@ machine SepsisScreening
       var bucket3   = mentalStatusAbnormal    || perfusion || highRiskConditions;
 
       var sepsisSuspected = bucket1  &&  bucket2  &&  bucket3;
-      //send tabletApp, SepsisDiagnosis, ( sepsisSuspected );
+      send tabletApp, SepsisDiagnosis, ( sepsisSuspected );
 
       if (sepsisSuspected) {
         broadcast SepsisSuspected;
@@ -424,59 +424,64 @@ machine SepticShockScreening
   vars tabletApp, datastore, measurementBounds;
 
   fun isBelowNormalLowerBound(paramter, normalLowerBound) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
+    //var storedMeasurement = obtainFrom(datastore, parameter);
 
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement < normalLowerBound);
-    } else {
-      return false;
-    }
+    //if (!(storedMeasurement == undef)) {
+    //  return (storedMeasurement < normalLowerBound);
+    //} else {
+    //  return false;
+    //}
+    return #nondet;
   }
 
   fun needsExcessVasoactive(drugName, upperDoseBound) {
-    var administeredDose = obtainFrom(datastore, drugName);
+    //var administeredDose = obtainFrom(datastore, drugName);
 
-    if (!(administeredDose == undef)) {
-      return (administeredDose > upperDoseBound);
-    } else {
-      return false;
-    }
+    //if (!(administeredDose == undef)) {
+    //  return (administeredDose > upperDoseBound);
+    //} else {
+    //  return false;
+    //}
+    return #nondet;
   }
 
   fun isBelowIfPresent(parameter, bound) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
+    //var storedMeasurement = obtainFrom(datastore, parameter);
 
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement < bound);
-    } else {
-      return false;
-    }
+    //if (!(storedMeasurement == undef)) {
+    //  return (storedMeasurement < bound);
+    //} else {
+    //  return false;
+    //}
+    return #nondet;
   }
   fun isAboveIfPresent(parameter, bound) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
+    //var storedMeasurement = obtainFrom(datastore, parameter);
 
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement > bound);
-    } else {
-      return false;
-    }
+    //if (!(storedMeasurement == undef)) {
+    //  return (storedMeasurement > bound);
+    //} else {
+    //  return false;
+    //}
+    return #nondet;
   }
   fun isEqualToIfPresent(parameter, expected) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
+    //var storedMeasurement = obtainFrom(datastore, parameter);
 
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement == expected);
-    } else {
-      return false;
-    }
+    //if (!(storedMeasurement == undef)) {
+    //  return (storedMeasurement == expected);
+    //} else {
+    //  return false;
+    //}
+    return #nondet;
   }
   fun shockPositiveSteps(tabetApp) {
       send tabletApp, ShockDiagnosis, (true);
-      send tabletApp, Instruct, ( "manage shock"
-                                , "Call PICU if not already done"
-                                , "Switch to 1-hour bundle"
-                                , "Urgently consider Fluid Therapy"
-                                , "Urgently consider Antibiotic Therapy" );
+      send tabletApp, Instruct5, ( "manage shock"
+                                 , "Call PICU if not already done"
+                                 , "Switch to 1-hour bundle"
+                                 , "Urgently consider Fluid Therapy"
+                                 , "Urgently consider Antibiotic Therapy" );
       broadcast SepticShockSuspected;
   }
 
@@ -485,6 +490,7 @@ machine SepticShockScreening
       this.tabletApp         = tabletApp;
       this.datastore         = datastore;
       this.measurementBounds = measurementBounds;
+      bound = 0;
     }
 
     on SepsisSuspected do {
@@ -558,9 +564,9 @@ machine SepticShockScreening
       if (perfusion >= 2) {
         shockPositiveSteps(tabletApp);
       } else {
-        send tabletApp, ShockDiagnosis, (false);
-        sleep(60);
-        goto CheckFluidBolus;
+          send tabletApp, ShockDiagnosis, (false);
+          sleep(60);
+          goto CheckFluidBolus;
       }
     }
   }

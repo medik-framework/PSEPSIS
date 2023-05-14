@@ -1,6 +1,12 @@
 machine TabletAppGhost {
+  vars fluidTherapyStarted, antibioticTherapyStarted, bound;
 
   init state Start {
+    entry {
+      fluidTherapyStarted = false;
+      antibioticTherapyStarted = false;
+      bound = 0;
+    }
     on StartGUI do {
       broadcast StartScreening;
       goto Main;
@@ -24,6 +30,8 @@ machine TabletAppGhost {
       if (instruction == "get 3 bucket measurements") {
         broadcast ConfirmMeasurementsObtained;
         goto Main;
+      } else {
+        send this, InstructNotHandled, (instruction);
       }
     }
 
@@ -31,7 +39,26 @@ machine TabletAppGhost {
       if (diagnosis == true) {
         goto HandleSepsis;
       } else {
-        goto Main;
+        if (bound < 3) {
+          bound = bound + 1;
+          goto Main;
+        } else {
+          exit;
+        }
+      }
+    }
+
+    on ShockDiagnosis(diagnosis) do {
+      if (diagnosis == true) {
+        goto HandleShock;
+      }
+      else {
+        if (bound < 3) {
+          bound = bound + 1;
+          goto Main;
+        } else {
+          exit;
+        }
       }
     }
   }
@@ -39,10 +66,12 @@ machine TabletAppGhost {
   state HandleSepsis {
     entry {
       either {
+        fluidTherapyStarted = true;
         broadcast StartFluidTherapy;
         goto HandleTreatment;
       } or {
-        broadcast StartAntibioticsTherapy;
+        antibioticTherapyStarted = true;
+        broadcast StartAntibioticTherapy;
         goto HandleTreatment;
       }
     }
@@ -50,14 +79,64 @@ machine TabletAppGhost {
 
   state HandleTreatment {
     on Instruct(instruction) do {
-      stop;
-      if (instruction == "get fluid overdose risks") {
+      if (instruction == "get fluid overload risks") {
         broadcast FluidOverdoseRisksEntered;
+        goto HandleTreatment;
       }
+      if (instruction == "get immunosuppression state") {
+        broadcast ImmunosuppressionEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get pseudomonas risk") {
+        broadcast PseudomonasRiskEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get penicillin tolerance") {
+        broadcast CanReceivePenicillinEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get recent broad spectrum antibiotics history") {
+        broadcast RecentBroadSpectrumAntibioticsEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      send this, InstructNotHandled, (instruction);
+    }
+    on Instruct5(category, instr_a, instr_b, instr_c, instr_d) do {
+      if (category == "manage shock") {
+        goto HandleShock;
+      } else {
+        send this, Instruct5NotHandled, (category, instr_a, instr_b, instr_c, instr_d);
+        goto HandleTreatment;
+      }
+    }
+    on ShockDiagnosis(diagnosis) do {
+      if (diagnosis == true) {
+        goto HandleShock;
+      }
+      goto HandleTreatment;
+    }
+    on SepsisDiagnosis(diagnosis) do {
+      goto HandleTreatment;
     }
   }
 
-
+  state HandleShock {
+    entry {
+      either {
+        if (!(fluidTherapyStarted)) {
+          broadcast StartFluidTherapy;
+          fluidTherapyStarted = true;
+        }
+        goto HandleTreatment;
+      } or {
+        if (!(antibioticTherapyStarted)) {
+          broadcast StartAntibioticTherapy;
+          antibioticTherapyStarted = true;
+        }
+        goto HandleTreatment;
+      }
+    }
+  }
 }
 
 machine DatastoreGhost {
