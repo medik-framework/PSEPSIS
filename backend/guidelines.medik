@@ -490,7 +490,6 @@ machine SepticShockScreening
       this.tabletApp         = tabletApp;
       this.datastore         = datastore;
       this.measurementBounds = measurementBounds;
-      bound = 0;
     }
 
     on SepsisSuspected do {

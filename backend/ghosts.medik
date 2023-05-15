@@ -38,27 +38,12 @@ machine TabletAppGhost {
     on SepsisDiagnosis(diagnosis) do {
       if (diagnosis == true) {
         goto HandleSepsis;
-      } else {
-        if (bound < 3) {
-          bound = bound + 1;
-          goto Main;
-        } else {
-          exit;
-        }
       }
     }
 
     on ShockDiagnosis(diagnosis) do {
       if (diagnosis == true) {
         goto HandleShock;
-      }
-      else {
-        if (bound < 3) {
-          bound = bound + 1;
-          goto Main;
-        } else {
-          exit;
-        }
       }
     }
   }
