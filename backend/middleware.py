@@ -2,13 +2,15 @@ from pathlib import Path
 from fractions import Fraction
 from data import OrganDt, Patient, DrugHist
 from dataclasses import asdict
-from backend_env import kompiled_dir, guidelines_pgm, set_env
-from wrapper import MedikWrapper
+from backend_env import kompiled_exec_dir, guidelines_pgm, driver_pgm, set_env
+from wrapper import ExecutionWrapper
 
 import os
 import websockets
+import tempfile
 
-import argparse, asyncio, concurrent, functools, json, logging, os, sys, threading, time
+import argparse, asyncio, concurrent, functools, json, logging, os, sys, threading, time, utils
+from utils import combined_temp_file
 #==== Common Helpers =====
 
 def _broadcast(interface_id, event_name, event_args=[]):
@@ -109,7 +111,12 @@ class MedikHandler(ExecutionWrapper):
         await asyncio.gather(self.wrapper_task, from_k_task)
 
     def __init__(self, to_k_queue, from_k_queue, to_app_queue, kompiled_exec_dir, guidelines_pgm, datastore):
-        super().__init__(to_k_queue, from_k_queue, kompiled_exec_dir, guidelines_pgm)
+        self.tmp_path = tempfile.TemporaryDirectory()
+        psepsis_exec_pgm_path = combined_temp_file( Path(self.tmp_path.name)
+                                                  , [ guidelines_pgm
+                                                    , driver_pgm ]
+                                                  , 'exec-combined.medik')
+        super().__init__(to_k_queue, from_k_queue, kompiled_exec_dir, psepsis_exec_pgm_path)
         self.to_app_queue = to_app_queue
         self.datastore = datastore
 
@@ -239,6 +246,8 @@ async def main(app_process, k_process, portal_process):
                                       , return_when=asyncio.FIRST_COMPLETED)
     for task in pending:
         task.cancel()
+
+    medik_task.tmp_path.cleanup()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PSepsis Middleware')
