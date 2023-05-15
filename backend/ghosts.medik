@@ -125,12 +125,18 @@ machine TabletAppGhost {
 }
 
 machine DatastoreGhost {
-  init state ProvideMeasurements {
-    on $ObtainRequest(src, tid, parameter) do {
-      send src, $ObtainResponse, (tid, #nondet);
-      goto ProvideMeasurements;
+  vars Normal_Saline, Base_Excess, Arterial_Lactate, Urine_Output;
+
+  init state Start() {
+    entry {
+      Normal_Saline    = #nondet;
+      Base_Excess      = #nondet;
+      Arterial_Lactate = #nondet;
+      Urine_Output     = #nondet;
+
     }
   }
+
 }
 
 
