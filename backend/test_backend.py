@@ -6,21 +6,11 @@ from backend_env import  kompiled_exec_dir, kompiled_mcheck_dir \
 
 import asyncio, copy, pytest, json, logging, sys, os, utils
 import functools
-
+from utils import combined_temp_file
 ignored_names = ['StartGUI']
 
 # Fixtures
 # ========
-
-
-def combined_temp_file(tmp_path, filepaths, combined_file_name):
-    combined_pgm_path = tmp_path / combined_file_name
-    combined_pgm = ''
-    for filepath in filepaths:
-        with filepath.open() as handler:
-            combined_pgm += handler.read()
-    combined_pgm_path.write_text(combined_pgm)
-    return combined_pgm_path
 
 @pytest.fixture
 def screening_only_exec_pgm(tmp_path):
