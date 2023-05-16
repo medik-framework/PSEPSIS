@@ -289,7 +289,8 @@ machine SepsisScreening
           , StartScreening
           , ConfirmWeightEntered
           , ConfirmHighRiskConditionsEntered
-          , ConfirmMeasurementsObtained {
+          , ConfirmMeasurementsObtained
+          , StopSystem {
 
   vars tabletApp, datastore, measurementBounds;
 
@@ -404,14 +405,12 @@ machine SepsisScreening
       var bucket3   = mentalStatusAbnormal    || perfusion || highRiskConditions;
 
       var sepsisSuspected = bucket1  &&  bucket2  &&  bucket3;
-      send tabletApp, SepsisDiagnosis, ( sepsisSuspected );
 
-      if (sepsisSuspected) {
-        broadcast SepsisSuspected;
-      } else {
-        sleep(10);
-        goto CalculateScore;
-      }
+      send tabletApp, SepsisDiagnosis, (sepsisSuspected);
+
+    }
+    on StopSystem do {
+      exit;
     }
   }
 }
@@ -502,12 +501,16 @@ machine SepticShockScreening
 
       var fluidDose = obtainFrom(datastore, "Normal Saline");
 
-      if ((fluidDose == undef) || (fluidDose < 40)) {
-        sleep(10);
-        goto CheckFluidBolus;
-      } else {
+      if (!((fluidDose == undef) || (fluidDose < 40))) {
         goto CalculateSepticShockScore;
       }
+
+      //if ((fluidDose == undef) || (fluidDose < 40)) {
+      //  sleep(10);
+      //  goto CheckFluidBolus;
+      //} else {
+      //  goto CalculateSepticShockScore;
+      //}
     }
   }
 
@@ -562,11 +565,12 @@ machine SepticShockScreening
 
       if (perfusion >= 2) {
         shockPositiveSteps(tabletApp);
-      } else {
-          send tabletApp, ShockDiagnosis, (false);
-          sleep(60);
-          goto CheckFluidBolus;
       }
+      //else {
+      //    send tabletApp, ShockDiagnosis, (false);
+      //    sleep(60);
+      //    goto CheckFluidBolus;
+      //}
     }
   }
 }
@@ -648,12 +652,12 @@ machine FluidTherapy
     }
     on ConfirmNormalSalineAdministered do {
       // Wait for fluid responsiveness
-      sleep(300);
+      // sleep(300);
       goto EvaluateResponsiveness;
     }
     on ConfirmLactatedRingerAdministered do {
       // Wait for fluid responsiveness
-      sleep(300);
+      // sleep(300);
       goto EvaluateResponsiveness;
     }
   }

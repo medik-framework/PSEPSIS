@@ -36,16 +36,13 @@ machine TabletAppGhost {
     }
 
     on SepsisDiagnosis(diagnosis) do {
-      if (diagnosis == true) {
+      if (diagnosis) {
         goto HandleSepsis;
+      } else {
+        broadcast StopSystem;
       }
     }
 
-    on ShockDiagnosis(diagnosis) do {
-      if (diagnosis == true) {
-        goto HandleShock;
-      }
-    }
   }
 
   state HandleSepsis {
@@ -65,7 +62,7 @@ machine TabletAppGhost {
   state HandleTreatment {
     on Instruct(instruction) do {
       if (instruction == "get fluid overload risks") {
-        broadcast FluidOverdoseRisksEntered;
+        broadcast FluidOverloadRisksEntered, (#nondet);
         goto HandleTreatment;
       }
       if (instruction == "get immunosuppression state") {
@@ -82,6 +79,14 @@ machine TabletAppGhost {
       }
       if (instruction == "get recent broad spectrum antibiotics history") {
         broadcast RecentBroadSpectrumAntibioticsEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get responsiveness to fluids") {
+        broadcast FluidResponsivenessEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get fluid overload signs") {
+        broadcast FluidOverloadSignsEntered, (#nondet);
         goto HandleTreatment;
       }
       send this, InstructNotHandled, (instruction);
@@ -102,6 +107,12 @@ machine TabletAppGhost {
     }
     on SepsisDiagnosis(diagnosis) do {
       goto HandleTreatment;
+    }
+    on RecommendDrug(drugName, therapy, dose, instructions) do {
+      if (drugName == "Normal Saline") {
+        broadcast ConfirmNormalSalineAdministered;
+        goto HandleTreatment;
+      }
     }
   }
 
@@ -127,7 +138,7 @@ machine TabletAppGhost {
 machine DatastoreGhost {
   vars Normal_Saline, Base_Excess, Arterial_Lactate, Urine_Output;
 
-  init state Start() {
+  init state Start {
     entry {
       Normal_Saline    = #nondet;
       Base_Excess      = #nondet;
@@ -151,11 +162,11 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 
       // Screening Machines
       new SepsisScreening(tabletApp, datastore, measurementBounds);
-      new SepticShockScreening(tabletApp, datastore, measurementBounds);
+      //new SepticShockScreening(tabletApp, datastore, measurementBounds);
 
       //// Treatment Machines
       new FluidTherapy(tabletApp, datastore, measurementBounds);
-      new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
+      //new InotropicSupportTherapy(tabletApp, datastore, measurementBounds);
 
       //// Supplementary Machines
       //new HighFlowOxygen(tabletApp);
