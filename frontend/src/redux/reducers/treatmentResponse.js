@@ -8,6 +8,8 @@ export const treatmentResponseSlice = createSlice({
       'BP Dia': {'data': []},
       'HR': {'data': []},
       'Urine Output': {'data': []},
+      'RR': {'data': []},
+      'SpO2': {'data': []},
       'Normal Saline': {'data': []},
       'Lactated Ringer': {'data': []}
     },

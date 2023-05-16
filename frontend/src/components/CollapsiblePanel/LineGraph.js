@@ -91,6 +91,8 @@ const colorMap = {
   'BP Dia': 'blue',
   'HR': 'red',
   'Urine Output': 'orange',
+  'RR': 'black',
+  'SpO2': 'brown',
   'Normal Saline': 'green',
   'Lactated Ringer': 'green'
 }
@@ -168,6 +170,26 @@ const LineGraph = ({ treatmentName }) => {
         title:'Urine Output',
         graphData:{
           'Urine Output': responseData['Urine Output']
+        },
+        treatmentData: {
+          'Normal Saline' : responseData['Normal Saline'],
+          'Lactated Ringer' : responseData['Lactated Ringer']
+        }
+      }}/>
+      <DrawLine {...{
+        title:'RR',
+        graphData:{
+          'RR': responseData['RR']
+        },
+        treatmentData: {
+          'Normal Saline' : responseData['Normal Saline'],
+          'Lactated Ringer' : responseData['Lactated Ringer']
+        }
+      }}/>
+      <DrawLine {...{
+        title:'SpO2',
+        graphData:{
+          'SpO2': responseData['SpO2']
         },
         treatmentData: {
           'Normal Saline' : responseData['Normal Saline'],
