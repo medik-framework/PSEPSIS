@@ -65,14 +65,14 @@ function makeAnnotation(fluids) {
   Object.keys(fluids).map((key) => {
     const dosages = fluids[key]['data'];
     dosages.map((point, id) => {
-      annotations['line'+String(id)] = {
+      annotations['line'+key+String(id)] = {
         type: 'line',
         xMin: point.time,
         xMax: point.time,
-        borderColor: 'green',
+        borderColor: colorMap[key],
         borderWidth: 2,
         label: {
-          backgroundColor: 'green',
+          backgroundColor: colorMap[key],
           content: key,
           display: true,
           enabled: true,
@@ -91,8 +91,14 @@ const colorMap = {
   'BP Dia': 'blue',
   'HR': 'red',
   'Urine Output': 'orange',
+  'RR': 'black',
+  'SpO2': 'brown',
   'Normal Saline': 'green',
-  'Lactated Ringer': 'green'
+  'Lactated Ringer': 'green',
+  "Epinephrine": 'blue',
+  "Norepinephrine": "blue",
+  "Dopamine": "blue",
+  "Dobutamine": "blue"
 }
 
 function makeData(result) {
@@ -117,6 +123,17 @@ function makeData(result) {
   return data;
 }
 
+function getTreatment(responseData) {
+    return {
+        'Normal Saline' : responseData['Normal Saline'],
+        'Lactated Ringer' : responseData['Lactated Ringer'],
+        "Epinephrine": responseData["Epinephrine"],
+        "Norepinephrine": responseData["Norepinephrine"],
+        "Dopamine": responseData["Dopamine"],
+        "Dobutamine": responseData["Dobutamine"]
+    }
+}
+
 const DrawLine = ({graphData, treatmentData, title}) => {
   const annotations = makeAnnotation(treatmentData);
   const options = makeOptions(title, annotations);
@@ -124,6 +141,34 @@ const DrawLine = ({graphData, treatmentData, title}) => {
   return(
     <Line options={options} data={data}/>
   )
+}
+
+function DrawAllLine(responseData) {
+    const graphAttrs = {
+        'Blood Pressure': ['BP Sys', 'BP Dia'],
+        'Heart Rate': ['HR'],
+        'Urine Output': ['Urine Output'],
+        'RR': ['RR'],
+        'SpO2': ['SpO2']
+    };
+    const treatmentData = getTreatment(responseData);
+    return (
+        <div>
+            {Object.keys(graphAttrs).map((title) => {
+                const attrs = graphAttrs[title]
+                let graphData = {}
+                attrs.map(attr => {
+                    graphData[attr] = responseData[attr]
+                })
+                return <DrawLine key={title} {...{
+                    title: title,
+                    graphData: graphData,
+                    treatmentData: treatmentData
+                }}/>
+            })}
+        </div>
+    )
+
 }
 
 const LineGraph = ({ treatmentName }) => {
@@ -140,42 +185,7 @@ const LineGraph = ({ treatmentName }) => {
     };
     kEndpoint.sendMessage(JSON.stringify(data));
   }, [ treatmentName, kEndpoint ])
-
-  return (
-    <div>
-      <DrawLine {...{
-        title:'Blood Pressure',
-        graphData:{
-          'BP Sys': responseData['BP Sys'],
-          'BP Dia': responseData['BP Dia'],
-        },
-        treatmentData: {
-          'Normal Saline' : responseData['Normal Saline'],
-          'Lactated Ringer' : responseData['Lactated Ringer']
-        }
-      }}/>
-      <DrawLine {...{
-        title:'Heart Rate',
-        graphData:{
-          'HR': responseData['HR']
-        },
-        treatmentData: {
-          'Normal Saline' : responseData['Normal Saline'],
-          'Lactated Ringer' : responseData['Lactated Ringer']
-        }
-      }}/>
-      <DrawLine {...{
-        title:'Urine Output',
-        graphData:{
-          'Urine Output': responseData['Urine Output']
-        },
-        treatmentData: {
-          'Normal Saline' : responseData['Normal Saline'],
-          'Lactated Ringer' : responseData['Lactated Ringer']
-        }
-      }}/>
-    </div>
-  )
+  return DrawAllLine(responseData)
 }
 
 export default LineGraph;
