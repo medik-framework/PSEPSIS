@@ -232,7 +232,7 @@ class Datastore:
     def get_fluid_response(self):
         measurements = ['BP Sys', 'BP Dia', 'HR', 'Urine Output', "RR", "SpO2"]
         data = {key:asdict(self.organ_dt.get_series(key)) for key in measurements}
-        drugs = ['Normal Saline', 'Lactated Ringer']
+        drugs = ['Normal Saline', 'Lactated Ringer', 'Epinephrine', 'Norepinephrine', 'Dopamine', 'Dobutamine']
         data.update({key:asdict(self.drug_hist.get_series(key)) for key in drugs})
         return data
 

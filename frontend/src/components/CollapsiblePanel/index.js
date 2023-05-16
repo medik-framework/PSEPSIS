@@ -9,7 +9,7 @@ const CollapsiblePanel = () => {
   const [open, setOpen] = useState(false);
   const anchorEl = useRef(null);
 
-  const buttons = ["references", "fluid response"];
+  const buttons = ["references", "Hemodynamics line graph"];
 
   return (
     <div style={{ height: "100vh" }} ref={anchorEl}>
@@ -46,7 +46,7 @@ const CollapsiblePanel = () => {
       >
         <div style={{ width: "33vw", height: "100vh" }}>
           {selectedButton === "references" && <Reference />}
-          {selectedButton === "fluid response" && <LineGraph {...{treatmentName:'fluid'}}/>}
+          {selectedButton === "Hemodynamics line graph" && <LineGraph {...{treatmentName:'fluid'}}/>}
         </div>
       </Popover>
     </div>
