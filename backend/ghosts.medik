@@ -1,11 +1,13 @@
 machine TabletAppGhost {
   vars fluidTherapyStarted, antibioticTherapyStarted, bound;
+  var datastore;
 
   init state Start {
-    entry {
+    entry(datastore) {
       fluidTherapyStarted = false;
       antibioticTherapyStarted = false;
       bound = 0;
+      this.datastore = datastore;
     }
     on StartGUI do {
       broadcast StartScreening;
@@ -42,7 +44,6 @@ machine TabletAppGhost {
         broadcast StopSystem;
       }
     }
-
   }
 
   state HandleSepsis {
@@ -60,6 +61,16 @@ machine TabletAppGhost {
   }
 
   state HandleTreatment {
+    entry {
+      if (!(fluidTherapyStarted)) {
+        fluidTherapyStarted = true;
+        broadcast StartFluidTherapy;
+      }
+      if (!(antibioticTherapyStarted)) {
+        antibioticTherapyStarted = true;
+        broadcast StartAntibioticTherapy;
+      }
+    }
     on Instruct(instruction) do {
       if (instruction == "get fluid overload risks") {
         broadcast FluidOverloadRisksEntered, (#nondet);
@@ -89,6 +100,30 @@ machine TabletAppGhost {
         broadcast FluidOverloadSignsEntered, (#nondet);
         goto HandleTreatment;
       }
+      if (instruction == "get fungal infection risk") {
+        broadcast FungalInfectionRiskEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get rickettsial risk") {
+        broadcast RickettsialRiskEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get ESBL prevalence") {
+        broadcast ESBLPrevalentEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get Cefepime/Ceftadizime/Carbapenam resistance") {
+        broadcast CefepimeCeftadizimeCarbapenamResistanceEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get Staphylococcus prevalence") {
+        broadcast StaphylococcusPrevalenceEntered, (#nondet);
+        goto HandleTreatment;
+      }
+      if (instruction == "get HSV risk") {
+        broadcast HSVRiskEntered, (#nondet);
+        goto HandleTreatment;
+      }
       send this, InstructNotHandled, (instruction);
     }
     on Instruct5(category, instr_a, instr_b, instr_c, instr_d) do {
@@ -108,46 +143,93 @@ machine TabletAppGhost {
     on SepsisDiagnosis(diagnosis) do {
       goto HandleTreatment;
     }
-    on RecommendDrug(drugName, therapy, dose, instructions) do {
-      if (drugName == "Normal Saline") {
-        broadcast ConfirmNormalSalineAdministered;
+    on Recommend2(d1, d2) do {
+      if ((d1 == "consider additional antibiotics")) {
         goto HandleTreatment;
       }
+      send this, Recommend2NotHandled, (d1, d2);
     }
-  }
-
-  state HandleShock {
-    entry {
-      either {
-        if (!(fluidTherapyStarted)) {
-          broadcast StartFluidTherapy;
-          fluidTherapyStarted = true;
+    on Recommend3(d1, d2, d3) do {
+      if ((d1 == "consider additional antibiotics")) {
+        goto HandleTreatment;
+      }
+      send this, Recommend3NotHandled, (d1, d2, d3);
+    }
+    on RecommendDrug4(d1, d2, d3, d4) do {
+      if (d1 == "Normal Saline") {
+        if (d3 == "5") {
+          broadcast UpdateTotalSalineDose, (5);
+        }
+        if (d3 == "20") {
+          broadcast UpdateTotalSalineDose, (20);
         }
         goto HandleTreatment;
-      } or {
-        if (!(antibioticTherapyStarted)) {
-          broadcast StartAntibioticTherapy;
-          antibioticTherapyStarted = true;
-        }
+      }
+      if (d1 == "Patients at increased risk of fungal infection") {
         goto HandleTreatment;
+      }
+      if (d1 == "Patients with risk factors for rickettsial infection") {
+        goto HandleTreatment;
+      }
+      if (d1 == "Patients at increased risk of fungal infection") {
+        goto HandleTreatment;
+      }
+      if (d1 == "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species") {
+        goto HandleTreatment;
+      }
+      send this, RecommendDrug4NotHandled, (d1, d2, d3, d4);
+    }
+    on RecommendDrug5(d1, d2, d3, d4, d5) do {
+      if (d1 == "Children > 28 days who are normal hosts") {
+        goto HandleTreatment;
+      }
+      send this, RecommendDrug5NotHandled, (d1, d2, d3, d4, 5);
+    }
+    on RecommendDrug6(d1, d2, d3, d4, d5, d6) do {
+      if (d1 == "Infants 0 to 28 days of age") {
+        goto HandleTreatment;
+      }
+      if (d1 == "Children who cannot receive penicillin or who have received broad-specturm antibiotics") {
+        goto HandleTreatment;
+      }
+      send this, RecommendDrug6NotHandled, (d1, d2, d3, d4);
+    }
+    on RecommendStep(category, eval1, eval2, details) do {
+      if (category == "get fluid next step") {
+        var fluidAdministered = obtainFrom(datastore, "Normal Saline");
+        if (fluidAdministered < 40) {
+          broadcast ConfirmRepeatFluidBolus;
+          goto HandleTreatment;
+        } else {
+          broadcast ConfirmMaintainFluid;
+          goto HandleTreatment;
+        }
+      } else {
+        send this, RecommendStepNotHandled,  (category, eval1, eval2, details);
       }
     }
   }
 }
 
-machine DatastoreGhost {
+machine DatastoreGhost receives UpdateTotalSalineDose {
   vars Normal_Saline, Base_Excess, Arterial_Lactate, Urine_Output;
 
   init state Start {
     entry {
-      Normal_Saline    = #nondet;
+      Normal_Saline    = 0;
       Base_Excess      = #nondet;
       Arterial_Lactate = #nondet;
       Urine_Output     = #nondet;
-
+      goto HandleRequests;
     }
   }
-
+  state HandleRequests {
+    on UpdateTotalSalineDose(dosage) do {
+      Normal_Saline = Normal_Saline + dosage;
+      broadcast ConfirmNormalSalineAdministered;
+      goto HandleRequests;
+    }
+  }
 }
 
 
@@ -156,8 +238,8 @@ init machine PSepsisGuidanceSystem receives StopGuidance {
 
   init state CreateMachines {
     entry {
-      tabletApp = new TabletAppGhost();
       datastore = new DatastoreGhost();
+      tabletApp = new TabletAppGhost(datastore);
       measurementBounds = new MeasurementBounds();
 
       // Screening Machines

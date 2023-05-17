@@ -407,7 +407,6 @@ machine SepsisScreening
       var sepsisSuspected = bucket1  &&  bucket2  &&  bucket3;
 
       send tabletApp, SepsisDiagnosis, (sepsisSuspected);
-
     }
     on StopSystem do {
       exit;
@@ -583,7 +582,7 @@ machine FluidTherapy
          , ConfirmLactatedRingerAdministered
          , FluidResponsivenessEntered
          , ConfirmMaintainFluid
-         , ConfirmRepeatFluidBolus {
+         , ConfirmRepeatFluidBolus  {
 
   vars tabletApp, datastore, measurementBounds;
   vars isResponsiveToFluids, fluidOverload;
@@ -628,7 +627,7 @@ machine FluidTherapy
     entry {
       if (!(measurementBounds.fluidOverloadRisks == 0)) {
         send  tabletApp
-            , RecommendDrug
+            , RecommendDrug4
             , ( "Normal Saline"
               , "Fluid Therapy"
               , "5"
@@ -636,7 +635,7 @@ machine FluidTherapy
         goto WaitForAdministerFluidConfirmation;
       } else {
         send  tabletApp
-            , RecommendDrug
+            , RecommendDrug4
             , ( "Normal Saline"
               , "Fluid Therapy"
               , "20"
@@ -705,7 +704,7 @@ machine FluidTherapy
       }
 
       send  tabletApp
-          , Recommend
+          , RecommendStep
           , ( "get fluid next step"
             , "Responsiveness to fluid therapy: " + this.isResponsiveToFluids
             , "Fluid overload: "                  + this.fluidOverload
@@ -722,9 +721,6 @@ machine FluidTherapy
   }
 
   state MaintainIVFluid {
-    on StartFluidTherapy do {
-      goto SuggestFluidDosage;
-    }
   }
 }
 
@@ -870,18 +866,18 @@ machine InotropicSupportTherapy
     on ConfirmShockType(shockType) do {
       //print("Got shock type: " + shockType);
       if (shockType == "Cold Shock") {
-        send tabletApp, RecommendDrug, ( "Epinephrine"
+        send tabletApp, RecommendDrug4, ( "Epinephrine"
                                        , "Inotropic Support"
                                        , 0.1
                                        , "administer 0.1-1 mcg/kg/min IV/IO infusion" );
       } else {
         if (shockType == "Warm Shock") {
-          send tabletApp, RecommendDrug, ( "Norepinephrine"
+          send tabletApp, RecommendDrug4, ( "Norepinephrine"
                                          , "Inotropic Support"
                                          , 0.1
                                          , "administer 0.1-2 mcg/kg/min IV/IO infusion" );
         } else {
-          send tabletApp, RecommendDrug, ( "Dopamine"
+          send tabletApp, RecommendDrug4, ( "Dopamine"
                                          , "Inotropic Support"
                                          , 2
                                          , "administer 2-20 mcg/kg/min IV/IO infusion" );
@@ -1114,7 +1110,7 @@ machine AntibioticsTherapy
       if (measurementBounds.age > days(28)) {
         if (isNormalHost()) {
           send tabletApp
-              , RecommendDrug
+              , RecommendDrug5
               , ( "Children > 28 days who are normal hosts"
                 , "OSF Antibiotics Set"
                 , "drug combination"
@@ -1122,7 +1118,7 @@ machine AntibioticsTherapy
                 , "PLUS cefotaxime (100 mg/kg, maximum 2 g, for the inital dose) OR ceftriaxone (75 mg/kg, maximum 2 g, for the initial dose)" );
 
           send tabletApp
-             , Recommend
+             , Recommend3
              , ( "consider additional antibiotics"
                , "Add aminoglycide (e.g. gentamycin) for possible GU source and/or piperacillin with tazobactam, clindamycin or metronidazole for possible GI source"
                , "Consider combination therapy (using at least two antibiotics of different antimicrobial classes) aimed at covering resistant organisms, if prevalent or patient at risk, in presence of septic shock" );
@@ -1132,7 +1128,7 @@ machine AntibioticsTherapy
         if ((isImmunosuppressed || hasPseudomonasInfection) && canReceivePenicillin()) {
 
           send tabletApp
-              , RecommendDrug
+              , RecommendDrug4
               , ( "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species"
                 , "OSF Antibiotics Set"
                 , "drug combination"
@@ -1141,14 +1137,14 @@ machine AntibioticsTherapy
 
           if (esblPrevalent || receivedBroadSpectrumAntibiotics) {
             send tabletApp
-               , Recommend
+               , Recommend2
                , ( "consider additional antibiotics"
                  , "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftadizime (50 mg/kg, maximium 2 g, for the initial dose) OR carbapenam (eg, imipenem, meroenem) in settings where bacterial organisms with extended-specturm beta-lactamase (ESBL) resistance are prevalent or for patients who have been recently (within two weeks) treated with broad-spectrum antibiotics (eg, third-generation celphalosporin, or fluoroquinolone)" );
 
 
             if (carbapenemResistant) {
             send tabletApp
-               , Recommend
+               , Recommend2
                , ( "consider additional antibiotics"
                  , "ADD an Aminoglycoside (e.g. gentamicin, amikacin) for cefepime/ceftadizime/carbapenam resistance" );
             }
@@ -1157,7 +1153,7 @@ machine AntibioticsTherapy
 
         if (cannotReceivePenicillin && receivedBroadSpectrumAntibiotics) {
           send tabletApp
-              , RecommendDrug
+              , RecommendDrug6
               , ( "Children who cannot receive penicillin or who have received broad-specturm antibiotics"
                 , "OSF Antibiotics Set"
                 , "drug combination"
@@ -1168,7 +1164,7 @@ machine AntibioticsTherapy
 
         if (increasedFungalInfectionRisk) {
           send tabletApp
-             , RecommendDrug
+             , RecommendDrug4
              , ( "Patients at increased risk of fungal infection"
                , "OSF Antibiotics Set"
                , "drug combination"
@@ -1177,7 +1173,7 @@ machine AntibioticsTherapy
 
         if (increasedRickettsialRisk) {
           send tabletApp
-             , RecommendDrug
+             , RecommendDrug4
              , ( "Patients with risk factors for rickettsial infection"
                , "OSF Antibiotics Set"
                , "drug combination"
@@ -1186,7 +1182,7 @@ machine AntibioticsTherapy
       } else {
         if (staphylococcusPrevalent) {
             send tabletApp
-               , RecommendDrug
+               , RecommendDrug6
                , ( "Infants 0 to 28 days of age"
                  , "OSF Antibiotics Set"
                  , "drug combination"
@@ -1196,7 +1192,7 @@ machine AntibioticsTherapy
 
         } else {
           send tabletApp
-             , RecommendDrug
+             , RecommendDrug6
              , ( "Infants 0 to 28 days of age"
                , "OSF Antibiotics Set"
                , "drug combination"
@@ -1208,7 +1204,7 @@ machine AntibioticsTherapy
 
         if (hsvInfectionRisk) {
             send tabletApp
-               , Recommend
+               , Recommend2
                , ( "consider additional antibiotics"
                  , "ADD acyclovir (20 mg/kg per dose) for suspicion of HSV infection" );
         }
