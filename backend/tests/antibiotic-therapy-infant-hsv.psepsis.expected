@@ -24,9 +24,17 @@
     "args": [ "Infants 0 to 28 days of age",
               "OSF Antibiotics Set",
               "drug combination",
-              "vancomycin (50 mg/kg for the initial dose)",
+              "ampicillin (50 mg/kg for the initial dose)",
               "cefotaxime (50 mg/kg for the initial dose)",
               "gentamycin (2.5 mg/kg for the initial dose)"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Recommend",
+    "args": [ "consider additional antibiotics",
+              "ADD acyclovir (20 mg/kg per dose) for suspicion of HSV infection"
     ]
   }
 ]
