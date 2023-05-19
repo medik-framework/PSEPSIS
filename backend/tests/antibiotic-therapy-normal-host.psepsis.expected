@@ -15,61 +15,7 @@
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "Instruct",
-    "args": ["get immunosuppression state"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get pseudomonas risk"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get penicillin tolerance"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get recent broad spectrum antibiotics history"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get fungal infection risk"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get rickettsial risk"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get ESBL prevalence"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get Cefepime/Ceftadizime/Carbapenam resistance"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get Staphylococcus prevalence"]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Instruct",
-    "args": ["get HSV risk"]
+    "args": ["get antibiotics primary conditions"]
   },
   {
     "id": "tabletApp",
@@ -81,16 +27,6 @@
         "drug combination",
         "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)",
         "PLUS cefotaxime (100 mg/kg, maximum 2 g, for the inital dose) OR ceftriaxone (75 mg/kg, maximum 2 g, for the initial dose)"
-    ]
-  },
-  {
-    "id": "tabletApp",
-    "interface": "TabletApp",
-    "name": "Recommend",
-    "args": [
-        "consider additional antibiotics",
-        "Add aminoglycide (e.g. gentamycin) for possible GU source and/or piperacillin with tazobactam, clindamycin or metronidazole for possible GI source",
-        "Consider combination therapy (using at least two antibiotics of different antimicrobial classes) aimed at covering resistant organisms, if prevalent or patient at risk, in presence of septic shock"
     ]
   }
 ]

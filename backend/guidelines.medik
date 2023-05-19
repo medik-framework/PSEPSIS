@@ -948,16 +948,13 @@ machine HighFlowOxygen
 
 machine AntibioticsTherapy
   receives StartAntibioticTherapy
-         , ImmunosuppressionEntered
-         , PseudomonasRiskEntered
-         , CanReceivePenicillinEntered
-         , RecentBroadSpectrumAntibioticsEntered
-         , FungalInfectionRiskEntered
-         , RickettsialRiskEntered
-         , ESBLPrevalentEntered
-         , CefepimeCeftadizimeCarbapenamResistanceEntered
-         , StaphylococcusPrevalenceEntered
-         , HSVRiskEntered {
+         , AntibioticsPrimaryConditionsEntered
+         , GUConcernEntered
+         , GIConcernEntered
+         , FungalConcernEntered
+         , RickettsialConcernEntered
+         , CefepimeCeftazidimeCarbapenamResistanceEntered
+         , HSVConcernEntered {
 
   vars tabletApp, datastore, measurementBounds;
 
@@ -968,22 +965,8 @@ machine AntibioticsTherapy
      , staphylococcusPrevalent  , hsvInfectionRisk
      , inSepticShock;
 
-  fun isNormalHost() {
-    print("Immunosuppressed " + isImmunosuppressed + "\n");
-    return ((! (isImmunosuppressed))
-        && (! (hasPseudomonasInfection))
-        && (! (increasedRickettsialRisk))
-        && (! (receivedBroadSpectrumAntibiotics))
-        && (! (carbapenemResistant))
-        && (! (hsvInfectionRisk)));
-  }
-
   fun days(count) {
     return count;
-  }
-
-  fun canReceivePenicillin() {
-    return (!(cannotReceivePenicillin));
   }
 
   init state Start {
@@ -994,117 +977,48 @@ machine AntibioticsTherapy
     }
 
     on StartAntibioticTherapy do {
-      goto AskImmunosuppression;
+      goto AskPrimaryConditions;
     }
   }
 
-  state AskImmunosuppression {
+  state AskPrimaryConditions {
     entry {
-      send tabletApp, Instruct, ("get immunosuppression state");
+      send tabletApp, Instruct, ("get antibiotics primary conditions");
     }
 
-    on ImmunosuppressionEntered(immunosuppressionState) do {
+    on AntibioticsPrimaryConditionsEntered(immunosuppressionState, pseudomonasRisk, penicillinRisk, broadSpectrumAntibiotics, esblRisk, staphylococcusRisk) do {
       isImmunosuppressed = immunosuppressionState;
-      goto AskPseudomonasRisk;
-    }
-  }
-
-  state AskPseudomonasRisk {
-    entry {
-      send tabletApp, Instruct, ("get pseudomonas risk");
-    }
-
-    on PseudomonasRiskEntered(pseudomonasRisk) do {
       hasPseudomonasInfection = pseudomonasRisk;
-      goto AskPenicillinRisk;
-    }
-  }
-
-  state AskPenicillinRisk {
-    entry {
-      send tabletApp, Instruct, ("get penicillin tolerance");
-    }
-    on CanReceivePenicillinEntered(penicillinRisk) do {
       cannotReceivePenicillin = !penicillinRisk;
-      goto AskRecentBroadSpectrumAntibiotics;
-    }
-  }
-
-  state AskRecentBroadSpectrumAntibiotics {
-    entry {
-      send tabletApp, Instruct, ("get recent broad spectrum antibiotics history");
-    }
-    on RecentBroadSpectrumAntibioticsEntered(broadSpectrumAntibiotics) do {
       receivedBroadSpectrumAntibiotics = broadSpectrumAntibiotics;
-      goto AskFungalInfectionRisk;
+      esblPrevalent = esblRisk;
+      staphylococcusPrevalent = staphylococcusRisk;
+      goto PrimaryRecommendations;
     }
   }
 
-  state AskFungalInfectionRisk {
-    entry {
-      send tabletApp, Instruct, ("get fungal infection risk");
-    }
-    on FungalInfectionRiskEntered(fungalInfectionRisk) do {
-      increasedFungalInfectionRisk = fungalInfectionRisk;
-      goto AskRickettsialRisk;
-    }
-  }
-
-  state AskRickettsialRisk {
-    entry {
-      send tabletApp, Instruct, ("get rickettsial risk");
-    }
-    on RickettsialRiskEntered(rickettsialRisk) do {
-      increasedRickettsialRisk = rickettsialRisk;
-      goto AskESBLPrevalent;
-    }
-  }
-
-  state AskESBLPrevalent {
-    entry {
-      send tabletApp, Instruct, ("get ESBL prevalence");
-    }
-    on ESBLPrevalentEntered(esblPrevalent) do {
-      this.esblPrevalent = esblPrevalent;
-      goto AskCarbapenemResistance;
-    }
-  }
-
-  state AskCarbapenemResistance {
-    entry {
-      send tabletApp, Instruct, ("get Cefepime/Ceftadizime/Carbapenam resistance");
-    }
-
-    on CefepimeCeftadizimeCarbapenamResistanceEntered(resistance) do {
-      carbapenemResistant = resistance;
-      goto AskStaphylococcusPrevalence;
-    }
-  }
-
-  state AskStaphylococcusPrevalence {
-    entry {
-      send tabletApp, Instruct, ("get Staphylococcus prevalence");
-    }
-    on StaphylococcusPrevalenceEntered(prevalence) do {
-      staphylococcusPrevalent = prevalence;
-      goto AskHSVRisk;
-    }
-  }
-
-  state AskHSVRisk {
-    entry {
-      send tabletApp, Instruct, ("get HSV risk");
-    }
-    on HSVRiskEntered(risk) do {
-      hsvInfectionRisk = risk;
-      goto SuggestAntibiotics;
-    }
-  }
-
-  state SuggestAntibiotics {
+  state PrimaryRecommendations {
     entry {
       if (measurementBounds.age > days(28)) {
-        if (isNormalHost()) {
+        if (isImmunosuppressed  || hasPseudomonasInfection) {
+          if (esblPrevalent || receivedBroadSpectrumAntibiotics || cannotReceivePenicillin) {
+            send tabletApp
+                , RecommendDrug
+                , ( "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species"
+                  , "OSF Antibiotics Set"
+                  , "drug combination"
+                  , "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)"
+                  , "PLUS carbapenam calss OR aztreonam OR ciprofloxacin AND clindamycin");
+          } else {
+            send tabletApp
+                , RecommendDrug
+                , ( "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species"
+                  , "OSF Antibiotics Set"
+                  , "drug combination"
+                  , "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)"
+                  , "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftazidime (50 mg/kg, maximium 2 g, for the initial dose) OR carbapenam (eg, imipenem, meroenem) in settings where bacterial organisms with extended-specturm beta-lactamase (ESBL) resistance are prevalent or for patients who have been recently (within two weeks) treated with broad-spectrum antibiotics (eg, third-generation celphalosporin, or fluoroquinolone)" );
+          }
+        } else {
           send tabletApp
               , RecommendDrug
               , ( "Children > 28 days who are normal hosts"
@@ -1112,80 +1026,17 @@ machine AntibioticsTherapy
                 , "drug combination"
                 , "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)"
                 , "PLUS cefotaxime (100 mg/kg, maximum 2 g, for the inital dose) OR ceftriaxone (75 mg/kg, maximum 2 g, for the initial dose)" );
-
-          send tabletApp
-             , Recommend
-             , ( "consider additional antibiotics"
-               , "Add aminoglycide (e.g. gentamycin) for possible GU source and/or piperacillin with tazobactam, clindamycin or metronidazole for possible GI source"
-               , "Consider combination therapy (using at least two antibiotics of different antimicrobial classes) aimed at covering resistant organisms, if prevalent or patient at risk, in presence of septic shock" );
-
-        }
-
-        if ((isImmunosuppressed || hasPseudomonasInfection) && canReceivePenicillin()) {
-
-          send tabletApp
-              , RecommendDrug
-              , ( "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species"
-                , "OSF Antibiotics Set"
-                , "drug combination"
-                , "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)" );
-
-
-          if (esblPrevalent || receivedBroadSpectrumAntibiotics) {
-            send tabletApp
-               , Recommend
-               , ( "consider additional antibiotics"
-                 , "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftadizime (50 mg/kg, maximium 2 g, for the initial dose) OR carbapenam (eg, imipenem, meroenem) in settings where bacterial organisms with extended-specturm beta-lactamase (ESBL) resistance are prevalent or for patients who have been recently (within two weeks) treated with broad-spectrum antibiotics (eg, third-generation celphalosporin, or fluoroquinolone)" );
-
-
-            if (carbapenemResistant) {
-            send tabletApp
-               , Recommend
-               , ( "consider additional antibiotics"
-                 , "ADD an Aminoglycoside (e.g. gentamicin, amikacin) for cefepime/ceftadizime/carbapenam resistance" );
-            }
-          }
-        }
-
-        if (cannotReceivePenicillin && receivedBroadSpectrumAntibiotics) {
-          send tabletApp
-              , RecommendDrug
-              , ( "Children who cannot receive penicillin or who have received broad-specturm antibiotics"
-                , "OSF Antibiotics Set"
-                , "drug combination"
-                , "vancomycin (age appropriate dose)"
-                , "PLUS meropenem (20 mg/kg, mzximum 2g, for the initial dose)"
-                , "Aztreonam OR ciprofloxacin PLUS clindamycin may be used instead of meropenem" );
-        }
-
-        if (increasedFungalInfectionRisk) {
-          send tabletApp
-             , RecommendDrug
-             , ( "Patients at increased risk of fungal infection"
-               , "OSF Antibiotics Set"
-               , "drug combination"
-               , "Add liposomal amphotericin B or an echinocandin (e.g., caspofungin, micafungin) to the antimicrobial regimen");
-        }
-
-        if (increasedRickettsialRisk) {
-          send tabletApp
-             , RecommendDrug
-             , ( "Patients with risk factors for rickettsial infection"
-               , "OSF Antibiotics Set"
-               , "drug combination"
-               , "Add a tetracycline antibiotic (e.g. doxycycline) to the antimicrobial regimen" );
         }
       } else {
-        if (staphylococcusPrevalent) {
-            send tabletApp
-               , RecommendDrug
-               , ( "Infants 0 to 28 days of age"
-                 , "OSF Antibiotics Set"
-                 , "drug combination"
-                 , "vancomycin (50 mg/kg for the initial dose)"
-                 , "cefotaxime (50 mg/kg for the initial dose)"
-                 , "gentamycin (2.5 mg/kg for the initial dose)");
-
+        if (cannotReceivePenicillin || staphylococcusPrevalent) {
+          send tabletApp
+             , RecommendDrug
+             , ( "Infants 0 to 28 days of age"
+               , "OSF Antibiotics Set"
+               , "drug combination"
+               , "vancomycin (50 mg/kg for the initial dose)"
+               , "cefotaxime (50 mg/kg for the initial dose)"
+               , "gentamycin (2.5 mg/kg for the initial dose)");
         } else {
           send tabletApp
              , RecommendDrug
@@ -1195,16 +1046,63 @@ machine AntibioticsTherapy
                , "ampicillin (50 mg/kg for the initial dose)"
                , "cefotaxime (50 mg/kg for the initial dose)"
                , "gentamycin (2.5 mg/kg for the initial dose)");
-
-        }
-
-        if (hsvInfectionRisk) {
-            send tabletApp
-               , Recommend
-               , ( "consider additional antibiotics"
-                 , "ADD acyclovir (20 mg/kg per dose) for suspicion of HSV infection" );
         }
       }
+      goto WaitForSecondaryConditions;
+    }
+  }
+
+  state WaitForSecondaryConditions {
+    on GUConcernEntered do {
+      send tabletApp
+         , Recommend
+         , ( "consider additional antibiotics"
+           , "ADD an Aminoglycoside (e.g. gentamicin, amikacin) for cefepime/ceftazidime/carbapenam resistance" );
+      goto WaitForSecondaryConditions;
+    }
+
+    on GIConcernEntered do {
+      send tabletApp
+         , Recommend
+         , ( "consider additional antibiotics"
+           , "Add piperacillin with tazobactam, clindamycin or metronidazole for possible GI source" );
+      goto WaitForSecondaryConditions;
+    }
+
+    on CefepimeCeftazidimeCarbapenamResistanceEntered do {
+      send tabletApp
+         , Recommend
+         , ( "consider additional antibiotics"
+           , "ADD an Aminoglycoside (e.g. gentamicin, amikacin) for cefepime/ceftazidime/carbapenam resistance" );
+      goto WaitForSecondaryConditions;
+    }
+
+    on FungalConcernEntered do {
+      send tabletApp
+         , RecommendDrug
+         , ( "Patients at increased risk of fungal infection"
+           , "OSF Antibiotics Set"
+           , "drug combination"
+           , "Add liposomal amphotericin B or an echinocandin (e.g., caspofungin, micafungin) to the antimicrobial regimen");
+      goto WaitForSecondaryConditions;
+    }
+
+    on RickettsialConcernEntered do {
+      send tabletApp
+         , RecommendDrug
+         , ( "Patients with risk factors for rickettsial infection"
+           , "OSF Antibiotics Set"
+           , "drug combination"
+           , "Add a tetracycline antibiotic (e.g. doxycycline) to the antimicrobial regimen" );
+      goto WaitForSecondaryConditions;
+    }
+
+    on HSVConcernEntered do {
+      send tabletApp
+         , Recommend
+         , ( "consider additional antibiotics"
+           , "ADD acyclovir (20 mg/kg per dose) for suspicion of HSV infection" );
+      goto WaitForSecondaryConditions;
     }
   }
 }
