@@ -25,15 +25,17 @@
               "OSF Antibiotics Set",
               "drug combination",
               "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)",
-              "PLUS carbapenam calss OR aztreonam OR ciprofloxacin AND clindamycin"
+              "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftazidime (50 mg/kg, maximium 2 g, for the initial dose)"
     ]
   },
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "Recommend",
-    "args": [ "consider additional antibiotics",
-              "ADD an Aminoglycoside (e.g. gentamicin, amikacin) for cefepime/ceftazidime/carbapenam resistance"
+    "name": "RecommendDrug",
+    "args": [ "Patients at increased risk of fungal infection",
+              "OSF Antibiotics Set",
+              "drug combination",
+              "Add liposomal amphotericin B or an echinocandin (e.g., caspofungin, micafungin) to the antimicrobial regimen"
     ]
   }
 ]

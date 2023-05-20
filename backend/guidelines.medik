@@ -989,7 +989,7 @@ machine AntibioticsTherapy
     on AntibioticsPrimaryConditionsEntered(immunosuppressionState, pseudomonasRisk, penicillinRisk, broadSpectrumAntibiotics, esblRisk, staphylococcusRisk) do {
       isImmunosuppressed = immunosuppressionState;
       hasPseudomonasInfection = pseudomonasRisk;
-      cannotReceivePenicillin = !penicillinRisk;
+      cannotReceivePenicillin = penicillinRisk;
       receivedBroadSpectrumAntibiotics = broadSpectrumAntibiotics;
       esblPrevalent = esblRisk;
       staphylococcusPrevalent = staphylococcusRisk;
@@ -1016,7 +1016,7 @@ machine AntibioticsTherapy
                   , "OSF Antibiotics Set"
                   , "drug combination"
                   , "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)"
-                  , "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftazidime (50 mg/kg, maximium 2 g, for the initial dose) OR carbapenam (eg, imipenem, meroenem) in settings where bacterial organisms with extended-specturm beta-lactamase (ESBL) resistance are prevalent or for patients who have been recently (within two weeks) treated with broad-spectrum antibiotics (eg, third-generation celphalosporin, or fluoroquinolone)" );
+                  , "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftazidime (50 mg/kg, maximium 2 g, for the initial dose)");
           }
         } else {
           send tabletApp

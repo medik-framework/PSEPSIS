@@ -243,13 +243,13 @@ async def test_antibiotic_therapy_immunosuppressed_esbl_cccresistant(psepsis_exe
                        , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_antibiotic_therapy_no_penicillin_recent_antibiotics(psepsis_exec_pgm):
-    await run_exec_test( 'antibiotic-therapy-no-penicillin-recent-antibiotics'
+async def test_antibiotic_therapy_infant_hsv(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-infant-hsv'
                        , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
-async def test_antibiotic_therapy_immunosuppressed_no_penicillin_recent_antibiotics_fungal_risk(psepsis_exec_pgm):
-    await run_exec_test( 'antibiotic-therapy-immunosuppressed-no-penicillin-recent-antibiotics-fungal-risk'
+async def test_antibiotic_therapy_pseudomonas_fungal_risk(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-pseudomonas-fungal-risk'
                        , psepsis_exec_pgm)
 
 @pytest.mark.asyncio

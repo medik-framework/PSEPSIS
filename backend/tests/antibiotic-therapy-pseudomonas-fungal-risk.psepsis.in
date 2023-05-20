@@ -3,13 +3,13 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "AgeEntered",
-    "eventArgs": [15]
+    "eventArgs": [500]
   },
   {
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "WeightEntered",
-    "eventArgs": [6],
+    "eventArgs": [14],
     "waitFor": {
       "name": "ConfirmAgeEntered",
       "args": []
@@ -29,10 +29,19 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "AntibioticsPrimaryConditionsEntered",
-    "eventArgs": [false, false, false, false, false, true],
+    "eventArgs": [false, true, false, false, false, false],
     "waitFor": {
       "name": "Instruct",
       "args": ["get antibiotics primary conditions"]
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "FungalConcernEntered",
+    "eventArgs": [],
+    "waitFor": {
+      "name": "RecommendDrug"
     }
   },
   {
