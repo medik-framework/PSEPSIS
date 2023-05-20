@@ -3,7 +3,7 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "AgeEntered",
-    "eventArgs": [15]
+    "eventArgs": [28]
   },
   {
     "id": "tabletApp",
@@ -29,16 +29,25 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "AntibioticsPrimaryConditionsEntered",
-    "eventArgs": [false, false, false, false, false, true],
+    "eventArgs": [false, false, false, false, false, false],
     "waitFor": {
       "name": "Instruct",
       "args": ["get antibiotics primary conditions"]
     }
   },
   {
-    "action":"exit",
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "HSVConcernEntered",
+    "eventArgs": [],
     "waitFor": {
       "name": "RecommendDrug"
+    }
+  },
+  {
+    "action":"exit",
+    "waitFor": {
+      "name": "Recommend"
     }
   }
 ]
