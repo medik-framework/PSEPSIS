@@ -6,10 +6,10 @@ const Checklist = ({ inputConfig, setStoreDict, setRetDict }) => {
   const [state, setState] = useState(inputConfig.options.reduce((p, v) => ({ ...p, [v]: false}), {}));
 
   useEffect(() => {
-    const v = Object.keys(state).reduce((p, v) => state[v]===true ? p+1 : p, 0);
+    // const v = Object.keys(state).reduce((p, v) => state[v]===true ? p+1 : p, 0);
     setRetDict( prev => ({
       ...prev,
-      eventArgs: [v]
+      eventArgs: Object.values(state)
     }));
     setStoreDict( prev => ({
       ...prev,
