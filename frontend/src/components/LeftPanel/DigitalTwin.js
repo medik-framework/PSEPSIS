@@ -162,7 +162,6 @@ const DigitalTwinForm = ({ selectedDT }) => {
 const SystematicAssessmentForm = ({ selectedDT }) => {
   const config = [
     { displayName: "Sepsis", storeName: "sepsis"},
-    { displayName: "Septic Shock", storeName: "septicShock"}
   ]
   const diagnosisValue = useSelector((state) => state.diagnosis)
 
