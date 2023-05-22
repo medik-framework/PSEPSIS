@@ -2,7 +2,7 @@ export const MedicationCategories = [
   "Antibiotics-all",
   "Fluid Therapy",
   "Inotropes",
-  "OSF Antibiotics Set"
+  "Antibiotics Set"
 ];
 
 export const MedicationTabMapping = {
