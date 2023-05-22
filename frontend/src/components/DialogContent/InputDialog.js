@@ -97,6 +97,12 @@ const InputDialog = ({ open, setOpen, info }) => {
     if (Object.keys(inputConfig).includes('eventName')){
       data.eventName =  config.inputConfig.eventName
     }
+    console.log(inputConfig);
+    console.log(info);
+    if (inputConfig.type === "checklist" && info.args[0]!== "get antibiotics primary conditions") {
+      const v = retDict.eventArgs.reduce((p, v) => v === true ? p+1 : p, 0);
+      retDict.eventArgs = [v];
+    }
     data = {
       ...data,
       ...retDict
@@ -111,7 +117,7 @@ const InputDialog = ({ open, setOpen, info }) => {
       kEndpoint.sendMessage(JSON.stringify(data));
     }
     if (config.shouldStoreInMiddleware){
-      data.eventName = 'update_age' 
+      data.eventName = 'update_age'
       data.destination = 'datastore'
       kEndpoint.sendMessage(JSON.stringify(data));
     }

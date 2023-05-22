@@ -375,5 +375,23 @@ export const DialogConfig = {
       shouldSend: false,
       withArgs: false,
       shouldStore: false
+  },
+  "get antibiotics primary conditions": {
+    title: "Antibiotics primary conditions",
+    inputConfig: {
+      type: "checklist",
+      options: [
+        "Is patient immunosuppressed?",
+        "Strong concern for pseudomonas infection?",
+        "Does patient have contra-indication to penicillins?",
+        "Did patient recently receive broad-spectrum antibiotics?",
+        "Strong concern for ESBL prevalence?",
+        "Strong concern for staphylococcus prevalence?"
+      ],
+      eventName: "AntibioticsPrimaryConditionsEntered"
+    },
+    shouldSend: true,
+    withArgs: true,
+    shouldStore: false
   }
 }
