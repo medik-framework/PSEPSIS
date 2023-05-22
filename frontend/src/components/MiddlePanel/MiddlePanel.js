@@ -28,7 +28,7 @@ export default function OneHourBundle() {
         <Typography variant="h4" gutterBottom component="div"
           sx={{background: sepsisDiagnosis ? 'yellow':'white'}}
         >
-          OSF PSepsis Bundle
+          PSepsis Bundle
         </Typography>
       </Box>
 
