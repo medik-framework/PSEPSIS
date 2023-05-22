@@ -24,25 +24,13 @@ function App() {
   const dispatch = useDispatch()
 
   const messageHandler = (msg) => {
-   console.log('message received on websocket', msg)
-   const cleanedMsg = msg.data.replace(/'/g, '"');
-   const msgJson = JSON.parse(cleanedMsg)
-   console.log(msgJson.name)
-   switch (msgJson.name) {
-    case "Instruct":
-      dispatch({ type: "dialogs/update", payload: cleanedMsg});
-      break;
-    case "OrganUpdate":
-      dispatch(update_all(msgJson.args[0]));
-      break;
-    case "SepsisDiagnosis":
-      console.log("dispatching diagnosis update")
-      dispatch(updateDiagnosis({
-        "name": "sepsis",
-        "value": msgJson.args[0]
-      }))
-      break;
-    case "RecommendDrug":
+    console.log('message received on websocket', msg)
+    const cleanedMsg = msg.data.replace(/'/g, '"');
+    const msgJson = JSON.parse(cleanedMsg)
+    console.log(msgJson.name)
+    const recommendRegex = /^Recommend/;
+    const recommendDrugRegex = /^RecommendDrug/;
+    if (msgJson.name.match(recommendDrugRegex)) {
       const msgInfo = {
         args: ['recommend', msgJson.args.slice(3)],
         id: msgJson.id
@@ -53,26 +41,42 @@ function App() {
         medication: msgJson.args[0],
         dose:msgJson.args[2]
       }))
-      break;
-    case "Recommend":
+      return;
+    }
+    if (msgJson.name.match(recommendRegex)) {
       dispatch({ type: "dialogs/update", payload: cleanedMsg});
-      break;
-    case "TreatmentResponse":
-      dispatch(updateTreatmentResponse({
-        name: msgJson.args[0],
-        data: msgJson.args[1]
-      }));
-      break;
-    case "get_fluid_response_result":
-      delete msgJson.name;
-      dispatch(updateTreatmentResponse({
-        name: 'fluid',
-        data: msgJson
-      }))
-      break;
-    default:
-      console.log("Message not recognized: ", msgJson.name)
-   }
+      return;
+    }
+    switch (msgJson.name) {
+      case "Instruct":
+        dispatch({ type: "dialogs/update", payload: cleanedMsg});
+        break;
+      case "OrganUpdate":
+        dispatch(update_all(msgJson.args[0]));
+        break;
+      case "SepsisDiagnosis":
+        console.log("dispatching diagnosis update")
+        dispatch(updateDiagnosis({
+          "name": "sepsis",
+          "value": msgJson.args[0]
+        }))
+        break;
+      case "TreatmentResponse":
+        dispatch(updateTreatmentResponse({
+          name: msgJson.args[0],
+          data: msgJson.args[1]
+        }));
+        break;
+      case "get_fluid_response_result":
+        delete msgJson.name;
+        dispatch(updateTreatmentResponse({
+          name: 'fluid',
+          data: msgJson
+        }))
+        break;
+      default:
+        console.log("Message not recognized: ", msgJson.name)
+    }
   }
 
 
