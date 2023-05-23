@@ -3,6 +3,7 @@ import logging, os
 
 base_dir                  = Path(__file__).parents[0]
 guidelines_pgm            = base_dir     / 'guidelines.medik'
+guidelines_mcheck_pgm     = base_dir     / 'guidelines-mcheck.medik'
 driver_pgm                = base_dir     / 'driver.medik'
 screening_only_driver_pgm = base_dir     / 'screening_only_driver.medik'
 ghosts_pgm                = base_dir     / 'ghosts.medik'

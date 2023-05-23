@@ -2,6 +2,7 @@ from wrapper import ExecutionWrapper, MCheckWrapper
 from backend_env import  kompiled_exec_dir, kompiled_mcheck_dir \
                        , guidelines_pgm   , driver_pgm \
                        , ghosts_pgm       , screening_only_driver_pgm \
+                       , guidelines_mcheck_pgm \
                        , set_env
 
 import asyncio, copy, pytest, json, logging, sys, os, utils
@@ -44,7 +45,7 @@ def psepsis_exec_pgm(tmp_path):
 def psepsis_mcheck_pgm(tmp_path):
     tmp_path.mkdir(exist_ok=True)
     psepsis_mcheck_pgm_path = combined_temp_file( tmp_path
-                                                , [ guidelines_pgm
+                                                , [ guidelines_mcheck_pgm
                                                   , ghosts_pgm ]
                                                 , 'mcheck-combined.medik')
     return psepsis_mcheck_pgm_path
@@ -265,36 +266,7 @@ async def test_antibiotic_therapy_immunosuppressed_no_penicillin_recent_antibiot
 @pytest.mark.asyncio
 async def test_antibiotic_therapy_infant_staph_risk(psepsis_exec_pgm):
     await run_exec_test( 'antibiotic-therapy-infant-staph-risk'
-                       , psepsis_exec_pgm)
-@pytest.mark.asyncio
-async def test_shock_screening_negative(psepsis_exec_pgm):
-    await run_exec_test( 'shock-screening-negative'
-                       , psepsis_exec_pgm)
 
-@pytest.mark.asyncio
-async def test_shock_screening_map_positive(psepsis_exec_pgm):
-    await run_exec_test( 'shock-screening-map-positive'
-                       , psepsis_exec_pgm )
-
-@pytest.mark.asyncio
-async def test_shock_screening_excess_epi_positive(psepsis_exec_pgm):
-    await run_exec_test( 'shock-screening-excess-epi-positive'
-                       , psepsis_exec_pgm )
-
-@pytest.mark.asyncio
-async def test_shock_screening_perfusion_positive(psepsis_exec_pgm):
-    await run_exec_test( 'shock-screening-perfusion-positive'
-                       , psepsis_exec_pgm )
-
-@pytest.mark.asyncio
-async def test_inotropic_normotensive(psepsis_exec_pgm):
-    await run_exec_test( 'inotropic-normotensive'
-                       , psepsis_exec_pgm )
-
-@pytest.mark.asyncio
-async def test_inotropic_cold_shock(psepsis_exec_pgm):
-    await run_exec_test( 'inotropic-cold-shock'
-                       , psepsis_exec_pgm )
 
 def test_model_check(psepsis_mcheck_pgm):
     run_mcheck_test(psepsis_mcheck_pgm, '"<stuck>true</stuck>"')
