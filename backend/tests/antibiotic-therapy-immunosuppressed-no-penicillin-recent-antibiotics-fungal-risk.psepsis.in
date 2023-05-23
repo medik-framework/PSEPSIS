@@ -128,7 +128,12 @@
   {
     "action":"exit",
     "waitFor": {
-      "name": "RecommendDrug"
+      "name": "RecommendDrug4",
+      "args": ["Patients at increased risk of fungal infection",
+          "OSF Antibiotics Set",
+          "drug combination",
+          "Add liposomal amphotericin B or an echinocandin (e.g., caspofungin, micafungin) to the antimicrobial regimen"
+      ]
     }
   }
 ]

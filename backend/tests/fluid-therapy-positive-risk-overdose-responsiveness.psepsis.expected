@@ -14,7 +14,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "RecommendDrug4",
     "args": [
       "Normal Saline",
       "Fluid Therapy",
@@ -37,7 +37,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "Recommend",
+    "name": "Recommend4",
     "args": [
       "get fluid next step",
       "Responsiveness to fluid therapy: true",
@@ -48,7 +48,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "RecommendDrug4",
     "args": [
       "Normal Saline",
       "Fluid Therapy",

@@ -74,7 +74,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "RecommendDrug5",
     "args": [
         "Children > 28 days who are normal hosts",
         "OSF Antibiotics Set",
@@ -86,7 +86,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "Recommend",
+    "name": "Recommend3",
     "args": [
         "consider additional antibiotics",
         "Add aminoglycide (e.g. gentamycin) for possible GU source and/or piperacillin with tazobactam, clindamycin or metronidazole for possible GI source",

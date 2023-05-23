@@ -128,7 +128,7 @@
   {
     "action":"exit",
     "waitFor": {
-      "name": "RecommendDrug"
+      "name": "RecommendDrug6"
     }
   }
 ]

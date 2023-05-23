@@ -74,7 +74,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "RecommendDrug6",
     "args": [ "Children who cannot receive penicillin or who have received broad-specturm antibiotics",
         "OSF Antibiotics Set",
         "drug combination",
@@ -86,7 +86,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "RecommendDrug4",
     "args": ["Patients at increased risk of fungal infection",
         "OSF Antibiotics Set",
         "drug combination",

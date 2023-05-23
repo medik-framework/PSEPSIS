@@ -74,7 +74,7 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "RecommendDrug6",
     "args": [ "Children who cannot receive penicillin or who have received broad-specturm antibiotics",
         "OSF Antibiotics Set",
         "drug combination",
