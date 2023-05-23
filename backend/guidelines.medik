@@ -289,7 +289,8 @@ machine SepsisScreening
           , StartScreening
           , ConfirmWeightEntered
           , ConfirmHighRiskConditionsEntered
-          , ConfirmMeasurementsObtained {
+          , ConfirmMeasurementsObtained
+          , StopSystem {
 
   vars tabletApp, datastore, measurementBounds;
 
@@ -404,164 +405,11 @@ machine SepsisScreening
       var bucket3   = mentalStatusAbnormal    || perfusion || highRiskConditions;
 
       var sepsisSuspected = bucket1  &&  bucket2  &&  bucket3;
+
       send tabletApp, SepsisDiagnosis, ( sepsisSuspected );
-
-      if (sepsisSuspected) {
-        broadcast SepsisSuspected;
-      } else {
-        sleep(10);
-        goto CalculateScore;
-      }
     }
-  }
-}
-
-machine SepticShockScreening
-  receives SepsisSuspected
-         , StartShockScreening
-         , ConfirmSepticShockMeasurementsObtained {
-
-  vars tabletApp, datastore, measurementBounds;
-
-  fun isBelowNormalLowerBound(paramter, normalLowerBound) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
-
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement < normalLowerBound);
-    } else {
-      return false;
-    }
-  }
-
-  fun needsExcessVasoactive(drugName, upperDoseBound) {
-    var administeredDose = obtainFrom(datastore, drugName);
-
-    if (!(administeredDose == undef)) {
-      return (administeredDose > upperDoseBound);
-    } else {
-      return false;
-    }
-  }
-
-  fun isBelowIfPresent(parameter, bound) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
-
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement < bound);
-    } else {
-      return false;
-    }
-  }
-  fun isAboveIfPresent(parameter, bound) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
-
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement > bound);
-    } else {
-      return false;
-    }
-  }
-  fun isEqualToIfPresent(parameter, expected) {
-    var storedMeasurement = obtainFrom(datastore, parameter);
-
-    if (!(storedMeasurement == undef)) {
-      return (storedMeasurement == expected);
-    } else {
-      return false;
-    }
-  }
-  fun shockPositiveSteps(tabetApp) {
-      send tabletApp, ShockDiagnosis, (true);
-      send tabletApp, Instruct, ( "manage shock"
-                                , "Call PICU if not already done"
-                                , "Switch to 1-hour bundle"
-                                , "Urgently consider Fluid Therapy"
-                                , "Urgently consider Antibiotic Therapy" );
-      broadcast SepticShockSuspected;
-  }
-
-  init state Start {
-    entry(tabletApp, datastore, measurementBounds) {
-      this.tabletApp         = tabletApp;
-      this.datastore         = datastore;
-      this.measurementBounds = measurementBounds;
-    }
-
-    on SepsisSuspected do {
-      goto CheckFluidBolus;
-    }
-  }
-
-  state CheckFluidBolus {
-    entry {
-
-      var fluidDose = obtainFrom(datastore, "Normal Saline");
-
-      if ((fluidDose == undef) || (fluidDose < 40)) {
-        sleep(10);
-        goto CheckFluidBolus;
-      } else {
-        goto CalculateSepticShockScore;
-      }
-    }
-  }
-
-  state CalculateSepticShockScore {
-    entry {
-     var bpAbnormal = isBelowIfPresent("MAP", measurementBounds.mapLowerBound)
-                      || isBelowIfPresent("BP Sys", measurementBounds.bpSysLowerBound);
-
-     if (bpAbnormal) {
-       shockPositiveSteps(tabletApp);
-       goto CheckShockType;
-     }
-
-     var needsExcessEpinephrine     = needsExcessVasoactive("Epinephrine"   , measurementBounds.epinephrineDosageUpperBound);
-     var needsExcessNorepinephrine  = needsExcessVasoactive("Norepinephrine", measurementBounds.norepinephrineDosageUpperBound);
-     var needsExcessDopamine        = needsExcessVasoactive("Dopamine"      , measurementBounds.dopamineDosageUpperBound);
-
-     if (    (needsExcessEpinephrine)
-          || (needsExcessNorepinephrine)
-          || (needsExcessDopamine) ) {
-
-       shockPositiveSteps(tabletApp);
-       goto CheckShockType;
-     }
-
-
-      var perfusion = 0;
-      if ( isBelowIfPresent("Base Excess", -5)) {
-        perfusion = perfusion + 1;
-      }
-
-      if ( isAboveIfPresent("Arterial Lactate", 2 * measurementBounds.arterialLactateUpperBound)) {
-        perfusion = perfusion + 1;
-      }
-
-      if ( isBelowIfPresent("Urine Output", 0.5)) {
-        perfusion = perfusion + 1;
-      }
-
-      if ( isEqualToIfPresent("Capillary Refill", "5+")) {
-        perfusion = perfusion + 1;
-      }
-
-      var temp = obtainFrom(datastore, "Temp");
-      var coreTemp = obtainFrom(datastore, "Core Temp");
-
-      if (!((temp == undef) && (coreTemp == undef))) {
-        if ((coreTemp - temp) > 3) {
-          perfusion = perfusion + 1;
-        }
-      }
-
-      if (perfusion >= 2) {
-        shockPositiveSteps(tabletApp);
-      } else {
-        send tabletApp, ShockDiagnosis, (false);
-        sleep(60);
-        goto CheckFluidBolus;
-      }
+    on StopSystem do {
+      exit;
     }
   }
 }
@@ -619,7 +467,7 @@ machine FluidTherapy
     entry {
       if (!(measurementBounds.fluidOverloadRisks == 0)) {
         send  tabletApp
-            , RecommendDrug
+            , RecommendDrug4
             , ( "Normal Saline"
               , "Fluid Therapy"
               , "5"
@@ -627,7 +475,7 @@ machine FluidTherapy
         goto WaitForAdministerFluidConfirmation;
       } else {
         send  tabletApp
-            , RecommendDrug
+            , RecommendDrug4
             , ( "Normal Saline"
               , "Fluid Therapy"
               , "20"
@@ -696,7 +544,7 @@ machine FluidTherapy
       }
 
       send  tabletApp
-          , Recommend
+          , Recommend4
           , ( "get fluid next step"
             , "Responsiveness to fluid therapy: " + this.isResponsiveToFluids
             , "Fluid overload: "                  + this.fluidOverload
@@ -713,236 +561,6 @@ machine FluidTherapy
   }
 
   state MaintainIVFluid {
-    on StartFluidTherapy do {
-      goto SuggestFluidDosage;
-    }
-  }
-}
-
-machine InotropicSupportTherapy
-  receives SepsisSuspected
-         , StartInotropicTherapy
-         , ConfirmBPObtained
-         , ConfirmShockTypeMeasurementsObtained
-         , ConfirmShockType
-         , ConfirmEpinephrineAdministered
-         , ConfirmNorepinephrineAdministered
-         , ConfirmDopamineAdministered
-         , InotropeResponsivenessEntered
-         , ConfirmRepeatInotrope
-         , ConfirmTransferToHigherCare {
-
-
-  vars tabletApp, datastore, measurementBounds;
-
-  fun checkHypotensive() {
-    var bpSys = obtainFrom(datastore, "BP Sys");
-    var map = obtainFrom(datastore, "MAP");
-
-    if (!(bpSys == undef)) {
-      if (bpSys < measurementBounds.bpSysLowerBound) {
-        return true;
-      }
-    }
-    if (!(map == undef)) {
-      if (map < measurementBounds.mapLowerBound) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  init state Start {
-    entry(tabletApp, datastore, measurementBounds) {
-      this.tabletApp         = tabletApp;
-      this.datastore         = datastore;
-      this.measurementBounds = measurementBounds;
-    }
-
-    on StartInotropicTherapy do {
-      goto ObtainBPSys;
-    }
-  }
-
-  state ObtainBPSys {
-    entry {
-      send tabletApp, Instruct, ("get BP");
-    }
-    on ConfirmBPObtained do {
-      goto EvaluateHypotensive;
-    }
-  }
-
-  state EvaluateHypotensive {
-    entry {
-      var isHypotensive = checkHypotensive();
-      if (!(isHypotensive)) {
-        goto SuggestInotrope("Normotensive");
-      }
-      goto ObtainShockTypeMeasurements;
-    }
-  }
-
-  state ObtainShockTypeMeasurements {
-    entry {
-      send tabletApp, Instruct, ("get shock type measurements");
-    }
-    on ConfirmShockTypeMeasurementsObtained do {
-      goto EvaluateShockType;
-    }
-  }
-
-  state EvaluateShockType {
-    entry {
-      var coldShockScore = 0;
-      var warmShockScore = 0;
-
-      var fluidOverloadSigns = obtainFrom(datastore, "Fluid Overload Signs");
-
-      if (   (!(fluidOverloadSigns == undef))
-          && !(fluidOverloadSigns == measurementBounds.fluidOverloadSigns)) {
-
-        send tabletApp, Info, (  "Fluid overload signs indicate decreased cardiac ability"
-                               + " to deal with increased venous pressure."
-                               + " Consider using epinephrine to improve cadiac contractility." );
-
-        goto SuggestInotrope("Cold Shock");
-      }
-
-      var pulseQuality = obtainFrom(datastore, "Pulse Quality");
-      var capillaryRefill = obtainFrom(datastore, "Capillary Refill");
-      var skinColor = obtainFrom(datastore, "Skin Color");
-
-      if (!(pulseQuality == undef)) {
-        if (pulseQuality == "Thready") {
-          coldShockScore = coldShockScore + 1;
-        }
-        if (pulseQuality == "Bounding") {
-          warmShockScore = warmShockScore + 1;
-        }
-      }
-      if (!(capillaryRefill == undef)) {
-        if (   (capillaryRefill == "3")
-            || (capillaryRefill == "4")
-            || (capillaryRefill == "5+")) {
-
-          coldShockScore = coldShockScore + 1;
-        }
-        if (capillaryRefill == "Flash") {
-          warmShockScore = warmShockScore + 1;
-        }
-      }
-      if (!(skinColor == undef)) {
-        if (   (skinColor == "Gray and Mottled")
-            || (skinColor == "Gray")
-            || (skinColor == "Pale")) {
-          coldShockScore = coldShockScore + 1;
-        }
-        if (skinColor == "Flushed") {
-          warmShockScore = warmShockScore + 1;
-        }
-      }
-      if (coldShockScore >= 3) {
-        goto SuggestInotrope("Cold Shock");
-      }
-      if (warmShockScore >= 3) {
-        goto SuggestInotrope("Warm Shock");
-      }
-    }
-  }
-
-  state SuggestInotrope {
-    entry(shockType) {
-      send tabletApp
-         , Recommend
-         , ( "get shock type"
-           , "Recommendation: " + shockType + " management" );
-
-    }
-    on ConfirmShockType(shockType) do {
-      print("Got shock type: " + shockType);
-      if (shockType == "Cold Shock") {
-        send tabletApp, RecommendDrug, ( "Epinephrine"
-                                       , "Inotropic Support"
-                                       , 0.1
-                                       , "administer 0.1-1 mcg/kg/min IV/IO infusion" );
-      } else {
-        if (shockType == "Warm Shock") {
-          send tabletApp, RecommendDrug, ( "Norepinephrine"
-                                         , "Inotropic Support"
-                                         , 0.1
-                                         , "administer 0.1-2 mcg/kg/min IV/IO infusion" );
-        } else {
-          send tabletApp, RecommendDrug, ( "Dopamine"
-                                         , "Inotropic Support"
-                                         , 2
-                                         , "administer 2-20 mcg/kg/min IV/IO infusion" );
-        }
-      }
-      goto WaitForAdministerInotrope;
-    }
-  }
-
-  state WaitForAdministerInotrope {
-    on ConfirmEpinephrineAdministered do {
-      sleep(300);
-      goto EvaluateInotropeResponsiveness;
-    }
-
-    on ConfirmNorepinephrineAdministered do {
-      sleep(300);
-      goto EvaluateInotropeResponsiveness;
-    }
-    on ConfirmDopamineAdministered do {
-      sleep(300);
-      goto EvaluateInotropeResponsiveness;
-    }
-  }
-
-  state EvaluateInotropeResponsiveness {
-    entry {
-      send tabletApp, Instruct, ("get inotrope responsiveness");
-    }
-    on InotropeResponsivenessEntered(inotropeResponsiveness) do {
-      send  tabletApp
-          , Recommend
-          , ( "get inotropic therapy next step"
-            , "Responsiveness to inotropic therapy: " + inotropeRespsonsiveness
-            , "Recommendation: titrate to desired effect"
-            );
-      goto WaitForIntropicNextStep;
-    }
-  }
-
-  state WaitForIntropicNextStep {
-    on ConfirmRepeatInotrope do {
-      goto WaitForAdministerInotrope;
-    }
-    on ConfirmTransferToHigherCare do {
-      goto Start(tabletApp, datastore, measurementBounds);
-    }
-  }
-}
-
-machine HighFlowOxygen
-  receives SepsisSuspected
-         , ConfirmHighFlowOxygenAttached {
-
-  var tabletApp;
-
-  init state WaitForSepsisDiagnosis {
-    entry(tabletApp) {
-      this.tabletApp = tabletApp;
-    }
-    on SepsisSuspected do {
-      goto WaitForOxygenAttachedConfirmation;
-    }
-  }
-
-  state WaitForOxygenAttachedConfirmation {
-    on ConfirmHighFlowOxygenAttached do {
-      send tabletApp, Instruct, ("Acknowledge Oxygen Attached");
-    }
   }
 }
 
@@ -1106,7 +724,7 @@ machine AntibioticsTherapy
       if (measurementBounds.age > days(28)) {
         if (isNormalHost()) {
           send tabletApp
-              , RecommendDrug
+              , RecommendDrug5
               , ( "Children > 28 days who are normal hosts"
                 , "OSF Antibiotics Set"
                 , "drug combination"
@@ -1114,7 +732,7 @@ machine AntibioticsTherapy
                 , "PLUS cefotaxime (100 mg/kg, maximum 2 g, for the inital dose) OR ceftriaxone (75 mg/kg, maximum 2 g, for the initial dose)" );
 
           send tabletApp
-             , Recommend
+             , Recommend3
              , ( "consider additional antibiotics"
                , "Add aminoglycide (e.g. gentamycin) for possible GU source and/or piperacillin with tazobactam, clindamycin or metronidazole for possible GI source"
                , "Consider combination therapy (using at least two antibiotics of different antimicrobial classes) aimed at covering resistant organisms, if prevalent or patient at risk, in presence of septic shock" );
@@ -1124,7 +742,7 @@ machine AntibioticsTherapy
         if ((isImmunosuppressed || hasPseudomonasInfection) && canReceivePenicillin()) {
 
           send tabletApp
-              , RecommendDrug
+              , RecommendDrug4
               , ( "Children > 28 days who are immunosuppressed or at risk for infection with Pseudomonas species"
                 , "OSF Antibiotics Set"
                 , "drug combination"
@@ -1133,14 +751,14 @@ machine AntibioticsTherapy
 
           if (esblPrevalent || receivedBroadSpectrumAntibiotics) {
             send tabletApp
-               , Recommend
+               , Recommend2
                , ( "consider additional antibiotics"
                  , "PLUS cefepime (50 mg/kg, maximum 2 g, for the initial dose) OR ceftadizime (50 mg/kg, maximium 2 g, for the initial dose) OR carbapenam (eg, imipenem, meroenem) in settings where bacterial organisms with extended-specturm beta-lactamase (ESBL) resistance are prevalent or for patients who have been recently (within two weeks) treated with broad-spectrum antibiotics (eg, third-generation celphalosporin, or fluoroquinolone)" );
 
 
             if (carbapenemResistant) {
             send tabletApp
-               , Recommend
+               , Recommend2
                , ( "consider additional antibiotics"
                  , "ADD an Aminoglycoside (e.g. gentamicin, amikacin) for cefepime/ceftadizime/carbapenam resistance" );
             }
@@ -1149,7 +767,7 @@ machine AntibioticsTherapy
 
         if (cannotReceivePenicillin && receivedBroadSpectrumAntibiotics) {
           send tabletApp
-              , RecommendDrug
+              , RecommendDrug6
               , ( "Children who cannot receive penicillin or who have received broad-specturm antibiotics"
                 , "OSF Antibiotics Set"
                 , "drug combination"
@@ -1160,7 +778,7 @@ machine AntibioticsTherapy
 
         if (increasedFungalInfectionRisk) {
           send tabletApp
-             , RecommendDrug
+             , RecommendDrug4
              , ( "Patients at increased risk of fungal infection"
                , "OSF Antibiotics Set"
                , "drug combination"
@@ -1169,7 +787,7 @@ machine AntibioticsTherapy
 
         if (increasedRickettsialRisk) {
           send tabletApp
-             , RecommendDrug
+             , RecommendDrug4
              , ( "Patients with risk factors for rickettsial infection"
                , "OSF Antibiotics Set"
                , "drug combination"
@@ -1178,7 +796,7 @@ machine AntibioticsTherapy
       } else {
         if (staphylococcusPrevalent) {
             send tabletApp
-               , RecommendDrug
+               , RecommendDrug6
                , ( "Infants 0 to 28 days of age"
                  , "OSF Antibiotics Set"
                  , "drug combination"
@@ -1188,7 +806,7 @@ machine AntibioticsTherapy
 
         } else {
           send tabletApp
-             , RecommendDrug
+             , RecommendDrug6
              , ( "Infants 0 to 28 days of age"
                , "OSF Antibiotics Set"
                , "drug combination"
@@ -1200,7 +818,7 @@ machine AntibioticsTherapy
 
         if (hsvInfectionRisk) {
             send tabletApp
-               , Recommend
+               , Recommend2
                , ( "consider additional antibiotics"
                  , "ADD acyclovir (20 mg/kg per dose) for suspicion of HSV infection" );
         }

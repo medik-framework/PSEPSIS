@@ -1,4 +1,4 @@
-from wrapper import ExecutionWrapper, MCheckWrapper
+from wrapper import ExecutionWrapper
 from backend_env import  kompiled_exec_dir, kompiled_mcheck_dir \
                        , guidelines_pgm   , driver_pgm \
                        , ghosts_pgm       , screening_only_driver_pgm \
@@ -266,6 +266,7 @@ async def test_antibiotic_therapy_immunosuppressed_no_penicillin_recent_antibiot
 @pytest.mark.asyncio
 async def test_antibiotic_therapy_infant_staph_risk(psepsis_exec_pgm):
     await run_exec_test( 'antibiotic-therapy-infant-staph-risk'
+                       , psepsis_exec_pgm)
 
 
 def test_model_check(psepsis_mcheck_pgm):
