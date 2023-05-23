@@ -42,7 +42,7 @@ export const DialogConfig = {
         shouldStore: true
     },
     "get 3 bucket measurements": {
-        title: "PSepsis Score",
+        title: "PSepsis measurements",
         inputConfig: {
             lable:"",
             type: "threebucket",
