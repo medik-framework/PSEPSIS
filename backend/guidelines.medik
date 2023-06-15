@@ -1103,6 +1103,7 @@ machine AntibioticsTherapy
 
   state SuggestAntibiotics {
     entry {
+      print("Entering suggest antibiotics");
       if (measurementBounds.age > days(28)) {
         if (isNormalHost()) {
           send tabletApp
