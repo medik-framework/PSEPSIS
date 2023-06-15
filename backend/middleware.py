@@ -4,6 +4,7 @@ from data import OrganDt, Patient, DrugHist
 from dataclasses import asdict
 from backend_env import kompiled_exec_dir, guidelines_pgm, driver_pgm, set_env
 from wrapper import ExecutionWrapper
+from fractions import Fraction
 
 import os
 import websockets
@@ -216,15 +217,20 @@ class Datastore:
         self.measurements = self.organ_dt.data.keys()
         self.drugs = self.drug_hist.data.keys()
 
+    def float_to_rats(self, value):
+        if isinstance(value, float):
+            return Fraction(value)
+        return value
+
     def get_value(self, value_name):
         if not ((value_name in self.measurements)
                 or (value_name in self.drugs)):
             raise KeyError(value_name)
 
         if value_name in self.measurements:
-            return self.organ_dt.get_value(value_name)
+            return self.float_to_rats(self.organ_dt.get_value(value_name))
 
-        return self.drug_hist.get_total_dose(value_name)
+        return self.float_to_rats(self.drug_hist.get_total_dose(value_name))
 
     def record_dose(self, drug_name, timestamp, dose):
         return self.drug_hist.record_dose(drug_name, timestamp, dose)
