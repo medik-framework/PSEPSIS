@@ -62,19 +62,7 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
   const value = valueCombo.value;
   const timestamp = valueCombo.time;
   const mname = measurement.name;
-
-  const get_colorcode = (measurement, value) => {
-    if (!value || !ageObject) return 'lightgray';
-    if(measurement.type === 'choices') {
-      if (measurement.options[value] === 2) return '#33ff33';
-      else return '#ff4c4c';
-    }
-    else {
-      const range = measurement.getThres ? measurement.getThres(ageObject) : {low: 0, high: 0}
-      if(value > range.high || value < range.low) return '#ff4c4c';
-      if(value < range.high && value > range.low) return '#33ff33';
-    }
-  }
+  const field_color = valueCombo.color
 
   const msecondToString = (msec) => {
     let min = Math.floor(Math.round(msec/1000)/60);
@@ -91,7 +79,7 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
     } else return value;
   }
 
-  const colorcode = get_colorcode(measurement, value);
+  const colorcode = field_color;
   const [timeDiff, setTimeDiff] = useState(null);
   const displayValue = getDisplayValue(organName, value, measurement);
 
@@ -152,7 +140,6 @@ const DigitalTwinForm = ({ selectedDT }) => {
   const measurements = OrganDTConfig[selectedDT].measurements;
   const organDTValue = useSelector((state) => state.organDT[organName]);
   const ageObject = useSelector((state) => state.patientBasic['Age']);
-
 
   return (
     <Grid container>

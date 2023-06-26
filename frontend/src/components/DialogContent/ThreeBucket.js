@@ -54,20 +54,6 @@ const selectThreeBucketOrgans = createSelector(
   }),
 );
 
-const getColorcode = (key, value, ageObject) => {
-  const measurement = BucketOrganConfigDetail[key];
-  if (!value || !ageObject) return {color: 'lightgray', anamoly: "empty"};
-  if(measurement.type === 'choices') {
-    if (measurement.options[value] === 2) return {color:'#33ff33', anamoly:"normal"};
-    else return {color:'#ff4c4c', anamoly:"abnormal"};
-  }
-  else {
-    const range = measurement.getThres ? measurement.getThres(ageObject) : {low: 0, high: 0}
-    if(value > range.high || value < range.low) return {color:'#ff4c4c', anamoly:"abnormal"};
-    if(value <= range.high && value >= range.low) return {color:'#33ff33', anamoly:"normal"};
-  }
-}
-
 const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
   //DATA NODES UPDATION
   const hrcTrueCount = Object.values(hrcValue).reduce(
@@ -76,7 +62,10 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
   );
   let updatedNodes = nodes.map(node => {
     if (Object.keys(rawData).includes(node.keys) && rawData[node.keys].value) {
-      const colorStatus = getColorcode(node.keys, rawData[node.keys].value, ageObject);
+      const foundEntry = Object.entries(colorMap).find(([key, value]) => value === rawData[node.keys].color);
+      const foundKey = foundEntry ? foundEntry[0] : null;
+      const colorStatus = {color: rawData[node.keys].color, anamoly: foundKey};
+
       return {
         ...node,
         data: {
