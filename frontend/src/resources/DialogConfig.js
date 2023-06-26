@@ -9,11 +9,13 @@ export const DialogConfig = {
             unit: ["years", "months", "weeks"],
             storage: "patientBasic/update_age",
             processReturn: PatientConfig.Age.getDays,
-            eventName: "AgeEntered"
+            eventName: "AgeEntered",
+            destination: "datastore"
         },
         shouldSend: true,
         withArgs: true,
-        shouldStore: true
+        shouldStore: true,
+        shouldStoreInMedik: true
     },
     "get weight": {
         title: "Please enter patient weight",
