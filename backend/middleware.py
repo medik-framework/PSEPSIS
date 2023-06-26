@@ -130,6 +130,7 @@ class AppProcess:
         self.interface_id = 'tabletApp'
         self.to_app_queue = to_app_queue
         self.datastore = datastore
+        self.organ_dt = datastore.organ_dt
 
     async def to_app_handler(self, websocket):
         try:
@@ -152,6 +153,10 @@ class AppProcess:
                         if data:
                             data['name'] = message_json['eventName']+'_result'
                             await self.to_app_queue.put(data)
+                    case 'dataAgeStore':
+                        if 'ageInYears' in message_json:
+                            self.organ_dt.ageInYears = message_json['ageInYears']
+                            self.organ_dt.ageInDays = message_json['ageInDays']
                     case _ :
                         await self.to_k_queue.put(_broadcast( self.interface_id
                                                             , message_json['eventName']
@@ -192,7 +197,8 @@ class DataPortalProcess:
             message_json = json.loads(message)
             self.organ_dt.update(message_json['measurement']
                                , message_json['timeStamp']
-                               , message_json['value'])
+                               , message_json['value']
+                               , message_json['config'])
             await self.to_app_queue.put({
                     "name": "OrganUpdate",
                     "args": [ self.organ_dt.get_all() ],

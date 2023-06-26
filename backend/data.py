@@ -1,5 +1,6 @@
 from typing import List, Dict, Tuple, TypeAlias, Optional
 from dataclasses import dataclass, field
+from threshold import Threshold
 import pickle
 
 debug = True
@@ -20,6 +21,7 @@ def dbg(msg, *rest):
 class DataPoint:
     time: int
     value: float
+    normal: str
 
 Series: TypeAlias = List[DataPoint]
 
@@ -30,9 +32,8 @@ class DataSeries:
     def __init__(self):
         self.data = []
 
-    def update(self, time: int, value: float):
-        self.data.append(DataPoint(time, value))
-        # self.data.sort(key=lambda p: p[0])
+    def update(self, time: int, value: float, normal: str, ageInYears: Optional[int] = None):
+        self.data.append(DataPoint(time, value, normal) if ageInYears else DataPoint(time, value, normal))
 
     def get_series(self) -> Series:
         return self.data
@@ -47,8 +48,8 @@ class DataSeries:
 
     def get_data_point(self) -> Optional[float]:
         if len(self.data) == 0:
-            return {'value': None, 'time':None}
-        return {'value': self.data[-1].value, 'time':self.data[-1].time}
+            return {'value': None, 'time':None, 'normal':None}
+        return {'value': self.data[-1].value, 'time':self.data[-1].time, 'normal': self.data[-1].normal}
 
 
 import json
@@ -58,9 +59,55 @@ MEASES = list(MEAS_MAP.keys())
 
 class OrganDt:
     data: Dict[str, DataSeries]
+    ageInYears: Optional[int]
+    ageInDays: Optional[int]
 
-    def __init__(self):
+    def __init__(self, ageInYears: Optional[int] = None, ageInDays: Optional[int] = None):
         self.data = {k: DataSeries() for k in MEASES}
+        self.ageInYears = ageInYears
+        self.ageInDays = ageInDays
+    
+    def get_ageInYears(self) -> Optional[int]:
+        return self.ageInYears
+    
+    def get_ageInDays(self) -> Optional[int]:
+        return self.ageInDays
+    
+    def get_shock_age_group(self, days):
+        if days < 28:
+            return 1
+        elif days < 356:
+            return 2
+        elif days < 365 * 2:
+            return 3
+        elif days < 365 * 5:
+            return 4
+        elif days < 365 * 12:
+            return 5
+        elif days < 365 * 18:
+            return 6
+        else:
+            return 7
+
+    def get_vitals_age_group(self, days):
+        if days < 28:
+            return 1
+        elif days < 60:
+            return 2
+        elif days < 356:
+            return 3
+        elif days < 365 * 2:
+            return 4
+        elif days < 365 * 4:
+            return 5
+        elif days < 365 * 6:
+            return 6
+        elif days < 365 * 10:
+            return 7
+        elif days < 365 * 13:
+            return 8
+        else:
+            return 9
 
     def get_value(self, meas: str) -> Optional[float]:
         return self.data[meas].get_value()
@@ -74,9 +121,32 @@ class OrganDt:
     def get_all(self) -> Dict:
         return {oname: {mname: self.get_data_point(mname) for mname in mnames} for oname, mnames in ORGAN_DT_MAP.items()}
 
-    def update(self, meas: str, time: int, val: float):
-        self.data[meas].update(time, val)
+    def get_colorcode(self, meas: str, value:float, ageInYears:int, config: dict, ageGroupVitals:int, ageGroupShock:int):
+        if not value or not ageInYears:
+            return None
+        
+        if config['type'] == 'choices':
+            if config['options'][value] == 2:
+                return True
+            else:
+                return False
+        else:
+            threshold = Threshold.getThreshold(meas, ageInYears, ageGroupVitals, ageGroupShock)
+            if value > threshold['high'] or value < threshold['low']:
+                return False
+            if value < threshold['high'] and value > threshold['low']:
+                return True
 
+    def update(self, meas: str, time: int, val: float, config: dict):
+        ageGroupVitals = None
+        ageGroupShock = None
+        if self.ageInDays is not None:
+            ageGroupVitals = self.get_vitals_age_group(self.ageInDays)
+            ageGroupShock = self.get_shock_age_group(self.ageInDays)
+
+        normal_or_not = self.get_colorcode(meas, val, self.get_ageInYears(), config, ageGroupVitals, ageGroupShock)
+        self.data[meas].update(time, val, normal_or_not, self.get_ageInYears())
+        
     def update_system(self, time: int, meases: Dict[str, float]):
         for k, v in meases.items():
             self.update(k, time, v)
@@ -131,7 +201,7 @@ class Patient:
         self.data = self.data | new_data
 
     def get_value(self, key):
-        if key == 'Age' and self.data.has_key('Age'):
+        if key == 'Age' and 'Age' in self.data:
             return self.data['Age']['AgeInDays']
         if key == 'Weight' and self.data.has_key('Weight'):
             return self.data['Weight']['value']
