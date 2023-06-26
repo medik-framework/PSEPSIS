@@ -14,7 +14,8 @@ const MeasurementSelect = ({ organName, config, kSendMessage }) => {
                 organ: organName,
                 measurement: config.name,
                 value: value,
-                timeStamp: new Date().getTime()
+                timeStamp: new Date().getTime(),
+                config: config
             }
             kSendMessage(JSON.stringify(data))
         }
