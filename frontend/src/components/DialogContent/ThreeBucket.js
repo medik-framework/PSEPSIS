@@ -62,9 +62,10 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
   );
   let updatedNodes = nodes.map(node => {
     if (Object.keys(rawData).includes(node.keys) && rawData[node.keys].value) {
-      const foundEntry = Object.entries(colorMap).find(([key, value]) => value === rawData[node.keys].color);
-      const foundKey = foundEntry ? foundEntry[0] : null;
-      const colorStatus = {color: rawData[node.keys].color, anamoly: foundKey};
+      const colorValue = rawData[node.keys].normal;
+      const assignedValue = colorValue === true ? "#33ff33" : colorValue === false ? "#ff4c4c" : "lightgray";
+      const foundKey = Object.keys(colorMap).find(key => colorMap[key] === assignedValue);
+      const colorStatus = {color: assignedValue, anamoly: foundKey};
 
       return {
         ...node,
@@ -184,7 +185,6 @@ const ThreeBucket = () => {
   }, [organUpdates]);
 
   useEffect(() => {
-    console.log("tree data is "+JSON.stringify(treeData))
     setNodes(treeData)
   }, [treeData]);
 

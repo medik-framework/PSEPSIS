@@ -8,6 +8,11 @@ import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
 
 import InputDialog from "../DialogContent/InputDialog";
 
+const colorMap = {
+  true: "#33ff33",
+  false: "#ff4c4c",
+};
+
 const PaitentBasic = () => {
   const age = useSelector((state) => state.patientBasic['Age'])
   const weight = useSelector((state) => state.patientBasic['Weight'])
@@ -62,7 +67,8 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
   const value = valueCombo.value;
   const timestamp = valueCombo.time;
   const mname = measurement.name;
-  const field_color = valueCombo.color
+  const field_color = valueCombo.normal
+  var colorcode = 'lightgray'
 
   const msecondToString = (msec) => {
     let min = Math.floor(Math.round(msec/1000)/60);
@@ -79,7 +85,11 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
     } else return value;
   }
 
-  const colorcode = field_color;
+  if (field_color !== null && !isNaN(field_color))
+  {
+    colorcode = colorMap[field_color];
+  }
+
   const [timeDiff, setTimeDiff] = useState(null);
   const displayValue = getDisplayValue(organName, value, measurement);
 
