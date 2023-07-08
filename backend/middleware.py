@@ -130,7 +130,6 @@ class AppProcess:
         self.interface_id = 'tabletApp'
         self.to_app_queue = to_app_queue
         self.datastore = datastore
-        self.organ_dt = datastore.organ_dt
 
     async def to_app_handler(self, websocket):
         try:
@@ -153,10 +152,6 @@ class AppProcess:
                         if data:
                             data['name'] = message_json['eventName']+'_result'
                             await self.to_app_queue.put(data)
-                    case 'dataAgeStore':
-                        if 'ageInYears' in message_json:
-                            self.organ_dt.ageInYears = message_json['ageInYears']
-                            self.organ_dt.ageInDays = message_json['ageInDays']
                     case _ :
                         await self.to_k_queue.put(_broadcast( self.interface_id
                                                             , message_json['eventName']
@@ -247,6 +242,9 @@ class Datastore:
         drugs = ['Normal Saline', 'Lactated Ringer', 'Epinephrine', 'Norepinephrine', 'Dopamine', 'Dobutamine']
         data.update({key:asdict(self.drug_hist.get_series(key)) for key in drugs})
         return data
+    
+    def update_age(self, ageInDays:int):
+        self.organ_dt.update_age(ageInDays)
 
 
 async def main(app_process, k_process, portal_process):
