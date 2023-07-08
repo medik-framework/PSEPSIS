@@ -15,7 +15,6 @@ import PlainDialog from "./PlainDialog";
 import LineGraph from "../CollapsiblePanel/LineGraph";
 import ThreeBucket from "./ThreeBucket";
 import { DialogConfig } from "../../resources/DialogConfig";
-import { da } from "date-fns/locale";
 
 const InputContent = (args) => {
   switch (args.inputConfig.type) {
@@ -108,12 +107,12 @@ const InputDialog = ({ open, setOpen, info }) => {
   const handleContinue = () => {
     const data = makeKMessage(inputConfig, retDict);
 
-    if (config.shouldStoreInMedik){
-      data.ageInYears = storeDict.value
-      data.ageInDays = retDict.eventArgs[0]
-      data.destination = 'dataAgeStore'
-    }
     if (config.shouldSend){
+      kEndpoint.sendMessage(JSON.stringify(data));
+    }
+    if (config.shouldStoreInMiddleware){
+      data.eventName = 'update_age' 
+      data.destination = 'datastore'
       kEndpoint.sendMessage(JSON.stringify(data));
     }
     if(info.id) {

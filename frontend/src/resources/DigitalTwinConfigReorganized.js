@@ -878,3 +878,9 @@ export const OrganDTConfig = [
   Hepatic,
   Neurologic,
 ];
+
+export const ColorMap = {
+  true: "#33ff33",
+  false: "#ff4c4c",
+  null: 'lightgray'
+};

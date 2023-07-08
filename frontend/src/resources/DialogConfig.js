@@ -10,12 +10,11 @@ export const DialogConfig = {
             storage: "patientBasic/update_age",
             processReturn: PatientConfig.Age.getDays,
             eventName: "AgeEntered",
-            destination: "datastore"
         },
         shouldSend: true,
         withArgs: true,
         shouldStore: true,
-        shouldStoreInMedik: true
+        shouldStoreInMiddleware: true
     },
     "get weight": {
         title: "Please enter patient weight",

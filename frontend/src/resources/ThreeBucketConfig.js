@@ -1,5 +1,4 @@
 import { MarkerType } from 'reactflow';
-import { Cardiovascular, Immune, Neurologic,} from "./DigitalTwinConfigReorganized";
 const myStyle = {
   position: 'absolute',
   width: 150,
@@ -33,25 +32,25 @@ const andateStyle = {
 }
 
 export const parentNodes = [
-  { id: '0', anamoly: "empty", keys : "HR", data: {'myName': 'Heart Rate', 'myVal': '' }, type : 'custom' , position: { x: 5, y:160 }, style: (myStyle) },
-  { id: '1', anamoly: "empty", keys : "Pulse Quality", data: {'myName': 'Pulse Quality', 'myVal': '' }, type : 'custom' ,  position: { x: 160, y:160 }, style: (myStyle) },
-  { id: '2', anamoly: "empty", keys : "BP Sys", data:  {'myName': 'Systolic Blood Pressure', 'myVal': '' }, type : 'custom' , position: { x: 320, y:160 }, style: (myStyle) },
-  { id: '3', anamoly: "empty", keys : "Temp", data:  {'myName': 'Temperature', 'myVal': '' }, type : 'custom' , position: { x: 480, y:160 }, style: (myStyle) },
-  { id: '4', anamoly: "empty", keys : "Capillary Refill", data:  {'myName': 'Capillary Refill', 'myVal': '' }, type : 'custom' , position: { x: 680, y: 0 }, style: (myStyle) },
-  { id: '5', anamoly: "empty", keys : "Skin Color", data: {'myName': 'Skin Color', 'myVal': '' },type : 'custom' , position: { x: 920, y: 0 }, style: (myStyle) },
-  { id: '6', anamoly: "empty", keys : "Behavior", data:  {'myName': 'Behavior', 'myVal': '' }, type : 'custom' , position: { x: 640, y:160 }, style: (myStyle) },
-  { id: '7', anamoly: "empty", keys : "High Risk Conditions", data:  {'myName': 'High Risk Condition', 'myVal': '' }, type : 'custom' , position: { x: 960, y:160 }, style: (myStyle) },
+  { id: '0', anamoly: "null", keys : "HR", data: {'myName': 'Heart Rate', 'myVal': '' }, type : 'custom' , position: { x: 5, y:160 }, style: (myStyle) },
+  { id: '1', anamoly: "null", keys : "Pulse Quality", data: {'myName': 'Pulse Quality', 'myVal': '' }, type : 'custom' ,  position: { x: 160, y:160 }, style: (myStyle) },
+  { id: '2', anamoly: "null", keys : "BP Sys", data:  {'myName': 'Systolic Blood Pressure', 'myVal': '' }, type : 'custom' , position: { x: 320, y:160 }, style: (myStyle) },
+  { id: '3', anamoly: "null", keys : "Temp", data:  {'myName': 'Temperature', 'myVal': '' }, type : 'custom' , position: { x: 480, y:160 }, style: (myStyle) },
+  { id: '4', anamoly: "null", keys : "Capillary Refill", data:  {'myName': 'Capillary Refill', 'myVal': '' }, type : 'custom' , position: { x: 680, y: 0 }, style: (myStyle) },
+  { id: '5', anamoly: "null", keys : "Skin Color", data: {'myName': 'Skin Color', 'myVal': '' },type : 'custom' , position: { x: 920, y: 0 }, style: (myStyle) },
+  { id: '6', anamoly: "null", keys : "Behavior", data:  {'myName': 'Behavior', 'myVal': '' }, type : 'custom' , position: { x: 640, y:160 }, style: (myStyle) },
+  { id: '7', anamoly: "null", keys : "High Risk Conditions", data:  {'myName': 'High Risk Condition', 'myVal': '' }, type : 'custom' , position: { x: 960, y:160 }, style: (myStyle) },
 ];
 
 export const childLevelOneNodes = [
-  { id: '8',tag:'orGate', anamoly:"empty", parents: ['0','1','2'],data: {'myName': 'Bucket 1', 'myVal': '' },type : 'custom', position: { x: 160, y: 340 }, style: (myStyle) },
-  { id: '9',tag:'orGate', anamoly:"empty", parents: ['3'], data: {'myName': 'Bucket 2', 'myVal': '' },type : 'custom', position: { x: 480, y: 340 }, style: (myStyle) },
-  { id: '10',tag:'orGate', anamoly:"empty", parents: ['4','5'], data: {'myName': 'Perfusion', 'myVal': '' },type : 'custom', position: { x: 800, y:160 }, style: (myStyle) },
+  { id: '8',tag:'orGate', anamoly:"null", parents: ['0','1','2'],data: {'myName': 'Bucket 1', 'myVal': '' },type : 'custom', position: { x: 160, y: 340 }, style: (myStyle) },
+  { id: '9',tag:'orGate', anamoly:"null", parents: ['3'], data: {'myName': 'Bucket 2', 'myVal': '' },type : 'custom', position: { x: 480, y: 340 }, style: (myStyle) },
+  { id: '10',tag:'orGate', anamoly:"null", parents: ['4','5'], data: {'myName': 'Perfusion', 'myVal': '' },type : 'custom', position: { x: 800, y:160 }, style: (myStyle) },
 ];
 
 export const childLevelTwoNodes = [
-  { id: '11', anamoly:"empty", parents: ['6','10','7'], data: {'myName': 'Bucket 3', 'myVal': '' },type : 'custom', position: { x: 800, y: 340 }, style: (myStyle) },
-  { id: '12', anamoly:"empty", parents: ['8','9','11'],data: {'myName': 'Sepsis', 'myVal': '' },type : 'custom', position: { x: 480, y: 520 }, style: (myStyle) },
+  { id: '11', anamoly:"null", parents: ['6','10','7'], data: {'myName': 'Bucket 3', 'myVal': '' },type : 'custom', position: { x: 800, y: 340 }, style: (myStyle) },
+  { id: '12', anamoly:"null", parents: ['8','9','11'],data: {'myName': 'Sepsis', 'myVal': '' },type : 'custom', position: { x: 480, y: 520 }, style: (myStyle) },
 ];
 
 export const conditionalNodes = [
@@ -80,13 +79,3 @@ export const initialEdges = [
   { id: 'e14-13', source: '11', target: '16', markerEnd: { type: MarkerType.ArrowClosed, } },
   { id: 'e4-11', source: '16', target: '12', markerEnd: { type: MarkerType.ArrowClosed, } }
 ];
-
-export const BucketOrganConfigDetail = {
-  "HR": Cardiovascular.measurements.HR,
-  "BP Sys": Cardiovascular.measurements.BPSys,
-  "Pulse Quality": Cardiovascular.measurements.PulseQuality,
-  "Capillary Refill": Cardiovascular.measurements.CapillaryRefill,
-  "Skin Color": Cardiovascular.measurements.SkinColor,
-  "Temp":Immune.measurements.Temp,
-  "Behavior":Neurologic.measurements.Behavior,
-};

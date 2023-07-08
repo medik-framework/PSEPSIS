@@ -3,14 +3,10 @@ import {createSelector} from "@reduxjs/toolkit";
 import ReactFlow, { useNodesState, useEdgesState, Handle } from 'reactflow';
 import { useSelector } from 'react-redux';
 import 'reactflow/dist/style.css';
-import { parentNodes,childLevelOneNodes,childLevelTwoNodes,conditionalNodes,initialEdges, BucketOrganConfigDetail } from '../../resources/ThreeBucketConfig';
+import { parentNodes,childLevelOneNodes,childLevelTwoNodes,conditionalNodes,initialEdges } from '../../resources/ThreeBucketConfig';
+import {ColorMap} from "../../resources/DigitalTwinConfigReorganized";
 
 var initialNodes = [...parentNodes, ...childLevelOneNodes, ...childLevelTwoNodes, ...conditionalNodes];
-const colorMap = {
-  normal: "#33ff33",
-  abnormal: "#ff4c4c",
-  empty: "lightgray"
-};
 
 const customNode = ({ id, data }) => {  
   return (
@@ -29,15 +25,15 @@ const nodeTypes = {
 
 const orGate = arr => {
   if (arr.length === 0) {
-    return 'empty';
+    return 'null';
   }
-  const color = arr.includes('abnormal') ? 'abnormal' : arr.includes('normal') ? 'normal' : 'empty';
-  return color;
+  const isNormal = arr.includes(false) ? 'false' : arr.includes(true) ? 'true' : 'null';
+  return isNormal;
 };
 
 const andGate = arr => {
-  const color = arr.includes('empty') ? 'empty' : arr.every(v => v === 'abnormal') ? 'abnormal' : 'normal';
-  return color;
+  const isNormal = arr.includes('null') ? 'null' : arr.every(v => v === 'false') ? 'false' : 'true';
+  return isNormal;
 };
 
 //USING CREATE SELECTOR TO GET STATES
@@ -62,10 +58,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
   );
   let updatedNodes = nodes.map(node => {
     if (Object.keys(rawData).includes(node.keys) && rawData[node.keys].value) {
-      const colorValue = rawData[node.keys].normal;
-      const assignedValue = colorValue === true ? "#33ff33" : colorValue === false ? "#ff4c4c" : "lightgray";
-      const foundKey = Object.keys(colorMap).find(key => colorMap[key] === assignedValue);
-      const colorStatus = {color: assignedValue, anamoly: foundKey};
+      const colorValue = rawData[node.keys].isNormal;
 
       return {
         ...node,
@@ -73,17 +66,17 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
           ...node.data,
           myVal: typeof rawData[node.keys].value === 'string' ? rawData[node.keys].value : (rawData[node.keys].value % 1 !== 0 ? rawData[node.keys].value.toFixed(2) : rawData[node.keys].value)
         },
-        anamoly: colorStatus.anamoly,
+        anamoly: colorValue,
         style: {
           ...node.style,
-          backgroundColor: colorStatus.color
+          backgroundColor: ColorMap[colorValue]
         }
       };
     }
     else if (node.keys === "High Risk Conditions")
     {
-      const colorStatus = hrcTrueCount ? 'abnormal' : 'normal';
-      const colorCode = colorMap[colorStatus];
+      const colorStatus = hrcTrueCount ? false : true;
+      const colorCode = ColorMap[colorStatus];
       return {
         ...node,
         data: {
@@ -112,7 +105,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
         }
       }
       const getState = orGate(dependentState);
-      const getcolor = colorMap[getState]; 
+      const getcolor = ColorMap[getState]; 
       return {
         ...node,
         anamoly: getState,
@@ -134,7 +127,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
     bucketThreeState.push(updatedNodes[bucketThreeNode.parents[i]].anamoly)
   }
   const getBucektThreeState = orGate(bucketThreeState);
-  const getbucketThreecolor = colorMap[getBucektThreeState]; 
+  const getbucketThreecolor = ColorMap[getBucektThreeState]; 
 
   const bucketThreeUpdatedNode = {
     ...bucketThreeNode,
@@ -153,7 +146,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
     sepsisState.push(updatedNodes[sepsisNode.parents[i]].anamoly)
   }
   const getsepsisState = andGate(sepsisState);
-  const getsepsiscolor = colorMap[getsepsisState]; 
+  const getsepsiscolor = ColorMap[getsepsisState]; 
 
   const sepsisUpdatedNode = {
     ...sepsisNode,
