@@ -21,7 +21,7 @@ def dbg(msg, *rest):
 class DataPoint:
     time: int
     value: float
-    normal: str
+    isNormal: str
 
 Series: TypeAlias = List[DataPoint]
 
@@ -32,8 +32,8 @@ class DataSeries:
     def __init__(self):
         self.data = []
 
-    def update(self, time: int, value: float, normal: str, ageInYears: Optional[int] = None):
-        self.data.append(DataPoint(time, value, normal) if ageInYears else DataPoint(time, value, normal))
+    def update(self, time: int, value: float, isNormal: str, ageInYears: Optional[int] = None):
+        self.data.append(DataPoint(time, value, isNormal) if ageInYears else DataPoint(time, value, isNormal))
 
     def get_series(self) -> Series:
         return self.data
@@ -48,8 +48,8 @@ class DataSeries:
 
     def get_data_point(self) -> Optional[float]:
         if len(self.data) == 0:
-            return {'value': None, 'time':None, 'normal':None}
-        return {'value': self.data[-1].value, 'time':self.data[-1].time, 'normal': self.data[-1].normal}
+            return {'value': None, 'time':None, 'isNormal':None}
+        return {'value': self.data[-1].value, 'time':self.data[-1].time, 'isNormal': self.data[-1].isNormal}
 
 
 import json
@@ -59,19 +59,16 @@ MEASES = list(MEAS_MAP.keys())
 
 class OrganDt:
     data: Dict[str, DataSeries]
-    ageInYears: Optional[int]
-    ageInDays: Optional[int]
+    age: Dict[str, Optional[int]]
 
-    def __init__(self, ageInYears: Optional[int] = None, ageInDays: Optional[int] = None):
+    def __init__(self):
         self.data = {k: DataSeries() for k in MEASES}
-        self.ageInYears = ageInYears
-        self.ageInDays = ageInDays
-    
-    def get_ageInYears(self) -> Optional[int]:
-        return self.ageInYears
-    
-    def get_ageInDays(self) -> Optional[int]:
-        return self.ageInDays
+        self.age = {
+            'ageInDays': None,
+            'ageInYears': None,
+            'vitalAgeGroup': None,
+            'shockAgeGroup': None
+        }
     
     def get_shock_age_group(self, days):
         if days < 28:
@@ -109,6 +106,12 @@ class OrganDt:
         else:
             return 9
 
+    def update_age(self, ageInDays:int):
+        self.age['ageInDays'] = ageInDays
+        self.age['ageInYears'] = ageInDays // 365 
+        self.age['vitalAgeGroup'] = self.get_vitals_age_group(self.age['ageInDays'])
+        self.age['shockAgeGroup'] = self.get_shock_age_group(self.age['ageInDays'])
+
     def get_value(self, meas: str) -> Optional[float]:
         return self.data[meas].get_value()
 
@@ -121,8 +124,8 @@ class OrganDt:
     def get_all(self) -> Dict:
         return {oname: {mname: self.get_data_point(mname) for mname in mnames} for oname, mnames in ORGAN_DT_MAP.items()}
 
-    def get_colorcode(self, meas: str, value:float, ageInYears:int, config: dict, ageGroupVitals:int, ageGroupShock:int):
-        if not value or not ageInYears:
+    def get_abnormality(self, meas: str, value:float, config: dict):
+        if not value or not self.age:
             return None
         
         if config['type'] == 'choices':
@@ -131,21 +134,16 @@ class OrganDt:
             else:
                 return False
         else:
-            threshold = Threshold.getThreshold(meas, ageInYears, ageGroupVitals, ageGroupShock)
+            threshold = Threshold.getThreshold(meas, self.age['ageInYears'], self.age['vitalAgeGroup'], self.age['shockAgeGroup'])
             if value > threshold['high'] or value < threshold['low']:
                 return False
             if value < threshold['high'] and value > threshold['low']:
                 return True
 
     def update(self, meas: str, time: int, val: float, config: dict):
-        ageGroupVitals = None
-        ageGroupShock = None
-        if self.ageInDays is not None:
-            ageGroupVitals = self.get_vitals_age_group(self.ageInDays)
-            ageGroupShock = self.get_shock_age_group(self.ageInDays)
-
-        normal_or_not = self.get_colorcode(meas, val, self.get_ageInYears(), config, ageGroupVitals, ageGroupShock)
-        self.data[meas].update(time, val, normal_or_not, self.get_ageInYears())
+        if self.age is not None:
+            normal_or_not = self.get_abnormality(meas, val, config)
+            self.data[meas].update(time, val, normal_or_not, self.age['ageInYears'])
         
     def update_system(self, time: int, meases: Dict[str, float]):
         for k, v in meases.items():
