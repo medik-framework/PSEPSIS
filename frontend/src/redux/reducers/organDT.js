@@ -5,7 +5,7 @@ const initialState = {};
 OrganDTConfig.map((organ) => {
     const measurements = organ.measurements;
     initialState[organ.name] = Object.keys(measurements).reduce((prev, key) => {
-        prev[measurements[key].name] = {'value':NaN, 'time':NaN, 'color':'lightgray'};
+        prev[measurements[key].name] = {'value':NaN, 'time':NaN, 'isNormal':NaN};
         return prev;
     }, {});
     return [];

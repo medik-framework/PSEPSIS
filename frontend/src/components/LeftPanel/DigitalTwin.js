@@ -4,14 +4,9 @@ import { useInterval } from "react-use";
 
 import { Button, Grid, Typography, Box, Tabs, Tab } from "@mui/material";
 
-import { OrganDTConfig } from "../../resources/DigitalTwinConfigReorganized";
+import { OrganDTConfig, ColorMap} from "../../resources/DigitalTwinConfigReorganized";
 
 import InputDialog from "../DialogContent/InputDialog";
-
-const colorMap = {
-  true: "#33ff33",
-  false: "#ff4c4c",
-};
 
 const PaitentBasic = () => {
   const age = useSelector((state) => state.patientBasic['Age'])
@@ -67,8 +62,7 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
   const value = valueCombo.value;
   const timestamp = valueCombo.time;
   const mname = measurement.name;
-  const field_color = valueCombo.normal
-  var colorcode = 'lightgray'
+  var colorcode = ColorMap[valueCombo.isNormal]
 
   const msecondToString = (msec) => {
     let min = Math.floor(Math.round(msec/1000)/60);
@@ -83,11 +77,6 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
     if (oname === 'Neurologic' && measurement.type === 'choices'){
       return measurement.options[value];
     } else return value;
-  }
-
-  if (field_color !== null && !isNaN(field_color))
-  {
-    colorcode = colorMap[field_color];
   }
 
   const [timeDiff, setTimeDiff] = useState(null);
