@@ -21,7 +21,7 @@ def dbg(msg, *rest):
 class DataPoint:
     time: int
     value: float
-    isNormal: str
+    isNormal: bool
 
 Series: TypeAlias = List[DataPoint]
 
@@ -32,7 +32,7 @@ class DataSeries:
     def __init__(self):
         self.data = []
 
-    def update(self, time: int, value: float, isNormal: str, ageInYears: Optional[int] = None):
+    def update(self, time: int, value: float, isNormal: bool, ageInYears: Optional[int] = None):
         self.data.append(DataPoint(time, value, isNormal) if ageInYears else DataPoint(time, value, isNormal))
 
     def get_series(self) -> Series:
@@ -124,7 +124,7 @@ class OrganDt:
     def get_all(self) -> Dict:
         return {oname: {mname: self.get_data_point(mname) for mname in mnames} for oname, mnames in ORGAN_DT_MAP.items()}
 
-    def get_abnormality(self, meas: str, value:float, config: dict):
+    def get_normality(self, meas: str, value:float, config: dict):
         if not value or not self.age:
             return None
         
@@ -142,8 +142,8 @@ class OrganDt:
 
     def update(self, meas: str, time: int, val: float, config: dict):
         if self.age is not None:
-            normal_or_not = self.get_abnormality(meas, val, config)
-            self.data[meas].update(time, val, normal_or_not, self.age['ageInYears'])
+            isNormal = self.get_normality(meas, val, config)
+            self.data[meas].update(time, val, isNormal, self.age['ageInYears'])
         
     def update_system(self, time: int, meases: Dict[str, float]):
         for k, v in meases.items():
