@@ -226,6 +226,10 @@ async def test_screening_positive_2(screening_only_exec_pgm):
 async def test_fluid_therapy_no_risk_overdose_responsiveness(psepsis_exec_pgm):
     await run_exec_test( 'fluid-therapy-no-risk-overdose-responsiveness'
                        , psepsis_exec_pgm)
+@pytest.mark.asyncio
+async def test_fluid_therapy_no_risk_infant(psepsis_exec_pgm):
+    await run_exec_test( 'fluid-therapy-no-risk-infant'
+                       , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
 async def test_fluid_therapy_positive_risk_overdose_responsiveness(psepsis_exec_pgm):

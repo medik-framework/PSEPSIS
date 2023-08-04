@@ -1,0 +1,52 @@
+[
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartScreening",
+    "eventArgs": []
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "AgeEntered",
+    "eventArgs": [3],
+    "waitFor":
+     {
+       "name": "Instruct",
+       "args": ["get age"]
+     }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartFluidTherapy",
+    "eventArgs": [],
+    "waitFor":
+     {
+       "name": "Instruct",
+       "args": ["get weight"]
+     }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "FluidOverloadRisksEntered",
+    "eventArgs": [0],
+    "waitFor" : {
+      "name": "Instruct",
+      "args": ["get fluid overload risks"]
+    }
+  },
+  {
+    "action": "exit",
+    "waitFor": {
+      "name": "RecommendDrug",
+      "args": [
+        "Normal Saline",
+        "Fluid Therapy",
+        "5",
+        "administer 5-10 ml/kg Normal Saline"
+      ]
+    }
+  }
+]
