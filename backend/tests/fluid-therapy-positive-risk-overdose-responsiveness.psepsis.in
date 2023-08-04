@@ -13,10 +13,6 @@
     "waitFor" : {
       "name": "Instruct",
       "args": ["get fluid overload risks"]
-    },
-    "updateData": {
-      "name": "fluidOverloadRisks",
-      "args": 0
     }
   },
   {
