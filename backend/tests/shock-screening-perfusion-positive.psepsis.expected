@@ -82,7 +82,7 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": [
-      "Arterial Lactate"
+      "Lactate"
     ]
   },
   {

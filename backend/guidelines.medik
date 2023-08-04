@@ -158,7 +158,7 @@ machine MeasurementBounds
     }
   }
 
-  fun safeArterialLactateLowerBound(age) {
+  fun safeLactateLowerBound(age) {
     days(age) in {
       interval(days(0), months(1))   : return 60;
       interval(months(1), months(2)) : return 70;
@@ -172,7 +172,7 @@ machine MeasurementBounds
     }
   }
 
-  fun safeArterialLactateUpperBound(age) {
+  fun safeLactateUpperBound(age) {
     days(age) in {
       interval(days(0), months(1))   : return 180;
       interval(months(1), months(2)) : return 180;
@@ -230,8 +230,8 @@ machine MeasurementBounds
 
       this.mapLowerBound             = safeMapLowerBound(age);
 
-      this.arterialLactateLowerBound = safeArterialLactateLowerBound(age);
-      this.arterialLactateUpperBound = safeArterialLactateUpperBound(age);
+      this.arterialLactateLowerBound = safeLactateLowerBound(age);
+      this.arterialLactateUpperBound = safeLactateUpperBound(age);
 
       this.urineOutputLowerBound     = safeUrineOutputLowerBound(age);
       this.urineOutputUpperBound     = safeUrineOutputUpperBound(age);
@@ -534,7 +534,7 @@ machine SepticShockScreening
         perfusion = perfusion + 1;
       }
 
-      if ( isAboveIfPresent("Arterial Lactate", 2 * measurementBounds.arterialLactateUpperBound)) {
+      if ( isAboveIfPresent("Lactate", 2 * measurementBounds.arterialLactateUpperBound)) {
         perfusion = perfusion + 1;
       }
 
@@ -549,7 +549,7 @@ machine SepticShockScreening
       var temp = obtainFrom(datastore, "Temp");
       var coreTemp = obtainFrom(datastore, "Core Temp");
 
-      if (!((temp == undef) && (coreTemp == undef))) {
+      if (!((temp == undef) || (coreTemp == undef))) {
         if ((coreTemp - temp) > 3) {
           perfusion = perfusion + 1;
         }
