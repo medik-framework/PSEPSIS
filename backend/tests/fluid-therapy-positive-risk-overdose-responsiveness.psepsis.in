@@ -60,7 +60,7 @@
       "args": ["get fluid next step"
               , "Responsiveness to fluid therapy: true"
               , "Fluid overload: true"
-              , "Recommendation: handle fluid overload"]
+              , "Recommendation: Stop Fluid Therapy. Consider inotrope."]
     }
   },
   {

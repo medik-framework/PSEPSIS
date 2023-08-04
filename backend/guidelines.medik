@@ -688,15 +688,19 @@ machine FluidTherapy
     entry {
       var recommendation;
       if (this.fluidOverload) {
-        recommendation = "handle fluid overload";
+        recommendation = "Stop Fluid Therapy. Consider inotrope.";
+        broadcast ConsiderInotropicSupport;
       } else {
-        var totalSalineDose = obtainFrom(datastore, "Normal Saline");
-        if ((totalSalineDose > measurementBounds.salineDosageUpperBound)
-          && !(isResponsiveToFluids)) {
-          recommendation = "consider inotropic support";
-          broadcast ConsiderInotropicSupport;
+        if (isResponsiveToFluids) {
+          recommendation = "Repeat bolus until patient stable.";
         } else {
-          recommendation = "repeat fluid bolus";
+          var totalSalineDose = obtainFrom(datastore, "Normal Saline");
+          if (totalSalineDose > measurementBounds.salineDosageUpperBound) {
+            recommendation = "Consider intrope while giving one more fluid bolus.";
+            broadcast ConsiderInotropicSupport;
+          } else {
+            recommendation = "One more fluid bolus.";
+          }
         }
       }
 
