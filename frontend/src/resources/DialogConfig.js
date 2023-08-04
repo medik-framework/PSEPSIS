@@ -451,5 +451,7 @@ export const DialogConfig = {
     shouldSend: true,
     withArgs: true,
     shouldStore: false
+=======
+>>>>>>> 3398f59 (frontend/*/App,DialogConfig.js:Handle Septic Shock Diagnosis Instruct event)
   }
 }
