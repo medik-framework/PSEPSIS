@@ -555,6 +555,8 @@ machine SepticShockScreening
         }
       }
 
+      print("perfusion is: " + perfusion);
+
       if (perfusion >= 2) {
         shockPositiveSteps(tabletApp);
       } else {

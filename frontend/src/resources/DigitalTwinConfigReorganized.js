@@ -855,7 +855,7 @@ export const Immune = {
       },
     },
     CoreTemp: {
-      name: "CoreTemp",
+      name: "Core Temp",
       fulltext: "Core Temperature",
       unit: "°C",
       type: "number",
