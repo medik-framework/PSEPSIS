@@ -1,0 +1,47 @@
+[
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": [
+      "get age"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmAgeEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": [
+      "get weight"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get fluid overload risks"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmFluidOverloadRisksEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "RecommendDrug",
+    "args": [
+      "Normal Saline",
+      "Fluid Therapy",
+      "5",
+      "administer 5-10 ml/kg Normal Saline"
+    ]
+  }
+]

@@ -581,6 +581,10 @@ machine FluidTherapy
   vars tabletApp, datastore, measurementBounds;
   vars isResponsiveToFluids, fluidOverload;
 
+  fun days(count) {
+    return count;
+  }
+
   fun isNormal(parameter, normalMeasurement) {
     var storedMeasurement = obtainFrom(datastore, parameter);
     if (!(storedMeasurement == undef)) {
@@ -619,7 +623,8 @@ machine FluidTherapy
 
   state SuggestFluidDosage {
     entry {
-      if (!(measurementBounds.fluidOverloadRisks == 0)) {
+      if ( (!(measurementBounds.fluidOverloadRisks == 0))
+          || (measurementBounds.age < days(28))) {
         send  tabletApp
             , RecommendDrug
             , ( "Normal Saline"

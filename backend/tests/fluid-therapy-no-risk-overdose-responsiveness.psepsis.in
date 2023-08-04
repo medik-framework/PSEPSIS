@@ -2,8 +2,30 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
-    "eventName": "StartFluidTherapy",
+    "eventName": "StartScreening",
     "eventArgs": []
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "AgeEntered",
+    "eventArgs": [300],
+    "waitFor":
+     {
+       "name": "Instruct",
+       "args": ["get age"]
+     }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
+    "eventName": "StartFluidTherapy",
+    "eventArgs": [],
+    "waitFor":
+     {
+       "name": "Instruct",
+       "args": ["get weight"]
+     }
   },
   {
     "id": "tabletApp",
