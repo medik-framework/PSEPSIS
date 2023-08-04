@@ -21,7 +21,7 @@ def dbg(msg, *rest):
 class DataPoint:
     time: int
     value: float
-    isNormal: bool
+    isNormal: Optional[bool]
 
 Series: TypeAlias = List[DataPoint]
 
@@ -32,8 +32,8 @@ class DataSeries:
     def __init__(self):
         self.data = []
 
-    def update(self, time: int, value: float, isNormal: bool, ageInYears: Optional[int] = None):
-        self.data.append(DataPoint(time, value, isNormal) if ageInYears else DataPoint(time, value, isNormal))
+    def update(self, time: int, value: float, isNormal: Optional[bool]=None):
+        self.data.append(DataPoint(time, value, isNormal))
 
     def get_series(self) -> Series:
         return self.data
@@ -69,7 +69,7 @@ class OrganDt:
             'vitalAgeGroup': None,
             'shockAgeGroup': None
         }
-    
+
     def get_shock_age_group(self, days):
         if days < 28:
             return 1
@@ -108,7 +108,7 @@ class OrganDt:
 
     def update_age(self, ageInDays:int):
         self.age['ageInDays'] = ageInDays
-        self.age['ageInYears'] = ageInDays // 365 
+        self.age['ageInYears'] = ageInDays // 365
         self.age['vitalAgeGroup'] = self.get_vitals_age_group(self.age['ageInDays'])
         self.age['shockAgeGroup'] = self.get_shock_age_group(self.age['ageInDays'])
 
@@ -127,7 +127,7 @@ class OrganDt:
     def get_normality(self, meas: str, value:float, config: dict):
         if not value or not self.age:
             return None
-        
+
         if config['type'] == 'choices':
             if config['options'][value] == 2:
                 return True
@@ -143,8 +143,8 @@ class OrganDt:
     def update(self, meas: str, time: int, val: float, config: dict):
         if self.age is not None:
             isNormal = self.get_normality(meas, val, config)
-            self.data[meas].update(time, val, isNormal, self.age['ageInYears'])
-        
+            self.data[meas].update(time, val, isNormal)
+
     def update_system(self, time: int, meases: Dict[str, float]):
         for k, v in meases.items():
             self.update(k, time, v)
