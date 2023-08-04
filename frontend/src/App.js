@@ -36,9 +36,14 @@ function App() {
       dispatch(update_all(msgJson.args[0]));
       break;
     case "SepsisDiagnosis":
-      console.log("dispatching diagnosis update")
       dispatch(updateDiagnosis({
         "name": "sepsis",
+        "value": msgJson.args[0]
+      }))
+      break;
+    case "ShockDiagnosis":
+      dispatch(updateDiagnosis({
+        "name": "septicShock",
         "value": msgJson.args[0]
       }))
       break;
