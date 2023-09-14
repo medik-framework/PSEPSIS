@@ -188,5 +188,5 @@ class Threshold:
             else:
                 return {"low": 36, "high": 38}
             
-        elif key == "CoreTemp":
+        elif key == "Core Temp":
             return {"low": 36, "high": 38}

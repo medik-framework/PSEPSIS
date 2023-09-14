@@ -534,7 +534,7 @@ machine SepticShockScreening
         perfusion = perfusion + 1;
       }
 
-      if ( isAboveIfPresent("Arterial Lactate", 2 * measurementBounds.arterialLactateUpperBound)) {
+      if ( isAboveIfPresent("Lactate", 2 * measurementBounds.arterialLactateUpperBound)) {
         perfusion = perfusion + 1;
       }
 
