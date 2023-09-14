@@ -393,5 +393,14 @@ export const DialogConfig = {
     shouldSend: true,
     withArgs: true,
     shouldStore: false
+  },
+  "manage shock": {
+    title: "Manage septic shock",
+    inputConfig: {
+      type: "plain"
+    },
+    shouldSend: false,
+    withArgs: false,
+    shouldStore: false
   }
 }
