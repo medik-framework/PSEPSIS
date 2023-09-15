@@ -117,8 +117,11 @@ const InputDialog = ({ open, setOpen, info }) => {
       kEndpoint.sendMessage(JSON.stringify(data));
     }
     if (config.shouldStoreInMiddleware){
-      data.eventName = 'update_age'
+      data.eventName = 'update'
       data.destination = 'datastore'
+      data.eventArgs = []
+      data.eventArgs[0] = storeDict.label
+      data.eventArgs[1] = storeDict.value
       kEndpoint.sendMessage(JSON.stringify(data));
     }
     if(info.id) {

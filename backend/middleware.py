@@ -215,8 +215,10 @@ class Datastore:
     def __init__(self):
         self.organ_dt = OrganDt()
         self.drug_hist = DrugHist()
+        self.patient = Patient()
         self.measurements = self.organ_dt.data.keys()
         self.drugs = self.drug_hist.data.keys()
+        self.patient_info = self.patient.data.keys()
 
     def float_to_rats(self, value):
         if isinstance(value, float):
@@ -225,13 +227,15 @@ class Datastore:
 
     def get_value(self, value_name):
         if not ((value_name in self.measurements)
-                or (value_name in self.drugs)):
+                or (value_name in self.drugs)
+                or (value_name in self.patient_info)):
             raise KeyError(value_name)
 
         if value_name in self.measurements:
             return self.float_to_rats(self.organ_dt.get_value(value_name))
-
-        return self.float_to_rats(self.drug_hist.get_total_dose(value_name))
+        elif value_name in self.drugs:
+            return self.float_to_rats(self.drug_hist.get_total_dose(value_name))
+        return self.float_to_rats(self.patient.get_value(value_name))
 
     def record_dose(self, drug_name, timestamp, dose):
         return self.drug_hist.record_dose(drug_name, timestamp, dose)
@@ -242,10 +246,14 @@ class Datastore:
         drugs = ['Normal Saline', 'Lactated Ringer', 'Epinephrine', 'Norepinephrine', 'Dopamine', 'Dobutamine']
         data.update({key:asdict(self.drug_hist.get_series(key)) for key in drugs})
         return data
-    
-    def update_age(self, ageInDays:int):
-        self.organ_dt.update_age(ageInDays)
 
+    def update(self, key, val):
+        if key == 'Age':
+            self.organ_dt.update_age(val)
+        elif key in self.patient_info:
+            self.patient.update(key, val)
+        else:
+            raise KeyError(key)
 
 async def main(app_process, k_process, portal_process):
 

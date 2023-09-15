@@ -132,7 +132,7 @@ export const DialogConfig = {
     "get fluid overload signs": {
         title: "Fluid Overload Signs",
         inputConfig: {
-            label: "fluid_overload",
+            label: "Fluid Overload Signs",
             type:  "checklist",
             options: [
                 "Pulmonary Rales",

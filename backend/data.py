@@ -189,24 +189,13 @@ class DrugHist:
 
 class Patient:
     def __init__(self) -> None:
-        self.data = {}
+        self.data = {'Fluid Overload Signs': None}
 
-    def update(self, data):
-        new_data = {}
-        for k, v in data.items():
-            if len(v):
-                new_data[k] = v
-        self.data = self.data | new_data
+    def update(self, key, val):
+        self.data[key] = val
 
     def get_value(self, key):
-        if key == 'Age' and 'Age' in self.data:
-            return self.data['Age']['AgeInDays']
-        if key == 'Weight' and self.data.has_key('Weight'):
-            return self.data['Weight']['value']
-        if key == 'HighRiskConditions' and self.data.has_key('HighRiskConditions'):
-            return self.data['HighRiskConditions']['value']
-        else:
-            return "Data not exist"
+        return self.data[key]
 
 
 
