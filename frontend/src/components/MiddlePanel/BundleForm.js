@@ -49,6 +49,7 @@ const BundleForm = () => {
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint)
   const [fluidTherapyStarted, setFluidTherapyStarted] = useState(false);
   const [antibioticTherapyStarted, setAntibioticsTherapyStarted] = useState(false);
+  const [inotropicTherapyStarted, setInotropicTherapyStarted] = useState(false);
 
   const updateCheckedIdx = (newCheckedIdx) => {
     dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: newCheckedIdx} })
@@ -65,6 +66,13 @@ const BundleForm = () => {
         eventName: 'StartAntibioticTherapy'
       }));
       setAntibioticsTherapyStarted(true);
+    }
+    if (isChecked(newCheckedIdx, 10) && (!inotropicTherapyStarted)){
+      console.log('Send StartInotrpicTherapy');
+      kEndpoint.sendMessage(JSON.stringify({
+        eventName: 'StartInotropicTherapy'
+      }));
+      setInotropicTherapyStarted(true);
     }
   }
 
