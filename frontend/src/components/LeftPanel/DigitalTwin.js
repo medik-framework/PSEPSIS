@@ -59,6 +59,7 @@ const PaitentBasic = () => {
 };
 
 const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
+  console.log("measurement: " + measurement);
   const value = valueCombo.value;
   const timestamp = valueCombo.time;
   const mname = measurement.name;
@@ -233,3 +234,4 @@ const DigitalTwin = () => {
 };
 
 export default DigitalTwin;
+export { DigitalTwinCell };
