@@ -25,15 +25,15 @@ import { start } from "../../redux/reducers/treatment"
 // ];
 
 const bundleList = [
-  "Cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
-  "Respiratory: Administer oxygen to maintain SpO2 >= 94%",
-  "Obtain IV/IO",
-  "POCT Lactic Acid / Blood Gas",
+  "Continuous cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
+  "Respiratory: Administer high-flow oxygen to maintain SpO2 >= 94%",
+  "Obtain IV/IO access",
+  "Fluid resuscitation",
+  "Lactic Acid / Blood Gas",
   "Complete Blood Count (CBC) WITH Diff",
   "Comprehensive Metablic Panel (CMP)",
-  "Culture",
+  "Culture (blood, urine, +/-, respiratory, +/-CSF",
   "Give antibiotics",
-  "Consider fluid resuscitation",
   "Infection Source Control. Consider diagnostic imaging",
   "Consider inotropic support early",
 ];
@@ -53,14 +53,14 @@ const BundleForm = () => {
 
   const updateCheckedIdx = (newCheckedIdx) => {
     dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: newCheckedIdx} })
-    if (isChecked(newCheckedIdx, 8) && (!fluidTherapyStarted)){
+    if (isChecked(newCheckedIdx, 3) && (!fluidTherapyStarted)){
       console.log('Send StartFluidTherapy');
       kEndpoint.sendMessage(JSON.stringify({
         eventName: 'StartFluidTherapy'
       }));
       setFluidTherapyStarted(true);
     }
-    if (isChecked(newCheckedIdx, 7) && (!antibioticTherapyStarted)){
+    if (isChecked(newCheckedIdx, 8) && (!antibioticTherapyStarted)){
       console.log('Send StartAntibioticTherapy');
       kEndpoint.sendMessage(JSON.stringify({
         eventName: 'StartAntibioticTherapy'
