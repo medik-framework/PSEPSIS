@@ -432,8 +432,8 @@ export const DialogConfig = {
         },
         eventName: "ConfirmShockType"
     },
-    shouldSend:  true,
-    withArgs:    true,
+    shouldSend: true,
+    withArgs: true,
     shouldStore: false
   }
 }

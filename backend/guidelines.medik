@@ -863,18 +863,19 @@ machine InotropicSupportTherapy
       print("Got shock type: " + shockType);
       if (shockType == "Cold Shock") {
         send tabletApp, RecommendDrug, ( "Epinephrine"
-                                       , "Inotropic Support"
+                                       , "Inotropes"
                                        , 0.1
                                        , "administer 0.1-1 mcg/kg/min IV/IO infusion" );
       } else {
         if (shockType == "Warm Shock") {
           send tabletApp, RecommendDrug, ( "Norepinephrine"
-                                         , "Inotropic Support"
+                                         , "Inotropes"
                                          , 0.1
                                          , "administer 0.1-2 mcg/kg/min IV/IO infusion" );
         } else {
+          print("Sending recommendation");
           send tabletApp, RecommendDrug, ( "Dopamine"
-                                         , "Inotropic Support"
+                                         , "Inotropes"
                                          , 2
                                          , "administer 2-20 mcg/kg/min IV/IO infusion" );
         }
