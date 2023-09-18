@@ -886,16 +886,16 @@ machine InotropicSupportTherapy
 
   state WaitForAdministerInotrope {
     on ConfirmEpinephrineAdministered do {
-      sleep(300);
+      sleep(30);
       goto EvaluateInotropeResponsiveness;
     }
 
     on ConfirmNorepinephrineAdministered do {
-      sleep(300);
+      sleep(30);
       goto EvaluateInotropeResponsiveness;
     }
     on ConfirmDopamineAdministered do {
-      sleep(300);
+      sleep(30);
       goto EvaluateInotropeResponsiveness;
     }
   }

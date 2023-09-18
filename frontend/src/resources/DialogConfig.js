@@ -435,5 +435,23 @@ export const DialogConfig = {
     shouldSend: true,
     withArgs: true,
     shouldStore: false
+  },
+  "get shock type": {
+    title: "Get Shock Type",
+    inputConfig: {
+        type: "plain",
+        actions: {
+          question: "Confirm Shock Type",
+          buttons: {
+              "Cold Shock": {eventArgs: ["Cold Shock"]},
+              "Warm Shock":  {eventArgs: ["Warm Shock"]},
+              "Indistinguishable":  {eventArgs: ["Indistinguishable"]}
+          }
+        },
+        eventName: "ConfirmShockType"
+    },
+    shouldSend: true,
+    withArgs: true,
+    shouldStore: false
   }
 }
