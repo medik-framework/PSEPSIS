@@ -8,7 +8,7 @@ RUN apt-get update && \
 RUN apt update && apt upgrade -y
 RUN apt install software-properties-common -y && \
     add-apt-repository ppa:deadsnakes/ppa
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - &&\
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
 
@@ -18,7 +18,7 @@ RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 
 RUN apt-get update && apt-get install -y build-essential m4 openjdk-11-jdk git \
   libgmp-dev libmpfr-dev pkg-config flex bison z3 libz3-dev jq libfmt-dev \
-  maven python3 python3-dev cmake gcc clang-12 lld-12 llvm-12-tools \
+  maven python3 python3-dev cmake gcc clang-14 lld-14 llvm-14-tools \
   zlib1g-dev libboost-test-dev libyaml-dev libjemalloc-dev tmux tmate neovim
 
 RUN curl -sSL https://get.haskellstack.org/ | sh
@@ -34,3 +34,7 @@ ARG GID
 RUN groupadd -g $GID -o $UNAME
 RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 USER $UNAME
+
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+ENV PATH="$PATH:/home/$UNAME/.local/bin"
