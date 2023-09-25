@@ -418,31 +418,29 @@ export const DialogConfig = {
     withArgs: false,
     shouldStore: false
   },
-  "get shock type": {
-    title: "Get Shock Type",
+  "get shock type measurements": {
+    title: "Update shock related measurements",
     inputConfig: {
-        type: "plain",
-        actions: {
-          question: "Confirm Shock Type",
-          buttons: {
-              "Cold Shock": {eventArgs: ["Cold Shock"]},
-              "Warm Shock":  {eventArgs: ["Warm Shock"]},
-              "Indistinguishable":  {eventArgs: ["Indistinguishable"]}
-          }
-        },
-        eventName: "ConfirmShockType"
+        type: "cells",
+        cells: [
+          ['Cardiovascular', 'PulseQuality'],
+          ['Cardiovascular', 'CapillaryRefill'],
+          ['Cardiovascular', 'SkinColor']
+        ],
+        eventName: "ConfirmShockTypeMeasurementsObtained"
     },
     shouldSend: true,
-    withArgs: true,
+    withArgs: false,
     shouldStore: false
   },
   "get shock type": {
-    title: "Get Shock Type",
+    title: "Confirm Shock Type",
     inputConfig: {
         type: "plain",
         actions: {
-          question: "Confirm Shock Type",
+          question: "Please confirm shock type",
           buttons: {
+              "Normotensive": {eventArgs: ["Normotensive"]},
               "Cold Shock": {eventArgs: ["Cold Shock"]},
               "Warm Shock":  {eventArgs: ["Warm Shock"]},
               "Indistinguishable":  {eventArgs: ["Indistinguishable"]}

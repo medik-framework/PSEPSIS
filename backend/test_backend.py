@@ -282,8 +282,23 @@ async def test_inotropic_normotensive(psepsis_exec_pgm):
                        , psepsis_exec_pgm )
 
 @pytest.mark.asyncio
+async def test_inotropic_cold_shock_fluid_overload(psepsis_exec_pgm):
+    await run_exec_test( 'inotropic-cold-shock-fluid-overload'
+                       , psepsis_exec_pgm )
+
+@pytest.mark.asyncio
 async def test_inotropic_cold_shock(psepsis_exec_pgm):
     await run_exec_test( 'inotropic-cold-shock'
+                       , psepsis_exec_pgm )
+
+@pytest.mark.asyncio
+async def test_inotropic_warm_shock(psepsis_exec_pgm):
+    await run_exec_test( 'inotropic-warm-shock'
+                       , psepsis_exec_pgm )
+
+@pytest.mark.asyncio
+async def test_inotropic_indistinguishable(psepsis_exec_pgm):
+    await run_exec_test( 'inotropic-indistinguishable'
                        , psepsis_exec_pgm )
 
 def test_model_check(psepsis_mcheck_pgm):

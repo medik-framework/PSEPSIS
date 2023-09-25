@@ -42,20 +42,20 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "ConfirmShockType",
-    "eventArgs": ["Cold Shock"],
+    "eventArgs": ["Indistinguishable"],
     "waitFor" : {
       "name": "Recommend",
       "args": [
         "get shock type"
-        , "Pulse quality is Thready\nCapillary refill is 4\nSkin color is Gray\n"
-        , "Recommendation: Cold Shock management"
+        , "Pulse quality is Bounding\nCapillary refill is 4\nSkin color is Gray\n"
+        , "Recommendation: Indistinguishable shock type management"
       ]
     }
   },
   {
     "action": "exit",
     "waitFor" : {
-      "name": "RecommendDrug"
+      "name": "Recommend"
     }
   }
 ]

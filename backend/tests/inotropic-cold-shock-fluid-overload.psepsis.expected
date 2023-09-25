@@ -30,11 +30,25 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get shock type measurements"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": [
+      "Fluid Overload Signs"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
     "name": "Recommend",
     "args": [
-      "get shock type",
-      "Blood pressure is normal",
-      "Recommendation: Normotensive management"
+      "get shock type"
+      , "Fluid overload signs indicate decreased cardiac ability to deal with increased venous pressure. Consider using epinephrine to improve cadiac contractility."
+      , "Recommendation: Cold Shock management"
     ]
   },
   {
@@ -42,10 +56,10 @@
     "interface": "TabletApp",
     "name": "RecommendDrug",
     "args": [
-      "Dopamine",
+      "Epinephrine",
       "Inotropes",
-      2,
-      "administer 2-20 mcg/kg/min IV/IO infusion"
+      "<1,10>Rat",
+      "administer 0.1-1 mcg/kg/min IV/IO infusion"
     ]
   }
 ]

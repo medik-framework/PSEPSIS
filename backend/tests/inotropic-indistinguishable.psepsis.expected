@@ -71,19 +71,17 @@
     "name": "Recommend",
     "args": [
       "get shock type"
-      , "Pulse quality is Thready\nCapillary refill is 4\nSkin color is Gray\n"
-      , "Recommendation: Cold Shock management"
+      , "Pulse quality is Bounding\nCapillary refill is 4\nSkin color is Gray\n"
+      , "Recommendation: Indistinguishable shock type management"
     ]
   },
   {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "Recommend",
     "args": [
-      "Epinephrine",
-      "Inotropes",
-      "<1,10>Rat",
-      "administer 0.1-1 mcg/kg/min IV/IO infusion"
+      "recommend"
+      , "Shock type is indistinguishable."
     ]
   }
 ]

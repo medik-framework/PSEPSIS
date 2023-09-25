@@ -48,8 +48,8 @@ const useStyles = makeStyles((theme) => ({
 export default function MedicationTable() {
   const classes = useStyles();
   const selectedCategory = useSelector((state) => state.highlight.selectedMedicationTab);
-  console.log('selected category' + selectedCategory)
-  console.log('Medicaation cat' + MedicationConfig[MedicationCategories[selectedCategory]])
+  // console.log('selected category' + selectedCategory)
+  // console.log('Medicaation cat' + MedicationConfig[MedicationCategories[selectedCategory]])
   const medList = MedicationConfig[MedicationCategories[selectedCategory]];
 
   return (

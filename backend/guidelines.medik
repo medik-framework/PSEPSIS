@@ -777,7 +777,8 @@ machine InotropicSupportTherapy
     entry {
       var isHypotensive = checkHypotensive();
       if (!(isHypotensive)) {
-        goto SuggestInotrope("Normotensive");
+        goto SuggestInotrope( "Normotensive"
+                            , "Blood pressure is normal");
       }
       goto ObtainShockTypeMeasurements;
     }
@@ -802,11 +803,10 @@ machine InotropicSupportTherapy
       if (   (!(fluidOverloadSigns == undef))
           && !(fluidOverloadSigns == measurementBounds.fluidOverloadSigns)) {
 
-        send tabletApp, Info, (  "Fluid overload signs indicate decreased cardiac ability"
-                               + " to deal with increased venous pressure."
-                               + " Consider using epinephrine to improve cadiac contractility." );
-
-        goto SuggestInotrope("Cold Shock");
+        goto SuggestInotrope( "Cold Shock"
+                            , "Fluid overload signs indicate decreased cardiac ability"
+                              + " to deal with increased venous pressure."
+                              + " Consider using epinephrine to improve cadiac contractility.");
       }
 
       var pulseQuality = obtainFrom(datastore, "Pulse Quality");
@@ -843,19 +843,30 @@ machine InotropicSupportTherapy
         }
       }
       if (coldShockScore >= 3) {
-        goto SuggestInotrope("Cold Shock");
+        goto SuggestInotrope( "Cold Shock"
+                            , "Pulse quality is " + pulseQuality + "\n"
+                              + "Capillary refill is " + capillaryRefill + "\n"
+                              + "Skin color is " + skinColor + "\n");
       }
       if (warmShockScore >= 3) {
-        goto SuggestInotrope("Warm Shock");
+        goto SuggestInotrope("Warm Shock"
+                            , "Pulse quality is " + pulseQuality + "\n"
+                              + "Capillary refill is " + capillaryRefill + "\n"
+                              + "Skin color is " + skinColor + "\n");
       }
+      goto SuggestInotrope( "Indistinguishable shock type"
+                            , "Pulse quality is " + pulseQuality + "\n"
+                              + "Capillary refill is " + capillaryRefill + "\n"
+                              + "Skin color is " + skinColor + "\n");
     }
   }
 
   state SuggestInotrope {
-    entry(shockType) {
+    entry(shockType, message) {
       send tabletApp
          , Recommend
          , ( "get shock type"
+           , message
            , "Recommendation: " + shockType + " management" );
 
     }
@@ -873,11 +884,15 @@ machine InotropicSupportTherapy
                                          , 0.1
                                          , "administer 0.1-2 mcg/kg/min IV/IO infusion" );
         } else {
-          print("Sending recommendation");
-          send tabletApp, RecommendDrug, ( "Dopamine"
-                                         , "Inotropes"
-                                         , 2
-                                         , "administer 2-20 mcg/kg/min IV/IO infusion" );
+          if (shockType == "Normotensive") {
+            send tabletApp, RecommendDrug, ( "Dopamine"
+                                           , "Inotropes"
+                                           , 2
+                                           , "administer 2-20 mcg/kg/min IV/IO infusion" );
+          } else {
+            send tabletApp, Recommend, ( "recommend"
+                                       , "Shock type is indistinguishable.");
+          }
         }
       }
       goto WaitForAdministerInotrope;

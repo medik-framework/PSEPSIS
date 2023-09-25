@@ -37,6 +37,7 @@
       "name": "Recommend",
       "args": [
         "get shock type",
+        "Blood pressure is normal",
         "Recommendation: Normotensive management"
       ]
     }

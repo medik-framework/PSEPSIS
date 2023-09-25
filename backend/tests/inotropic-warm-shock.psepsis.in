@@ -42,13 +42,13 @@
     "id": "tabletApp",
     "action": "broadcast",
     "eventName": "ConfirmShockType",
-    "eventArgs": ["Cold Shock"],
+    "eventArgs": ["Warm Shock"],
     "waitFor" : {
       "name": "Recommend",
       "args": [
         "get shock type"
-        , "Pulse quality is Thready\nCapillary refill is 4\nSkin color is Gray\n"
-        , "Recommendation: Cold Shock management"
+        , "Pulse quality is Bounding\nCapillary refill is Flash\nSkin color is Flushed\n"
+        , "Recommendation: Warm Shock management"
       ]
     }
   },

@@ -47,7 +47,7 @@
       "name": "Recommend",
       "args": [
         "get shock type"
-        , "Pulse quality is Thready\nCapillary refill is 4\nSkin color is Gray\n"
+        , "Fluid overload signs indicate decreased cardiac ability to deal with increased venous pressure. Consider using epinephrine to improve cadiac contractility."
         , "Recommendation: Cold Shock management"
       ]
     }
