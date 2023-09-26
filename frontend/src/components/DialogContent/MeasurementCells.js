@@ -6,8 +6,6 @@ const MeasurementCell = ({ organName, measurementName }) => {
   const measurementConfig = OrganConfigs[organName]['measurements'][measurementName];
   const valueCombo = useSelector((state) => state.organDT[organName][measurementConfig.name]);
   const ageObject = useSelector((state) => state.patientBasic['Age']);
-  console.log(measurementName);
-  console.log(valueCombo);
   return (
     <DigitalTwinCell
       key={measurementName}
@@ -22,15 +20,9 @@ const MeasurementCell = ({ organName, measurementName }) => {
 }
 
 const MeasurementCells = ({ inputConfig, setStoreDict, setRetDict}) => {
-  console.log(inputConfig.cells);
   return (
-    <div> {
-      inputConfig.cells.map((e) => {
-        console.log(e);
-        console.log('Name is: ' + e[0]);
-        return (<MeasurementCell organName={e[0]} measurementName={e[1]} />)
-      }
-      )}
+    <div>
+      {inputConfig.cells.map((e) => <MeasurementCell key={e[1]} organName={e[0]} measurementName={e[1]} />)}
     </div>
   );
 }
