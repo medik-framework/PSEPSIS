@@ -925,16 +925,16 @@ machine InotropicSupportTherapy
 
   state WaitForAdministerInotrope {
     on ConfirmEpinephrineAdministered do {
-      sleep(30);
+      sleep(300);
       goto EvaluateInotropeResponsiveness;
     }
 
     on ConfirmNorepinephrineAdministered do {
-      sleep(30);
+      sleep(300);
       goto EvaluateInotropeResponsiveness;
     }
     on ConfirmDopamineAdministered do {
-      sleep(30);
+      sleep(300);
       goto EvaluateInotropeResponsiveness;
     }
   }
@@ -947,7 +947,7 @@ machine InotropicSupportTherapy
       send  tabletApp
           , Recommend
           , ( "get inotropic therapy next step"
-            , "Responsiveness to inotropic therapy: " + inotropeRespsonsiveness
+            , "Responsiveness to inotropic therapy: " + inotropeResponsiveness
             , "Recommendation: titrate to desired effect"
             );
       goto WaitForIntropicNextStep;
