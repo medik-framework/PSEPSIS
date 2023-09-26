@@ -34,6 +34,6 @@ class FractionEncoder(json.JSONEncoder):
 
     def default(self, obj):
         if isinstance(obj, Fraction):
-            return self.formatter.format(obj.numerator, obj.denominator)
+            return self.formatter(obj)
 
         return json.JSONEncoder.default(self, obj)

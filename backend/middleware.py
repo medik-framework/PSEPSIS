@@ -5,6 +5,7 @@ from dataclasses import asdict
 from backend_env import kompiled_exec_dir, guidelines_pgm, driver_pgm, set_env
 from wrapper import ExecutionWrapper
 from fractions import Fraction
+from utils import FractionEncoder
 
 import os
 import websockets
@@ -124,6 +125,9 @@ class MedikHandler(ExecutionWrapper):
 
 class AppProcess:
 
+    def to_app_fraction_formatter(self, fraction):
+        return str(float(fraction))
+
     def __init__(self, ws_port, to_k_queue, to_app_queue, datastore):
         self.ws_port = ws_port
         self.to_k_queue = to_k_queue
@@ -135,7 +139,11 @@ class AppProcess:
         try:
             while True:
                 to_app = await self.to_app_queue.get()
-                await websocket.send(json.dumps(to_app))
+                await websocket.send(
+                        json.dumps( to_app
+                                  , cls=functools.partial( utils.FractionEncoder
+                                                         , self.to_app_fraction_formatter)))
+
         except websockets.exceptions.ConnectionClosedError:
             await self.to_k_queue.put(_exit())
             print('Websocket connection from app closed')

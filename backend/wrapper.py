@@ -37,7 +37,7 @@ class ExecutionWrapper:
                     break;
                 logging.info('From Medik: {}'.format(json.dumps( out_json
                                                                , cls=functools.partial( utils.FractionEncoder
-                                                                                      , self.rat_fmt))))
+                                                                                      , self.rat_formatter))))
                 await self.from_k_queue.put(out_json)
         except asyncio.CancelledError:
             return None
@@ -60,7 +60,7 @@ class ExecutionWrapper:
             while True:
                 in_data = await self.to_k_queue.get()
                 in_data_str = json.dumps( in_data,separators=(',',':')
-                                        , cls=functools.partial(utils.FractionEncoder, self.rat_fmt))
+                                        , cls=functools.partial(utils.FractionEncoder, self.rat_formatter))
                 logging.info('To MediK: {}'.format(in_data_str))
                 self.k_process.stdin.write((in_data_str + '\n').encode('utf-8'))
                 await self.k_process.stdin.drain()
@@ -95,12 +95,14 @@ class ExecutionWrapper:
 
         await self.from_k_queue.put('exit')
 
+    def rat_formatter(self, fraction):
+        return '<{},{}>Rat'.format(fraction.numerator, fraction.denominator);
+
     def __init__(self, to_k_queue, from_k_queue, kompiled_exec_dir, psepsis_pgm):
         self.from_k_queue = from_k_queue
         self.to_k_queue = to_k_queue
         self.kompiled_exec_dir = kompiled_exec_dir
         self.psepsis_pgm = psepsis_pgm
-        self.rat_fmt = '<{},{}>Rat'
 
 
 class MCheckWrapper:
