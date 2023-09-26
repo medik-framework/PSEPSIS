@@ -451,5 +451,40 @@ export const DialogConfig = {
     shouldSend: true,
     withArgs: true,
     shouldStore: false
+  },
+  "get inotrope responsiveness": {
+      title: "Inotrope Responsiveness",
+      inputConfig: {
+          label: "fluid_responsiveness",
+          type: "linegraph",
+          storage: "logs/add",
+          eventName: "InotropeResponsivenessEntered",
+          actions: {
+              question: "Is patient hemodynamics improving?",
+              buttons: {
+                  Yes: {eventArgs:  [true]},
+                  No:  {eventArgs:  [false]}
+              }
+          }
+      },
+      shouldSend: true,
+      withArgs: true,
+      shouldStore: false
+  },
+  "get inotropic therapy next step": {
+    title: "Inotrope Next Step",
+    inputConfig: {
+          type: "plain",
+          actions: {
+             question: "Please decide next step:",
+              buttons: {
+                  "Repeat Inotrope": {eventName: "ConfirmRepeatInotrope" },
+                  "Transfer to Higher Care":  {eventName: "ConfirmTransferToHigherCare" }
+              }
+          }
+    },
+    shouldSend: true,
+    withArgs: false,
+    shouldStore: false
   }
 }
