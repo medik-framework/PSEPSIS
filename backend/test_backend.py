@@ -305,5 +305,10 @@ async def test_inotropic_indistinguishable(psepsis_exec_pgm):
     await run_exec_test( 'inotropic-indistinguishable'
                        , psepsis_exec_pgm )
 
+@pytest.mark.asyncio
+async def test_inotropic_indistinguishable_unavailable_data(psepsis_exec_pgm):
+    await run_exec_test( 'inotropic-indistinguishable-unavailable-data'
+                       , psepsis_exec_pgm )
+
 def test_model_check(psepsis_mcheck_pgm):
     run_mcheck_test(psepsis_mcheck_pgm, '"<stuck>true</stuck>"')

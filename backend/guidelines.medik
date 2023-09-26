@@ -851,6 +851,18 @@ machine InotropicSupportTherapy
           warmShockScore = warmShockScore + 1;
         }
       }
+
+      if (pulseQuality == undef) {
+        pulseQuality = "not entered";
+      }
+
+      if (capillaryRefill == undef) {
+        capillaryRefill = "not entered";
+      }
+      if (skinColor == undef) {
+        skinColor = "not entered";
+      }
+
       if (coldShockScore >= 3) {
         goto SuggestInotrope( "Cold Shock"
                             , "Pulse quality is " + pulseQuality + "\n"
@@ -863,6 +875,7 @@ machine InotropicSupportTherapy
                               + "Capillary refill is " + capillaryRefill + "\n"
                               + "Skin color is " + skinColor + "\n");
       }
+
       goto SuggestInotrope( "Indistinguishable shock type"
                             , "Pulse quality is " + pulseQuality + "\n"
                               + "Capillary refill is " + capillaryRefill + "\n"
@@ -872,6 +885,8 @@ machine InotropicSupportTherapy
 
   state SuggestInotrope {
     entry(shockType, message) {
+      print("Get shock type with message: " + message + "\n");
+
       send tabletApp
          , Recommend
          , ( "get shock type"
