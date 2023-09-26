@@ -27,7 +27,6 @@ function App() {
    console.log('message received on websocket', msg)
    const cleanedMsg = msg.data.replace(/'/g, '"');
    const msgJson = JSON.parse(cleanedMsg)
-   console.log(msgJson.name)
    switch (msgJson.name) {
     case "Instruct":
       dispatch({ type: "dialogs/update", payload: cleanedMsg});
@@ -83,7 +82,6 @@ function App() {
 
   const kWebSocket = useWebSocket(kWsURL, {
     onOpen: () => {
-      console.log('websocket with K Opened at ', kWsURL)
       dispatch(addEndpoint({endpointId:  'kEndpoint', endpointHandlers:kWebSocket}))
       setIsKConnActive(true)
     },

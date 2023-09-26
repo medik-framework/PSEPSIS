@@ -19,7 +19,6 @@ const PsepsisTablet = () => {
   const dialogs = useSelector((state) => state.dialogs.todo)
 
   useEffect(() => {
-    console.log("Sending start system");
     kEndpoint.sendMessage(JSON.stringify({
       'eventName':'StartScreening',
     }));
