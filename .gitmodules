@@ -1,3 +1,4 @@
 [submodule "backend/ext/medik-semantics"]
 	path = backend/ext/medik-semantics
 	url = https://github.com/medik-framework/medik-semantics.git
+  ignore = dirty

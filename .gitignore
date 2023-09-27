@@ -5,6 +5,7 @@
 /backend/static/*
 /backend/tests/*.run
 /backend/tests/*.processed
+/**/.krun*
 
 /**/node_modules
 /**/.pnp
