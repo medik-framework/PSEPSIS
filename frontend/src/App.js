@@ -11,7 +11,7 @@ import PsepsisTablet from "./PsepsisTablet";
 import WelcomePage from "./WelcomePage";
 
 import { update_all } from "./redux/reducers/organDT";
-import { setHighlight } from "./redux/reducers/highlight";
+import { setHighlight, setHighlights } from "./redux/reducers/highlight";
 import { updateTreatmentResponse } from "./redux/reducers/treatmentResponse";
 
 import { MedicationTabMapping } from "./resources/MedicationConfig";
@@ -56,6 +56,24 @@ function App() {
         tab: MedicationTabMapping[msgJson.args[1]],
         medication: msgJson.args[0],
         dose:msgJson.args[2]
+      }))
+      break;
+    case "OptionalDrugs":
+      var comboMsg = msgJson.args[3]+" or "+msgJson.args[7];
+      const msgInfo1 = {
+        args: ['recommend', comboMsg],
+        id: msgJson.id
+      }
+      dispatch({ type: "dialogs/update", payload: JSON.stringify(msgInfo1)});
+      dispatch(setHighlights({
+        tab: MedicationTabMapping[msgJson.args[1]],
+        medication: msgJson.args[0],
+        dose:msgJson.args[2]
+      }));
+      dispatch(setHighlights({
+        tab: MedicationTabMapping[msgJson.args[5]],
+        medication: msgJson.args[4],
+        dose:msgJson.args[6]
       }))
       break;
     case "Recommend":

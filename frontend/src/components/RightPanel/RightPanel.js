@@ -27,10 +27,13 @@ const MiddlePanel = () => {
                 value={idx}
                 sx={{
                   width: "100%",
-                  backgroundColor:
-                    selectedCategory === idx ? "#191970" : "#1E90FF",
+                  backgroundColor: selectedCategory === idx ? "#191970" : "#1E90FF",
                 }}
-                onClick={() => dispatch(setMedicationTab({tab: idx}))}
+                onClick={ () => 
+                  {
+                    dispatch(setMedicationTab({tab: idx}));
+                  }
+                }
               >
                 {value}
               </Button>

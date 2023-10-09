@@ -60,11 +60,26 @@ const MedicationCard = (config) => {
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
 
   useEffect(() => {
+    var foundKey = -1;
     if(highlight.highlightedMedication.includes(config.name)) {
       setIsHighlighted(true);
+      foundKey = 0;
       const idx = highlight.highlightedMedication.indexOf(config.name);
       setInputDose(highlight.suggestedDosage[idx]);
-    } else {
+    }
+    if(foundKey === -1){
+    for (const key in highlight.highlightedMedicationPairs) {
+      const values = highlight.highlightedMedicationPairs[key];
+      const index = values.indexOf(config.name);
+      if(index!==-1)
+      {
+        setIsHighlighted(true);
+        setInputDose(highlight.suggestedDosagePairs[key][index]);
+        foundKey = 0;
+      }
+      }
+    }
+    if(foundKey){
       setIsHighlighted(false);
     }
   }, [config, setIsHighlighted, setInputDose, highlight])
@@ -126,7 +141,7 @@ const MedicationCard = (config) => {
                 }));
                 if(isHighlighted){
                   dispatch(unsetHighlight(config.name));
-                }
+                  }
                 kEndpoint.sendMessage(JSON.stringify({
                   "eventName": "Confirm" + config.name.replace(/\s/g,'') + "Administered",
                   "eventArgs": []
