@@ -729,8 +729,7 @@ machine FluidTherapy
 }
 
 machine InotropicSupportTherapy
-  receives SepsisSuspected
-         , StartInotropicTherapy
+  receives StartInotropicTherapy
          , ConfirmBPObtained
          , ConfirmShockTypeMeasurementsObtained
          , ConfirmShockType
@@ -766,6 +765,7 @@ machine InotropicSupportTherapy
       this.tabletApp         = tabletApp;
       this.datastore         = datastore;
       this.measurementBounds = measurementBounds;
+      print("Inotropic Support Therapy machine created");
     }
 
     on StartInotropicTherapy do {
