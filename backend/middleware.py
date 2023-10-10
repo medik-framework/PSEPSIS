@@ -55,7 +55,7 @@ class StubProcess:
 
     async def feed_commands(self):
         for command in self.commands:
-            if command.get('name') not in ['Instruct', 'RecommendDrug', 'Recommend']:
+            if command.get('name') not in ['Instruct', 'RecommendDrug', 'Recommend', 'AlternativeDrugs']:
                 continue
             await self.feed_event.wait()
             await self.to_app_queue.put(command)

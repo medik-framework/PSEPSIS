@@ -54,23 +54,19 @@ function App() {
         dose:msgJson.args[2]
       }))
       break;
-    case "OptionalDrugs":
-      var comboMsg = msgJson.args[3]+" or "+msgJson.args[7];
-      const msgInfo1 = {
-        args: ['recommend', comboMsg],
+    case "AlternativeDrugs":
+      const multiInfo = {
+        args: ['recommend', msgJson.args[0]],
         id: msgJson.id
       }
-      dispatch({ type: "dialogs/update", payload: JSON.stringify(msgInfo1)});
-      dispatch(setHighlights({
-        tab: MedicationTabMapping[msgJson.args[1]],
-        medication: msgJson.args[0],
-        dose:msgJson.args[2]
-      }));
-      dispatch(setHighlights({
-        tab: MedicationTabMapping[msgJson.args[5]],
-        medication: msgJson.args[4],
-        dose:msgJson.args[6]
-      }))
+      dispatch({ type: "dialogs/update", payload: JSON.stringify(multiInfo)});
+      for (let i = 1; i < msgJson.args.length; i += 3) {
+        dispatch(setHighlights({
+          tab: MedicationTabMapping[msgJson.args[i+1]],
+          medication: msgJson.args[i],
+          dose:msgJson.args[i+2]
+        }));
+      }
       break;
     case "Recommend":
       dispatch({ type: "dialogs/update", payload: cleanedMsg});

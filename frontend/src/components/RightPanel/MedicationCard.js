@@ -15,14 +15,14 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     width: "100%",
   },
-  card:{
+  card: {
     borderRight: "solid 1px",
     borderBottom: "solid 1px",
     borderColor: "black",
     borderRadius: "2px",
     height: "auto"
   },
-  box:{
+  box: {
     display: "block",
     height: "100%",
     marginLeft: "10px",
@@ -61,46 +61,45 @@ const MedicationCard = (config) => {
 
   useEffect(() => {
     var foundKey = -1;
-    if(highlight.highlightedMedication.includes(config.name)) {
+    if (highlight.highlightedMedication.includes(config.name)) {
       setIsHighlighted(true);
       foundKey = 0;
       const idx = highlight.highlightedMedication.indexOf(config.name);
       setInputDose(highlight.suggestedDosage[idx]);
     }
-    if(foundKey === -1){
-    for (const key in highlight.highlightedMedicationPairs) {
-      const values = highlight.highlightedMedicationPairs[key];
-      const index = values.indexOf(config.name);
-      if(index!==-1)
-      {
-        setIsHighlighted(true);
-        setInputDose(highlight.suggestedDosagePairs[key][index]);
-        foundKey = 0;
-      }
+    if (foundKey === -1) {
+      for (const key in highlight.highlightedMedicationPairs) {
+        const values = highlight.highlightedMedicationPairs[key];
+        const index = values.indexOf(config.name);
+        if (index !== -1) {
+          setIsHighlighted(true);
+          setInputDose(highlight.suggestedDosagePairs[key][index]);
+          foundKey = 0;
+        }
       }
     }
-    if(foundKey){
+    if (foundKey) {
       setIsHighlighted(false);
     }
   }, [config, setIsHighlighted, setInputDose, highlight])
 
   const msecondToString = (msec) => {
-    let min = Math.floor(Math.round(msec/1000)/60);
-    let minstr = min >= 10 ?  min : '0' + min;
-    let sec = Math.round(msec/1000) % 60;
+    let min = Math.floor(Math.round(msec / 1000) / 60);
+    let minstr = min >= 10 ? min : '0' + min;
+    let sec = Math.round(msec / 1000) % 60;
     let secstr = sec >= 10 ? sec : '0' + sec;
-    return minstr +':'+ secstr
+    return minstr + ':' + secstr
   }
 
   useInterval(() => {
-    if(lastts) {
+    if (lastts) {
       setTimeDiff(msecondToString(new Date().getTime() - lastts))
     }
   }, 1000);
 
   return (
     <Grid item xs={6}
-      sx={{ background: isHighlighted ? "yellow":"lightcyan" }}
+      sx={{ background: isHighlighted ? "yellow" : "lightcyan" }}
       className={classes.card}
       key={config.name}
     >
@@ -111,11 +110,11 @@ const MedicationCard = (config) => {
             freeSolo
             key={config.name}
             options={config.dosage}
-            renderInput={(params) => <TextField {...params} label="dosage"/>}
+            renderInput={(params) => <TextField {...params} label="dosage" />}
             value={dose}
-            onChange={(e,v) => setDose(v)}
+            onChange={(e, v) => setDose(v)}
             inputValue={inputDose}
-            onInputChange={(e,v) => {
+            onInputChange={(e, v) => {
               setDose(v)
               setInputDose(v)
             }}
@@ -134,23 +133,23 @@ const MedicationCard = (config) => {
           <Button
             className={classes.button}
             onClick={() => {
-                const ts = new Date().getTime();
-                dispatch(add({
-                  'timestamp': ts,
-                  'name'     : config.name
-                }));
-                if(isHighlighted){
-                  dispatch(unsetHighlight(config.name));
-                  }
-                kEndpoint.sendMessage(JSON.stringify({
-                  "eventName": "Confirm" + config.name.replace(/\s/g,'') + "Administered",
-                  "eventArgs": []
-                }))
-                kEndpoint.sendMessage(JSON.stringify({
-                  "destination": "datastore",
-                  "eventName": "record_dose",
-                  "eventArgs": [config.name, ts, dose]
-                }))
+              const ts = new Date().getTime();
+              dispatch(add({
+                'timestamp': ts,
+                'name': config.name
+              }));
+              if (isHighlighted) {
+                dispatch(unsetHighlight(config.name));
+              }
+              kEndpoint.sendMessage(JSON.stringify({
+                "eventName": "Confirm" + config.name.replace(/\s/g, '') + "Administered",
+                "eventArgs": []
+              }))
+              kEndpoint.sendMessage(JSON.stringify({
+                "destination": "datastore",
+                "eventName": "record_dose",
+                "eventArgs": [config.name, ts, dose]
+              }))
             }}
           >
             Give
@@ -176,9 +175,9 @@ const ComboEntry = ({ drug, order, setOrder }) => {
         }}
         key={drug.name}
         options={drug.dosage}
-        renderInput={(params) => <TextField {...params} label="dosage"/>}
+        renderInput={(params) => <TextField {...params} label="dosage" />}
         value={order[drug.name].dose}
-        onChange={(e,v) => setOrder({
+        onChange={(e, v) => setOrder({
           ...order,
           [drug.name]: {
             ...order[drug.name],
@@ -186,7 +185,7 @@ const ComboEntry = ({ drug, order, setOrder }) => {
           }
         })}
         inputValue={order[drug.name].inputDose}
-        onInputChange={(e,v) => setOrder({
+        onInputChange={(e, v) => setOrder({
           ...order,
           [drug.name]: {
             ...order[drug.name],
@@ -214,26 +213,26 @@ export const ComboCard = ({ config }) => {
   const dispatch = useDispatch();
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
 
-  return(
+  return (
     <Grid item xs={12} className={classes.card} key={config.title}>
       <Typography className={classes.title}>{config.title}</Typography>
       {config.drugs.map((drug, idx) =>
-        <ComboEntry key={idx} {...{ drug, order , setOrder }}/>
+        <ComboEntry key={idx} {...{ drug, order, setOrder }} />
       )}
       <Button
         className={classes.button}
-        sx ={{marginRight: "10px", marginBottom:"10px"}}
+        sx={{ marginRight: "10px", marginBottom: "10px" }}
         onClick={() => {
           const ts = new Date().getTime();
           for (const drug of config.drugs) {
             dispatch(add({
               'timestamp': ts,
-              'name'     : drug.name
+              'name': drug.name
             }));
             kEndpoint.sendMessage(JSON.stringify({
               "destination": "datastore",
               "eventName": "record_dose",
-              "eventArgs": [drug.name, ts,  order[drug.name].dose]
+              "eventArgs": [drug.name, ts, order[drug.name].dose]
             }));
           }
         }}
