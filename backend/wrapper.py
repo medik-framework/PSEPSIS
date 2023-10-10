@@ -72,7 +72,7 @@ class ExecutionWrapper:
             return None
 
     async def launch(self):
-        k_command = ( 'krun' , ['-d' , str(self.kompiled_exec_dir.resolve())
+        k_command = ( 'krun' , ['--definition' , str(self.kompiled_exec_dir.resolve())
                              , '--output' , 'none'
                              , str(self.psepsis_pgm.resolve()) ])
         tasks = None
