@@ -70,6 +70,12 @@ function App() {
         data: msgJson
       }))
       break;
+     case "ShockDiagnosis":
+       dispatch(updateDiagnosis({
+         "name": "septicShock",
+         "value": msgJson.args[0]
+       }))
+       break;
     default:
       console.log("Message not recognized: ", msgJson.name)
    }
