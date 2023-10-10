@@ -216,29 +216,29 @@ export const ComboCard = ({ config }) => {
   return (
     <Grid item xs={12} className={classes.card} key={config.title}>
       <Typography className={classes.title}>{config.title}</Typography>
-      {config.drugs.map((drug, idx) =>
-        <ComboEntry key={idx} {...{ drug, order, setOrder }} />
-      )}
-      <Button
-        className={classes.button}
-        sx={{ marginRight: "10px", marginBottom: "10px" }}
-        onClick={() => {
-          const ts = new Date().getTime();
-          for (const drug of config.drugs) {
-            dispatch(add({
-              'timestamp': ts,
-              'name': drug.name
-            }));
-            kEndpoint.sendMessage(JSON.stringify({
-              "destination": "datastore",
-              "eventName": "record_dose",
-              "eventArgs": [drug.name, ts, order[drug.name].dose]
-            }));
-          }
-        }}
-      >
-        Give
-      </Button>
+      {config.drugs.map((drug, idx) => (
+        <div key={idx} style={{ display: 'block', marginBottom: '60px' }}>
+          <ComboEntry {...{ drug, order, setOrder }} />
+          <Button
+            className={classes.button}
+            sx={{ marginRight: '10px' }}
+            onClick={() => {
+              const ts = new Date().getTime();
+              dispatch(add({
+                'timestamp': ts,
+                'name': drug.name
+              }));
+              kEndpoint.sendMessage(JSON.stringify({
+                'destination': 'datastore',
+                'eventName': 'record_dose',
+                'eventArgs': [drug.name, ts, order[drug.name].dose]
+              }));
+            }}
+          >
+            Give
+          </Button>
+        </div>
+      ))}
     </Grid>
   )
 }
