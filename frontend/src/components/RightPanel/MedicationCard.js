@@ -55,14 +55,14 @@ const MedicationCard = (config) => {
   const count = useSelector((state) => state.drug[config.name].count);
   const lastts = useSelector((state) => state.drug[config.name].lastts);
   const dispatch = useDispatch();
-  const [isHighlighted, setIsHighlighted] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(0);
   const highlight = useSelector((state) => state.highlight);
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
 
   useEffect(() => {
     var foundKey = -1;
     if (highlight.highlightedMedication.includes(config.name)) {
-      setIsHighlighted(true);
+      setIsHighlighted(1);
       foundKey = 0;
       const idx = highlight.highlightedMedication.indexOf(config.name);
       setInputDose(highlight.suggestedDosage[idx]);
@@ -72,7 +72,7 @@ const MedicationCard = (config) => {
         const values = highlight.highlightedMedicationPairs[key];
         const index = values.indexOf(config.name);
         if (index !== -1) {
-          setIsHighlighted(true);
+          setIsHighlighted(2);
           setInputDose(highlight.suggestedDosagePairs[key][index]);
           foundKey = 0;
         }
@@ -99,7 +99,7 @@ const MedicationCard = (config) => {
 
   return (
     <Grid item xs={6}
-      sx={{ background: isHighlighted ? "yellow" : "lightcyan" }}
+      sx={{ background: isHighlighted === 1 ? "yellow" : isHighlighted === 2 ? "orange" : "lightcyan" }}
       className={classes.card}
       key={config.name}
     >
