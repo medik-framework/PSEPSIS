@@ -89,7 +89,7 @@ class OrganDt:
     def get_vitals_age_group(self, days):
         if days < 28:
             return 1
-        elif days < 60:
+        elif days < 90:
             return 2
         elif days < 356:
             return 3
@@ -137,7 +137,7 @@ class OrganDt:
             threshold = Threshold.getThreshold(meas, self.age['ageInYears'], self.age['vitalAgeGroup'], self.age['shockAgeGroup'])
             if value > threshold['high'] or value < threshold['low']:
                 return False
-            if value < threshold['high'] and value > threshold['low']:
+            else:
                 return True
 
     def update(self, meas: str, time: int, val: float, config: dict):

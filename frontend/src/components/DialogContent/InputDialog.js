@@ -122,7 +122,7 @@ const InputDialog = ({ open, setOpen, info }) => {
       data.destination = 'datastore'
       data.eventArgs = []
       data.eventArgs[0] = storeDict.label
-      data.eventArgs[1] = storeDict.value
+      data.eventArgs[1] = retDict.eventArgs[0]
       kEndpoint.sendMessage(JSON.stringify(data));
     }
     if(info.id) {
