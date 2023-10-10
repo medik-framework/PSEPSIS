@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import {  Button, Grid, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 
 import MedicationTable, { AntibioticsSetTable } from "./MedicationTable";
 
@@ -29,10 +29,7 @@ const MiddlePanel = () => {
                   width: "100%",
                   backgroundColor: selectedCategory === idx ? "#191970" : "#1E90FF",
                 }}
-                onClick={ () => 
-                  {
-                    dispatch(setMedicationTab({tab: idx}));
-                  }
+                onClick={() => dispatch(setMedicationTab({ tab: idx }))
                 }
               >
                 {value}
@@ -41,7 +38,7 @@ const MiddlePanel = () => {
           );
         })}
       </Grid>
-      {selectedCategory !== 3 && <MedicationTable {...{selectedCategory}}/>}
+      {selectedCategory !== 3 && <MedicationTable {...{ selectedCategory }} />}
       {selectedCategory === 3 && <AntibioticsSetTable />}
     </div>
   );
