@@ -549,7 +549,7 @@ machine SepticShockScreening
       var temp = obtainFrom(datastore, "Temp");
       var coreTemp = obtainFrom(datastore, "Core Temp");
 
-      if (!((temp == undef) && (coreTemp == undef))) {
+      if ((!(temp == undef)) && (!(coreTemp == undef))) {
         if ((coreTemp - temp) > 3) {
           perfusion = perfusion + 1;
         }
