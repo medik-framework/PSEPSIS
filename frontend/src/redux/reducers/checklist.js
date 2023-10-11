@@ -24,9 +24,14 @@ const checklistsSlice =  createSlice({
     },
     update: (state, action) => {
       state[action.payload.checklistName] = action.payload.checkedItems;
+    },
+    set: (state, action) => {
+      const checklistName = action.payload.checklist;
+      const checkitemName = action.payload.item;
+      state[checklistName].push(checkitemName);
     }
   }
 });
 
-export const { toggle, update } = checklistsSlice.actions
+export const { toggle, update, set } = checklistsSlice.actions
 export default checklistsSlice.reducer

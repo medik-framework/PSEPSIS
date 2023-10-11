@@ -37,4 +37,20 @@ export const checklists = {
     "Large Surgical Incisions/ Serious Injury",
     "Obvious Source of Infection",
   ],
+  "Antibiotics Secondary Conditions":[
+    "Strong concerns of GU source infection?",
+    "Strong concerns of GI source infection?",
+    "Does the patient have a history of infections with resistance to Cephalosporins or Carbapenams?",
+    "Strong concerns of fungal infection?",
+    "Strong concerns of rickettsial infection?",
+    "Strong concerns of HSV infection?"
+  ],
+  "Antibiotics Secondary Conditions events":[
+    "GUConcernEntered",
+    "GIConcernEntered",
+    "CefepimeCeftazidimeCarbapenamResistanceEntered",
+    "FungalConcernEntered",
+    "RickettsialConcernEntered",
+    "HSVConcernEntered"
+  ]
 };

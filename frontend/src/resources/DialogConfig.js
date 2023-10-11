@@ -386,7 +386,7 @@ export const DialogConfig = {
         "Does patient have contra-indication to penicillins?",
         "Did patient recently receive broad-spectrum antibiotics?",
         "Strong concern for ESBL prevalence?",
-        "Strong concern for staphylococcus prevalence?"
+        "Strong concerns of Methicillin resistant Staphylococcus aureus Infection?"
       ],
       eventName: "AntibioticsPrimaryConditionsEntered"
     },

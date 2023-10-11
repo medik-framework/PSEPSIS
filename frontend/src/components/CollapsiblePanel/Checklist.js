@@ -1,70 +1,59 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggle } from "../../redux/reducers/checklist.js"
+import { set } from "../../redux/reducers/checklist.js"
 import { checklists } from "../../resources/ChecklistConfig.js"
 
 import {
-  TextField,
-  MenuItem,
   Checkbox,
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
 
-export default function Checklist() {
-  const [checklistName, setChecklistName] = useState(
-    Object.keys(checklists)[0]
-  );
-
+const Checklist = ({ checklistName }) => {
   const dispatch = useDispatch();
-
+  const items = checklists[checklistName];
   const checkedItems = useSelector((state) => state.checklist);
+  const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
 
   const checkItem = (label) => {
-    dispatch(toggle({
-      checklist: checklistName,
-      item: label,
-    }));
+    if (checkedItems[checklistName].includes(label)) {
+      return;
+    } else {
+      dispatch(set({
+        checklist: checklistName,
+        item: label,
+      }));
+      if (Object.keys(checklists).includes(checklistName + " events")) {
+        const idx = items.findIndex(i => i === label);
+        const eventName = checklists[checklistName + " events"][idx];
+        const data = {
+          'source': 1,
+          "timestamp": Date.now(),
+          "eventName": eventName,
+          "eventArgs": []
+        }
+        kEndpoint.sendMessage(JSON.stringify(data));
+      }
+    }
   };
 
   return (
-    <div>
-      <TextField
-        select
-        fullWidth
-        value={checklistName}
-        sx={{
-          marginTop: "10px",
-        }}
-        onChange={(event) => setChecklistName(event.target.value)}
-      >
-        {Object.keys(checklists).map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
-      <FormGroup>
-        {checklists[checklistName].map((value) => {
-          return (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={checkedItems[checklistName]?.includes(value)}
-                />
-              }
-              label={value}
-              onChange={() => checkItem(value)}
-              sx={{
-                backgroundColor: checkedItems[checklistName]?.includes(value)
-                  ? "yellow"
-                  : "white",
-              }}
-              key={value}
-            />
-          );
-        })}
-      </FormGroup>
-    </div>
+    <FormGroup>
+      {items.map((value) => {
+        return (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checkedItems[checklistName]?.includes(value)}
+              />
+            }
+            label={value}
+            onChange={() => checkItem(value)}
+            key={value}
+          />
+        );
+      })}
+    </FormGroup>
   );
 }
+
+export default Checklist;
