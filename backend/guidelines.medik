@@ -831,7 +831,7 @@ machine InotropicSupportTherapy
       var isHypotensive = checkHypotensive();
       if (!(isHypotensive)) {
         goto SuggestInotrope( "Normotensive"
-                            , "Blood pressure is normal");
+                            , "Blood pressure is not hypotensive");
       }
       goto ObtainShockTypeMeasurements;
     }
