@@ -43,7 +43,7 @@ export const DialogConfig = {
         shouldStore: true
     },
     "get 3 bucket measurements": {
-        title: "OSF 3 Bucket Tree",
+        title: "OSF Sepsis Screening",
         inputConfig: {
             lable:"",
             type: "threebucket",

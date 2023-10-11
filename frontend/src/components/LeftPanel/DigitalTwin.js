@@ -51,7 +51,7 @@ const PaitentBasic = () => {
           setOpen(true);
         }}
       >
-        3 Bucket Tree
+        Sepsis Screening
       </Button>
       {open && <InputDialog {...{ open, setOpen, info }}/>}
     </Grid>
