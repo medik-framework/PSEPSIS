@@ -621,24 +621,58 @@ machine FluidTherapy
 
   state SuggestFluidDosage {
     entry {
-      if ( (!(measurementBounds.fluidOverloadRisks == 0))
-          || (measurementBounds.age < days(28))) {
-        send  tabletApp
-            , RecommendDrug
-            , ( "Normal Saline"
-              , "Fluid Therapy"
-              , "5"
-              , "administer 5-10 ml/kg Normal Saline" );
-        goto WaitForAdministerFluidConfirmation;
+      var normalSalineCount = obtainFrom(datastore, "Normal Saline Count");
+      var lactatedRingerCount = obtainFrom(datastore, "Lactated Ringer Count");
+
+      var shouldReduceDose =   (!(measurementBounds.fluidOverloadRisks == 0))
+                            || (measurementBounds.age < days(28));
+
+      if ((normalSalineCount + lactatedRingerCount) == 0) {
+        if (shouldReduceDose) {
+          send  tabletApp
+              , AlternativeDrugs
+              , ( "Administer 5-10 ml/kg Normal Saline or Lactated Ringer."
+                , "Normal Saline"
+                , "Fluid Therapy"
+                , "5"
+                , "Lactated Ringer"
+                , "Fluid Therapy"
+                , "5" );
+        } else {
+          send  tabletApp
+              , AlternativeDrugs
+              , ( "Administer 20 ml/kg Normal Saline or Lactated Ringer."
+                , "Normal Saline"
+                , "Fluid Therapy"
+                , "20"
+                , "Lactated Ringer"
+                , "Fluid Therapy"
+                , "20" );
+        }
       } else {
-        send  tabletApp
-            , RecommendDrug
-            , ( "Normal Saline"
-              , "Fluid Therapy"
-              , "20"
-              , "administer 20 ml/kg Normal Saline" );
-        goto WaitForAdministerFluidConfirmation;
+        if (shouldReduceDose) {
+          send  tabletApp
+              , AlternativeDrugs
+              , ( "Administer 5-10 ml/kg Lactated Ringer. Normal Saline is also allowed."
+                , "Normal Saline"
+                , "Fluid Therapy"
+                , "5"
+                , "Lactated Ringer"
+                , "Fluid Therapy"
+                , "5" );
+        } else {
+          send  tabletApp
+              , AlternativeDrugs
+              , ( "Administer 20 ml/kg Lactated Ringer. Normal Saline is also allowed."
+                , "Normal Saline"
+                , "Fluid Therapy"
+                , "20"
+                , "Lactated Ringer"
+                , "Fluid Therapy"
+                , "20" );
+        }
       }
+      goto WaitForAdministerFluidConfirmation;
     }
   }
 
@@ -694,7 +728,9 @@ machine FluidTherapy
         if (isResponsiveToFluids) {
           recommendation = "Repeat bolus until patient stable.";
         } else {
-          var totalSalineDose = obtainFrom(datastore, "Normal Saline");
+          var totalNormalSalineDose = obtainFrom(datastore, "Normal Saline");
+          var totalLactatedRingerDose = obtainFrom(datastore, "Lactated Ringer");
+          var totalSalineDose = totalNormalSalineDose + totalLactatedRingerDose;
           if (totalSalineDose > measurementBounds.salineDosageUpperBound) {
             recommendation = "Consider intrope while giving one more fluid bolus.";
             broadcast ConsiderInotropicSupport;

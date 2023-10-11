@@ -34,14 +34,29 @@
     "args": []
   },
   {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Normal Saline Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Lactated Ringer Count"]
+  },
+  {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "AlternativeDrugs",
     "args": [
+      "Administer 20 ml/kg Normal Saline or Lactated Ringer.",
       "Normal Saline",
       "Fluid Therapy",
       "20",
-      "administer 20 ml/kg Normal Saline"
+      "Lactated Ringer",
+      "Fluid Therapy",
+      "20"
     ]
   },
   {
@@ -63,6 +78,12 @@
     "args": ["Normal Saline"]
   },
   {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Lactated Ringer"]
+  },
+  {
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "Recommend",
@@ -74,14 +95,29 @@
     ]
   },
   {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Normal Saline Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Lactated Ringer Count"]
+  },
+  {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "AlternativeDrugs",
     "args": [
+      "Administer 20 ml/kg Lactated Ringer. Normal Saline is also allowed.",
       "Normal Saline",
       "Fluid Therapy",
       "20",
-      "administer 20 ml/kg Normal Saline"
+      "Lactated Ringer",
+      "Fluid Therapy",
+      "20"
     ]
   }
 ]

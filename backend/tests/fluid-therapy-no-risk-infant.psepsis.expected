@@ -34,14 +34,29 @@
     "args": []
   },
   {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Normal Saline Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Lactated Ringer Count"]
+  },
+  {
     "id": "tabletApp",
     "interface": "TabletApp",
-    "name": "RecommendDrug",
+    "name": "AlternativeDrugs",
     "args": [
+      "Administer 5-10 ml/kg Normal Saline or Lactated Ringer.",
       "Normal Saline",
       "Fluid Therapy",
       "5",
-      "administer 5-10 ml/kg Normal Saline"
+      "Lactated Ringer",
+      "Fluid Therapy",
+      "5"
     ]
   }
 ]

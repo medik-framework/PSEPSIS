@@ -43,14 +43,17 @@
     "eventName": "ConfirmNormalSalineAdministered",
     "eventArgs": [],
     "waitFor" : {
-      "name": "RecommendDrug",
-      "args": [
-        "Normal Saline",
-        "Fluid Therapy",
-        "20",
-        "administer 20 ml/kg Normal Saline"
-      ]
-    }
+      "name": "AlternativeDrugs"
+    },
+    "updateData": [
+      {
+        "name": "Normal Saline Count",
+        "args": 1
+      }, {
+        "name": "Normal Saline",
+        "args": 20
+      }
+    ]
   },
   {
     "id": "tabletApp",
@@ -88,13 +91,7 @@
   {
     "action": "exit",
     "waitFor": {
-      "name": "RecommendDrug",
-      "args": [
-        "Normal Saline",
-        "Fluid Therapy",
-        "20",
-        "administer 20 ml/kg Normal Saline"
-      ]
+      "name": "AlternativeDrugs"
     }
   }
 ]

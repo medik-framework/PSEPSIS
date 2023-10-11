@@ -58,7 +58,8 @@ async def do_send(to_k_queue, data, msg):
     if 'waitFor' in msg.keys():
         msg.pop('waitFor')
     if 'updateData' in msg.keys():
-        data.set_value(msg['updateData']['name'], msg['updateData']['args'])
+        for update_msg in msg['updateData']:
+            data.set_value(update_msg['name'], update_msg['args'])
         msg.pop('updateData')
 
     await to_k_queue.put([msg])

@@ -236,13 +236,17 @@ class Datastore:
     def get_value(self, value_name):
         if not ((value_name in self.measurements)
                 or (value_name in self.drugs)
-                or (value_name in self.patient_info)):
+                or (value_name in self.patient_info)
+                or (value_name.replace(' Count','') in self.drugs)):
             raise KeyError(value_name)
 
         if value_name in self.measurements:
             return self.float_to_rats(self.organ_dt.get_value(value_name))
         elif value_name in self.drugs:
             return self.float_to_rats(self.drug_hist.get_total_dose(value_name))
+        elif value_name.endswith('Count'):
+            drug_name = value_name.replace(' Count','')
+            return self.drug_hist.get_dose_count(drug_name)
         return self.float_to_rats(self.patient.get_value(value_name))
 
     def record_dose(self, drug_name, timestamp, dose):
