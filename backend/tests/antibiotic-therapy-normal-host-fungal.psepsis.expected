@@ -1,0 +1,44 @@
+[
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmAgeEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConfirmWeightEntered",
+    "args": []
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Instruct",
+    "args": ["get antibiotics primary conditions"]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "RecommendDrug",
+    "args": [
+        "Children > 28 days who are normal hosts",
+        "OSF Antibiotics Set",
+        "drug combination",
+        "vancomycin (15 mg/kg, maximum 1 to 2 g, for the initial dose)",
+        "PLUS cefotaxime (100 mg/kg, maximum 2 g, for the inital dose) OR ceftriaxone (75 mg/kg, maximum 2 g, for the initial dose)"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "RecommendDrug",
+    "args": [
+      "Patients at increased risk of fungal infection",
+      "OSF Antibiotics Set",
+      "drug combination",
+      "Add liposomal amphotericin B or an echinocandin (e.g., caspofungin, micafungin) to the antimicrobial regimen"
+    ]
+  }
+]
+

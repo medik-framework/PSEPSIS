@@ -242,6 +242,11 @@ async def test_antibiotic_therapy_normal_host(psepsis_exec_pgm):
                       , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
+async def test_antibiotic_therapy_normal_host_fungal(psepsis_exec_pgm):
+    await run_exec_test( 'antibiotic-therapy-normal-host-fungal'
+                      , psepsis_exec_pgm)
+
+@pytest.mark.asyncio
 async def test_antibiotic_therapy_immunosuppressed_esbl_cccresistant(psepsis_exec_pgm):
     await run_exec_test( 'antibiotic-therapy-immunosuppressed-esbl-cccresistant'
                        , psepsis_exec_pgm)
