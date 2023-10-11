@@ -71,7 +71,7 @@
     "name": "Recommend",
     "args": [
       "get shock type"
-      , "Pulse quality is Bounding\nCapillary refill is 4\nSkin color is Gray\n"
+      , "Pulse quality is Bounding;\nCapillary refill is 4;\nSkin color is Gray;\n"
       , "Recommendation: Indistinguishable shock type management"
     ]
   },

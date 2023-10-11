@@ -47,7 +47,7 @@
       "name": "Recommend",
       "args": [
         "get shock type"
-        , "Pulse quality is Bounding\nCapillary refill is Flash\nSkin color is Flushed\n"
+        , "Pulse quality is Bounding;\nCapillary refill is Flash;\nSkin color is Flushed;\n"
         , "Recommendation: Warm Shock management"
       ]
     }

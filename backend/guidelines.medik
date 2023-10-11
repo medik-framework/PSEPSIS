@@ -909,21 +909,21 @@ machine InotropicSupportTherapy
 
       if (coldShockScore >= 3) {
         goto SuggestInotrope( "Cold Shock"
-                            , "Pulse quality is " + pulseQuality + "\n"
-                              + "Capillary refill is " + capillaryRefill + "\n"
-                              + "Skin color is " + skinColor + "\n");
+                            , "Pulse quality is " + pulseQuality + ";\n"
+                              + "Capillary refill is " + capillaryRefill + ";\n"
+                              + "Skin color is " + skinColor + ";\n");
       }
       if (warmShockScore >= 3) {
         goto SuggestInotrope("Warm Shock"
-                            , "Pulse quality is " + pulseQuality + "\n"
-                              + "Capillary refill is " + capillaryRefill + "\n"
-                              + "Skin color is " + skinColor + "\n");
+                            , "Pulse quality is " + pulseQuality + ";\n"
+                              + "Capillary refill is " + capillaryRefill + ";\n"
+                              + "Skin color is " + skinColor + ";\n");
       }
 
       goto SuggestInotrope( "Indistinguishable shock type"
-                            , "Pulse quality is " + pulseQuality + "\n"
-                              + "Capillary refill is " + capillaryRefill + "\n"
-                              + "Skin color is " + skinColor + "\n");
+                            , "Pulse quality is " + pulseQuality + ";\n"
+                              + "Capillary refill is " + capillaryRefill + ";\n"
+                              + "Skin color is " + skinColor + ";\n");
     }
   }
 
