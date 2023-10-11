@@ -561,7 +561,7 @@ machine SepticShockScreening
         shockPositiveSteps(tabletApp);
       } else {
         send tabletApp, ShockDiagnosis, (false);
-        sleep(60);
+        sleep(30);
         goto CheckFluidBolus;
       }
     }
@@ -684,12 +684,12 @@ machine FluidTherapy
     }
     on ConfirmNormalSalineAdministered do {
       // Wait for fluid responsiveness
-      sleep(300);
+      sleep(120);
       goto EvaluateResponsiveness;
     }
     on ConfirmLactatedRingerAdministered do {
       // Wait for fluid responsiveness
-      sleep(300);
+      sleep(120);
       goto EvaluateResponsiveness;
     }
   }
@@ -969,16 +969,16 @@ machine InotropicSupportTherapy
 
   state WaitForAdministerInotrope {
     on ConfirmEpinephrineAdministered do {
-      sleep(300);
+      sleep(120);
       goto EvaluateInotropeResponsiveness;
     }
 
     on ConfirmNorepinephrineAdministered do {
-      sleep(300);
+      sleep(120);
       goto EvaluateInotropeResponsiveness;
     }
     on ConfirmDopamineAdministered do {
-      sleep(300);
+      sleep(120);
       goto EvaluateInotropeResponsiveness;
     }
   }
