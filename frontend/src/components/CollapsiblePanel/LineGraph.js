@@ -166,6 +166,7 @@ function DrawAllLine(responseData) {
                     treatmentData: treatmentData
                 }}/>
             })}
+            <div>If RR increases and SpO2 decreases, assess fluid overload.</div>
         </div>
     )
 
