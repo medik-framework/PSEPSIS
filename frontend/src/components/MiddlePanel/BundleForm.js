@@ -10,20 +10,6 @@ import {
 
 import { start } from "../../redux/reducers/treatment"
 
-// const bundleList = [
-//   "Start continuous cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
-//   "Respiratory interventions. Administer oxygen to maintain SpO2 of at least 94%",
-//   "Obtain IV/IO",
-//   "POCT Lactic Acid / Blood Gas",
-//   "Complete Blood Count (CBC) WITH Diff",
-//   "Comprehensive Metablic Panel (CMP)",
-//   "Culture",
-//   "Give antibiotics",
-//   "Consider fluid resuscitation",
-//   "Infection Source Control. Consider diagnostic imaging based on patient's clinical exam",
-//   "Consider inotropic support early",
-// ];
-
 const bundleList = [
   "Continuous cardiorespiratiory monitoring (pulse oximetry, HR, BP)",
   "Respiratory: Administer high-flow oxygen to maintain SpO2 >= 94%",
@@ -93,15 +79,12 @@ const BundleForm = () => {
               item
               key={idx}
               xs={12}
-              sx={{
-                backgroundColor: (checkedIdx >> idx) & 1 ? "yellow" : "white",
-              }}
             >
               <FormControlLabel
                 control={<Checkbox checked={ Boolean((checkedIdx >> idx) & 1) } />}
                 label={value}
                 onChange={() => {
-                  updateCheckedIdx(checkedIdx ^ (1 << idx));
+                  updateCheckedIdx(checkedIdx | (1 << idx));
                   startTimerIfNotStarted();
                 }}
               />
@@ -113,7 +96,6 @@ const BundleForm = () => {
       <Grid
         item
         xs={12}
-        sx={{ backgroundColor: ventilationChecked ? "yellow" : "white" }}
       >
         <FormControlLabel
           control={<Checkbox checked={ventilationChecked} />}
