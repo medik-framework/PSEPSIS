@@ -495,7 +495,9 @@ machine SepticShockScreening
   state CheckFluidBolus {
     entry {
 
-      var fluidDose = obtainFrom(datastore, "Normal Saline");
+      var normalSalineDose = obtainFrom(datastore, "Normal Saline");
+      var lactatedRingerDose = obtainFrom(datastore, "Lactated Ringer");
+      var fluidDose = normalSalineDose + lactatedRingerDose;
 
       if ((fluidDose == undef) || (fluidDose < 40)) {
         sleep(10);
@@ -700,6 +702,12 @@ machine FluidTherapy
     on FluidResponsivenessEntered(responsiveness) do {
       this.isResponsiveToFluids = responsiveness;
       goto ObtainFluidOverloadSigns;
+    }
+    on ConfirmNormalSalineAdministered do {
+      goto EvaluateResponsiveness;
+    }
+    on ConfirmLactatedRingerAdministered do {
+      goto EvaluateResponsiveness;
     }
   }
 
