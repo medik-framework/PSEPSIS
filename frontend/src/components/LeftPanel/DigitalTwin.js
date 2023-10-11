@@ -76,7 +76,12 @@ const DigitalTwinCell = ({ measurement, valueCombo, organName, ageObject}) => {
     if (!value && value !== 0) return null;
     if (oname === 'Neurologic' && measurement.type === 'choices'){
       return measurement.options[value];
-    } else return value;
+    } else {
+      if (typeof(value) === 'number') {
+        return +value.toFixed(2)
+      }
+      return value
+    }
   }
 
   const [timeDiff, setTimeDiff] = useState(null);
