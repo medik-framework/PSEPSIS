@@ -10,7 +10,7 @@ const CollapsiblePanel = () => {
   const [open, setOpen] = useState(false);
   const anchorEl = useRef(null);
 
-  const buttons = ["references", "Hemodynamics line graph", "Antibiotics secondary conditions"];
+  const buttons = ["references", "Hemodynamics line graph", "Infection sources"];
 
   return (
     <div style={{ height: "100vh" }} ref={anchorEl}>
@@ -21,6 +21,7 @@ const CollapsiblePanel = () => {
               sx={{
                 height: "50px",
                 width: "100%",
+                padding: "5px"
               }}
               onClick={() => {
                 setSelectedButton(value);
@@ -48,7 +49,7 @@ const CollapsiblePanel = () => {
         <div style={{ width: "33vw", height: "100vh" }}>
           {selectedButton === "references" && <Reference />}
           {selectedButton === "Hemodynamics line graph" && <LineGraph {...{treatmentName:'fluid'}}/>}
-          {selectedButton === "Antibiotics secondary conditions" && <Checklist {...{checklistName:'Antibiotics Secondary Conditions'}}/>}
+          {selectedButton === "Infection sources" && <Checklist {...{checklistName:'Antibiotics Secondary Conditions'}}/>}
         </div>
       </Popover>
     </div>
