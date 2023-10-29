@@ -40,7 +40,7 @@
   {
     "action": "exit",
     "waitFor": {
-      "name": "AlternativeDrugs"
+      "name": "Recommend"
     }
   }
 ]

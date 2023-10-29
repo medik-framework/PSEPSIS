@@ -18,10 +18,19 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
+    "eventName": "FluidRateEntered",
+    "eventArgs": [300],
+    "waitFor" : {
+      "name": "Recommend"
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
     "eventName": "ConfirmNormalSalineAdministered",
     "eventArgs": [],
     "waitFor" : {
-      "name": "AlternativeDrugs"
+      "name": "WaitFor"
     },
     "updateData": [
       {
@@ -69,7 +78,7 @@
   {
     "action": "exit",
     "waitFor": {
-      "name": "AlternativeDrugs"
+      "name": "Recommend"
     }
   }
 ]

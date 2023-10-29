@@ -40,6 +40,16 @@
   {
     "id": "tabletApp",
     "interface": "TabletApp",
+    "name": "Recommend",
+    "args": [
+      "fluid rate",
+      "Septic shock not detected",
+      "Recommend fluid administration over 30 minutes"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
     "name": "Instruct",
     "args": ["get responsiveness to fluids"]
   },
@@ -84,6 +94,16 @@
       "Lactated Ringer",
       "Fluid Therapy",
       "5"
+    ]
+  },
+  {
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "Recommend",
+    "args": [
+      "fluid rate",
+      "Septic shock not detected",
+      "Recommend fluid administration over 30 minutes"
     ]
   }
 ]
