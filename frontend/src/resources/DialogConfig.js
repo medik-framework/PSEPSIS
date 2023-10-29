@@ -486,5 +486,22 @@ export const DialogConfig = {
     shouldSend: true,
     withArgs: false,
     shouldStore: false
+  },
+  "fluid rate": {
+    title: "Fluid administration rate",
+    inputConfig: {
+      type: "plain",
+      eventName: "FluidRateEntered",
+      actions: {
+        question: "Please decide fluid rate:",
+        buttons: {
+          "5 min": {eventArgs:[300]},
+          "30 min": {eventArgs: [1800]}
+        }
+      }
+    },
+    shouldSend: true,
+    withArgs: true,
+    shouldStore: false
   }
 }
