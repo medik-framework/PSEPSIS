@@ -8,7 +8,7 @@ import {ColorMap} from "../../resources/DigitalTwinConfigReorganized";
 
 var initialNodes = [...parentNodes, ...childLevelOneNodes, ...childLevelTwoNodes, ...conditionalNodes];
 
-const customNode = ({ id, data }) => {  
+const customNode = ({ id, data }) => {
   return (
     <div>
       <Handle type="source" position="bottom" id={id} style={{ background: '#555' }} />
@@ -27,7 +27,7 @@ const orGate = arr => {
   if (arr.length === 0) {
     return 'null';
   }
-  const isNormal = arr.includes(false) ? 'false' : arr.includes(true) ? 'true' : 'null';
+  const isNormal = arr.includes('false') ? 'false' : arr.includes('true') ? 'true' : 'null';
   return isNormal;
 };
 
@@ -89,7 +89,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
           backgroundColor: colorCode
         }
       };
-    }  
+    }
     else {
       return node;
     }
@@ -105,7 +105,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
         }
       }
       const getState = orGate(dependentState);
-      const getcolor = ColorMap[getState]; 
+      const getcolor = ColorMap[getState];
       return {
         ...node,
         anamoly: getState,
@@ -117,7 +117,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
     }
     else {
       return node;
-    }  
+    }
   });
 
   //UPDATE BUCKET 3
@@ -127,7 +127,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
     bucketThreeState.push(updatedNodes[bucketThreeNode.parents[i]].anamoly)
   }
   const getBucektThreeState = orGate(bucketThreeState);
-  const getbucketThreecolor = ColorMap[getBucektThreeState]; 
+  const getbucketThreecolor = ColorMap[getBucektThreeState];
 
   const bucketThreeUpdatedNode = {
     ...bucketThreeNode,
@@ -146,7 +146,7 @@ const getTreeData = (rawData, nodes, ageObject, hrcValue) => {
     sepsisState.push(updatedNodes[sepsisNode.parents[i]].anamoly)
   }
   const getsepsisState = andGate(sepsisState);
-  const getsepsiscolor = ColorMap[getsepsisState]; 
+  const getsepsiscolor = ColorMap[getsepsisState];
 
   const sepsisUpdatedNode = {
     ...sepsisNode,
@@ -183,7 +183,7 @@ const ThreeBucket = () => {
 
   return (
     <div style={{height: '75vh',width: '75vw',margin: 'auto',}} >
-      <ReactFlow 
+      <ReactFlow
         nodes={nodes}
         edges={edges}
         minZoom={1}

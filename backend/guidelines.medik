@@ -632,6 +632,7 @@ machine FluidTherapy
   state SuggestFluidDosage {
     entry {
       var normalSalineCount = obtainFrom(datastore, "Normal Saline Count");
+      print("Normal saline count: " + normalSalineCount);
       var lactatedRingerCount = obtainFrom(datastore, "Lactated Ringer Count");
 
       var shouldReduceDose =   (!(measurementBounds.fluidOverloadRisks == 0))
