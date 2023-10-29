@@ -7,7 +7,7 @@ from backend_env import  kompiled_exec_dir, kompiled_mcheck_dir \
 import asyncio, copy, pytest, json, logging, sys, os, utils
 import functools
 from utils import combined_temp_file
-ignored_names = ['StartGUI']
+ignored_names = ['StartGUI', 'WaitFor']
 
 # Fixtures
 # ========

@@ -40,11 +40,17 @@
   {
     "id": "tabletApp",
     "action": "broadcast",
+    "eventName": "FluidRateEntered",
+    "eventArgs": [300],
+    "waitFor" : {
+      "name": "Recommend"
+    }
+  },
+  {
+    "id": "tabletApp",
+    "action": "broadcast",
     "eventName": "ConfirmNormalSalineAdministered",
     "eventArgs": [],
-    "waitFor" : {
-      "name": "AlternativeDrugs"
-    },
     "updateData": [
       {
         "name": "Normal Saline Count",
@@ -53,7 +59,10 @@
         "name": "Normal Saline",
         "args": 20
       }
-    ]
+    ],
+    "waitFor" : {
+      "name": "WaitFor"
+    }
   },
   {
     "id": "tabletApp",

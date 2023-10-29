@@ -2,7 +2,8 @@ machine MeasurementBounds
   receives AgeEntered
          , WeightEntered
          , HighRiskConditionsEntered
-         , FluidOverloadRisksEntered {
+         , FluidOverloadRisksEntered
+         , SepticShockSuspected {
 
   vars age, weight, highRiskConditions, fluidOverloadRisks;
 
@@ -45,6 +46,7 @@ machine MeasurementBounds
   var mentalStatus       = "normal";
   var capillaryRefill    = "1";
   var fluidOverloadSigns = 0;
+  var inSepticShock      = false;
 
   fun days(age) {
     return age;
@@ -271,6 +273,11 @@ machine MeasurementBounds
     on FluidOverloadRisksEntered(fluidOverloadRisks) do {
       this.fluidOverloadRisks = fluidOverloadRisks;
       broadcast ConfirmFluidOverloadRisksEntered;
+      goto Running;
+    }
+
+    on SepticShockSuspected do {
+      this.inSepticShock = true;
       goto Running;
     }
   }
@@ -576,10 +583,11 @@ machine FluidTherapy
          , ConfirmLactatedRingerAdministered
          , FluidResponsivenessEntered
          , ConfirmMaintainFluid
-         , ConfirmRepeatFluidBolus {
+         , ConfirmRepeatFluidBolus
+         , FluidRateEntered {
 
   vars tabletApp, datastore, measurementBounds;
-  vars isResponsiveToFluids, fluidOverload;
+  vars isResponsiveToFluids, fluidOverload, fluidRate;
 
   fun days(count) {
     return count;
@@ -674,22 +682,44 @@ machine FluidTherapy
                 , "20" );
         }
       }
+      goto SuggestAdministrationRate;
+    }
+  }
+
+  state SuggestAdministrationRate {
+    entry {
+      if (measurementBounds.inSepticShock) {
+        send tabletApp
+            , Recommend
+            , ( "fluid rate"
+              , "The patient is in septic shock"
+              , "Recommend fluid administration over 5 minutes" );
+      } else {
+        send tabletApp
+            , Recommend
+            , ( "fluid rate"
+              , "Septic shock not detected"
+              , "Recommend fluid administration over 30 minutes" );
+      }
+    }
+    on FluidRateEntered(fluidRate) do {
+      this.fluidRate = fluidRate;
       goto WaitForAdministerFluidConfirmation;
     }
   }
 
   state WaitForAdministerFluidConfirmation {
     entry {
-      print("Waiting for fluid administered");
+      send tabletApp, WaitFor, ("fluid confirmation");
     }
     on ConfirmNormalSalineAdministered do {
       // Wait for fluid responsiveness
-      sleep(120);
+      sleep(this.fluidRate);
       goto EvaluateResponsiveness;
     }
     on ConfirmLactatedRingerAdministered do {
       // Wait for fluid responsiveness
-      sleep(120);
+      sleep(this.fluidRate);
       goto EvaluateResponsiveness;
     }
   }
