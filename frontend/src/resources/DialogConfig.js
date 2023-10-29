@@ -478,7 +478,7 @@ export const DialogConfig = {
           actions: {
              question: "Please decide next step:",
               buttons: {
-                  "Repeat Inotrope": {eventName: "ConfirmRepeatInotrope" },
+                  "Continue to tirate to desired effect": {eventName: "ConfirmRepeatInotrope" },
                   "Transfer to Higher Care":  {eventName: "ConfirmTransferToHigherCare" }
               }
           }
