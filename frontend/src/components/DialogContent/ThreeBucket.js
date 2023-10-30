@@ -27,12 +27,12 @@ const orGate = arr => {
   if (arr.length === 0) {
     return 'null';
   }
-  const isNormal = arr.includes('false') ? 'false' : arr.includes('true') ? 'true' : 'null';
+  const isNormal = arr.includes(false) ? false : arr.includes(true) ? true : 'null';
   return isNormal;
 };
 
 const andGate = arr => {
-  const isNormal = arr.includes('null') ? 'null' : arr.every(v => v === 'false') ? 'false' : 'true';
+  const isNormal = arr.every(v => v === false) ? false : arr.every(v => v === true) ? true : 'null';
   return isNormal;
 };
 
