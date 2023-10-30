@@ -182,7 +182,7 @@ const ThreeBucket = () => {
   }, [treeData]);
 
   return (
-    <div style={{height: '75vh',width: '75vw',margin: 'auto',}} >
+    <div style={{height: '75vh',width: '85vw',margin: 'auto',}} >
       <ReactFlow
         nodes={nodes}
         edges={edges}

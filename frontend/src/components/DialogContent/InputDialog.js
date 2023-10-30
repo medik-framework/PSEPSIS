@@ -138,7 +138,7 @@ const InputDialog = ({ open, setOpen, info }) => {
   }
 
   return (
-    <Dialog open={open} maxWidth={'100vw'}>
+    <Dialog open={open} maxWidth={'90vw'}>
       <DialogTitle>{config.title}</DialogTitle>
       <DialogContent>
         <InputContent {...{
