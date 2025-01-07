@@ -5,7 +5,7 @@ const initialState = {};
 Object.keys(MedicationConfig).map((category) => {
     const medList = MedicationConfig[category]
     medList.map((medConfig) => {
-      initialState[medConfig.name] = {'lastts': null, 'count': 0}
+      initialState[medConfig.name] = {'lastts': null, 'count': 0, 'total_dosage': 0}
       return null
     })
     return null
@@ -16,10 +16,15 @@ export const drugSlice = createSlice({
   initialState: {...initialState},
   reducers:{
     add: (state, action) => {
-      console.log(action.payload)
+      
+      const { name, timestamp, dosage } = action.payload;
+      const medicationState = state[name];
+      console.log('action.payload: ' , action.payload)
+      console.log('dosage is ', dosage)
       state[action.payload.name] = {
-        'lastts': action.payload.timestamp,
-        'count': state[action.payload.name].count + 1
+        'lastts': timestamp,
+        'count': state[action.payload.name].count + 1,
+        'total_dosage': medicationState.total_dosage + action.payload.total_dosage
       }
       return state
     },

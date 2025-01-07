@@ -70,10 +70,12 @@ const MedicationCard = (config) => {
   const [timeDiff, setTimeDiff] = useState(null);
   const count = useSelector((state) => state.drug[config.name].count);
   const lastts = useSelector((state) => state.drug[config.name].lastts);
+  const total_dosage = useSelector((state) => state.drug[config.name].total_dosage);
   const dispatch = useDispatch();
   const [isHighlighted, setIsHighlighted] = useState(false);
   const highlight = useSelector((state) => state.highlight);
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
+  
 
   useEffect(() => {
     if(highlight.highlightedMedication.includes(config.name)) {
