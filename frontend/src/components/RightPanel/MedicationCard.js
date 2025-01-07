@@ -37,14 +37,30 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
     marginTop: "10px"
   },
+  cancelLogic: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   button: {
     textAlign: "center",
     height: "40px",
+    width: "75px",
     backgroundColor: "green",
     color: "white",
-    float: "right",
     marginTop: "5px"
   },
+  cancelButton: {
+    textAlign: "center",
+    height: "40px",
+    width: "75px",
+    backgroundColor: "red",
+    color: "white",
+    marginTop: "5px",
+    borderRadius: "5px",
+  },
+
+  
 }));
 
 const MedicationCard = (config) => {
@@ -83,6 +99,11 @@ const MedicationCard = (config) => {
     }
   }, 1000);
 
+  
+  const [confirm, setConfirm] = useState(false);
+  const [buttonColor, setButtonColor] = useState("green");
+  const [cancelButton, setCancelButton] = useState(false);
+
   return (
     <Grid item xs={6}
       sx={{ background: isHighlighted ? "yellow":"lightcyan" }}
@@ -114,32 +135,65 @@ const MedicationCard = (config) => {
         <Box width={'60%'} className={classes.box}>
           <Typography>Count: {count}</Typography>
           <Typography>Elapse: {timeDiff}</Typography>
-        </Box>
-        <Box width={'40%'} className={classes.box}>
-          <Button
-            className={classes.button}
-            onClick={() => {
-                const ts = new Date().getTime();
-                dispatch(add({
-                  'timestamp': ts,
-                  'name'     : config.name
-                }));
-                if(isHighlighted){
-                  dispatch(unsetHighlight(config.name));
-                }
-                kEndpoint.sendMessage(JSON.stringify({
-                  "eventName": "Confirm" + config.name.replace(/\s/g,'') + "Administered",
-                  "eventArgs": []
-                }))
-                kEndpoint.sendMessage(JSON.stringify({
-                  "destination": "datastore",
-                  "eventName": "record_dose",
-                  "eventArgs": [config.name, ts, dose]
-                }))
+          {/* Highlight total_dosage dynamically */}
+          <Typography
+            style={{
+              color: total_dosage !== 0 ? "green" : "black", // Green for non-zero, black for zero
             }}
           >
-            Give
-          </Button>
+            Total Dosage: {total_dosage}
+          </Typography>
+        </Box>
+        <Box width={'40%'} className={classes.box}>
+          <Box className="cancelLogic">
+            <Button id="giveButton"
+              className={classes.button}
+              style={{ backgroundColor: buttonColor }}
+              onClick={() => {
+                if (confirm === true) {
+                  setConfirm(false);
+                  setButtonColor("green");
+                  setCancelButton(false);
+                  const ts = new Date().getTime();
+                  dispatch(add({
+                    'timestamp': ts,
+                    'name'     : config.name,
+                    'total_dosage': parseFloat(dose)
+                  }));
+                  if(isHighlighted){
+                    dispatch(unsetHighlight(config.name));
+                  }
+                  kEndpoint.sendMessage(JSON.stringify({
+                    "eventName": "Confirm" + config.name.replace(/\s/g,'') + "Administered",
+                    "eventArgs": []
+                  }))
+                  kEndpoint.sendMessage(JSON.stringify({
+                    "destination": "datastore",
+                    "eventName": "record_dose",
+                    "eventArgs": [config.name, ts, dose]
+                  }))
+                } else {
+                  setConfirm(true);
+                  setButtonColor("orange");
+                  setCancelButton(true);
+                }
+              }}
+            >
+              {confirm ? "Confirm" : "Give"}
+            </Button>
+            {cancelButton && (
+                <button 
+                  className={classes.cancelButton}
+                  onClick={() => {
+                    setConfirm(false);
+                    setButtonColor("green");
+                    setCancelButton(false);
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+          </Box>
         </Box>
       </Box>
     </Grid>
@@ -148,8 +202,41 @@ const MedicationCard = (config) => {
 
 export default MedicationCard;
 
-const ComboEntry = ({ drug, order, setOrder }) => {
+const ComboEntry = ({ drug, order, setOrder, dispatch, kEndpoint }) => {
   const classes = useStyles();
+  const [confirm, setConfirm] = useState(false);
+  const [buttonColor, setButtonColor] = useState("green");
+  const [cancelButton, setCancelButton] = useState(false);
+  const [dose, setDose] = useState(drug.dosage[0]);
+  const [inputDose, setInputDose] = useState(drug.dosage[0]);
+
+  const handleGiveClick = () => {
+    if (confirm) {
+      setConfirm(false);
+      setButtonColor("green");
+      setCancelButton(false);
+
+      const ts = new Date().getTime();
+      dispatch(
+        add({
+          timestamp: ts,
+          name: drug.name,
+          total_dosage: Number(order[drug.name].dose),
+        })
+      );
+      kEndpoint.sendMessage(
+        JSON.stringify({
+          destination: "datastore",
+          eventName: "record_dose",
+          eventArgs: [drug.name, ts, order[drug.name].dose],
+        })
+      );
+    } else {
+      setConfirm(true);
+      setButtonColor("orange");
+      setCancelButton(true);
+    }
+  };
   return (
     <Box key={drug.name} margin={"10px"}>
       <Typography width={"30%"} display={"inline-flex"}>{drug.name}</Typography>
@@ -180,6 +267,25 @@ const ComboEntry = ({ drug, order, setOrder }) => {
         })}
       />
       <Typography className={classes.unit}>{drug.unit}</Typography>
+      <Button
+        className={classes.button}
+        style={{ backgroundColor: buttonColor }}
+        onClick={handleGiveClick}
+      >
+        {confirm ? "Confirm" : "Give"}
+      </Button>
+      {cancelButton && (
+        <button
+          className={classes.cancelButton}
+          onClick={() => {
+            setConfirm(false);
+            setButtonColor("green");
+            setCancelButton(false);
+          }}
+        >
+          Cancel
+        </button>
+      )}
     </Box>
   )
 }
@@ -203,28 +309,61 @@ export const ComboCard = ({ config }) => {
     <Grid item xs={12} className={classes.card} key={config.title}>
       <Typography className={classes.title}>{config.title}</Typography>
       {config.drugs.map((drug, idx) =>
-        <ComboEntry key={idx} {...{ drug, order , setOrder }}/>
+        // <ComboEntry key={idx} {...{ drug, order , setOrder }}/>
+        // <MedicationCard key={idx} {...{ drug, order , setOrder }}/>
+        // const conf = { ...config, ...drug };
+        // return <MedicationCard key={idx} config={conf} />;
+        
+        <ComboEntry key={idx} {...{ drug, order, setOrder, dispatch, kEndpoint }}/>
+        
       )}
-      <Button
-        className={classes.button}
-        sx ={{marginRight: "10px", marginBottom:"10px"}}
-        onClick={() => {
-          const ts = new Date().getTime();
-          for (const drug of config.drugs) {
-            dispatch(add({
-              'timestamp': ts,
-              'name'     : drug.name
-            }));
-            kEndpoint.sendMessage(JSON.stringify({
-              "destination": "datastore",
-              "eventName": "record_dose",
-              "eventArgs": [drug.name, ts,  order[drug.name].dose]
-            }));
-          }
-        }}
-      >
-        Give
-      </Button>
+      {/* <Box className="cancelLogic">
+        <Button
+          className={classes.button}
+          style={{ backgroundColor: buttonColor }}
+          sx ={{marginRight: "10px", marginBottom:"10px"}}
+          onClick={() => {
+            if (confirm === true) {
+              setConfirm(false);
+              setButtonColor("green");
+              setCancelButton(false);
+
+              const ts = new Date().getTime();
+              for (const drug of config.drugs) {
+                dispatch(add({
+                  'timestamp': ts,
+                  'name'     : drug.name
+                }));
+                kEndpoint.sendMessage(JSON.stringify({
+                  "destination": "datastore",
+                  "eventName": "record_dose",
+                  "eventArgs": [drug.name, ts,  order[drug.name].dose]
+                }));
+              }
+            } else {
+              setConfirm(true);
+              setButtonColor("orange");
+              setCancelButton(true);
+            }
+          }}
+        >
+          {confirm ? "Confirm" : "Give"}
+        </Button>
+        {cancelButton && (
+          <button 
+            className={classes.cancelButton}
+            onClick={() => {
+              setConfirm(false);
+              setButtonColor("green");
+              setCancelButton(false);
+            }}
+          >
+            Cancel
+          </button>
+        )}
+
+      </Box> */}
+      
     </Grid>
   )
 }
