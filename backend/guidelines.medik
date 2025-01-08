@@ -635,54 +635,46 @@ machine FluidTherapy
       print("Normal saline count: " + normalSalineCount);
       var lactatedRingerCount = obtainFrom(datastore, "Lactated Ringer Count");
 
+      var epinephrineCount = obtainFrom(datastore, "Epinephrine Count");
+      var norepinephrineCount = obtainFrom(datastore, "Norepinephrine Count");
+      var dopamineCount = obtainFrom(datastore, "Dopamine Count");
+      var dobutamineCount = obtainFrom(datastore, "Dobutamine Count");
+
       var shouldReduceDose =   (!(measurementBounds.fluidOverloadRisks == 0))
                             || (measurementBounds.age < days(28));
 
-      if ((normalSalineCount + lactatedRingerCount) == 0) {
-        if (shouldReduceDose) {
-          send  tabletApp
-              , AlternativeDrugs
-              , ( "Administer 5-10 ml/kg Normal Saline or Lactated Ringer."
-                , "Normal Saline"
-                , "Fluid Therapy"
-                , "5"
-                , "Lactated Ringer"
-                , "Fluid Therapy"
-                , "5" );
-        } else {
-          send  tabletApp
-              , AlternativeDrugs
-              , ( "Administer 20 ml/kg Normal Saline or Lactated Ringer."
-                , "Normal Saline"
-                , "Fluid Therapy"
-                , "20"
-                , "Lactated Ringer"
-                , "Fluid Therapy"
-                , "20" );
-        }
-      } else {
-        if (shouldReduceDose) {
-          send  tabletApp
-              , AlternativeDrugs
-              , ( "Administer 5-10 ml/kg Lactated Ringer. Normal Saline is also allowed."
-                , "Normal Saline"
-                , "Fluid Therapy"
-                , "5"
-                , "Lactated Ringer"
-                , "Fluid Therapy"
-                , "5" );
-        } else {
-          send  tabletApp
-              , AlternativeDrugs
-              , ( "Administer 20 ml/kg Lactated Ringer. Normal Saline is also allowed."
-                , "Normal Saline"
-                , "Fluid Therapy"
-                , "20"
-                , "Lactated Ringer"
-                , "Fluid Therapy"
-                , "20" );
-        }
+      var suggestedDose = "20";
+      var suggestion = "Administer 20 ml/kg";
+
+      if (shouldReduceDose) {
+        suggestedDose = "5";
+        suggestion = "Administer 5-10 ml/kg";
       }
+
+      if ((normalSalineCount + lactatedRingerCount) == 0) {
+        suggestion = suggestion + " Normal Saline or Lactated Ringer.";
+      } else {
+        suggestion = suggestion + " Lactated Ringer. Normal Saline is also allowed.";
+      }
+
+      var inotropeSupportStarted = ((epinephrineCount + norepinephrineCount
+                                      + dopamineCount + dobutamineCount) > 0);
+
+      if ((!(inotropeSupportStarted))
+          && ((normalSalineCount + lactatedRingerCount) >=2)) {
+        suggestion = suggestion + " Consider inotropic support early.";
+      }
+
+      send  tabletApp
+          , AlternativeDrugs
+          , ( suggestion
+            , "Normal Saline"
+            , "Fluid Therapy"
+            , suggestedDose
+            , "Lactated Ringer"
+            , "Fluid Therapy"
+            , suggestedDose );
+
       goto SuggestAdministrationRate;
     }
   }
