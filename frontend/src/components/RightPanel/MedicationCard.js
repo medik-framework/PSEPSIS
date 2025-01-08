@@ -84,6 +84,7 @@ const MedicationCard = (config) => {
       foundKey = 0;
       const idx = highlight.highlightedMedication.indexOf(config.name);
       setInputDose(highlight.suggestedDosage[idx]);
+      setDose(highlight.suggestedDosage[idx]);
     }
     if (foundKey === -1) {
       for (const key in highlight.highlightedMedicationPairs) {
@@ -92,6 +93,7 @@ const MedicationCard = (config) => {
         if (index !== -1) {
           setIsHighlighted(2);
           setInputDose(highlight.suggestedDosagePairs[key][index]);
+          setDose(highlight.suggestedDosagePairs[key][index]);
           foundKey = 0;
         }
       }
