@@ -10,16 +10,10 @@ stuck_pattern             = base_dir     / 'stuck-pattern.k'
 medik_dir                 = base_dir     / 'ext'          / 'medik-semantics'
 kompiled_exec_dir         = medik_dir    / '.build'       / 'llvm-exec'      / 'medik-llvm-kompiled'
 kompiled_mcheck_dir       = medik_dir    / '.build'       / 'llvm-mcheck'    / 'medik-llvm-kompiled'
-krelease_dir              = medik_dir    / 'ext'          / 'k'              / 'k-distribution'      / 'target' / 'release' / 'k'
-kbin_dir                  = krelease_dir / 'bin'
 
 def set_env():
     if os.getenv('LOGINFO'):
         logging.basicConfig(level=logging.INFO)
     if os.getenv('LOGDEBUG'):
         logging.basicConfig(level=logging.DEBUG)
-
-    path_entires = [ kbin_dir ]
-    os.environ['PATH'] = str(kbin_dir.resolve()) \
-                                + os.pathsep + os.environ['PATH']
 

@@ -75,6 +75,7 @@ class ExecutionWrapper:
         k_command = ( 'krun' , ['--definition' , str(self.kompiled_exec_dir.resolve())
                              , '--output' , 'none'
                              , str(self.psepsis_pgm.resolve()) ])
+        logging.info('k_command is {}'.format(str(k_command)))
         tasks = None
         try:
             self.k_process = await asyncio.create_subprocess_exec( k_command[0]
