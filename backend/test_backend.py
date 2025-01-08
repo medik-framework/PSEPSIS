@@ -238,6 +238,16 @@ async def test_fluid_therapy_positive_risk_overdose_responsiveness(psepsis_exec_
                        , psepsis_exec_pgm)
 
 @pytest.mark.asyncio
+async def test_fluid_therapy_multiple_boluses(psepsis_exec_pgm):
+    await run_exec_test( 'fluid-therapy-multiple-boluses'
+                       , psepsis_exec_pgm)
+
+@pytest.mark.asyncio
+async def test_fluid_therapy_multiple_boluses_no_inotrope(psepsis_exec_pgm):
+    await run_exec_test( 'fluid-therapy-multiple-boluses-no-inotrope'
+                       , psepsis_exec_pgm)
+
+@pytest.mark.asyncio
 async def test_antibiotic_therapy_normal_host(psepsis_exec_pgm):
     await run_exec_test( 'antibiotic-therapy-normal-host'
                       , psepsis_exec_pgm)

@@ -74,7 +74,7 @@
     "interface": "TabletApp",
     "name": "AlternativeDrugs",
     "args": [
-      "Administer 5-10 ml/kg Normal Saline or Lactated Ringer.",
+      "Administer 5-10 ml/kg Lactated Ringer. Normal Saline is also allowed.",
       "Normal Saline",
       "Fluid Therapy",
       "5",

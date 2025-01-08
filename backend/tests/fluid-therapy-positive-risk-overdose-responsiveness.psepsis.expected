@@ -24,6 +24,30 @@
     "args": ["Lactated Ringer Count"]
   },
   {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Epinephrine Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Norepinephrine Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Dopamine Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Dobutamine Count"]
+  },
+  {
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "AlternativeDrugs",
@@ -81,6 +105,30 @@
     "interface": "Datastore",
     "name": "Obtain",
     "args": ["Lactated Ringer Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Epinephrine Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Norepinephrine Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Dopamine Count"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Dobutamine Count"]
   },
   {
     "id": "tabletApp",

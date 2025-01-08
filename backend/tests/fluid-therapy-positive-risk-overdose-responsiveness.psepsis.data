@@ -2,5 +2,9 @@
   "Normal Saline": 0,
   "Normal Saline Count": 0,
   "Lactated Ringer": 0,
-  "Lactated Ringer Count": 0
+  "Lactated Ringer Count": 0,
+  "Epinephrine Count": 0,
+  "Norepinephrine Count": 0,
+  "Dopamine Count": 0,
+  "Dobutamine Count": 0
 }
