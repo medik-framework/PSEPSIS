@@ -72,9 +72,10 @@ class ExecutionWrapper:
             return None
 
     async def launch(self):
-        k_command = ( 'krun' , ['-d' , str(self.kompiled_exec_dir.resolve())
+        k_command = ( 'krun' , ['--definition' , str(self.kompiled_exec_dir.resolve())
                              , '--output' , 'none'
                              , str(self.psepsis_pgm.resolve()) ])
+        logging.info('k_command is {}'.format(str(k_command)))
         tasks = None
         try:
             self.k_process = await asyncio.create_subprocess_exec( k_command[0]
