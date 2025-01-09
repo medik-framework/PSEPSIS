@@ -752,6 +752,9 @@ machine FluidTherapy
   state AskNextStep {
     entry {
       var recommendation;
+      var totalNormalSalineDose = obtainFrom(datastore, "Normal Saline");
+      var totalLactatedRingerDose = obtainFrom(datastore, "Lactated Ringer");
+      var totalSalineDose = totalNormalSalineDose + totalLactatedRingerDose;
       if (this.fluidOverload) {
         recommendation = "Stop Fluid Therapy. Consider inotrope.";
         broadcast ConsiderInotropicSupport;
@@ -759,9 +762,6 @@ machine FluidTherapy
         if (isResponsiveToFluids) {
           recommendation = "Repeat bolus until patient stable.";
         } else {
-          var totalNormalSalineDose = obtainFrom(datastore, "Normal Saline");
-          var totalLactatedRingerDose = obtainFrom(datastore, "Lactated Ringer");
-          var totalSalineDose = totalNormalSalineDose + totalLactatedRingerDose;
           if (totalSalineDose > measurementBounds.salineDosageUpperBound) {
             recommendation = "Consider intrope while giving one more fluid bolus.";
             broadcast ConsiderInotropicSupport;
@@ -774,6 +774,7 @@ machine FluidTherapy
       send  tabletApp
           , Recommend
           , ( "get fluid next step"
+            , "Total fluid administered: "        + totalSalineDose + " ml/kg."
             , "Responsiveness to fluid therapy: " + this.isResponsiveToFluids
             , "Fluid overload: "                  + this.fluidOverload
             , "Recommendation: "                  + recommendation );

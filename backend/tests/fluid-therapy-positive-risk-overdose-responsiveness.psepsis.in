@@ -70,6 +70,7 @@
     "waitFor" : {
       "name": "Recommend",
       "args": ["get fluid next step"
+              , "Total fluid administered: 20 ml/kg."
               , "Responsiveness to fluid therapy: true"
               , "Fluid overload: true"
               , "Recommendation: Stop Fluid Therapy. Consider inotrope."]

@@ -84,11 +84,24 @@
     "args": ["get fluid overload signs"]
   },
   {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Normal Saline"]
+  },
+  {
+    "id": "datastore",
+    "interface": "Datastore",
+    "name": "Obtain",
+    "args": ["Lactated Ringer"]
+  },
+  {
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "Recommend",
     "args": [
       "get fluid next step",
+      "Total fluid administered: 20 ml/kg.",
       "Responsiveness to fluid therapy: true",
       "Fluid overload: true",
       "Recommendation: Stop Fluid Therapy. Consider inotrope."
