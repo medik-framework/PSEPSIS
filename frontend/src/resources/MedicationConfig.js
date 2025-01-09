@@ -137,7 +137,7 @@ export const MedicationConfig = {
     {
       "name": "Norepinephrine",
       "includeDisplay": true,
-      "unit": "mcg/min",
+      "unit": "mcg/kg/min IV",
       "dosage": ['0.1', '0.2', '0.5', '2']
     },
     {
