@@ -756,7 +756,7 @@ machine FluidTherapy
       var totalLactatedRingerDose = obtainFrom(datastore, "Lactated Ringer");
       var totalSalineDose = totalNormalSalineDose + totalLactatedRingerDose;
       if (this.fluidOverload) {
-        recommendation = "Stop Fluid Therapy. Consider inotrope.";
+        recommendation = "Stop Fluid Resuscitation. XRay. Order inotrope to bedside.";
         broadcast ConsiderInotropicSupport;
       } else {
         if (isResponsiveToFluids) {

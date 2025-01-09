@@ -73,7 +73,7 @@
               , "Total fluid administered: 20 ml/kg."
               , "Responsiveness to fluid therapy: true"
               , "Fluid overload: true"
-              , "Recommendation: Stop Fluid Therapy. Consider inotrope."]
+              , "Recommendation: Stop Fluid Resuscitation. XRay. Order inotrope to bedside." ]
     }
   },
   {
