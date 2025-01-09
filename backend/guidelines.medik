@@ -1063,7 +1063,8 @@ machine AntibioticsTherapy
          , FungalConcernEntered
          , RickettsialConcernEntered
          , CefepimeCeftazidimeCarbapenamResistanceEntered
-         , HSVConcernEntered {
+         , HSVConcernEntered
+         , ConfirmBloodCultureOrdered {
 
   vars tabletApp, datastore, measurementBounds;
 
@@ -1072,7 +1073,7 @@ machine AntibioticsTherapy
      , increasedRickettsialRisk , receivedBroadSpectrumAntibiotics
      , esblPrevalent            , carbapenemResistant
      , staphylococcusPrevalent  , hsvInfectionRisk
-     , inSepticShock;
+     , inSepticShock            , bloodCultureOrdered ;
 
   fun days(count) {
     return count;
@@ -1083,12 +1084,27 @@ machine AntibioticsTherapy
       this.tabletApp = tabletApp;
       this.datastore = datastore;
       this.measurementBounds = measurementBounds;
+      this.bloodCultureOrdered = false;
+      goto WaitForBloodCultureConfirmation;
+    }
+
+  }
+
+  state WaitForBloodCultureConfirmation {
+    on ConfirmBloodCultureOrdered do {
+      bloodCultureOrdered = true;
     }
 
     on StartAntibioticTherapy do {
+      if (!(bloodCultureOrdered)) {
+        send tabletApp
+           , Recommend
+           , ( " " )
+        }
       goto AskPrimaryConditions;
     }
   }
+
 
   state AskPrimaryConditions {
     entry {
