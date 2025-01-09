@@ -12,6 +12,10 @@ export const MedicationTabMapping = {
   "OSF Antibiotics Set":3
 };
 
+export const FluidsList = ["Normal Saline", "Lactated Ringer"];
+
+export const InotropesList = ["Epinephrine", "Norepinephrine", "Dopamine", "Dobutamine"];
+
 export const MedicationConfig = {
   "Antibiotics-all": [
     {
@@ -164,6 +168,13 @@ export const MedicationConfig = {
     }
   ],
 }
+
+export const AntibioticsList = MedicationConfig['Antibiotics-all'].reduce((acc, antibiotic) => {
+  acc.push(antibiotic['name'])
+  return acc
+}, [])
+
+//export const AntibioticsList = Object.entries(MedicationConfig['Antibiotics-all']).map(())
 
 export const AntibioticsSetConfig = {
   "Children > 28 days who are normal hosts":[

@@ -10,6 +10,12 @@ import makeStyles from "@mui/styles/makeStyles";
 import { useState, useEffect } from "react";
 import { unsetHighlight } from "../../redux/reducers/highlight";
 
+import {
+  FluidsList,
+  AntibioticsList,
+  InotropesList
+} from "../../resources/MedicationConfig"
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -75,7 +81,8 @@ const MedicationCard = (config) => {
   const [isHighlighted, setIsHighlighted] = useState(0);
   const highlight = useSelector((state) => state.highlight);
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint);
-  
+  const checkedIdx = useSelector((state) => state.SepsisBundleForm.checkedIdx);
+  const isChecked = (checkedIndices, idx) => Boolean((checkedIndices >> idx) & 1)
 
   useEffect(() => {
     var foundKey = -1;
@@ -168,6 +175,34 @@ const MedicationCard = (config) => {
               className={classes.button}
               style={{ backgroundColor: buttonColor }}
               onClick={() => {
+                console.log(config.name)
+                if (FluidsList.includes(config.name)) {
+                  if (!isChecked(checkedIdx, 3)) {
+                    console.log('Send StartFluidTherapy');
+                    kEndpoint.sendMessage(JSON.stringify({
+                      eventName: 'StartFluidTherapy'
+                    }));
+                    dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: checkedIdx | (1 << 3)} })
+                  }
+                }
+                if (InotropesList.includes(config.name)) {
+                  if (!isChecked(checkedIdx, 10)) {
+                      console.log('Send StartInotrpicTherapy');
+                      kEndpoint.sendMessage(JSON.stringify({
+                        eventName: 'StartInotropicTherapy'
+                      }));
+                    dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: checkedIdx | (1 << 10)} })
+                  }
+                }
+                if (AntibioticsList.includes(config.name)) {
+                  if (!isChecked(checkedIdx, 8)) {
+                      console.log('Send StartAntibioticTherapy');
+                      kEndpoint.sendMessage(JSON.stringify({
+                        eventName: 'StartAntibioticTherapy'
+                      }));
+                    dispatch({ type: "UPDATE_SEPSIS_FORM", payload: {checkedIdx: checkedIdx | (1 << 8)} })
+                  }
+                }
                 if (confirm === true) {
                   setConfirm(false);
                   setButtonColor("green");
