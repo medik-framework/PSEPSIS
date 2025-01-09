@@ -968,19 +968,19 @@ machine InotropicSupportTherapy
         send tabletApp, RecommendDrug, ( "Epinephrine"
                                        , "Inotropes"
                                        , 0.1
-                                       , "administer 0.1-1 mcg/kg/min IV/IO infusion" );
+                                       , "Administer Epinephrine 0.1-1 mcg/kg/min IV/IO infusion." );
       } else {
         if (shockType == "Warm Shock") {
           send tabletApp, RecommendDrug, ( "Norepinephrine"
                                          , "Inotropes"
                                          , 0.1
-                                         , "administer 0.1-2 mcg/kg/min IV/IO infusion" );
+                                         , "Administer Norepinephrine 0.1-2 mcg/kg/min IV/IO infusion." );
         } else {
           if (shockType == "Normotensive") {
             send tabletApp, RecommendDrug, ( "Dopamine"
                                            , "Inotropes"
                                            , 2
-                                           , "administer 2-20 mcg/kg/min IV/IO infusion" );
+                                           , "Administer Dopamine 2-20 mcg/kg/min IV/IO infusion." );
           } else {
             send tabletApp, Recommend, ( "recommend"
                                        , "Shock type is indistinguishable.");
