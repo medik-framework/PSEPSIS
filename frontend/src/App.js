@@ -46,6 +46,12 @@ function App() {
         "value": msgJson.args[0]
       }))
       break;
+    case "ConsiderInotropicSupport":
+       dispatch(updateDiagnosis({
+         "name": "inotropeSuggested",
+         "value": true
+       }))
+       break;
     case "RecommendDrug":
       const msgInfo = {
         args: ['recommend', msgJson.args.slice(3)],

@@ -33,6 +33,7 @@ const BundleForm = () => {
   const checkedIdx = useSelector((state) => state.SepsisBundleForm.checkedIdx);
   const ventilationChecked = useSelector((state) => state.SepsisBundleForm.ventilationChecked);
   const septicShock = useSelector((state) => state.diagnosis.septicShock);
+  const inotropeSuggested = useSelector((state) => state.diagnosis.inotropeSuggested);
   const kEndpoint = useSelector((state) => state.endpoints.kEndpoint)
   const [fluidTherapyStarted, setFluidTherapyStarted] = useState(false);
   const [antibioticTherapyStarted, setAntibioticsTherapyStarted] = useState(false);
@@ -80,7 +81,9 @@ const BundleForm = () => {
               item
               key={idx}
               xs={12}
-              sx={{backgroundColor: septicShock && [3,8].includes(idx) ? 'yellow' : 'white'}}
+              sx={{ backgroundColor:
+                  (septicShock && [3,8].includes(idx))
+               || (idx == 10) && inotropeSuggested ? 'yellow' : 'white'}}
             >
               <FormControlLabel
                 control={<Checkbox checked={ Boolean((checkedIdx >> idx) & 1) } />}

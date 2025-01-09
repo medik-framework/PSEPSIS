@@ -287,7 +287,8 @@ interface TabletApp
   receives  ConfirmAgeEntered
           , ConfirmWeightEntered
           , ConfirmHighRiskConditionsEntered
-          , ConfirmFluidOverloadRisksEntered { }
+          , ConfirmFluidOverloadRisksEntered
+          , ConsiderInotropicSupport { }
 
 interface Datastore {  }
 

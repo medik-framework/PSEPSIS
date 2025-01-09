@@ -4,7 +4,8 @@ const diagnosisSlice = createSlice({
   name: 'diagnosis',
   initialState: {
     'sepsis': null,
-    'septicShock': null
+    'septicShock': null,
+    'inotropeSuggested': false
   },
   reducers: {
     updateDiagnosis: (state, action) => {
