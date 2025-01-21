@@ -96,6 +96,12 @@
     "args": ["Lactated Ringer"]
   },
   {
+    "args": [],
+    "id": "tabletApp",
+    "interface": "TabletApp",
+    "name": "ConsiderInotropicSupport"
+  },
+  {
     "id": "tabletApp",
     "interface": "TabletApp",
     "name": "Recommend",
