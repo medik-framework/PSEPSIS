@@ -44,7 +44,7 @@ const CollapsiblePanel = () => {
           horizontal: "right",
         }}
       >
-        <div style={{ width: "33vw", height: "100vh" }}>
+        <div style={{ width: "33vw", height: "50vh" }}>
           {selectedButton === "references" && <Reference />}
           {selectedButton === "Hemodynamics line graph" && <LineGraph {...{treatmentName:'fluid'}}/>}
         </div>

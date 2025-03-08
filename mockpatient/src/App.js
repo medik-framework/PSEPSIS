@@ -7,7 +7,10 @@ import useWebSocket from "react-use-websocket";
 import MainPage from "./components/MainPage";
 import WelcomePage from "./components/WelcomePage";
 
+import useGlobalInterval from "./hooks/useGlobalInterval";
+
 function App() {
+  useGlobalInterval();
   const [started, setStarted] = useState(false);
   const kWsURL = useSelector((state) => state.misc['kwsURL']);
 

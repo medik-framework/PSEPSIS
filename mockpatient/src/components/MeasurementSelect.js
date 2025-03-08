@@ -5,7 +5,8 @@ import { update } from '../redux/organDataSlice';
 import { Grid, Typography, Select, MenuItem, Box } from "@mui/material";
 
 const MeasurementSelect = ({ organName, config, kSendMessage }) => {
-    const value = useSelector((state) => state.OrganDT[organName][config.name]);
+    const value = useSelector((state) => state.OrganDT[organName][config.name].value);
+
     const dispatch = useDispatch();
 
     useEffect(() => {

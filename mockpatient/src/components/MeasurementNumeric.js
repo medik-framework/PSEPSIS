@@ -1,60 +1,63 @@
-
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { update, increment } from '../redux/organDataSlice';
+import { update, increment, setGradualUpdate, incrementElapse, resetGradualUpdate } from '../redux/organDataSlice';
 import { useInterval } from 'usehooks-ts';
 
-import { Button, Grid, Typography, TextField, Box } from "@mui/material";
+import { Button, Grid, Typography, TextField, Box, Select } from "@mui/material";
 
 const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
-    const [inputValue, setInputValue] = useState(null);
-    const [delay, setDelay] = useState(null);
-    const [target, setTarget] = useState(null);
-    const [period, setPeriod] = useState(null);
-    const [elapse, setElapse] = useState(0);
-    const [step, setStep] = useState(0);
-    const value = useSelector((state) => state.OrganDT[organName][config.name]);
+
     const dispatch = useDispatch();
+    const measurementState = useSelector((state) => state.OrganDT[organName]?.[config.name] ?? {});
+    const value = measurementState?.value ?? null;
+    const target = measurementState?.target ?? null;
+    const period = measurementState?.period ?? null;
+    const step = measurementState?.step ?? 0;
+    const elapse = measurementState?.elapse ?? 0;
+    const delay = measurementState?.delay ?? null;
 
-    const resetInterval = () => {
-        setDelay(null);
-        setTarget(null);
-        setPeriod(null);
-        setElapse(0);
-    }
+    const [inputValue, setInputValue] = useState(null);
+    const [targetValue, setTargetValue] = useState("");
+    const [periodValue, setPeriodValue] = useState("");
 
     useEffect(() => {
-        if (delay && elapse === period){
-            resetInterval();
-            dispatch(update({value: target, organName: organName, measurementName: config.name}));
+        if (delay && elapse >= period) {
+            dispatch(resetGradualUpdate({ organName, measurementName: config.name }));
+            dispatch(update({ value: target, organName, measurementName: config.name }));
         }
-    }, [ delay, setDelay, elapse, setElapse, period, target, organName, config, dispatch])
+    }, [delay, elapse, period, target, organName, config.name, dispatch]);
 
     useEffect(() => {
-        if (value) {
+        if (value !== null) {
             const data = {
                 organ: organName,
                 measurement: config.name,
-                value: value,
-                timeStamp: new Date().getTime()
-            }
-            kSendMessage(JSON.stringify(data))
+                value,
+                timeStamp: new Date().getTime(),
+                config
+            };
+            kSendMessage(JSON.stringify(data));
         }
-    }, [value,  organName, config, kSendMessage])
+    }, [value, organName, config, kSendMessage]);
 
-    useInterval(() => {
-        dispatch(increment({
-            value: step,
-            organName: organName,
-            measurementName: config.name
-        }));
-        setElapse(elapse + 1);
-    }, delay);
 
-    const gradualUpdate = (startValue) => {
-        setStep((target - startValue)/period);
-        setDelay(1000);
-    }
+    const gradualUpdate = () => {
+        const parsedTarget = Number(targetValue);
+        const parsedPeriod = Number(periodValue);
+            
+        if (!isNaN(parsedTarget) && !isNaN(parsedPeriod) && parsedPeriod > 0) {
+            const stepValue = (parsedTarget - value) / parsedPeriod;
+    
+            dispatch(setGradualUpdate({
+                organName,
+                measurementName: config.name,
+                target: parsedTarget,
+                period: parsedPeriod,
+                step: stepValue,
+                delay: 1000
+            }));
+        }
+    };
 
     return (
         <Grid item key={config.name} xs={6}>
@@ -79,7 +82,7 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
                 variant="outlined"
                 color="error"
                 onClick={() => {
-                    resetInterval();
+                    dispatch(resetGradualUpdate({ organName, measurementName: config.name }));
                     dispatch(update({
                         value: Number(inputValue),
                         organName: organName,
@@ -87,7 +90,7 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
                     }));
                 }}
             >
-                Confrim
+                Confirm
             </Button>
             </Box>
             {!delay &&
@@ -100,7 +103,20 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
                     variant="outlined"
                     sx={{ fontSize:'18px', backgroundColor:'white', width:'20%', height:'100%', margin:'auto' }}
                     type="number"
-                    onChange={(e) => setTarget(Number(e.target.value))}
+                    onChange={(e) => {
+                        const val = Number(e.target.value);
+                        setTargetValue(e.target.value)
+                        if (!isNaN(val) && val > 0) {
+                            dispatch(setGradualUpdate({
+                                organName,
+                                measurementName: config.name,
+                                target: val,
+                                period: measurementState.period ?? 1,
+                                step: measurementState.step,
+                                delay: measurementState.delay
+                            }));
+                        }
+                    }}
                 />
                 <Typography sx={{ fontSize:'14px', width:'7.5%', margin:'auto', textAlign:'center'}}>
                     in
@@ -110,7 +126,20 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
                     variant="outlined"
                     sx={{ fontSize:'18px', backgroundColor:'white', width:'20%', height:'100%', margin:'auto' }}
                     type="number"
-                    onChange={(e) => setPeriod(Number(e.target.value))}
+                    onChange={(e) => {
+                        const val = Number(e.target.value);
+                        setPeriodValue(e.target.value)
+                        if (!isNaN(val) && val > 0) {
+                            dispatch(setGradualUpdate({
+                                organName,
+                                measurementName: config.name,
+                                target: measurementState.target ?? 0,
+                                period: val,
+                                step: measurementState.step,
+                                delay: measurementState.delay
+                            }));
+                        }
+                    }}
                 />
                 <Typography sx={{ fontSize:'14px', width:'7.5%', margin:'auto', textAlign:'center'}}>
                     sec
@@ -119,27 +148,14 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
                     sx={{ fontSize:'14px', width:'25%', marginLeft:'5px' }}
                     variant="outlined"
                     color="error"
-                    disabled={isNaN(value) || !target || !period}
-                    onClick={() => gradualUpdate(value)}
+                    disabled={isNaN(value) || isNaN(measurementState?.target) || isNaN(measurementState?.period) || measurementState?.period <= 0}
+                    onClick={gradualUpdate}
                 >
                     Confirm
                 </Button>
             </Box>
             }
-            {delay&&
-            <Box sx={{ width:'100%', display:'inline-flex', flexDirection:'row'}}>
-                <Typography sx={{ fontSize:'14px', width:'75%', margin:'auto', textAlign:'left'}}>
-                    Gradually updating to {target} in {period-elapse} secs.
-                </Typography>
-                <Button
-                    sx={{ fontSize:'14px', width:'25%', marginLeft:'5px' }}
-                    variant="outlined"
-                    onClick={() => resetInterval()}
-                >
-                    Cancel
-                </Button>
-            </Box>
-            }
+            
         </Box>
         </Grid>
     )

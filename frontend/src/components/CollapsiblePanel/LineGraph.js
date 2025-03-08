@@ -1,5 +1,8 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Tabs, Box } from '@mui/material';
+import Tab from '@mui/material/Tab';
+import {TabContext, TabList, TabPanel} from '@mui/lab';
 
 import {
   Chart as ChartJS,
@@ -139,36 +142,64 @@ const DrawLine = ({graphData, treatmentData, title}) => {
   const options = makeOptions(title, annotations);
   const data = makeData(graphData);
   return(
-    <Line options={options} data={data}/>
+    <div style={{ width: "450px", height: "300px" }}>
+      <Line options={options} data={data}/>
+    </div>
+    
   )
 }
 
-function DrawAllLine(responseData) {
-    const graphAttrs = {
-        'Blood Pressure': ['BP Sys', 'BP Dia'],
-        'Heart Rate': ['HR'],
-        'Urine Output': ['Urine Output'],
-        'RR': ['RR'],
-        'SpO2': ['SpO2']
-    };
-    const treatmentData = getTreatment(responseData);
-    return (
-        <div>
-            {Object.keys(graphAttrs).map((title) => {
-                const attrs = graphAttrs[title]
-                let graphData = {}
-                attrs.map(attr => {
-                    graphData[attr] = responseData[attr]
-                })
-                return <DrawLine key={title} {...{
-                    title: title,
-                    graphData: graphData,
-                    treatmentData: treatmentData
-                }}/>
-            })}
-        </div>
-    )
 
+
+function DrawAllLine(responseData) {
+  const [value, setValue] = useState("0");
+  
+  const handleChange = (event, newValue) => {
+    setValue(newValue); // Update the selected tab value
+  };
+ 
+  const graphAttrs = {
+      'Blood Pressure': ['BP Sys', 'BP Dia'],
+      'Heart Rate': ['HR'],
+      'Urine Output': ['Urine Output'],
+      'RR': ['RR'],
+      'SpO2': ['SpO2']
+  };
+  const treatmentData = getTreatment(responseData);
+
+
+  return (
+    <TabContext value={value}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <TabList onChange={handleChange} aria-label="Graph Tabs" variant="scrollable" scrollButtons="auto">
+          {Object.keys(graphAttrs).map((title, index) => (
+            <Tab key={title} label={title} value={String(index)} />
+          ))}
+        </TabList>
+      </Box>
+
+      {Object.keys(graphAttrs).map((title, index) => {
+        const attrs = graphAttrs[title];
+        let graphData = {};
+  
+        attrs.map((attr) => {
+          graphData[attr] = responseData[attr];
+        });
+
+        return (
+          <TabPanel key={title} value={String(index)}>
+            <DrawLine
+              title={title}
+              graphData={graphData}
+              treatmentData={treatmentData}
+            />
+          </TabPanel>
+        );
+
+      })}
+    </TabContext>
+
+  ); 
 }
 
 const LineGraph = ({ treatmentName }) => {
