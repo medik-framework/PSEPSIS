@@ -1,9 +1,7 @@
 import "./App.css";
 import { useState, useRef } from "react";
-
 import { useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
-
 import MainPage from "./components/MainPage";
 import WelcomePage from "./components/WelcomePage";
 
@@ -14,7 +12,6 @@ function App() {
   const [isKConnActive, setIsKConnActive] = useState(false);
 
   const kWebSocket = useRef(null);
-
 
   const kWsRef = useWebSocket(kWsURL, {
     onOpen: () => {
