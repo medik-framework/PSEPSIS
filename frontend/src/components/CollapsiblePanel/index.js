@@ -3,14 +3,13 @@ import { Button, Grid, Popover } from "@mui/material";
 
 import Reference from "./References";
 import LineGraph from "./LineGraph";
-import Checklist from "./Checklist";
 
 const CollapsiblePanel = () => {
   const [selectedButton, setSelectedButton] = useState();
   const [open, setOpen] = useState(false);
   const anchorEl = useRef(null);
 
-  const buttons = ["references", "Hemodynamics line graph", "Infection sources"];
+  const buttons = ["references", "Hemodynamics line graph"];
 
   return (
     <div style={{ height: "100vh" }} ref={anchorEl}>
@@ -21,7 +20,6 @@ const CollapsiblePanel = () => {
               sx={{
                 height: "50px",
                 width: "100%",
-                padding: "5px"
               }}
               onClick={() => {
                 setSelectedButton(value);
@@ -46,10 +44,9 @@ const CollapsiblePanel = () => {
           horizontal: "right",
         }}
       >
-        <div style={{ width: "33vw", height: "100vh" }}>
+        <div style={{ width: "33vw", height: "50vh" }}>
           {selectedButton === "references" && <Reference />}
           {selectedButton === "Hemodynamics line graph" && <LineGraph {...{treatmentName:'fluid'}}/>}
-          {selectedButton === "Infection sources" && <Checklist {...{checklistName:'Antibiotics Secondary Conditions'}}/>}
         </div>
       </Popover>
     </div>
