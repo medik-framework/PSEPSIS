@@ -13,7 +13,11 @@ import OrganPage from "./OrganPage";
 
 import { updateURL } from "../redux/miscSlice";
 
+import useSendMeasurementUpdates from "../hooks/useSendMeasurementUpdates";
+import useGlobalInterval from "../hooks/useGlobalInterval";
+
 const ExitConfirmationDialog = ({ open, handleCancel, handleOk }) => {
+    
     return(
         <Dialog open={open}>
             <DialogTitle>Exit Session</DialogTitle>
@@ -29,12 +33,15 @@ const ExitConfirmationDialog = ({ open, handleCancel, handleOk }) => {
 }
 
 const MainPage = ({ exitSession, kWebSocket }) => {
+    useGlobalInterval();
     const dispatch = useDispatch();
     const apiURL = useSelector((state) => state.misc['apiURL']);
     const [selectedDT, setSelectedDT] = useState(0);
     const [open, setOpen] = useState(false);
     const [id, setID] = useState(1);
     const kSendMessage = kWebSocket.sendMessage;
+    useSendMeasurementUpdates(kSendMessage);
+
     return (
         <Box sx={{ display:'flex', flexDirection:'column' }}>
             <Box sx={{ display:'flex', width:'100vw' }}>
