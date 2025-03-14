@@ -5,7 +5,7 @@ import { update } from '../redux/organDataSlice';
 import { Grid, Typography, Select, MenuItem, Box } from "@mui/material";
 
 const MeasurementSelect = ({ organName, config, kSendMessage }) => {
-    const value = useSelector((state) => state.OrganDT[organName][config.name]);
+    const value = useSelector((state) => state.OrganDT[organName][config.name].value);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -14,8 +14,7 @@ const MeasurementSelect = ({ organName, config, kSendMessage }) => {
                 organ: organName,
                 measurement: config.name,
                 value: value,
-                timeStamp: new Date().getTime(),
-                config: config
+                timeStamp: new Date().getTime()
             }
             kSendMessage(JSON.stringify(data))
         }
