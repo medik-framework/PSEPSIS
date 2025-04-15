@@ -61,3 +61,4 @@ RUN echo "trusted-users = ROOT $UNAME" | sudo tee -a /etc/nix/nix.conf
 RUN nix-env --version
 
 RUN curl https://kframework.org/install | bash
+RUN kup install k --version v6.0.46 
