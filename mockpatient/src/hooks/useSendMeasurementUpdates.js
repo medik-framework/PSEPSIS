@@ -19,7 +19,7 @@ const useSendMeasurementUpdates = (kSendMessage) => {
                         measurement: measurementName,
                         value,
                         timeStamp: new Date().getTime(),
-                        config: measurements[measurementName].config,
+                        config: measurements[measurementName].config
                     };
 
                     kSendMessage(JSON.stringify(data));
@@ -27,7 +27,7 @@ const useSendMeasurementUpdates = (kSendMessage) => {
                 }
             });
         });
-    }, [organData, kSendMessage]); 
+    }, [organData, kSendMessage]);
 };
 
 export default useSendMeasurementUpdates;
