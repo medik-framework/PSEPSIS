@@ -158,8 +158,10 @@ class AppProcess:
                         ds_fun = getattr(self.datastore, message_json['eventName'])
                         data = ds_fun(*message_json['eventArgs'])
                         if data:
-                            data['name'] = message_json['eventName']+'_result'
+                            if 'name' not in data:
+                                data['name'] = message_json['eventName']+'_result'
                             await self.to_app_queue.put(data)
+
                     case _ :
                         await self.to_k_queue.put(_broadcast( self.interface_id
                                                             , message_json['eventName']
@@ -262,10 +264,14 @@ class Datastore:
     def update(self, key, val):
         if key == 'Age':
             self.organ_dt.update_age(val)
+            data = {"name": "OrganUpdate",
+                    "args": [ self.organ_dt.get_all() ]}
+            return data
         elif key in self.patient_info:
             self.patient.update(key, val)
         else:
             raise KeyError(key)
+        return None
 
 async def main(app_process, k_process, portal_process):
 

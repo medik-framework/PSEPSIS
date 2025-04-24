@@ -69,6 +69,7 @@ class OrganDt:
             'vitalAgeGroup': None,
             'shockAgeGroup': None
         }
+        self.config = {}
 
     def get_shock_age_group(self, days):
         if days < 28:
@@ -111,6 +112,10 @@ class OrganDt:
         self.age['ageInYears'] = ageInDays // 365
         self.age['vitalAgeGroup'] = self.get_vitals_age_group(self.age['ageInDays'])
         self.age['shockAgeGroup'] = self.get_shock_age_group(self.age['ageInDays'])
+        for k in MEASES:
+            if k in self.config and self.data[k].get_len():
+                dp = self.data[k].get_data_point()
+                self.update(k, dp['time'], dp['value'], self.config[k])
 
     def get_value(self, meas: str) -> Optional[float]:
         return self.data[meas].get_value()
@@ -146,6 +151,7 @@ class OrganDt:
             self.data[meas].update(time, val, isNormal)
         else:
             self.data[meas].update(time, val, None)
+        self.config[meas] = config
 
     def update_system(self, time: int, meases: Dict[str, float]):
         for k, v in meases.items():
