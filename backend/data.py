@@ -144,6 +144,8 @@ class OrganDt:
         if self.age['ageInDays'] is not None:
             isNormal = self.get_normality(meas, val, config)
             self.data[meas].update(time, val, isNormal)
+        else:
+            self.data[meas].update(time, val, None)
 
     def update_system(self, time: int, meases: Dict[str, float]):
         for k, v in meases.items():
