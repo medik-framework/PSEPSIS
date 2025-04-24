@@ -21,14 +21,14 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
             dispatch(update({ value: target, organName, measurementName: config.name }));
         }
     }, [delay, elapse, period, target, organName, config.name, dispatch]);
-   
+
     const gradualUpdate = () => {
         const parsedTarget = Number(targetValue);
         const parsedPeriod = Number(periodValue);
-            
+
         if (!isNaN(parsedTarget) && !isNaN(parsedPeriod) && parsedPeriod > 0) {
             const stepValue = (parsedTarget - value) / parsedPeriod;
-    
+
             dispatch(setGradualUpdate({
                 organName,
                 measurementName: config.name,
@@ -69,6 +69,14 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
                         organName: organName,
                         measurementName: config.name
                     }));
+                    const data = {
+                        organ: organName,
+                        measurement: config.name,
+                        value: Number(inputValue),
+                        timeStamp: new Date().getTime(),
+                        config: config
+                    };
+                    kSendMessage(JSON.stringify(data));
                 }}
             >
                 Confirm
@@ -136,7 +144,7 @@ const MeasurementNumeric = ({ organName, config, kSendMessage }) => {
                 </Button>
             </Box>
             }
-            
+
         </Box>
         </Grid>
     )

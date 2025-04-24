@@ -13,7 +13,7 @@ const useSendMeasurementUpdates = (kSendMessage) => {
             Object.keys(measurements).forEach((measurementName) => {
                 const value = measurements[measurementName]?.value ?? null;
 
-                if (value !== null) {
+                if (measurements[measurementName].delay) {
                     const data = {
                         organ: organName,
                         measurement: measurementName,
