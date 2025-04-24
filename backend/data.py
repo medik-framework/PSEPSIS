@@ -125,7 +125,7 @@ class OrganDt:
         return {oname: {mname: self.get_data_point(mname) for mname in mnames} for oname, mnames in ORGAN_DT_MAP.items()}
 
     def get_normality(self, meas: str, value:float, config: dict):
-        if not value or not self.age:
+        if not value or not self.age['ageInDays']:
             return None
 
         if config['type'] == 'choices':
@@ -141,7 +141,7 @@ class OrganDt:
                 return True
 
     def update(self, meas: str, time: int, val: float, config: dict):
-        if self.age is not None:
+        if self.age['ageInDays'] is not None:
             isNormal = self.get_normality(meas, val, config)
             self.data[meas].update(time, val, isNormal)
 
