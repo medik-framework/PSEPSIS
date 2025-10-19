@@ -25,7 +25,7 @@ RUN curl -sSL https://get.haskellstack.org/ | sh
 
 RUN npm install -g yarn && \
     npm install -g create-react-app && \
-    python3.10 -m pip install websockets pytest pytest-asyncio
+    python3.10 -m pip install websockets pytest pytest-asyncio openai-agents
 
 ARG UNAME
 ARG UID
